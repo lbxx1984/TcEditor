@@ -1,0 +1,14 @@
+{
+    "name": "ReactJSDemo",
+    "version": "0.0.1",
+    "description": "ReactJSDemo",
+    "main": "index",
+    "dependencies": {
+        "react-tools": ">=0.0.0",
+        "edp": ">=0.0.0"
+    },
+    "author": "lihaitao03@baidu.com",
+    "repository": "empty",
+    "license": "MIT",
+    "readme": "README"
+}
