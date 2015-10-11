@@ -8,7 +8,7 @@ define([
                 props.commandRouting(e.target.dataset.uiCmd);
             }
             return (
-                <div className="mainContainer">
+                <div className="container-left">
                     <Menu datasource={config.menu} clickHandler={menuClickHandler}/>
                     <ControlBar datasource={config.controlBar} clickHandler={menuClickHandler}/>
                 </div>

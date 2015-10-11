@@ -26,10 +26,22 @@ define(function (Require) {
                 label: 'VIEWS',
                 display: 'always',
                 children: [
-                    {label: '3D', class: '', cmd: 'view-3d', title: 'Press 1', selector: '3d'},
-                    {label: 'XOZ', class: '', cmd: 'view-xoz', title: 'Press 2', selector: 'xoz'},
-                    {label: 'XOY', class: '', cmd: 'view-xoy', title: 'Press 3', selector: 'xoy'},
-                    {label: 'YOZ', class: '', cmd: 'view-yoz', title: 'Press 4', selector: 'yoz'}
+                    {
+                        label: '3D', class: '', cmd: 'view-3d', title: 'Press (1)',
+                        type: 'radio', group: 'cameraview', value: '3d'
+                    },
+                    {
+                        label: 'XOZ', class: '', cmd: 'view-xoz', title: 'Press (2)',
+                        type: 'radio', group: 'cameraview', value: 'xoz'
+                    },
+                    {
+                        label: 'XOY', class: '', cmd: 'view-xoy', title: 'Press (3)',
+                        type: 'radio', group: 'cameraview', value: 'xoy'
+                    },
+                    {
+                        label: 'YOZ', class: '', cmd: 'view-yoz', title: 'Press (4)',
+                        type: 'radio', group: 'cameraview', value: 'yoz'
+                    }
                 ]
             },
             {
@@ -38,11 +50,79 @@ define(function (Require) {
                 children: [
                     {
                         label: '', class: ' icon icon-yidong', cmd: 'tool-pickgeo',
-                        title: 'pick up geometry (S)', selector: 'pickgeo'
+                        type: 'radio', group: 'systemtool', value: 'pickgeo', title: 'pick up geometry (S)'
                     },
                     {
                         label: '', class: ' icon icon-shuxingxuanze', cmd: 'tool-pickjoint',
-                        title: 'pick up joints of geometry (B)', selector: 'pickjoint'
+                        type: 'radio', group: 'systemtool', value: 'pickjoint', title: 'pick up joints of geometry (B)'
+                    }
+                ]
+            },
+            {
+                label: 'CAMERA',
+                display: 'always',
+                children: [
+                    {
+                        label: '', class: ' icon icon-yidong1', cmd: 'tool-cameramove',
+                        type: 'radio', group: 'systemtool', value: 'cameramove', title: 'move camera (M)'
+                    },
+                    {
+                        label: '', class: ' icon icon-fangda', cmd: 'tool-camerazoomin',
+                        type: 'button', title: 'zoom in (MOUSE WHEEL)'
+                    },
+                    {
+                        label: '', class: ' icon icon-suoxiao', cmd: 'tool-camerazoomout',
+                        type: 'button', title: 'zoom out (MOUSE WHEEL)'
+                    }
+                ]
+            },
+            {
+                label: 'GRID',
+                display: 'always',
+                children: [
+                    {
+                        label: '', class: ' icon icon-pingmufangda', cmd: 'tool-gridenlarge',
+                        type: 'button', title: 'enlarge grid'
+                    },
+                    {
+                        label: '', class: ' icon icon-pingmusuoxiao', cmd: 'tool-gridnarrow',
+                        type: 'button', titel: 'narrow grid'
+                    },
+                    {
+                        label: '', class: ' icon icon-bukejian2', cmd: 'tool-gridtoggle',
+                        type: 'checkbox', title: 'hide/show grid', value: 0,
+                        styles: [' icon-kejian', ' icon-bukejian2']  
+                    }
+                ]
+            },
+            {
+                label: 'TRANSFORMER',
+                display: 'pickedgeo',
+                children: [
+                    {
+                        label: '', class: ' icon icon-move', cmd: 'trans-move',
+                        type: 'radio', group: 'trsnsformer', value: 'move', title: 'move'
+                    },
+                    {
+                        label: '', class: ' icon icon-llfilterrotate', cmd: 'trans-rotate',
+                        type: 'radio', group: 'trsnsformer', value: 'rotate', title: 'rotate'
+                    },
+                    {
+                        label: '', class: ' icon icon-icicfangdatubiao', cmd: 'trans-scale',
+                        type: 'radio', group: 'trsnsformer', value: 'scale', title: 'scale'
+                    },
+                    {
+                        label: '', class: ' icon icon-jiafangda', cmd: 'trans-enlarge',
+                        type: 'button', titel: 'enlarge transformer'
+                    },
+                    {
+                        label: '', class: ' icon icon-jiansuoxiao', cmd: 'trans-narrow',
+                        type: 'button', titel: 'narrow transformer'
+                    },
+                    {
+                        label: '', class: ' icon icon-sanweimoxing2', cmd: 'trans-coordinatetoggle',
+                        type: 'checkbox', title: 'toggle world/local coordinate', value: 0,
+                        styles: [' icon-sanweimoxing2', ' icon-sanweimoxing']  
                     }
                 ]
             }
