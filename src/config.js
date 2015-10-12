@@ -3,7 +3,8 @@ define(function (Require) {
         defaultCommandState: {
             cameraview: '3d',
             systemtool: 'cameramove',
-            trsnsformer: 'move'
+            trsnsformer: 'move',
+            enablebar: ''
         },
         menu: [
             {
@@ -29,7 +30,7 @@ define(function (Require) {
         controlBar: [
             {
                 label: 'VIEWS',
-                display: 'always',
+                enable: 'always',
                 children: [
                     {
                         label: '3D', class: '', cmd: 'view-3d', title: 'Press (1)',
@@ -51,7 +52,7 @@ define(function (Require) {
             },
             {
                 label: 'TOOLS',
-                display: 'always',
+                enable: 'always',
                 children: [
                     {
                         label: '', class: ' icon icon-yidong', cmd: 'tool-pickgeo',
@@ -65,7 +66,7 @@ define(function (Require) {
             },
             {
                 label: 'CAMERA',
-                display: 'always',
+                enable: 'always',
                 children: [
                     {
                         label: '', class: ' icon icon-yidong1', cmd: 'tool-cameramove',
@@ -83,7 +84,7 @@ define(function (Require) {
             },
             {
                 label: 'GRID',
-                display: 'always',
+                enable: 'always',
                 children: [
                     {
                         label: '', class: ' icon icon-pingmufangda', cmd: 'tool-gridenlarge',
@@ -102,7 +103,7 @@ define(function (Require) {
             },
             {
                 label: 'TRANSFORMER',
-                display: 'pickedgeo',
+                enable: 'transformer',
                 children: [
                     {
                         label: '', class: ' icon icon-move', cmd: 'trans-move',

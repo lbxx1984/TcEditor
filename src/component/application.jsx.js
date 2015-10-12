@@ -9,7 +9,7 @@ define([
             return (
                 <div>
                     <RightContainer/>
-                    <MainContainer {...this.props}/>
+                    <MainContainer {...this.props} ref="containerleft"/>
                 </div>
             );
         }

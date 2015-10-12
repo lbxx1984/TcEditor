@@ -58,8 +58,12 @@ define(['React'], function (React) {
             }
 
             function prepare(item) {
+                var itemClass = item.enable === 'always' ? 'control-bar-item-inline' : 'control-bar-item-nextline';
+                if (item.enable !== 'always' && me.state.enablebar.indexOf(item.enable + '|') < 0) {
+                    itemClass += ' disable';
+                }
                 return (
-                    <div className="control-bar-item">
+                    <div className={itemClass}>
                         <div className="control-bar-label">{item.label}</div>
                         {item.children.map(button)}
                     </div>

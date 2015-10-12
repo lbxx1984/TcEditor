@@ -1,14 +1,26 @@
 .control-bar {
-
-    margin-top: 41px;
+    position: relative;
+    top: 1px;
     border-top: 1px solid #383838;
+    border-right: 1px solid #000;
     cursor: default;
     -moz-user-select: none;
     -webkit-user-select:none;
     -ms-user-select:none;
 
-    .control-bar-item {
+    .disable {
+        display: none;
+    }
+    .control-bar-item-inline {
         display: inline-block;
+    }
+    .control-bar-item-nextline {
+        .control-bar-label {
+            background-color: #1F1F1F;
+        }
+        .control-bar-button {
+            background-color: #1F1F1F;
+        }
     }
     .control-bar-label {
         display: inline-block;
