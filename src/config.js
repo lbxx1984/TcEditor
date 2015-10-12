@@ -1,5 +1,10 @@
 define(function (Require) {
     return {
+        defaultCommandState: {
+            cameraview: '3d',
+            systemtool: 'cameramove',
+            trsnsformer: 'move'
+        },
         menu: [
             {
                 label: 'Geometry',
@@ -89,7 +94,7 @@ define(function (Require) {
                         type: 'button', titel: 'narrow grid'
                     },
                     {
-                        label: '', class: ' icon icon-bukejian2', cmd: 'tool-gridtoggle',
+                        label: '', class: ' icon', cmd: 'tool-gridtoggle',
                         type: 'checkbox', title: 'hide/show grid', value: 0,
                         styles: [' icon-kejian', ' icon-bukejian2']  
                     }
@@ -120,7 +125,7 @@ define(function (Require) {
                         type: 'button', titel: 'narrow transformer'
                     },
                     {
-                        label: '', class: ' icon icon-sanweimoxing2', cmd: 'trans-coordinatetoggle',
+                        label: '', class: ' icon', cmd: 'trans-coordinatetoggle',
                         type: 'checkbox', title: 'toggle world/local coordinate', value: 0,
                         styles: [' icon-sanweimoxing2', ' icon-sanweimoxing']  
                     }

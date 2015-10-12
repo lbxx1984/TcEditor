@@ -4,13 +4,28 @@ define([
     return React.createClass({
         render: function () {
             var props = this.props;
+            var menuProps = {
+                datasource: config.menu,
+                clickHandler: menuClickHandler
+            };
+            var controlBarProps = {
+                defaultState: config.defaultCommandState,
+                datasource: config.controlBar,
+                clickHandler: controlBarClickHandler
+            };
+
             function menuClickHandler(e) {
                 props.commandRouting(e.target.dataset.uiCmd);
             }
+
+            function controlBarClickHandler(e) {
+                console.log(e);
+            }
+
             return (
                 <div className="container-left">
-                    <Menu datasource={config.menu} clickHandler={menuClickHandler}/>
-                    <ControlBar datasource={config.controlBar} clickHandler={menuClickHandler}/>
+                    <Menu {...menuProps}/>
+                    <ControlBar {...controlBarProps}/>
                 </div>
             );
         }
