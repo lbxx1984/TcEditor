@@ -55,11 +55,11 @@ define(function (Require) {
                 enable: 'always',
                 children: [
                     {
-                        label: '', class: ' icon icon-yidong', cmd: 'tool-pickgeo',
+                        label: '', class: ' icon icon-yidong', cmd: 'mouse-pickgeo',
                         type: 'radio', group: 'systemtool', value: 'pickgeo', title: 'pick up geometry (S)'
                     },
                     {
-                        label: '', class: ' icon icon-shuxingxuanze', cmd: 'tool-pickjoint',
+                        label: '', class: ' icon icon-shuxingxuanze', cmd: 'mouse-pickjoint',
                         type: 'radio', group: 'systemtool', value: 'pickjoint', title: 'pick up joints of geometry (B)'
                     }
                 ]
@@ -69,7 +69,7 @@ define(function (Require) {
                 enable: 'always',
                 children: [
                     {
-                        label: '', class: ' icon icon-yidong1', cmd: 'tool-cameramove',
+                        label: '', class: ' icon icon-yidong1', cmd: 'mouse-cameramove',
                         type: 'radio', group: 'systemtool', value: 'cameramove', title: 'move camera (M)'
                     },
                     {

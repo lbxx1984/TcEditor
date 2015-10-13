@@ -170,7 +170,7 @@ define(['three'], function (THREE) {
             cameraRadius: 90,
             cameraAngleA: param.cameraAngleA || 40,
             cameraAngleB: param.cameraAngleB || 45,
-            cameraMoveSpeed: 2,
+            cameraMoveSpeed: 1.5,
             cameraRotated: false,
             cameraLookAt: {x: 0, y: 0, z: 0},
             // 舞台尺寸

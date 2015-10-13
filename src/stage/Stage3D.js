@@ -7,13 +7,138 @@ define(['three'], function (THREE) {
 
 
     /**
+     * 设置摄像机观察点，相当于平移摄像机
+     *
+     * @param {number} dx 横向移动增量
+     * @param {number} dy 纵向移动增量
+     */
+    Stage3D.prototype.cameraLookAt = function (dx, dy) {
+        var param = this.param;
+        var lookat = param.cameraLookAt;
+        var cpos = this.camera.position;
+        var hpos = this.helper.planeContainer.position;
+        dx = param.cameraRadius * dx * param.cameraMoveSpeed * 0.2 / param.width;
+        dy = param.cameraRadius * dy * param.cameraMoveSpeed * 0.2 / param.height;
+        if (Math.abs(param.cameraAngleA) > 2) {
+            lookat.x -= Math.sin(Math.PI * param.cameraAngleB / 180) * dx;
+            lookat.z += Math.cos(Math.PI * param.cameraAngleB / 180) * dx;
+            lookat.x -= Math.cos(Math.PI * param.cameraAngleB / 180) * dy * Math.abs(cpos.y) / cpos.y;
+            lookat.z -= Math.sin(Math.PI * param.cameraAngleB / 180) * dy * Math.abs(cpos.y) / cpos.y;
+        }
+        else {
+            lookat.x -= Math.sin(Math.PI * param.cameraAngleB / 180) * dx;
+            lookat.z += Math.cos(Math.PI * param.cameraAngleB / 180) * dx;
+            lookat.y += dy;
+        }
+        hpos.x = lookat.x;
+        hpos.y = lookat.y;
+        hpos.z = lookat.z;
+        this.updateCameraPosition();
+    };
+
+
+    /**
+     * 缩放舞台
+     *
+     * @param {Object} e 鼠标wheel事件 
+     */ 
+    Stage3D.prototype.mousewheel = function(event) {
+        var param = this.param;
+        this.zoomCamara(- 0.2 * param.cameraRadius * event.wheelDelta * param.cameraMoveSpeed / param.width);
+    };
+
+
+    /**
+     * 获取鼠标的空间位置，投射在虚拟坐标纸上的位置
+     *
+     * @param {number} x 鼠标在当前舞台中的x坐标, 对应layerX
+     * @param {number} y 鼠标在当前舞台中的y坐标, 对应layerY
+     */
+    Stage3D.prototype.getMouse3D = function (x, y) {
+        var me = this;
+        var mouse = new THREE.Vector3((x / me.param.width) * 2 - 1, - (y / me.param.height) * 2 + 1, 0);  
+        var raycaster = me.helper.raycaster;
+        raycaster.setFromCamera(mouse, me.camera);
+        var intersects = raycaster.intersectObjects([me.helper.plane]);
+        var point = new THREE.Vector3();
+        if (intersects.length > 0) {
+            point = intersects[0].point;
+            if (Math.abs(point.x) < 5) {
+                point.x = 0;
+            }
+            if (Math.abs(point.y) < 5) {
+                point.y = 0;
+            }
+            if (Math.abs(point.z) < 5) {
+                point.z = 0;
+            }
+        }
+        return point.clone();
+    };
+
+
+    /**
+     * 切换坐标轴和网格的显示隐藏状态
+     */
+    Stage3D.prototype.toggleHelper = function () {
+        var param = this.param;
+        var helper = this.helper;
+        param.showGrid = helper.axis.visible = helper.grid.visible = !param.showGrid;
+    };
+
+
+    /**
+     * 改变网格大小
+     *
+     * @param {boolean} enlarge true放大；false缩小 
+     */
+    Stage3D.prototype.resizeGrid = function (enlarge) {
+        var param = this.param;
+        var helper = this.helper;
+        if (enlarge) {
+            param.gridSize = Math.min(param.gridSize + 1000, 20000);
+        } else {
+            param.gridSize = Math.max(param.gridSize - 1000, 1000);
+        }
+        this.scene.remove(helper.grid);
+        helper.grid = new THREE.GridHelper(param.gridSize, param.gridStep);
+        helper.grid.setColors(param.gridColor, param.gridColor);
+        helper.grid.visible = param.showGrid;
+        this.scene.add(helper.grid);
+    };
+
+
+    /**
+     * 改变摄像机焦距
+     *
+     * @param {boolean | number} dx true推近；false拉远；number具体值
+     */
+    Stage3D.prototype.zoomCamara = function (dx) {
+        var value = 0;
+        if (dx === true) {
+            value = -360;
+        }
+        else if (dx === false) {
+            value = 360;
+        }
+        else {
+            value = dx;
+        }
+        value += this.param.cameraRadius;
+        value = Math.max(value, 50);
+        value = Math.min(value, 5000);
+        this.setCamera({r: value});
+    };
+
+
+    /**
      * 设置摄像机位置
      *
      * @param {Object} p 摄像机位置配置
      * @param {number} p.a 对应cameraAngleA
      * @param {number} p.b 对应cameraAngleB
      */
-    Stage3D.prototype.setCamera = function(p) {
+    Stage3D.prototype.setCamera = function (p) {
         if (p == null) {
             return;
         }
@@ -22,6 +147,9 @@ define(['three'], function (THREE) {
         }
         if (p.b != null) {
             this.param.cameraAngleB = p.b;
+        }
+        if (p.r != null) {
+            this.param.cameraRadius = p.r;
         }
         this.updateCameraPosition();
         // outputCamera();
@@ -51,19 +179,19 @@ define(['three'], function (THREE) {
         var cameraAngleB = this.param.cameraAngleB;
         var cameraRadius = this.param.cameraRadius;
         var cameraLookAt = this.param.cameraLookAt;
-        var gridContainer = this.helper.gridContainer;
+        var planeContainer = this.helper.planeContainer;
         var grid = this.helper.grid;
         var y = cameraRadius * Math.sin(Math.PI * cameraAngleA / 180);
         var x = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.cos(Math.PI * cameraAngleB / 180);
         var z = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.sin(Math.PI * cameraAngleB / 180);
-        if (Math.abs(cameraAngleA) < 5) {
-            gridContainer.rotation.z = grid.rotation.z = Math.PI * 0.5 - Math.PI * cameraAngleB / 180;
-            gridContainer.rotation.x = grid.rotation.x = Math.PI * 1.5;
+        if (Math.abs(cameraAngleA) < 2) {
+            planeContainer.rotation.z = grid.rotation.z = Math.PI * 0.5 - Math.PI * cameraAngleB / 180;
+            planeContainer.rotation.x = grid.rotation.x = Math.PI * 1.5;
             this.param.gridLocked = false;
         }
         else {
-            gridContainer.rotation.z = grid.rotation.z = 0;
-            gridContainer.rotation.x = grid.rotation.x = 0;
+            planeContainer.rotation.z = grid.rotation.z = 0;
+            planeContainer.rotation.x = grid.rotation.x = 0;
             this.param.gridLocked = true;
         }
         this.camera.position.set(
@@ -120,21 +248,18 @@ define(['three'], function (THREE) {
             domElement: param.container,
             // 射线，用于鼠标拾取物体
             raycaster: new THREE.Raycaster(),
-            // 网格的容器，主要作用是接受对网格的操作
-            gridContainer: new THREE.Object3D(),
             // 网格
             grid: new THREE.GridHelper(this.param.gridSize, this.param.gridStep),
             // 坐标轴
             axis: new THREE.AxisHelper(200),
             // 坐标纸
             plane: new THREE.Mesh(
-                new THREE.PlaneBufferGeometry(10000, 10000, 1, 1),
-                new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide})
-            )
+                new THREE.PlaneGeometry(10000, 10000, 1, 1),
+                new THREE.MeshBasicMaterial({visible: false,side: THREE.DoubleSide})
+            ),
+            // 网格的容器，主要作用是接受对网格的操作
+            planeContainer: new THREE.Object3D()
         };
-        // 鼠标位置缓存
-        this.mouse2d = new THREE.Vector3();
-        this.mouse3d = new THREE.Vector3();
         // 自定义事件
         this.events = {};
         // 舞台中物体hash
@@ -148,21 +273,17 @@ define(['three'], function (THREE) {
         // WebGL渲染器
         this.renderer = new THREE.WebGLRenderer({antialias: true});
 
-        /**绑定交互事件**/
-        this.helper.domElement.addEventListener('mousemove', mouseMoveHandler);
-
         /**初始化3D场景**/
         if (this.param.showGrid) {
             this.scene.add(this.helper.grid);
             this.scene.add(this.helper.axis);
         }
-        this.scene.add(this.helper.gridContainer);
-        this.helper.gridContainer.add(this.helper.plane);
+        this.helper.plane.rotation.x = Math.PI * 0.5;
+        this.helper.planeContainer.add(this.helper.plane);
+        this.scene.add(this.helper.planeContainer);
         this.helper.grid.setColors(this.param.gridColor, this.param.gridColor);
         this.renderer.setClearColor(this.param.clearColor);
         this.renderer.setSize(this.param.width, this.param.height);
-        this.helper.plane.rotation.x = Math.PI * 0.5;
-        this.helper.plane.visible = false;
         this.helper.domElement.appendChild(this.renderer.domElement);
         this.updateCameraPosition();
         animate();
@@ -182,13 +303,6 @@ define(['three'], function (THREE) {
                     me.plugin[key].animate();
                 }
             }
-        }
-
-        /**交互事件**/
-        function mouseMoveHandler(event) {
-            var x = event.layerX;
-            var y = event.layerY;
-            //console.log(x + ';' +y);
         }
     }
 

@@ -6,16 +6,76 @@
 define(['./Stage3D', './CameraController'], function (Stage3D, CameraController) {
 
     /**
+     * 移动舞台中的摄像机
+     *
+     * @param {number} dx 横向增量（DOM坐标）
+     * @param {number} dy 纵向增量（DOM坐标）
+     */
+    Stage.prototype.cameraMove = function(dx, dy) {
+        if (this.type === "$3d" && !this.cameraController.param.cameraRotated) {
+            this.$3d.cameraLookAt(dx, dy);
+        }
+        else {
+            // this.$2d.lookAt(dx, -dy, true);
+        }
+    };
+
+
+    /**
+     * 缩放舞台
+     *
+     * @param {Object} e 鼠标wheel事件 
+     */
+    Stage.prototype.zoom = function (e) {
+        this[this.type].mousewheel(e);
+    };
+
+
+    /**
+     * 获取鼠标空间位置
+     *
+     * @param {number} x 鼠标在当前舞台中的x坐标, 对应layerX
+     * @param {number} y 鼠标在当前舞台中的y坐标, 对应layerY
+     */
+    Stage.prototype.getMouse3D = function (x, y) {
+        return this[this.type].getMouse3D(x, y);
+    };
+
+
+    /**
+     * resize事件
+     */
+    Stage.prototype.resize = function () {
+        this.$3d.resize(this.container3.clientWidth, this.container3.clientHeight);
+    };
+
+
+    /**
+     * 调用子容器接口
+     *
+     * @param {string} func 方法名称
+     * @param {Object} param 需要传递参数
+     */
+    Stage.prototype.callFunction = function (func, param) {
+        if (func === 'toggleHelper') {
+            // this.$2d[func]();
+            this.$3d[func]();
+        } else {
+            this[this.type][func](param);
+        }
+    };
+
+
+    /**
      * @constructor
+     *
      * @param {Object} param 初始化参数
-     * @param {Object} param.ui application的react对象
      * @param {Object} param.container1 摄像机控制器dom
      * @param {HtmlElement} param.container2 2D舞台dom
      * @param {HtmlElement} param.container3 3D舞台dom
      */
     function Stage(param) {
-        this.type = '3d';
-        this.ui = param.ui;
+        this.type = '$3d';
         this.container2 = param.container2;
         this.container3 = param.container3;
         // 3D舞台和3D摄像机控制器
@@ -26,23 +86,17 @@ define(['./Stage3D', './CameraController'], function (Stage3D, CameraController)
             width: param.container3.clientWidth,
             height: param.container3.clientHeight
         });
-        var cameraController = new CameraController({
+        this.cameraController = new CameraController({
             textureUrl: 'resources/textures/',
             container: param.container1,
             hoverColor: 0xD97915,
             animate: true
         });
         // 绑定摄像机和控制器
-        this.$3d.plugin.cameraController = cameraController;
-        cameraController.param.stages.push(this.$3d);
+        this.$3d.plugin.cameraController = this.cameraController;
+        this.cameraController.param.stages.push(this.$3d);
     }
 
-    /**
-     * resize事件
-     */
-    Stage.prototype.resize = function () {
-        this.$3d.resize(this.container3.clientWidth, this.container3.clientHeight);
-    };
 
     return Stage;
 });
