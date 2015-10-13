@@ -5,6 +5,29 @@
  */
 define(['three'], function (THREE) {
 
+
+    /**
+     * 设置摄像机位置
+     *
+     * @param {Object} p 摄像机位置配置
+     * @param {number} p.a 对应cameraAngleA
+     * @param {number} p.b 对应cameraAngleB
+     */
+    Stage3D.prototype.setCamera = function(p) {
+        if (p == null) {
+            return;
+        }
+        if (p.a != null) {
+            this.param.cameraAngleA = p.a;
+        }
+        if (p.b != null) {
+            this.param.cameraAngleB = p.b;
+        }
+        this.updateCameraPosition();
+        // outputCamera();
+    };
+
+
     /**
      * 修改编辑器大小
      *
@@ -23,7 +46,7 @@ define(['three'], function (THREE) {
     /**
      * 设置摄像机位置
      */
-    Stage3D.prototype.setCameraPosition = function () {
+    Stage3D.prototype.updateCameraPosition = function () {
         var cameraAngleA = this.param.cameraAngleA;
         var cameraAngleB = this.param.cameraAngleB;
         var cameraRadius = this.param.cameraRadius;
@@ -37,7 +60,8 @@ define(['three'], function (THREE) {
             gridContainer.rotation.z = grid.rotation.z = Math.PI * 0.5 - Math.PI * cameraAngleB / 180;
             gridContainer.rotation.x = grid.rotation.x = Math.PI * 1.5;
             this.param.gridLocked = false;
-        } else {
+        }
+        else {
             gridContainer.rotation.z = grid.rotation.z = 0;
             gridContainer.rotation.x = grid.rotation.x = 0;
             this.param.gridLocked = true;
@@ -93,7 +117,7 @@ define(['three'], function (THREE) {
         // 辅助对象
         this.helper = {
             // dom容器
-            domElememt: param.container,
+            domElement: param.container,
             // 射线，用于鼠标拾取物体
             raycaster: new THREE.Raycaster(),
             // 网格的容器，主要作用是接受对网格的操作
@@ -124,6 +148,9 @@ define(['three'], function (THREE) {
         // WebGL渲染器
         this.renderer = new THREE.WebGLRenderer({antialias: true});
 
+        /**绑定交互事件**/
+        this.helper.domElement.addEventListener('mousemove', mouseMoveHandler);
+
         /**初始化3D场景**/
         if (this.param.showGrid) {
             this.scene.add(this.helper.grid);
@@ -136,8 +163,8 @@ define(['three'], function (THREE) {
         this.renderer.setSize(this.param.width, this.param.height);
         this.helper.plane.rotation.x = Math.PI * 0.5;
         this.helper.plane.visible = false;
-        this.helper.domElememt.appendChild(this.renderer.domElement);
-        this.setCameraPosition();
+        this.helper.domElement.appendChild(this.renderer.domElement);
+        this.updateCameraPosition();
         animate();
 
         /**场景渲染**/
@@ -155,6 +182,13 @@ define(['three'], function (THREE) {
                     me.plugin[key].animate();
                 }
             }
+        }
+
+        /**交互事件**/
+        function mouseMoveHandler(event) {
+            var x = event.layerX;
+            var y = event.layerY;
+            //console.log(x + ';' +y);
         }
     }
 

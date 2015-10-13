@@ -186,25 +186,7 @@ $.fn.Stage3D = function(param) {
             return null;
         }
     }
-    /**
-     * 设置摄像机位置
-     * @param {Object} p 摄像机位置配置
-     * @param {number} p.a 对应cameraAngleA
-     * @param {number} p.b 对应cameraAngleB
-     */
-    _this.setCamera = function(p) {
-        if (p == null) {
-            return;
-        }
-        if (p.a != null) {
-            _cameraAngleA = p.a;
-        }
-        if (p.b != null) {
-            _cameraAngleB = p.b;
-        }
-        setCameraPosition();
-        outputCamera();
-    }
+
     /**
      * 改变摄像机焦距
      * @param {number} dx 变化方向，大于0表示拉近，其值不参与计算
