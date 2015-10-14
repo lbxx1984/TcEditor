@@ -2,15 +2,17 @@
  * click命令解析单元
  */
 define(function (Require) {
+
     var _down = false;
     var _mouse = [-1, -1];
 
-    /**通用鼠标事件**/
+    /**通用事件工厂**/
     function mousedown(e) {
         _down = true;
         _mouse[0] = e.clientX;
         _mouse[1] = e.clientY;
     }
+
     function mouseup(e) {
         _down = false;
     }
@@ -26,7 +28,21 @@ define(function (Require) {
                 _mouse[1] = e.clientY;
             },
             mousedown: mousedown,
-            mouseup: mouseup
+            mouseup: mouseup,
+            mouseleave: mouseup
+        },
+        pickgeo: {
+            mousedown: function (e) {
+                var mesh = this.stage.getMeshByMouse(e);
+                if (mesh == null) {
+                    return;
+                }
+                this.transformer.attach(mesh);
+                // if (mesh) {
+                //     mesh.visible = false;
+                // }
+                // console.log(mesh);
+            }
         }
     };
 });

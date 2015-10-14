@@ -1,6 +1,4 @@
-define([
-    'React', './containerRight.jsx', './containerLeft.jsx'
-], function (React, ContainerRight, ContainerLeft) {
+define(['./containerRight.jsx', './containerLeft.jsx'], function (ContainerRight, ContainerLeft) {
     return React.createClass({
         render: function () {
             return (

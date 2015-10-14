@@ -1,6 +1,6 @@
 define([
-    'React', '../config', './menu.jsx', './controlBar.jsx', './stage.jsx'
-], function (React, config, Menu, ControlBar, Stage) {
+    '../config', './menu.jsx', './controlBar.jsx', './stage.jsx'
+], function (config, Menu, ControlBar, Stage) {
     return React.createClass({
         render: function () {
             var props = this.props;

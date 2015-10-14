@@ -1,11 +1,14 @@
-define(['React'], function (React) {
+define(function (require) {
     return React.createClass({
         render: function () {
             var stageProps = {
                 className: 'stage',
                 onMouseUp: this.props.mouseup,
                 onMouseMove: this.props.mousemove,
-                onMouseDown: this.props.mousedown
+                onMouseDown: this.props.mousedown,
+                onContextMenu: function () {
+                    return false;
+                }
             };
             return (
                 <div {...stageProps}>

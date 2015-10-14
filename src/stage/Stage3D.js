@@ -3,7 +3,42 @@
  * @author Haitao Li
  * @mail 279641976@qq.com
  */
-define(['three'], function (THREE) {
+define(function (require) {
+
+
+    /**
+     * 获取鼠标下的可见物体
+     *
+     * @param {Object} e 鼠标事件对象
+     * @param {?Array.<Object>} arr 物体数组，如果指定就从数组中查找，不指定从全局查找
+     * @return {Object} 3D物体对象 或null
+     */
+    Stage3D.prototype.getMeshByMouse = function(e, arr) {
+        var array = [];
+        if (arr instanceof Array) {
+            array = arr;
+        }
+        else {
+            for (var key in this.children) {
+                if (this.children[key].visible) {
+                    array.push(this.children[key]);
+                }
+            }
+        }
+        if (array.length === 0) return null;
+        var mouse = new THREE.Vector3(
+            ((e.layerX - window.scrollX) / this.param.width) * 2 - 1,
+            - ((e.layerY - window.scrollY) / this.param.height) * 2 + 1,
+            0
+        );  
+        var raycaster = this.helper.raycaster;
+        raycaster.setFromCamera(mouse, this.camera);
+        var intersects = raycaster.intersectObjects(array);
+        if (intersects.length > 0) {
+            return intersects[0].object;
+        }
+        return null;
+    };
 
 
     /**
@@ -56,7 +91,11 @@ define(['three'], function (THREE) {
      */
     Stage3D.prototype.getMouse3D = function (x, y) {
         var me = this;
-        var mouse = new THREE.Vector3((x / me.param.width) * 2 - 1, - (y / me.param.height) * 2 + 1, 0);  
+        var mouse = new THREE.Vector3(
+            ((x - window.scrollX) / me.param.width) * 2 - 1,
+            - ((y - window.scrollY) / me.param.height) * 2 + 1,
+            0
+        );  
         var raycaster = me.helper.raycaster;
         raycaster.setFromCamera(mouse, me.camera);
         var intersects = raycaster.intersectObjects([me.helper.plane]);
@@ -199,6 +238,13 @@ define(['three'], function (THREE) {
             y + cameraLookAt.y,
             z + cameraLookAt.z
         );
+        // 渲染插件
+        var update = this.updateWithCamera;
+        for (var key in update) {
+            if (update.hasOwnProperty(key) && typeof update[key].update === 'function') {
+                update[key].update();
+            }
+        }
     };
 
 
@@ -266,6 +312,8 @@ define(['three'], function (THREE) {
         this.children = {};
         // 需要传递animate动作的插件
         this.plugin = {}
+        // 摄像机移动后需要更新的插件，并非每帧都要更新
+        this.updateWithCamera = {};
         // 3D摄像机
         this.camera = new THREE.PerspectiveCamera(60, this.param.width / this.param.height, 1, 20000);
         // 3D场景

@@ -84,21 +84,7 @@ Stage.prototype.meshLock = function(id, value) {
 Stage.prototype.getGeometryByID = function(id) {
     return this.$3d.getChild(id);
 }
-/**
- * 获取鼠标下未锁定的物体
- * @param {number} e 鼠标事件对象
- * @return {Object} 3D物体或2D物体，根据舞台系统当前显示状态确定
- */
-Stage.prototype.getGeometryByMouse = function(e) {
-    var geo = null;
-    if (this.view == "3d") {
-        geo = this.$3d.selectGeometry(null, e);
-    } else {
-        geo = this.$2d.selectMeshByMouse(e);
-    } 
-    if (!geo || geo.locked) return null;
-    return geo;
-}
+
 
 /**
  * 缩放摄像机
@@ -126,20 +112,7 @@ Stage.prototype.setGridColor = function(e) {
     this.$3d.setGridColor(e);
     this.$2d.setGridColor(e);
 }
-/**
- * 为当前显示的DOM组件添加class，一般用于鼠标样式
- * @param {string} className 类名称
- */
-Stage.prototype.addClass = function(className) {
-    this.current.addClass(className);
-}
-/**
- * 为当前显示的DOM组件移除class，一般用于鼠标样式
- * @param {string} className 类名称
- */
-Stage.prototype.clearClass = function() {
-    this.current.removeClass();
-}
+
 /**
  * 切换舞台显示状态
  * @param {string} view 舞台视角：3d、xoz、xoy、yoz
@@ -161,16 +134,7 @@ Stage.prototype.changeTo = function(view) {
     }
     this.view = view;
 }
-/**
- * 修改舞台大小
- * @param {number} width 宽度
- * @param {number} height 高度 
- */
-Stage.prototype.resize = function(width, height) {
-    if (!this.$2d) return;
-    this.$3d.resize(width, height);
-    this.$2d.resize(width, height);
-}
+
 /**
  * 获取鼠标下物体的关节徽标
  * @param {Object} e 鼠标事件对象
@@ -200,13 +164,7 @@ Stage.prototype.getTransformerCommand = function(e) {
     };
     return null
 }
-/**
- * 获取舞台中的物体的3D坐标
- * @return {Object} 3D坐标
- */
-Stage.prototype.getMousePosition = function() {
-    return this.current.getMousePosition(this.view);
-}
+
 /**
  * 为舞台系统绑定组件
  * @param {Object} stage2d 2D组件
@@ -214,13 +172,7 @@ Stage.prototype.getMousePosition = function() {
  * @param {Object} cameraController 3D组件用的摄像机控制器
  */
 Stage.prototype.bind = function(stage2d, stage3d, cameraController) {
-    this.$2d = stage2d;
-    this.$3d = stage3d;
-    this.current = this.$3d;
-    this.cameraController = cameraController;
-    this.scene = stage3d.getScene();
     cameraController.addStage(stage3d);
-    stage3d.addPlugin("cameraController", cameraController);
     stage2d.bindStage(stage3d);
 }
 

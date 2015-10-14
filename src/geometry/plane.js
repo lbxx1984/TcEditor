@@ -1,4 +1,4 @@
-define(['three'], function (THREE) {
+define(function (require) {
     return {
         tempMesh: function (param) {
             var step = 5;

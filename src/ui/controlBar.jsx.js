@@ -1,4 +1,4 @@
-define(['React'], function (React) {
+define(function (require) {
     return React.createClass({
         getInitialState: function () {
             return this.props.defaultState;

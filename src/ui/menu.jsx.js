@@ -1,4 +1,4 @@
-define(['React'], function (React) {
+define(function (require) {
     return React.createClass({
         render: function () {
 

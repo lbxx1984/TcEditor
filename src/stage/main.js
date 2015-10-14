@@ -7,6 +7,33 @@ define(['./Stage3D', './CameraController'], function (Stage3D, CameraController)
 
 
     /**
+     * 获取鼠标下未锁定的物体
+     *
+     * @param {number} e 鼠标事件对象
+     * @return {Object} 3D物体或2D物体，根据舞台系统当前显示状态确定
+     */
+    Stage.prototype.getMeshByMouse = function(e) {
+        var geo = null;
+        geo = this[this.type].getMeshByMouse(e);
+        if (geo == null || geo.locked){
+            return null;
+        }
+        return geo;
+    };
+
+
+    /**
+     * 添加物体
+     *
+     * @param {Object} mesh 3D物体对象
+     */
+    Stage.prototype.add = function (mesh) {
+        this.$3d.children[mesh.uuid] = mesh;
+        this.$3d.scene.add(mesh);
+    };
+
+
+    /**
      * 移动舞台中的摄像机
      *
      * @param {number} dx 横向增量（DOM坐标）

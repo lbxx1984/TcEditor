@@ -1,4 +1,4 @@
-define(['React', './mousePositionBar.jsx'], function (React, MousePositionBar) {
+define(['./mousePositionBar.jsx'], function (MousePositionBar) {
     return React.createClass({
         getInitialState: function () {
             return {

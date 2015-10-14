@@ -1,17 +1,14 @@
 /**
  * @file 拖拽创建物体引擎
  */
-define(['../geometry/main', 'three'], function (geometry, THREE) {
+define(['../geometry/main'], function (geometry) {
 
 
-    var exports = {};
     var _down = false;
     var _mouse3D = null;
     var _tempMesh = null;
-    var _material = new THREE.MeshBasicMaterial({
-        map: THREE.ImageUtils.loadTexture('resources/textures/ash_uvgrid01.jpg'),
-        side: THREE.DoubleSide
-    });
+
+    var exports = {};
 
 
     /**自动注册接口**/
@@ -23,7 +20,8 @@ define(['../geometry/main', 'three'], function (geometry, THREE) {
             loaded: loaded,
             mousedown: mousedown,
             mousemove: mousemove(key),
-            mouseup: mouseup(key)
+            mouseup: mouseup(key),
+            mouseleave: mouseleave
         };
     }
 
@@ -37,6 +35,11 @@ define(['../geometry/main', 'three'], function (geometry, THREE) {
     function mousedown(e) {
         _down = true;
         _mouse3D = this.stage.getMouse3D(e.layerX, e.layerY);
+    }
+
+    function mouseleave(e) {
+        _down = false;
+        this.stage.$3d.scene.remove(_tempMesh);
     }
 
     function mousemove(type) {
@@ -60,9 +63,12 @@ define(['../geometry/main', 'three'], function (geometry, THREE) {
     function mouseup(type) {
         return function (e) {
             _down = false;
+            if (_tempMesh == null) {
+                return;
+            }
             var mesh = _tempMesh.clone();
-            this.stage.$3d.scene.add(mesh);
             this.stage.$3d.scene.remove(_tempMesh);
+            this.stage.add(mesh);
         };
     }
 
@@ -77,7 +83,10 @@ define(['../geometry/main', 'three'], function (geometry, THREE) {
      */
     function produceTempMesh(param) {
         var mesh = geometry[param.type].tempMesh({
-            material: _material,
+            material: new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                side: THREE.DoubleSide
+            }),
             mouseDown: param.mouseDown,
             mouseUp: param.mouseUp
         });

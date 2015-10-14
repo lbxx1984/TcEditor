@@ -3,7 +3,7 @@
  * @author Haitao Li
  * @mail 279641976@qq.com
  */
-define(['three'], function (THREE) {
+define(function (require) {
 
     // 配置参数
     var info = {
@@ -237,8 +237,8 @@ define(['three'], function (THREE) {
 
         /**交互事件**/
         function mouseMoveHandler(event) {
-            var x = event.layerX;
-            var y = event.layerY;
+            var x = event.layerX-window.scrollX;
+            var y = event.layerY-window.scrollY;
             var vector = new THREE.Vector3((x / me.param.width) * 2 - 1, -(y / me.param.height) * 2 + 1, 1);
             var camera = me.camera;
             var raycaster = me.raycaster;
