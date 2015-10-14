@@ -34,14 +34,10 @@ require([
         stageDom.addEventListener('mouseup', function (e) {routing.mouseup(e);});
         stageDom.addEventListener('mouseleave', function (e) {routing.mouseleave(e);});
         stageDom.addEventListener('mousemove', function (e) {routing.mousemove(e);});
-        stageDom.oncontextmenu = function (event) {
-            routing.mouseRightClick(event);
-            return false;
-        };
         stageDom.onmousewheel = function(event) {
             routing.stage.zoom(event);
             event.stopPropagation();
             return false;
-        };
+        }
     }
 });
