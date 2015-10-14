@@ -13,9 +13,6 @@ define([
     var props = {
         commandRouting: function (e) {
             routing.main(e);
-        },
-        stageMouseDown: function (e) {
-            console.log(e);
         }
     };
     routing.ui = React.render(

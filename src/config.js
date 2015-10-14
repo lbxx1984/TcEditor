@@ -3,7 +3,7 @@ define(function (Require) {
         defaultCommandState: {
             cameraview: '3d',
             systemtool: 'cameramove',
-            trsnsformer: 'move',
+            transformer: 'move',
             enablebar: ''
         },
         menu: [
@@ -11,8 +11,6 @@ define(function (Require) {
                 label: 'Geometry',
                 cmd: 'show-geometry',
                 children: [
-                    {label: 'Plane', cmd: 'create-plane'},
-                    {label: 'Plane', cmd: 'create-plane'},
                     {label: 'Plane', cmd: 'create-plane'}
                 ]
             },

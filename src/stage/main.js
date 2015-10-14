@@ -5,6 +5,7 @@
  */
 define(['./Stage3D', './CameraController'], function (Stage3D, CameraController) {
 
+
     /**
      * 移动舞台中的摄像机
      *
@@ -12,7 +13,7 @@ define(['./Stage3D', './CameraController'], function (Stage3D, CameraController)
      * @param {number} dy 纵向增量（DOM坐标）
      */
     Stage.prototype.cameraMove = function(dx, dy) {
-        if (this.type === "$3d" && !this.cameraController.param.cameraRotated) {
+        if (this.type === '$3d') {
             this.$3d.cameraLookAt(dx, dy);
         }
         else {

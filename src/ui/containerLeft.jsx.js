@@ -26,7 +26,7 @@ define([
                 <div className="container-left">
                     <Stage ref="stage"/>
                     <Menu {...menuProps}/>
-                    <ControlBar {...controlBarProps}/>
+                    <ControlBar ref="controlbar" {...controlBarProps}/>
                 </div>
             );
         }

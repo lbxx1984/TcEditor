@@ -1,14 +1,17 @@
-define(['React'], function (React) {
+define(['React', './mousePositionBar.jsx'], function (React, MousePositionBar) {
     return React.createClass({
+        getInitialState: function () {
+            return {
+                mouse3d: {x: 0, y: 0, z: 0}
+            };
+        },
         render: function () {
-            var m3 = this.props.mouse3d;
+            var mousePositionBarProps = {
+                mouse3d: this.state.mouse3d
+            };
             return (
                 <div className="container-right">
-                    <div className="mouse-position-bar">
-                        x:<div className="position-item">{m3.x}</div>
-                        y:<div className="position-item">{m3.y}</div>
-                        z:<div className="position-item">{m3.z}</div>
-                    </div>
+                    <MousePositionBar {...mousePositionBarProps}/>
                 </div>
             );
         }
