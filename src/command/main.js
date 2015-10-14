@@ -86,6 +86,9 @@ define(['./tool', './mouse', './create'], function (tool, mouse, create) {
     Routing.prototype.mouseleave = function (e) {
         this.callEngine('mouseleave', e);
     };
+    Routing.prototype.mouseRightClick = function (e) {
+        this.callEngine('mouseRightClick', e);
+    };
     Routing.prototype.mousemove = function (e) {
         if (
             this.stage == null
