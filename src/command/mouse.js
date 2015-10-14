@@ -32,16 +32,15 @@ define(function (Require) {
             mouseleave: mouseup
         },
         pickgeo: {
+            mouseRightClick: function (e) {
+                console.log(this.transformer.attached);
+            },
             mousedown: function (e) {
                 var mesh = this.stage.getMeshByMouse(e);
                 if (mesh == null) {
                     return;
                 }
                 this.transformer.attach(mesh);
-                // if (mesh) {
-                //     mesh.visible = false;
-                // }
-                // console.log(mesh);
             }
         }
     };
