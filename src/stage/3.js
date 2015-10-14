@@ -1,21 +1,4 @@
 
-    /**
-     * 向外部派发onCameraChange事件，并输出摄像机配置信息
-     */
-    function outputCamera() {
-        if (!_event["onCameraChange"]) return;
-        _event["onCameraChange"](
-            _camera.position,
-            _cameraLookAt,
-            {
-                r: 5000 - _cameraRadius,
-                b: 5000,
-                a: 50
-            }
-        );
-    }
-
-
     /***外部接口***/
     /**
      * 设置编辑器背景色

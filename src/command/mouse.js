@@ -1,6 +1,3 @@
-/**
- * click命令解析单元
- */
 define(function (Require) {
 
     var _down = false;
@@ -31,9 +28,20 @@ define(function (Require) {
             mouseup: mouseup,
             mouseleave: mouseup
         },
+        pickjoint: {
+            mousedown: function (e) {
+                var mesh = this.stage.getMeshByMouse(e);
+                if (mesh == null) {
+                    return;
+                }
+                this.morpher.attach(mesh);
+            }
+        },
         pickgeo: {
             mouseRightClick: function (e) {
-                console.log(this.transformer.attached);
+                if (this.transformer.attached) {
+                    this.transformer.detach();
+                }
             },
             mousedown: function (e) {
                 var mesh = this.stage.getMeshByMouse(e);
@@ -41,6 +49,9 @@ define(function (Require) {
                     return;
                 }
                 this.transformer.attach(mesh);
+            },
+            unload: function () {
+                this.transformer.detach();
             }
         }
     };

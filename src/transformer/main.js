@@ -17,5 +17,16 @@ define(['require', 'three/TransformControls'], function (require) {
         this.attached = true;
     };
 
+    Transformer.prototype.detach = function () {
+        if (!this.attached) {
+            return;
+        }
+        if (this.type === '$3d') {
+            this.stage.$3d.scene.remove(this.$3d);
+            this.stage.$3d.updateWithCamera.transformer = null;
+        }
+        this.attached = false;
+    };
+
     return Transformer;
 });

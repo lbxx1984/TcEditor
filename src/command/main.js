@@ -40,6 +40,8 @@ define(['./tool', './mouse', './create'], function (tool, mouse, create) {
                 engine[cmds[1]].apply(this, arguments);
                 return;
             }
+            // 卸载当前引擎
+            this.callEngine('unload', null);
             // 切换处理引擎
             this.currentEngine = engine;
             // 切换引擎处理单元

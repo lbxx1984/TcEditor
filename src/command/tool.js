@@ -1,6 +1,3 @@
-/**
- * click命令解析单元
- */
 define(function (Require) {
     return {
         camerazoomin: function () {

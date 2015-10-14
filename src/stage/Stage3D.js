@@ -241,7 +241,11 @@ define(function (require) {
         // 渲染插件
         var update = this.updateWithCamera;
         for (var key in update) {
-            if (update.hasOwnProperty(key) && typeof update[key].update === 'function') {
+            if (
+                update.hasOwnProperty(key)
+                && update[key] != null
+                && typeof update[key].update === 'function'
+            ) {
                 update[key].update();
             }
         }
