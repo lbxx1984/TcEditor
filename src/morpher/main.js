@@ -5,16 +5,21 @@ define(['./Morpher3D'], function (Morpher3D) {
         this.type = '$3d';
         this.$3d = new Morpher3D({
             stage: stage.$3d,
-            helperColor: 0xff0000,
+            helperColor: 0x00ff00,
             helperHoverColor: 0xffff00
         });
         this.stage = stage;
-        this.attached = false;
     }
 
-    Morpher.prototype.attach = function (mesh) {
-        this[this.type].attach(mesh);
-        this.attached = true;
+    Morpher.prototype.callFunction = function (func, param) {
+        if (
+            this[this.type]
+            && typeof this[this.type][func] === 'function'
+        ) {
+            return this[this.type][func](param);
+        }
+        console.warn(func + ' is not a function!');
+        return null;
     };
 
     Morpher.prototype.getState = function () {

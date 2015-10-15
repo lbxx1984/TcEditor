@@ -1,4 +1,4 @@
-define(['./tool', './mouse', './create'], function (tool, mouse, create) {
+define(['./tool', './mouse', './create', './trans'], function (tool, mouse, create, trans) {
 
 
     /**
@@ -13,7 +13,8 @@ define(['./tool', './mouse', './create'], function (tool, mouse, create) {
         this.engines = {
             tool: tool,
             mouse: mouse,
-            create: create
+            create: create,
+            trans: trans
         };
         // 当前处于激活状态的引擎，一般用来处理鼠标事件
         this.currentEngine = null;
@@ -83,6 +84,9 @@ define(['./tool', './mouse', './create'], function (tool, mouse, create) {
         this.callEngine('mouseup', e);
     };
     Routing.prototype.mousedown = function (e) {
+        if (this.stage.cameraController.mousedown) {
+            return;
+        }
         this.callEngine('mousedown', e);
     };
     Routing.prototype.mouseleave = function (e) {

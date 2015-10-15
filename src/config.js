@@ -4,6 +4,7 @@ define(function (Require) {
             cameraview: '3d',
             systemtool: 'cameramove',
             transformer: 'move',
+            transformerspace: 'world',
             enablebar: ''
         },
         menu: [
@@ -105,15 +106,15 @@ define(function (Require) {
                 children: [
                     {
                         label: '', class: ' icon icon-move', cmd: 'trans-move',
-                        type: 'radio', group: 'trsnsformer', value: 'move', title: 'move'
+                        type: 'radio', group: 'transformer', value: 'move', title: 'move'
                     },
                     {
                         label: '', class: ' icon icon-llfilterrotate', cmd: 'trans-rotate',
-                        type: 'radio', group: 'trsnsformer', value: 'rotate', title: 'rotate'
+                        type: 'radio', group: 'transformer', value: 'rotate', title: 'rotate'
                     },
                     {
                         label: '', class: ' icon icon-icicfangdatubiao', cmd: 'trans-scale',
-                        type: 'radio', group: 'trsnsformer', value: 'scale', title: 'scale'
+                        type: 'radio', group: 'transformer', value: 'scale', title: 'scale'
                     },
                     {
                         label: '', class: ' icon icon-jiafangda', cmd: 'trans-enlarge',
@@ -124,9 +125,10 @@ define(function (Require) {
                         type: 'button', titel: 'narrow transformer'
                     },
                     {
-                        label: '', class: ' icon', cmd: 'trans-coordinatetoggle',
-                        type: 'checkbox', title: 'toggle world/local coordinate', value: 0,
-                        styles: [' icon-sanweimoxing2', ' icon-sanweimoxing']  
+                        label: '', class: ' icon icon-world', cmd: 'trans-coordinatetoggle',
+                        type: 'radio', group: 'transformerspace', value: 'world',
+                        title: 'toggle world/local coordinate',
+                        disableKey: 'transformer', disableWhen: 'scale'
                     }
                 ]
             }

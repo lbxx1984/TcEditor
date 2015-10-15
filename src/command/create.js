@@ -7,9 +7,13 @@ define(['../geometry/main'], function (geometry) {
     var _down = false;
     var _mouse3D = null;
     var _tempMesh = null;
-
+    var _material = new THREE.MeshBasicMaterial({
+        color: 0xe6e6e6,
+        // map: THREE.ImageUtils.loadTexture('resources/textures/ash_uvgrid01.jpg'),
+        side: THREE.DoubleSide
+    });
     var exports = {};
-
+    
 
     /**自动注册接口**/
     for (var key in geometry) {
@@ -83,10 +87,7 @@ define(['../geometry/main'], function (geometry) {
      */
     function produceTempMesh(param) {
         var mesh = geometry[param.type].tempMesh({
-            material: new THREE.MeshBasicMaterial({
-                color: 0xffffff,
-                side: THREE.DoubleSide
-            }),
+            material: _material,
             mouseDown: param.mouseDown,
             mouseUp: param.mouseUp
         });

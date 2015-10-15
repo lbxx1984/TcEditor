@@ -10,6 +10,9 @@ define(function (require) {
             function buttonClickHandler(event) {
                 var dom = event.target;
                 var dataset = dom.dataset;
+                if (dom.className.indexOf('disable') > -1) {
+                    return;
+                }
                 switch (dataset.uiType) {
                     case 'checkbox':
                         var value = ~~dataset.uiValue;
@@ -53,6 +56,9 @@ define(function (require) {
                     prop['data-ui-group'] = item.group;
                     prop['data-ui-value'] = item.value;
                     prop.className += item.value === me.state[item.group] ? ' active' : '';
+                }
+                if (item.disableKey && me.state[item.disableKey] === item.disableWhen) {
+                    prop.className += ' disable';
                 }
                 return <div {...prop}>{item.label}</div>;
             }
