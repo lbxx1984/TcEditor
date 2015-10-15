@@ -13,27 +13,6 @@
  */
 function Morpher3D(camera, scene) {
 
-
-    /**
-     * 根据摄像机位置，重新设置关节徽标的大小
-     */
-    function resizeJoint() {
-        var newPos = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
-        var jointPos = null;
-        if (_oldpos.equals(newPos)) return;
-        _oldpos = newPos;
-        for (var n = 0; n < _joints.length; n++) {
-            if (_joints[n].added == false) break;
-            jointPos = new THREE.Vector3(
-                        _joints[n].position.x,
-                        _joints[n].position.y,
-                        _joints[n].position.z
-                    );
-            var s = _oldpos.distanceTo(jointPos) / _baseRule;
-            _joints[n].scale.x = _joints[n].scale.y = _joints[n].scale.z = s; 
-        }
-    }
-
     /**
      * 根据关节徽标的新位置，同步物体内部关节的信息
      * @param {Object} joint 关节徽标

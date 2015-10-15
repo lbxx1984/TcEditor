@@ -11,6 +11,15 @@ define(['./mousePositionBar.jsx'], function (MousePositionBar) {
             };
             return (
                 <div className="container-right">
+                    <br/><br/><br/><br/><br/><br/><br/>asd
+                    <br/><br/><br/><br/><br/><br/><br/>asd
+                    <br/><br/><br/><br/><br/><br/><br/>asd
+                    <br/><br/><br/><br/><br/><br/><br/>asd
+                    <br/><br/><br/><br/><br/><br/><br/>asd
+                    <br/><br/><br/><br/><br/><br/><br/>asd
+                    <br/><br/><br/><br/><br/><br/><br/>asd
+                    <br/><br/><br/><br/><br/><br/><br/>asd
+                    <br/><br/><br/><br/><br/><br/><br/>asd
                     <MousePositionBar {...mousePositionBarProps}/>
                 </div>
             );

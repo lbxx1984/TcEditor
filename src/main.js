@@ -17,6 +17,17 @@ require([
         }
     };
 
+    function cloneMouseEvent(e) {
+        var parent = e.target.parentNode;
+        return {
+            layerX: e.layerX + parent.offsetLeft,
+            layerY: e.layerY + parent.offsetTop,
+            clientX: e.clientX,
+            clientY: e.clientY,
+            target: e.target 
+        };
+    }
+
     function uiLoaded() {
         var stageRefs = this.refs.containerleft.refs.stage.refs;
         var stageDom = this.refs.containerleft.refs.stage.getDOMNode();
@@ -31,10 +42,18 @@ require([
         // 为控制路由添加关节变换器
         routing.morpher = new Morpher(routing.stage);
         // 为舞台添加事件
-        stageDom.addEventListener('mousedown', function (e) {routing.mousedown(e);});
-        stageDom.addEventListener('mouseup', function (e) {routing.mouseup(e);});
-        stageDom.addEventListener('mouseleave', function (e) {routing.mouseleave(e);});
-        stageDom.addEventListener('mousemove', function (e) {routing.mousemove(e);});
+        stageDom.addEventListener('mousedown', function (e) {
+            routing.mousedown(cloneMouseEvent(e));
+        });
+        stageDom.addEventListener('mouseup', function (e) {
+            routing.mouseup(cloneMouseEvent(e));
+        });
+        stageDom.addEventListener('mouseleave', function (e) {
+            routing.mouseleave(cloneMouseEvent(e));
+        });
+        stageDom.addEventListener('mousemove', function (e) {
+            routing.mousemove(cloneMouseEvent(e));
+        });
         stageDom.oncontextmenu = function (event) {
             routing.mouseRightClick(event);
             return false;

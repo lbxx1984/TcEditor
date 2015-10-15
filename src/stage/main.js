@@ -10,11 +10,12 @@ define(['./Stage3D', './CameraController'], function (Stage3D, CameraController)
      * 获取鼠标下未锁定的物体
      *
      * @param {number} e 鼠标事件对象
+     * @param {?Array.<Object3D>} objects 如果制定则在此数组中查找
      * @return {Object} 3D物体或2D物体，根据舞台系统当前显示状态确定
      */
-    Stage.prototype.getMeshByMouse = function(e) {
+    Stage.prototype.getMeshByMouse = function(e, objects) {
         var geo = null;
-        geo = this[this.type].getMeshByMouse(e);
+        geo = this[this.type].getMeshByMouse(e, objects);
         if (geo == null || geo.locked){
             return null;
         }

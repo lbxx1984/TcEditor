@@ -30,11 +30,22 @@ define(function (Require) {
         },
         pickjoint: {
             mousedown: function (e) {
-                var mesh = this.stage.getMeshByMouse(e);
-                if (mesh == null) {
-                    return;
+                var mesh = null;
+                switch (this.morpher.getState()) {
+                    case 0:
+                        mesh = this.stage.getMeshByMouse(e);
+                        if (mesh != null) {
+                            this.morpher.attach(mesh);
+                        }
+                        break;
+                    case 1:
+                        mesh = this.stage.getMeshByMouse(e, this.morpher.getJoints());
+                        if (mesh) {
+                            console.log(mesh.index);
+                        }
+                    default: break;
+
                 }
-                this.morpher.attach(mesh);
             }
         },
         pickgeo: {

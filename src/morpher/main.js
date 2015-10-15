@@ -17,5 +17,20 @@ define(['./Morpher3D'], function (Morpher3D) {
         this.attached = true;
     };
 
+    Morpher.prototype.getState = function () {
+        return this[this.type].state;
+    };
+
+    Morpher.prototype.getJoints = function () {
+        var joints = this[this.type].joints;
+        var result = [];
+        for (var n = 0; n < joints.length; n++) {
+            if (joints[n].added) {
+                result.push(joints[n]);
+            }
+        }
+        return result;
+    };
+
     return Morpher;
 });

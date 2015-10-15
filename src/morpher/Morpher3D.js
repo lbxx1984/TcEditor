@@ -8,13 +8,32 @@ define(['math'], function (math) {
         this.stage = param.stage;
         this.helperColor = param.helperColor || 0xd97915;
         this.helperHoverColor = param.helperHoverColor || 0xff0000;
-        this.baseRule = 1500;
+        this.baseRule = 1300;
         this.jointer = new THREE.Mesh(
-            new THREE.SphereGeometry(10, 4, 4),
+            new THREE.BoxGeometry(10, 10, 10, 1, 1, 1),
             new THREE.MeshBasicMaterial({color: this.helperColor, side: THREE.DoubleSide})
         );
         this.joints = [];
+        this.geo = null;
+        this.state = 0; // 状态机，0未attach；1已经attach未选中关节；2已选中关节
     }
+
+
+    /**
+     * 刷新，修正控制点大小
+     */
+    Morpher3D.prototype.update = function () {
+        var camerapos = this.stage.camera.position;
+        var joints = this.joints;
+        for (var n = 0; n < joints.length; n++) {
+            var joint = joints[n];
+            if (!joint.added) {
+                break;
+            }
+            var s = camerapos.distanceTo(joint.position) / this.baseRule;
+            joint.scale.x = joint.scale.y = joint.scale.z = s; 
+        }
+    };
 
 
     /**
@@ -50,8 +69,11 @@ define(['math'], function (math) {
             np.added = true;
             this.stage.scene.add(np);
         }
-        // _geo = geo;
+        this.stage.updateWithCamera.morpher = this;
+        this.geo = mesh;
+        this.state = 1;
     };
+
 
     return Morpher3D;
 });

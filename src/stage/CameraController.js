@@ -171,7 +171,7 @@ define(function (require) {
             cameraAngleA: param.cameraAngleA || 40,
             cameraAngleB: param.cameraAngleB || 45,
             cameraMoveSpeed: 1.5,
-            cameraRotated: false,
+            cameraRotated: false, // 由本控制器触发的摄像机转动正在进行
             cameraLookAt: {x: 0, y: 0, z: 0},
             // 舞台尺寸
             width: param.width || 120,
@@ -180,7 +180,8 @@ define(function (require) {
             color: param.color || 0xffffff,
             hoverColor: param.hoverColor || 0xD97915,
             // 临时鼠标
-            mouse: [0, 0]
+            mouse: [0, 0],
+            mousedown: false
         };
 
         /**舞台参数**/
@@ -264,17 +265,19 @@ define(function (require) {
         }
 
         function mouseDownHandler(event) {
+            me.mousedown = true;
             me.param.mouse[0] = event.clientX;
-            me.param.mouse[1] = event.clientX;
+            me.param.mouse[1] = event.clientY;
             window.addEventListener('mousemove', freeRotateCamera);
             window.addEventListener('mouseup', unbindMouseMove);
         }
 
         function mouseUpHandler(event) {
-            if (me.param.cameraRotated) {
+            if (me.param.cameraRotated || !me.mousedown) {
                 me.param.cameraRotated = false;
                 return;
             }
+            me.mousedown = false;
             if (me.param.intersected == null) {
                 return;
             }
@@ -290,7 +293,9 @@ define(function (require) {
         function freeRotateCamera(e) {
             var dx = e.clientY - me.param.mouse[1];
             var dy = e.clientX - me.param.mouse[0];
-            if (dx === 0 && dy === 0) return;
+            if (dx === 0 && dy === 0) {
+                return;
+            }
             toA(dx);
             toB(dy);
             me.param.mouse[0] = e.clientX;
@@ -316,6 +321,7 @@ define(function (require) {
         }
 
         function unbindMouseMove() {
+            me.mousedown = false;
             me.param.cameraRotated = false;
             window.removeEventListener('mousemove', freeRotateCamera);
             window.removeEventListener('mouseup', unbindMouseMove);
