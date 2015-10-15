@@ -96,6 +96,35 @@ define(['./Stage3D', './CameraController'], function (Stage3D, CameraController)
 
 
     /**
+     * 切换显示类型
+     */
+    Stage.prototype.changeView = function (value) {
+        var types = {
+            '3d': '$3d',
+            xoz: '$2d',
+            yoz: '$2d',
+            xoy: '$2d'
+        };
+        if (!types.hasOwnProperty(value) || this.type === types[value]) {
+            return;
+        }
+        this.type = types[value];
+        if (this.type === '$3d') {
+            this.container1.style.display = 'block';
+            this.container3.style.display = 'block';
+            this.container2.style.display = 'none';
+            this.$3d.display = true;
+        }
+        else {
+            this.container1.style.display = 'none';
+            this.container3.style.display = 'none';
+            this.container2.style.display = 'block';
+            this.$3d.display = false;
+        }
+    };
+
+
+    /**
      * @constructor
      *
      * @param {Object} param 初始化参数
@@ -105,6 +134,7 @@ define(['./Stage3D', './CameraController'], function (Stage3D, CameraController)
      */
     function Stage(param) {
         this.type = '$3d';
+        this.container1 = param.container1;
         this.container2 = param.container2;
         this.container3 = param.container3;
         // 3D舞台和3D摄像机控制器

@@ -114,28 +114,6 @@ Stage.prototype.setGridColor = function(e) {
 }
 
 /**
- * 切换舞台显示状态
- * @param {string} view 舞台视角：3d、xoz、xoy、yoz
- */
-Stage.prototype.changeTo = function(view) {
-    if (view == "3d") {
-        this.current = this.$3d;
-        this.$2d.addClass("workspace_hideStage");
-        this.$3d.display(true);
-        this.$3d.removeClass("workspace_hideStage");
-        this.cameraController.removeClass("workspace_hideStage");
-    } else {
-        this.current = this.$2d;
-        this.$2d.removeClass("workspace_hideStage");
-        this.$2d.changeView(view);
-        this.$3d.display(false);
-        this.$3d.addClass("workspace_hideStage");
-        this.cameraController.addClass("workspace_hideStage");
-    }
-    this.view = view;
-}
-
-/**
  * 获取鼠标下物体的关节徽标
  * @param {Object} e 鼠标事件对象
  * @param {Array} joints 3D空间中的关节徽标数组

@@ -7,7 +7,7 @@ define(['../geometry/main'], function (geometry) {
     var _down = false;
     var _mouse3D = null;
     var _tempMesh = null;
-    var _material = new THREE.MeshBasicMaterial({
+    var _material = new THREE.MeshLambertMaterial({
         color: 0xe6e6e6,
         // map: THREE.ImageUtils.loadTexture('resources/textures/ash_uvgrid01.jpg'),
         side: THREE.DoubleSide

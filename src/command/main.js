@@ -1,4 +1,4 @@
-define(['./tool', './mouse', './create', './trans'], function (tool, mouse, create, trans) {
+define(['./tool', './mouse', './create', './trans', './view'], function (tool, mouse, create, trans, view) {
 
 
     /**
@@ -14,7 +14,8 @@ define(['./tool', './mouse', './create', './trans'], function (tool, mouse, crea
             tool: tool,
             mouse: mouse,
             create: create,
-            trans: trans
+            trans: trans,
+            view: view
         };
         // 当前处于激活状态的引擎，一般用来处理鼠标事件
         this.currentEngine = null;

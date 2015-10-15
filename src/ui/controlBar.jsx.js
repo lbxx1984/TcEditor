@@ -68,12 +68,21 @@ define(function (require) {
                 if (item.enable !== 'always' && me.state.enablebar.indexOf(item.enable + '|') < 0) {
                     itemClass += ' disable';
                 }
-                return (
-                    <div className={itemClass}>
-                        <div className="control-bar-label">{item.label}</div>
-                        {item.children.map(button)}
-                    </div>
-                );
+                if (item.enable === 'always') {
+                    return (
+                        <div className={itemClass}>
+                            <div className="control-bar-label">{item.label}</div>
+                            {item.children.map(button)}
+                        </div>
+                    );
+                }
+                else {
+                    return (
+                        <div className={itemClass}>
+                            {item.children.map(button)}
+                        </div>
+                    );
+                }
             }
 
             return (

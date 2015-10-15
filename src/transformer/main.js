@@ -3,7 +3,6 @@ define(['require', 'three/TransformControls'], function (require) {
     function Transformer(stage) {
         this.type = '$3d';
         this.$3d = new THREE.TransformControls(stage.$3d.camera, stage.$3d.renderer.domElement);
-        console.log(this.$3d)
         this.stage = stage;
         this.attached = false;
     }
