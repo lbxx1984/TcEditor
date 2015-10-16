@@ -1,10 +1,10 @@
 define(function (Require) {
     return {
         camerazoomin: function () {
-            this.stage.callFunction('zoomCamara', true);
+            this.stage.callFunction('zoomCamera', true);
         },
         camerazoomout: function () {
-            this.stage.callFunction('zoomCamara', false);
+            this.stage.callFunction('zoomCamera', false);
         },
         gridenlarge: function () {
             this.stage.callFunction('resizeGrid', true);

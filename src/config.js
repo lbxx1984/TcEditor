@@ -87,11 +87,13 @@ define(function (Require) {
                 children: [
                     {
                         label: '', class: ' icon icon-pingmufangda', cmd: 'tool-gridenlarge',
-                        type: 'button', title: 'enlarge grid'
+                        type: 'button', title: 'enlarge grid',
+                        disableKey: 'cameraview', disableWhen: 'xoy;xoz;yoz;'
                     },
                     {
                         label: '', class: ' icon icon-pingmusuoxiao', cmd: 'tool-gridnarrow',
-                        type: 'button', titel: 'narrow grid'
+                        type: 'button', titel: 'narrow grid',
+                        disableKey: 'cameraview', disableWhen: 'xoy;xoz;yoz;'
                     },
                     {
                         label: '', class: ' icon', cmd: 'tool-gridtoggle',
@@ -104,6 +106,10 @@ define(function (Require) {
                 label: 'TRANSFORMER',
                 enable: 'transformer',
                 children: [
+                    {
+                        label: '', class: ' icon icon-yidong', cmd: 'mouse-pickgeo',
+                        type: 'radio', group: 'systemtool', value: 'pickgeo', title: 'pick up geometry (S)'
+                    },
                     {
                         label: '', class: ' icon icon-move', cmd: 'trans-move',
                         type: 'radio', group: 'transformer', value: 'move', title: 'move'
@@ -128,7 +134,7 @@ define(function (Require) {
                         label: '', class: ' icon icon-world', cmd: 'trans-coordinatetoggle',
                         type: 'radio', group: 'transformerspace', value: 'world',
                         title: 'toggle world/local coordinate',
-                        disableKey: 'transformer', disableWhen: 'scale'
+                        disableKey: 'transformer', disableWhen: 'scale;'
                     }
                 ]
             }

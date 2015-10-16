@@ -79,7 +79,7 @@ define(function (require) {
      */ 
     Stage3D.prototype.mousewheel = function(event) {
         var param = this.param;
-        this.zoomCamara(- 0.2 * param.cameraRadius * event.wheelDelta * param.cameraMoveSpeed / param.width);
+        this.zoomCamera(- 0.2 * param.cameraRadius * event.wheelDelta * param.cameraMoveSpeed / param.width);
     };
 
 
@@ -152,7 +152,7 @@ define(function (require) {
      *
      * @param {boolean | number} dx true推近；false拉远；number具体值
      */
-    Stage3D.prototype.zoomCamara = function (dx) {
+    Stage3D.prototype.zoomCamera = function (dx) {
         var value = 0;
         if (dx === true) {
             value = -360;
@@ -191,7 +191,6 @@ define(function (require) {
             this.param.cameraRadius = p.r;
         }
         this.updateCameraPosition();
-        // outputCamera();
     };
 
 

@@ -3,7 +3,7 @@
  * @author Haitao Li
  * @mail 279641976@qq.com
  */
-define(['./Stage3D', './CameraController'], function (Stage3D, CameraController) {
+define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stage3D, CameraController) {
 
 
     /**
@@ -87,7 +87,7 @@ define(['./Stage3D', './CameraController'], function (Stage3D, CameraController)
      */
     Stage.prototype.callFunction = function (func, param) {
         if (func === 'toggleHelper') {
-            // this.$2d[func]();
+            this.$2d[func]();
             this.$3d[func]();
         } else {
             this[this.type][func](param);
@@ -105,7 +105,11 @@ define(['./Stage3D', './CameraController'], function (Stage3D, CameraController)
             yoz: '$2d',
             xoy: '$2d'
         };
-        if (!types.hasOwnProperty(value) || this.type === types[value]) {
+        if (
+            !types.hasOwnProperty(value)
+            || (this.type === types[value] && this.type === '$3d')
+            || (this.type === types[value] && this.type === '$2d' && value === this.$2d.param.eyes)
+        ) {
             return;
         }
         this.type = types[value];
@@ -120,6 +124,8 @@ define(['./Stage3D', './CameraController'], function (Stage3D, CameraController)
             this.container3.style.display = 'none';
             this.container2.style.display = 'block';
             this.$3d.display = false;
+            this.$2d.param.eyes = value;
+            this.$2d.render();
         }
     };
 
@@ -137,14 +143,27 @@ define(['./Stage3D', './CameraController'], function (Stage3D, CameraController)
         this.container1 = param.container1;
         this.container2 = param.container2;
         this.container3 = param.container3;
-        // 3D舞台和3D摄像机控制器
+        // 3D舞台
         this.$3d = new Stage3D({
             showGrid: true,
-            clearColor: 0x2A333A,
+            clearColor: 0x464646,
+            gridColor: 0x5D5D5D,
             container: param.container3,
             width: param.container3.clientWidth,
             height: param.container3.clientHeight
         });
+        // 2D舞台
+        this.$2d = new Stage2D({
+            stage3d: this.$3d,
+            showGrid: true,
+            clearColor: '#464646',
+            gridColor: '#5D5D5D',
+            gridStep: 20,
+            container: param.container2,
+            width: param.container3.clientWidth,
+            height: param.container3.clientHeight
+        });
+        // 3D摄像机控制器
         this.cameraController = new CameraController({
             textureUrl: 'resources/textures/',
             container: param.container1,

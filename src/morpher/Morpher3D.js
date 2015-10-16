@@ -136,6 +136,7 @@ define(['math', 'three/TransformControls'], function (math) {
         }
         this.clearStage();
         this.state = 0;
+        this.stage.updateWithCamera.morpher = null;
     };
 
 
@@ -147,7 +148,7 @@ define(['math', 'three/TransformControls'], function (math) {
         this.jointCtrler.attach(mesh);
         this.stage.scene.add(this.jointCtrler);
         this.jointCtrler.update();
-        this.stage.updateWithCamera.transformer = this.jointCtrler;
+        this.stage.updateWithCamera.jointMover = this.jointCtrler;
         this.joint = mesh;
     };
 
@@ -162,7 +163,7 @@ define(['math', 'three/TransformControls'], function (math) {
         this.state = 1;
         this.jointCtrler.detach();
         this.stage.scene.remove(this.jointCtrler);
-        this.stage.updateWithCamera.transformer = null;
+        this.stage.updateWithCamera.jointMover = null;
         this.joint = null;
     }
 
