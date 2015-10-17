@@ -3,7 +3,7 @@
  * @author Haitao Li
  * @mail 279641976@qq.com
  */
-define(['raphael'], function (Raphael) {
+define(['raphael', './Mesh2D'], function (Raphael, Mesh2D) {
 
 
     /**
@@ -25,7 +25,10 @@ define(['raphael'], function (Raphael) {
      * @param {number} dy 纵向移动增量
      */
     Stage2D.prototype.cameraLookAt = function (dx, dy) {
-        console.log('cameraLookAt');
+        var param = this.param;
+        param.cameraLookAt.x += dx * param.scale;
+        param.cameraLookAt.y += -dy * param.scale;
+        this.render();
     };
 
 
@@ -113,19 +116,7 @@ define(['raphael'], function (Raphael) {
         param.scale = dx ?  Math.max(param.scale - 0.1, 0.5) : Math.min(param.scale + 0.1, 6);
         lookAt.x = lookAt.x * param.scale;
         lookAt.y = lookAt.y * param.scale;
-        this.renderGrid();
-    };
-
-
-    /**
-     * 设置摄像机位置
-     *
-     * @param {Object} p 摄像机位置配置
-     * @param {number} p.a 对应cameraAngleA
-     * @param {number} p.b 对应cameraAngleB
-     */
-    Stage2D.prototype.setCamera = function (p) {
-        console.log('setCamera');
+        this.render();
     };
 
 
@@ -136,7 +127,16 @@ define(['raphael'], function (Raphael) {
      * @param {number} height 高度
      */
     Stage2D.prototype.resize = function (width, height) {
-        console.log('resize');
+        this.param.width = width;
+        this.param.height = height;
+        this.gridCanvas.width = width;
+        this.gridCanvas.height = height;
+        this.meshCanvas.width = width;
+        this.meshCanvas.height = height;
+        this.helperContainer.style.width = width + 'px';
+        this.helperContainer.style.height = height + 'px';
+        this.helperRender.setSize(width, height);
+        this.render();
     };
 
 
@@ -179,10 +179,41 @@ define(['raphael'], function (Raphael) {
 
 
     /**
-     * 设置摄像机位置
+     * 绘制物体
      */
-    Stage2D.prototype.updateCameraPosition = function () {
-        console.log('updateCameraPosition');
+    Stage2D.prototype.renderMesh = function () {
+        
+        var me = this;
+        var ctx = this.meshRender;
+        var meshes = this.stage3d.children;
+        var param = this.param;
+
+        ctx.clearRect(0, 0, param.width, param.height);
+        this.children = {};
+        
+        for (var key in meshes) {
+            if (!meshes.hasOwnProperty(key)) continue;
+            var mesh = new Mesh2D({mesh: meshes[key], stage: this});
+            this.children[key] = mesh;
+            if (meshes[key].visible) {
+                draw(mesh);
+            }
+        }
+        function draw(mesh) {
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            ctx.fillStyle = param.meshColor; // meshColor, meshActiveColor, meshHoverColor
+            mesh.render(ctx);
+            ctx.fill();
+        }
+        // if (mx != null && my != null && _meshCTX.isPointInPath(mx, my)) {
+        //     _meshCTX.fillStyle = _meshHoverColor;
+        //     meshHover = key;
+        // } else if (key == _meshSelected) {
+        //     _meshCTX.fillStyle = _meshSelectColor;
+        // } else {
+        //     _meshCTX.fillStyle = _meshColor;
+        // }
     };
 
 
@@ -191,6 +222,7 @@ define(['raphael'], function (Raphael) {
      */
     Stage2D.prototype.render = function () {
         this.renderGrid();
+        this.renderMesh();
     };
 
 
@@ -244,7 +276,7 @@ define(['raphael'], function (Raphael) {
             // 摄像机参数
             eyes: 'xoz', // 观察视角: xoz、xoy、yoz
             // 缩放比例，每一个屏幕像素代表多少个空间像素，相当于比例尺1:scale
-            scale: parseInt(param.scale, 10) || 1, 
+            scale: parseInt(param.scale, 10) || 2, 
             cameraLookAt: {x: 0, y: 0}
         };
         //坐标格绘板
@@ -254,26 +286,13 @@ define(['raphael'], function (Raphael) {
         //辅助控制器绘板（SVG）
         this.helperContainer = document.createElement('div');
         //绘板接口
-        this.gridRender = null;
-        this.meshRender = null;
-        this.helperRender = null;
-        
-         /***初始化2D场景***/
-        this.gridCanvas.width = this.param.width;
-        this.gridCanvas.height = this.param.height;
-        this.meshCanvas.width = this.param.width;
-        this.meshCanvas.height = this.param.height;
-        this.helperContainer.style.width = this.param.width + 'px';
-        this.helperContainer.style.height = this.param.height + 'px';
-
         this.gridRender = this.gridCanvas.getContext('2d');
         this.meshRender = this.meshCanvas.getContext('2d');
         this.helperRender = Raphael(this.helperContainer, this.param.width, this.param.height);
         this.param.container.appendChild(this.gridCanvas);
         this.param.container.appendChild(this.meshCanvas);
         this.param.container.appendChild(this.helperContainer);
-        
-        this.render();
+        this.resize(this.param.width, this.param.height);
     }
 
 

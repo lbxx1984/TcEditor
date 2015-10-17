@@ -33,18 +33,25 @@ define(['../geometry/main'], function (geometry) {
     /**通用事件工厂**/
     function loaded(e) {
         var controlBar = this.ui.refs.containerleft.refs.controlbar;
-        controlBar.setState({systemtool: ''});
+        controlBar.setState({
+            systemtool: '',
+            cameraview: '3d'
+        });
+        this.stage.changeView('3d');
     }
+
 
     function mousedown(e) {
         _down = true;
         _mouse3D = this.stage.getMouse3D(e.layerX, e.layerY);
     }
 
+
     function mouseleave(e) {
         _down = false;
         this.stage.$3d.scene.remove(_tempMesh);
     }
+
 
     function mousemove(type) {
         return function (e) {
@@ -63,6 +70,7 @@ define(['../geometry/main'], function (geometry) {
             }
         };
     }
+
 
     function mouseup(type) {
         return function (e) {
@@ -87,7 +95,7 @@ define(['../geometry/main'], function (geometry) {
      */
     function produceTempMesh(param) {
         var mesh = geometry[param.type].tempMesh({
-            material: _material,
+            material: _material.clone(),
             mouseDown: param.mouseDown,
             mouseUp: param.mouseUp
         });

@@ -7,6 +7,40 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
 
 
     /**
+     * 修改物体颜色
+     *
+     * @param {string} uuid 物体标识
+     * @param {?string} type 要切换的颜色 hover,active,null(原色)
+     */
+    Stage.prototype.changeMeshColor = function (uuid, type) {
+        var mesh = this.$3d.children[uuid];
+        var editorKey = '__tceditor__';
+        if (!mesh) {
+            return;
+        }
+        if (!mesh.hasOwnProperty(editorKey)) {
+            mesh[editorKey] = {};
+        }
+        if (!mesh[editorKey].hasOwnProperty('color')) {
+            mesh[editorKey].color = mesh.material.color.getHex();
+        }
+        if (this.type === '$3d') {
+            if (!type) {
+                mesh.material.setValues({color: mesh[editorKey].color});
+                return;
+            }
+            var colors = {
+                hover: this.$3d.param.meshHoverColor,
+                active: this.$3d.param.meshActiveColor
+            };
+            if (colors.hasOwnProperty(type)) {
+                mesh.material.setValues({color: colors[type]});
+            }
+        }
+    };
+
+
+    /**
      * 获取鼠标下未锁定的物体
      *
      * @param {number} e 鼠标事件对象
@@ -41,12 +75,7 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
      * @param {number} dy 纵向增量（DOM坐标）
      */
     Stage.prototype.cameraMove = function(dx, dy) {
-        if (this.type === '$3d') {
-            this.$3d.cameraLookAt(dx, dy);
-        }
-        else {
-            // this.$2d.lookAt(dx, -dy, true);
-        }
+        this[this.type].cameraLookAt(dx, dy);
     };
 
 
@@ -72,14 +101,6 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
 
 
     /**
-     * resize事件
-     */
-    Stage.prototype.resize = function () {
-        this.$3d.resize(this.container3.clientWidth, this.container3.clientHeight);
-    };
-
-
-    /**
      * 调用子容器接口
      *
      * @param {string} func 方法名称
@@ -90,7 +111,7 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
             this.$2d[func]();
             this.$3d[func]();
         } else {
-            this[this.type][func](param);
+            return this[this.type][func](param);
         }
     };
 
@@ -131,6 +152,16 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
 
 
     /**
+     * resize事件
+     */
+    Stage.prototype.resize = function () {
+        var state = this.container3.parentNode;
+        this.$3d.resize(state.clientWidth, state.clientHeight);
+        this.$2d.resize(state.clientWidth, state.clientHeight);
+    };
+
+
+    /**
      * @constructor
      *
      * @param {Object} param 初始化参数
@@ -149,6 +180,7 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
             clearColor: 0x464646,
             gridColor: 0x5D5D5D,
             container: param.container3,
+            meshHoverColor: 0xd97915,
             width: param.container3.clientWidth,
             height: param.container3.clientHeight
         });
@@ -158,7 +190,8 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
             showGrid: true,
             clearColor: '#464646',
             gridColor: '#5D5D5D',
-            gridStep: 20,
+            gridStep: 50,
+            scale: 4,
             container: param.container2,
             width: param.container3.clientWidth,
             height: param.container3.clientHeight

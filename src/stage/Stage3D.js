@@ -265,6 +265,7 @@ define(function (require) {
      * @param {string} param.clearColor 编辑器背景颜色
      * @param {boolean} param.showGrid 是否显示网格
      * @param {string} param.gridColor 网格的颜色
+     * @param {number}
      */
     function Stage3D(param) {
 
@@ -289,7 +290,10 @@ define(function (require) {
             gridColor: (param.gridColor == null) ? 0xffffff : param.gridColor,
             gridSize: 2000,
             gridStep: 100,
-            gridLocked: true
+            gridLocked: true,
+            // 物体参数
+            meshActiveColor: (param.meshActiveColor == null) ? 0xD97915 : param.meshActiveColor,
+            meshHoverColor: (param.mesnHoverColor == null) ? 0xffff00 : param.meshHoverColor
         };
         // 辅助对象
         this.helper = {
