@@ -6,8 +6,8 @@ define(function (Require) {
         xoz: function () {
             this.stage.changeView('xoz');
         },
-        yoz: function () {
-            this.stage.changeView('yoz');
+        zoy: function () {
+            this.stage.changeView('zoy');
         },
         xoy: function () {
             this.stage.changeView('xoy');

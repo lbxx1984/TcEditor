@@ -30,7 +30,7 @@ define(function (require) {
             ((e.layerX - window.scrollX) / this.param.width) * 2 - 1,
             - ((e.layerY - window.scrollY) / this.param.height) * 2 + 1,
             0
-        );  
+        );
         var raycaster = this.helper.raycaster;
         raycaster.setFromCamera(mouse, this.camera);
         var intersects = raycaster.intersectObjects(array);

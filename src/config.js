@@ -44,8 +44,8 @@ define(function (Require) {
                         type: 'radio', group: 'cameraview', value: 'xoy'
                     },
                     {
-                        label: 'YOZ', class: '', cmd: 'view-yoz', title: 'Press (4)',
-                        type: 'radio', group: 'cameraview', value: 'yoz'
+                        label: 'ZOY', class: '', cmd: 'view-zoy', title: 'Press (4)',
+                        type: 'radio', group: 'cameraview', value: 'zoy'
                     }
                 ]
             },
@@ -88,12 +88,12 @@ define(function (Require) {
                     {
                         label: '', class: ' icon icon-pingmufangda', cmd: 'tool-gridenlarge',
                         type: 'button', title: 'enlarge grid',
-                        disableKey: 'cameraview', disableWhen: 'xoy;xoz;yoz;'
+                        disableKey: 'cameraview', disableWhen: 'xoy;xoz;zoy;'
                     },
                     {
                         label: '', class: ' icon icon-pingmusuoxiao', cmd: 'tool-gridnarrow',
                         type: 'button', titel: 'narrow grid',
-                        disableKey: 'cameraview', disableWhen: 'xoy;xoz;yoz;'
+                        disableKey: 'cameraview', disableWhen: 'xoy;xoz;zoy;'
                     },
                     {
                         label: '', class: ' icon', cmd: 'tool-gridtoggle',

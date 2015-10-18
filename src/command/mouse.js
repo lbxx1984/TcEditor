@@ -22,15 +22,21 @@ define(function (Require) {
      * 鼠标移入移出物体改变颜色
      */
     function hover(mesh, stage) {
-        if (_hover) {
-            stage.changeMeshColor(_hover.uuid);
-        }
+        clearHover();
+        if (!mesh) return;
         _hover = mesh;
-        if (_hover) {
-            stage.changeMeshColor(_hover.uuid, 'hover');
+        addHover();
+        function clearHover() {
+            if (!_hover) return;
+            var temp = _hover;
+            _hover = null;
+            if (_active && _active.uuid === temp.uuid) return;
+            stage.changeMeshColor(temp.uuid);
         }
-        if (_active) {
-            stage.changeMeshColor(_active.uuid, 'active');
+        function addHover() {
+            if (!_hover) return;
+            if (_active && _active.uuid === _hover.uuid) return;
+            stage.changeMeshColor(_hover.uuid, 'hover');
         }
     }
 
@@ -39,10 +45,12 @@ define(function (Require) {
      */
     function active(mesh, stage) {
         if (_active) {
+            stage.$2d.activeMesh = stage.activeMesh = '';
             stage.changeMeshColor(_active.uuid);
         }
         _active = mesh;
         if (_active) {
+            stage.$2d.activeMesh = stage.activeMesh = _active.uuid;
             stage.changeMeshColor(_active.uuid, 'active');
         }
     }
@@ -68,9 +76,10 @@ define(function (Require) {
                 controlBar.setState({enablebar: controlBar.state.enablebar + 'transformer|'});
             },
             mouseRightClick: function (e) {
+                active(null, this.stage);
+                hover(null, this.stage);
                 if (this.transformer.attached) {
                     this.transformer.detach();
-                    active(null, this.stage);
                 }
             },
             mousemove: function (e) {
@@ -87,6 +96,7 @@ define(function (Require) {
             unload: function () {
                 this.transformer.detach();
                 active(null, this.stage);
+                hover(null, this.stage);
                 var controlBar = this.ui.refs.containerleft.refs.controlbar;
                 controlBar.setState({enablebar: controlBar.state.enablebar.replace(/transformer\|/g, '')});
             }
@@ -95,10 +105,7 @@ define(function (Require) {
             mousemove: function (e) {
                 var mesh = null;
                 if (this.morpher.getState() === 0 && !_down) {
-                    mesh = this.stage.getMeshByMouse(e);
-                    if (mesh) {
-                        hover(mesh, this.stage);
-                    }
+                    hover(this.stage.getMeshByMouse(e), this.stage);
                     return;
                 }
                 if (this.morpher.getState() === 1 && !_down) {
@@ -106,6 +113,9 @@ define(function (Require) {
                     mesh = this.stage.getMeshByMouse(e, this.morpher.getJoints());
                     if (mesh) {
                         this.morpher.callFunction('hoverJoint', mesh);
+                    }
+                    else {
+                        hover(this.stage.getMeshByMouse(e), this.stage);
                     }
                     return;
                 }
@@ -138,20 +148,24 @@ define(function (Require) {
                 }
             },
             mouseRightClick: function (e) {
+                hover(null, this.stage);
+                active(null, this.stage);
                 if (this.morpher.getState() === 2) {
                     this.morpher.callFunction('detachJoint');
                     return;
                 }
                 if (this.morpher.getState() === 1) {
-                    active(null, this.stage);
                     this.morpher.callFunction('detach');
                     return;
                 }
             },
             unload: function () {
+                hover(null, this.stage);
                 active(null, this.stage);
                 this.morpher.callFunction('detach');
             }
         }
     };
+
+
 });

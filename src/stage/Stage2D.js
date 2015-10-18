@@ -10,11 +10,33 @@ define(['raphael', './Mesh2D'], function (Raphael, Mesh2D) {
      * 获取鼠标下的可见物体
      *
      * @param {Object} e 鼠标事件对象
-     * @param {?Array.<Object>} arr 物体数组，如果指定就从数组中查找，不指定从全局查找
-     * @return {Object} 3D物体对象 或null
      */
-    Stage2D.prototype.getMeshByMouse = function(e, arr) {
-        console.log('getMeshByMouse');
+    Stage2D.prototype.getMeshByMouse = function(e) {
+        var x = e.layerX - window.scrollX;
+        var y = e.layerY - window.scrollY;
+        var intersects = this.renderMesh(x, y);
+
+        if (intersects.length === 0) {
+            return null;
+        }
+        if (intersects.length === 1) {
+            return intersects[0];
+        }
+        // 排序
+        var me = this;
+        intersects.sort(function (a, b) {
+            var p1 = a.position;
+            var p2 = b.position;
+            var result = true;
+            switch (me.param.eyes) {
+                case 'xoy': result = p1.z < p2.z; break;
+                case 'xoz': result = p1.y > p2.y; break;
+                case 'zoy': result = p1.x > p2.x; break;
+                default: result = p1.x > p2.x; break;
+            }
+            return result;
+        });
+        return intersects[0];
     };
 
 
@@ -64,9 +86,9 @@ define(['raphael', './Mesh2D'], function (Raphael, Mesh2D) {
                 mouse3d.x = x;
                 mouse3d.y = y;
                 break;
-            case 'yoz':
-                mouse3d.y = x;
-                mouse3d.z = y;
+            case 'zoy':
+                mouse3d.z = x;
+                mouse3d.y = y;
                 break;
             default:
                 break;
@@ -180,40 +202,45 @@ define(['raphael', './Mesh2D'], function (Raphael, Mesh2D) {
 
     /**
      * 绘制物体
+     *
+     * @param {?number} x 鼠标位置
+     * @param {?number} y 鼠标位置
+     * @param {?string} hover 处于hover状态的物体uuid集合，以;分割
+     * @return {?Array.<Mesh2D>} 
      */
-    Stage2D.prototype.renderMesh = function () {
-        
-        var me = this;
+    Stage2D.prototype.renderMesh = function (x, y, hover) {
+        if (typeof hover !== 'string') hover = '';
         var ctx = this.meshRender;
-        var meshes = this.stage3d.children;
         var param = this.param;
-
         ctx.clearRect(0, 0, param.width, param.height);
+        var result = [];
+        for (var key in this.children) {
+            var mesh2d = this.children[key];
+            var mesh3d = mesh2d.mesh;
+            if (!mesh3d.visible) {
+                continue;
+            }
+            var uuid = mesh3d.uuid;
+            var color = param.meshColor;
+            if (uuid === hover) color = param.meshHoverColor;
+            if (uuid === this.activeMesh) color = param.meshActiveColor; 
+            if (mesh2d.render(ctx, color, x, y)) result.push(mesh3d);
+        }
+        return result;
+    };
+
+
+    /**
+     * 载入物体
+     */
+    Stage2D.prototype.loadMesh = function () {
         this.children = {};
-        
+        var meshes = this.stage3d.children;
         for (var key in meshes) {
             if (!meshes.hasOwnProperty(key)) continue;
             var mesh = new Mesh2D({mesh: meshes[key], stage: this});
             this.children[key] = mesh;
-            if (meshes[key].visible) {
-                draw(mesh);
-            }
         }
-        function draw(mesh) {
-            ctx.beginPath();
-            ctx.lineWidth = 1;
-            ctx.fillStyle = param.meshColor; // meshColor, meshActiveColor, meshHoverColor
-            mesh.render(ctx);
-            ctx.fill();
-        }
-        // if (mx != null && my != null && _meshCTX.isPointInPath(mx, my)) {
-        //     _meshCTX.fillStyle = _meshHoverColor;
-        //     meshHover = key;
-        // } else if (key == _meshSelected) {
-        //     _meshCTX.fillStyle = _meshSelectColor;
-        // } else {
-        //     _meshCTX.fillStyle = _meshColor;
-        // }
     };
 
 
@@ -221,6 +248,7 @@ define(['raphael', './Mesh2D'], function (Raphael, Mesh2D) {
      * 刷新
      */
     Stage2D.prototype.render = function () {
+        this.loadMesh();
         this.renderGrid();
         this.renderMesh();
     };
@@ -245,7 +273,6 @@ define(['raphael', './Mesh2D'], function (Raphael, Mesh2D) {
      * @param {string} param.scale 摄像机距离
      */
     function Stage2D(param) {
-        /**初始化参数**/
         // stage3d
         this.stage3d = param.stage3d;
         // 物体hash，存放2D物体
@@ -267,31 +294,32 @@ define(['raphael', './Mesh2D'], function (Raphael, Mesh2D) {
             colors: {
                 xoz: ['#FF0000', '#4285F4'],
                 xoy: ['#FF0000', '#3E9B1C'],
-                yoz: ['#3E9B1C', '#4285F4']
+                zoy: ['#4285F4', '#3E9B1C']
             },
             // 物体参数
             meshColor: (param.meshColor == null) ? '#F0F0F0' : param.meshColor,
             meshActiveColor: (param.meshActiveColor == null) ? '#D97915' : param.meshActiveColor,
             meshHoverColor: (param.mesnHoverColor == null) ? 'yellow' : param.meshHoverColor,
             // 摄像机参数
-            eyes: 'xoz', // 观察视角: xoz、xoy、yoz
+            eyes: 'xoz', // 观察视角: xoz、xoy、zoy
             // 缩放比例，每一个屏幕像素代表多少个空间像素，相当于比例尺1:scale
             scale: parseInt(param.scale, 10) || 2, 
             cameraLookAt: {x: 0, y: 0}
         };
-        //坐标格绘板
+        // 坐标格绘板
         this.gridCanvas = document.createElement('canvas');
-        //物体绘板
+        // 物体绘板
         this.meshCanvas = document.createElement('canvas');
-        //辅助控制器绘板（SVG）
+        // 辅助控制器绘板（SVG）
         this.helperContainer = document.createElement('div');
-        //绘板接口
+        // 绘板接口
         this.gridRender = this.gridCanvas.getContext('2d');
         this.meshRender = this.meshCanvas.getContext('2d');
         this.helperRender = Raphael(this.helperContainer, this.param.width, this.param.height);
         this.param.container.appendChild(this.gridCanvas);
         this.param.container.appendChild(this.meshCanvas);
         this.param.container.appendChild(this.helperContainer);
+        // 绘制
         this.resize(this.param.width, this.param.height);
     }
 

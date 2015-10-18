@@ -7,11 +7,6 @@ define(['../geometry/main'], function (geometry) {
     var _down = false;
     var _mouse3D = null;
     var _tempMesh = null;
-    var _material = new THREE.MeshLambertMaterial({ // MeshLambertMaterial
-        color: 0xe6e6e6,
-        // map: THREE.ImageUtils.loadTexture('resources/textures/ash_uvgrid01.jpg'),
-        side: THREE.DoubleSide
-    });
     var exports = {};
     
 
@@ -95,7 +90,12 @@ define(['../geometry/main'], function (geometry) {
      */
     function produceTempMesh(param) {
         var mesh = geometry[param.type].tempMesh({
-            material: _material.clone(),
+            material: new THREE.MeshLambertMaterial({
+                // MeshLambertMaterial
+                color: 0xe6e6e6,
+                // map: THREE.ImageUtils.loadTexture('resources/textures/ash_uvgrid01.jpg'),
+                side: THREE.DoubleSide
+            }),
             mouseDown: param.mouseDown,
             mouseUp: param.mouseUp
         });

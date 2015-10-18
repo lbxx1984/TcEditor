@@ -18,24 +18,28 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
         if (!mesh) {
             return;
         }
+        // 记录3D物体原始颜色
         if (!mesh.hasOwnProperty(editorKey)) {
             mesh[editorKey] = {};
         }
         if (!mesh[editorKey].hasOwnProperty('color')) {
             mesh[editorKey].color = mesh.material.color.getHex();
         }
-        if (this.type === '$3d') {
-            if (!type) {
-                mesh.material.setValues({color: mesh[editorKey].color});
-                return;
-            }
-            var colors = {
-                hover: this.$3d.param.meshHoverColor,
-                active: this.$3d.param.meshActiveColor
-            };
-            if (colors.hasOwnProperty(type)) {
-                mesh.material.setValues({color: colors[type]});
-            }
+        // 处理3D舞台
+        if (!type) {
+            mesh.material.setValues({color: mesh[editorKey].color});
+            return;
+        }
+        var colors = {
+            hover: this.$3d.param.meshHoverColor,
+            active: this.$3d.param.meshActiveColor
+        };
+        if (colors.hasOwnProperty(type)) {
+            mesh.material.setValues({color: colors[type]});
+        }
+        // 处理2D舞台
+        if (this.type === '$2d') {
+            this.$2d.renderMesh(null, null, (type === 'hover' ? uuid : ''));
         }
     };
 
@@ -123,7 +127,7 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
         var types = {
             '3d': '$3d',
             xoz: '$2d',
-            yoz: '$2d',
+            zoy: '$2d',
             xoy: '$2d'
         };
         if (

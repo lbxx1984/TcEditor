@@ -61,11 +61,19 @@ define(['../math'], function (math) {
     /**
      * 绘制物体
      *
-     * @oaram {Object} ctx canvas的绘制器
+     * @param {Object} ctx canvas的绘制器
+     * @param {string} color 颜色
+     * @param {?number} x 鼠标位置
+     * @param {?number} y 鼠标位置
+     * @return {boolean} 鼠标是否在物体上
      */
-    Mesh2D.prototype.render = function(ctx) {
+    Mesh2D.prototype.render = function(ctx, color, x, y) {
         var faces = this.faces;
         var points = this.vertices;
+        var isMouseIn = false;
+        ctx.beginPath();
+        ctx.lineStyle = 2;
+        ctx.fillStyle = color;
         for (var n = 0; n < faces.length; n++) {
             var a = faces[n][0];
             var b = faces[n][1];
@@ -74,6 +82,9 @@ define(['../math'], function (math) {
             this.line(points[b][0], points[b][1], points[c][0], points[c][1], ctx);
             this.line(points[c][0], points[c][1], points[a][0], points[a][1], ctx);
         }
+        isMouseIn = !isNaN(x) && !isNaN(y) && ctx.isPointInPath(x, y);
+        ctx.fill();
+        return isMouseIn;
     };
 
 
@@ -86,7 +97,6 @@ define(['../math'], function (math) {
      * @param {number} x1 终点的x坐标
      * @param {number} y1 终点的y坐标
      * @param {Object} ctx canvas的绘制器
-     
      */
     Mesh2D.prototype.line = function(x0, y0, x1, y1, ctx) {
         var d = Math.sqrt((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1));
@@ -140,8 +150,8 @@ define(['../math'], function (math) {
     Mesh2D.prototype.RectangularToDisplay = function (pos) {
         var param = this.param;
         var type = param.eyes;
-        var x = (type === 'yoz') ? pos[1] : pos[0];
-        var y = (type === 'xoy') ? pos[1] : pos[2];
+        var x = (type === 'zoy') ? pos[2] : pos[0];
+        var y = (type === 'xoz') ? pos[2] : pos[1];
         x = param.width * 0.5 + (x + param.cameraLookAt.x) / param.scale;
         y = param.height * 0.5 - (y + param.cameraLookAt.y) / param.scale;
         return [x, y];
@@ -160,9 +170,9 @@ define(['../math'], function (math) {
         var type = param.eyes;
         dy = (- dy) * param.scale - param.cameraLookAt.y;
         dx = dx * param.scale - param.cameraLookAt.x;
-        var x = (type === 'yoz') ? 0 : dx;
-        var y = (type === 'xoz') ? 0 : (type === 'xoy' ? dy : dx);
-        var z = (type === 'xoy') ? 0 : dy;
+        var x = (type === 'zoy') ? 0 : dx;
+        var y = (type === 'xoz') ? 0 : dy;
+        var z = (type === 'xoy') ? 0 : ((type === 'zoy' ? dx : dy));
         return [x, y, z];
     };
 
