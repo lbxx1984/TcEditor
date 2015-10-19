@@ -96,11 +96,10 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
     /**
      * 获取鼠标空间位置
      *
-     * @param {number} x 鼠标在当前舞台中的x坐标, 对应layerX
-     * @param {number} y 鼠标在当前舞台中的y坐标, 对应layerY
+     * @param {Object} e 鼠标事件
      */
-    Stage.prototype.getMouse3D = function (x, y) {
-        return this[this.type].getMouse3D(x, y);
+    Stage.prototype.getMouse3D = function (e) {
+        return this[this.type].getMouse3D(e);
     };
 
 
@@ -194,7 +193,7 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
             showGrid: true,
             clearColor: '#464646',
             gridColor: '#5D5D5D',
-            gridStep: 50,
+            gridStep: 40,
             scale: 4,
             container: param.container2,
             width: param.container3.clientWidth,

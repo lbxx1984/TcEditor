@@ -19,13 +19,14 @@ require([
 
     function cloneMouseEvent(e) {
         var parent = e.target.parentNode;
-        return {
-            layerX: e.layerX + parent.offsetLeft,
-            layerY: e.layerY + parent.offsetTop,
+        var result = {
             clientX: e.clientX,
             clientY: e.clientY,
+            offsetX: e.offsetX + parent.offsetLeft,
+            offsetY: e.offsetY + parent.offsetTop,
             target: e.target 
         };
+        return result;
     }
 
     function uiLoaded() {

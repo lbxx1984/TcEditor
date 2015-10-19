@@ -12,8 +12,8 @@ define(['raphael', './Mesh2D'], function (Raphael, Mesh2D) {
      * @param {Object} e 鼠标事件对象
      */
     Stage2D.prototype.getMeshByMouse = function(e) {
-        var x = e.layerX - window.scrollX;
-        var y = e.layerY - window.scrollY;
+        var x = e.offsetX;
+        var y = e.offsetY;
         var intersects = this.renderMesh(x, y);
 
         if (intersects.length === 0) {
@@ -67,15 +67,12 @@ define(['raphael', './Mesh2D'], function (Raphael, Mesh2D) {
     /**
      * 获取鼠标的空间位置，投射在虚拟坐标纸上的位置
      *
-     * @param {number} x 鼠标在当前舞台中的x坐标, 对应layerX
-     * @param {number} y 鼠标在当前舞台中的y坐标, 对应layerY
+     * @param {Object} e 鼠标事件
      */
-    Stage2D.prototype.getMouse3D = function (x, y) {
+    Stage2D.prototype.getMouse3D = function (e) {
         var param = this.param;
-        x -= window.scrollX;
-        y -= window.scrollY;
-        x = (x - param.width * 0.5) * param.scale - param.cameraLookAt.x;
-        y = (param.height * 0.5 - y) * param.scale - param.cameraLookAt.y;
+        var x = (e.offsetX - param.width * 0.5) * param.scale - param.cameraLookAt.x;
+        var y = (param.height * 0.5 - e.offsetY) * param.scale - param.cameraLookAt.y;
         var mouse3d = new THREE.Vector3();
         switch (this.param.eyes) {
             case 'xoz':

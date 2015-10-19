@@ -104,7 +104,7 @@ define(['./tool', './mouse', './create', './trans', './view'], function (tool, m
         ) {
             return;
         }
-        var pos = this.stage.getMouse3D(e.layerX, e.layerY);
+        var pos = this.stage.getMouse3D(e);
         this.ui.refs.containerright.setState({
             mouse3d: {x: parseInt(pos.x, 10), y: parseInt(pos.y, 10), z: parseInt(pos.z, 10)}
         });

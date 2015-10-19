@@ -238,8 +238,8 @@ define(function (require) {
 
         /**交互事件**/
         function mouseMoveHandler(event) {
-            var x = event.layerX-window.scrollX;
-            var y = event.layerY-window.scrollY;
+            var x = event.offsetX;
+            var y = event.offsetY;
             var vector = new THREE.Vector3((x / me.param.width) * 2 - 1, -(y / me.param.height) * 2 + 1, 1);
             var camera = me.camera;
             var raycaster = me.raycaster;

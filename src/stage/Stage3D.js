@@ -27,8 +27,8 @@ define(function (require) {
         }
         if (array.length === 0) return null;
         var mouse = new THREE.Vector3(
-            ((e.layerX - window.scrollX) / this.param.width) * 2 - 1,
-            - ((e.layerY - window.scrollY) / this.param.height) * 2 + 1,
+            (e.offsetX / this.param.width) * 2 - 1,
+            - (e.offsetY / this.param.height) * 2 + 1,
             0
         );
         var raycaster = this.helper.raycaster;
@@ -86,16 +86,15 @@ define(function (require) {
     /**
      * 获取鼠标的空间位置，投射在虚拟坐标纸上的位置
      *
-     * @param {number} x 鼠标在当前舞台中的x坐标, 对应layerX
-     * @param {number} y 鼠标在当前舞台中的y坐标, 对应layerY
+     * @param {Object} e 鼠标事件对象
      */
-    Stage3D.prototype.getMouse3D = function (x, y) {
+    Stage3D.prototype.getMouse3D = function (e) {
         var me = this;
         var mouse = new THREE.Vector3(
-            ((x - window.scrollX) / me.param.width) * 2 - 1,
-            - ((y - window.scrollY) / me.param.height) * 2 + 1,
+            (e.offsetX / me.param.width) * 2 - 1,
+            - (e.offsetY / me.param.height) * 2 + 1,
             0
-        );  
+        );
         var raycaster = me.helper.raycaster;
         raycaster.setFromCamera(mouse, me.camera);
         var intersects = raycaster.intersectObjects([me.helper.plane]);

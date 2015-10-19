@@ -38,7 +38,7 @@ define(['../geometry/main'], function (geometry) {
 
     function mousedown(e) {
         _down = true;
-        _mouse3D = this.stage.getMouse3D(e.layerX, e.layerY);
+        _mouse3D = this.stage.getMouse3D(e);
     }
 
 
@@ -53,7 +53,7 @@ define(['../geometry/main'], function (geometry) {
             if (!_down) {
                 return;
             }
-            var newMouse3D = this.stage.getMouse3D(e.layerX, e.layerY);
+            var newMouse3D = this.stage.getMouse3D(e);
             this.stage.$3d.scene.remove(_tempMesh);
             _tempMesh = produceTempMesh({
                 type: type,
