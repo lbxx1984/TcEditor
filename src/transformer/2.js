@@ -1,88 +1,5 @@
-/**
- * 物体变换器 2D子组成
- * @author Haitao Li
- * @mail 279641976@qq.com
- * @site http://lbxx1984.github.io/
- */
-/**
- * 构造函数
- * @constructor
- * @param {Object} stage2D编辑器对象，对应Stage2D.js
- * @return {Object} 本变换器对外暴露的接口
- */
-function Transformer2D(stage) {
 
 
-    var _svg = stage.svgContent();
-    var _onChange = null;
-    var _onDetach = null;
-    var _mode = "translate"; //translate|rotate|scale
-    var _command = null;
-    var _size = 0.5; //[0,2]
-    var _renderSize = 50;
-    var _floatSize = 50; //finalSize = _renderSize + _size * _floatSize
-    var _meshID = null;
-    var _help = []; //显示在svg中的控制元件
-
-
-    /**内部处理函数*/
-    var _producer = {
-        /**
-         * 创建平移工具操作徽标
-         * @param {Array} center 徽标中心点坐标，对应2D物体几何中心
-         */
-        "translate": function(center) {
-            var colors = stage.getColor(),
-                x0 = center[0],
-                y0 = center[1],
-                hoverColor = stage.getColor("hover");
-            var xh = _svg.path([
-                ["M", x0, y0 + 2],
-                ["L", x0 + _renderSize + _size * _floatSize - 10, y0 + 2],
-                ["L", x0 + _renderSize + _size * _floatSize - 10, y0 + 6],
-                ["L", x0 + _renderSize + _size * _floatSize, y0],
-                ["L", x0 + _renderSize + _size * _floatSize - 10, y0 - 6],
-                ["L", x0 + _renderSize + _size * _floatSize - 10, y0 - 2],
-                ["L", x0, y0 - 2],
-                ["M", x0, y0 + 2]
-            ]).attr({
-                "fill": colors[0]
-            });
-            var yh = _svg.path([
-                ["M", x0 + 2, y0],
-                ["L", x0 + 2, y0 + _renderSize + _size * _floatSize - 10],
-                ["L", x0 + 6, y0 + _renderSize + _size * _floatSize - 10],
-                ["L", x0, y0 + _renderSize + _size * _floatSize],
-                ["L", x0 - 6, y0 + _renderSize + _size * _floatSize - 10],
-                ["L", x0 - 2, y0 + _renderSize + _size * _floatSize - 10],
-                ["L", x0 - 2, y0],
-                ["M", x0 + 2, y0]
-            ]).attr({
-                "fill": colors[1]
-            });
-            var circle = _svg.circle(x0, y0, 5).attr({
-                "fill": hoverColor
-            });
-            //
-            _help.push(xh);
-            _help.push(yh);
-            _help.push(circle);
-            //
-            circle[0].tcType = yh[0].tcType = xh[0].tcType = "T2D";
-            xh[0].tcItem = "x";
-            yh[0].tcItem = "y";
-            circle[0].tcItem = "b";
-            xh[0].tcCursor = "eResize";
-            yh[0].tcCursor = "sResize";
-            circle[0].tcCursor = "move";
-        },
-        "rotate": function() {
-            //TODO
-        },
-        "scale": function() {
-            //TODO
-        }
-    };
     var _moving = {
         /**
          * 拖动平移工具徽标
@@ -156,13 +73,7 @@ function Transformer2D(stage) {
             //TODO
         }
     };
-    /**
-     * 清空所有操作徽标
-     */
-    function clear() {
-        for (var n = 0; n < _help.length; n++) _help[n].remove();
-        _help = [];
-    }
+
     /**
      * 解绑物体
      */
@@ -174,48 +85,26 @@ function Transformer2D(stage) {
             _onDetach();
         }
     }
-    /**
-     * 绑定物体
-     * @param {number} id 物体id
-     */
-    function attach(id) {
-        _meshID = id;
-        var mesh = stage.getMesh(id);
-        if (!mesh) return;
-        update();
-    }
+
     /**
      * 重新绘制操作徽标
      */
     function update() {
-        if (_meshID == null) return;
-        var mesh = stage.getMesh(_meshID);
-        if (!mesh) return;
-        clear();
-        _mode = "translate";
+      
+       
+       
+     
+     
         _producer[_mode](mesh.center);
     }
 
 
     return {
         /**
-         * 重新绘制操作徽标
-         */
-        update: function() {
-            update();
-        },
-        /**
          * 解绑物体
          */
         detach: function() {
             detach();
-        },
-        /**
-         * 绑定物体
-         * @param {number} id 物体id
-         */
-        attach: function(id) {
-            attach(id);
         },
         /**
          * 鼠标正在拖动2D组件

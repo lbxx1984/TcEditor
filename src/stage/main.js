@@ -25,11 +25,13 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
         if (!mesh[editorKey].hasOwnProperty('color')) {
             mesh[editorKey].color = mesh.material.color.getHex();
         }
-        // 处理3D舞台
+        // 清理
         if (!type) {
             mesh.material.setValues({color: mesh[editorKey].color});
+            this.$2d.renderMesh(null, null, '');
             return;
         }
+        // 重上色
         var colors = {
             hover: this.$3d.param.meshHoverColor,
             active: this.$3d.param.meshActiveColor
