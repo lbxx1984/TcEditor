@@ -10,8 +10,7 @@ define(function (Require) {
 
     function mousedown(e) {
         _down = true;
-        _mouse[0] = e.clientX;
-        _mouse[1] = e.clientY;
+        _mouse = [e.clientX, e.clientY];
     }
     function mouseup(e) {
         _down = false;
@@ -64,8 +63,7 @@ define(function (Require) {
                     return;
                 }
                 this.stage.cameraMove(e.clientX - _mouse[0], e.clientY - _mouse[1]);
-                _mouse[0] = e.clientX;
-                _mouse[1] = e.clientY;
+                _mouse = [e.clientX, e.clientY];    
             },
             mousedown: mousedown,
             mouseup: mouseup,
@@ -91,7 +89,6 @@ define(function (Require) {
                     return;
                 }
                 var mouse3d = this.stage.getMouse3D(e);
-                
                 this.transformer.$2d.dragging(
                     [e.clientX - _mouse[0], e.clientY - _mouse[1]],
                     [mouse3d.x - _mouse3d[0], mouse3d.y - _mouse3d[1], mouse3d.z - _mouse3d[2]]

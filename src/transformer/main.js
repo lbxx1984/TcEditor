@@ -7,6 +7,7 @@ define(['require', 'three/TransformControls', './Transformer2D'], function (requ
         this.$3d = new THREE.TransformControls(stage.$3d.camera, stage.$3d.renderer.domElement);
         this.$2d = new Transformer2D({stage: stage.$2d});
         this.stage = stage;
+        this.mesh = null;
         this.attached = false;
     }
 
@@ -26,6 +27,7 @@ define(['require', 'three/TransformControls', './Transformer2D'], function (requ
     };
 
     Transformer.prototype.attach = function (mesh) {
+        this.mesh = mesh;
         this.$2d.attach(mesh);
         this.$3d.attach(mesh);
         this.stage.$3d.scene.add(this.$3d);
@@ -40,9 +42,16 @@ define(['require', 'three/TransformControls', './Transformer2D'], function (requ
         }
         this.$3d.detach();
         this.$2d.detach();
+        this.mesh = null;
         this.stage.$3d.scene.remove(this.$3d);
         this.stage.$3d.updateWithCamera.transformer = null;
         this.attached = false;
+    };
+
+    Transformer.prototype.update = function (type) {
+        this.type = type;
+        this.$2d.attach(this.mesh);
+        this.$3d.update();
     };
 
     return Transformer;

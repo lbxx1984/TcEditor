@@ -6,25 +6,26 @@ define(function (require) {
 
 
     var draggingEngine = {
-        transform: {
-            x: function (me, dMouse2D, dMouse3D) {
-                each(me.helper, function (helper) {helper.translate(dMouse2D[0], 0);});
-                me.mesh.translate(dMouse2D[0], 0);
-                me.stage.renderMesh();
-                var geo = me.mesh.mesh;
-                geo.position.x += dMouse3D[0];
-                geo.geometry.verticesNeedUpdate = true;
-            },
-            y: function (me, dMouse2D, dMouse3D) {
-                each(me.helper, function (helper) {helper.translate(0, dMouse2D[1]);});
-                me.mesh.translate(0, dMouse2D[1]);
-                me.stage.renderMesh();
-            },
-            c: function (me, dMouse2D, dMouse3D) {
-                each(me.helper, function (helper) {helper.translate(dMouse2D[0], dMouse2D[1]);});
-                me.mesh.translate(dMouse2D[0], dMouse2D[1]);
-                me.stage.renderMesh();
-            }
+        transform: function (me, dMouse2D, dMouse3D) {
+            var cmd = me.command;
+            var view = me.stage.param.eyes;
+            var geo = me.mesh.mesh;
+
+            dMouse2D[0] = (cmd === 'y') ? 0 : dMouse2D[0];
+            dMouse2D[1] = (cmd === 'x') ? 0 : dMouse2D[1];
+            each(me.helper, function (helper) {helper.translate(dMouse2D[0], dMouse2D[1]);});
+
+            var dx = 'xozx;xozc;xoyx;xoyc;'.indexOf(view + cmd + ';') > -1 ? dMouse3D[0] : 0;
+            var dy = 'xoyy;xoyc;zoyy;zoyc;'.indexOf(view + cmd + ';') > -1 ? dMouse3D[1] : 0;
+            var dz = 'zoyx;zoyc;xozy;xozc;'.indexOf(view + cmd + ';') > -1 ? dMouse3D[2] : 0;
+
+            geo.position.x = geo.position.x + dx;
+            geo.position.y = geo.position.y + dy;
+            geo.position.z = geo.position.z + dz;
+            geo.geometry.verticesNeedUpdate = true;
+
+            me.mesh.reset();
+            me.stage.renderMesh();
         }
     };
 
@@ -46,7 +47,7 @@ define(function (require) {
         if (this.mesh == null || this.command == null) {
             return;
         }
-        draggingEngine[this.mode][this.command](this, dMouse2D, dMouse3D);
+        draggingEngine[this.mode](this, dMouse2D, dMouse3D);
     };
 
 
@@ -55,6 +56,7 @@ define(function (require) {
      * @param {Object3D} mesh 3D物体
      */
     Transformer2D.prototype.attach = function (mesh) {
+        if (!mesh) return;
         this.mesh = this.stage.children[mesh.uuid];
         this.clearHelper();
         this.render();
@@ -150,6 +152,7 @@ define(function (require) {
         this.mesh = null;
         this.helper = [];
     }
+
 
     return Transformer2D;
 

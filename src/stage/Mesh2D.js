@@ -33,30 +33,13 @@ define(['../math'], function (math) {
 
 
     /**
-     * 对物体做平移
-     *
-     * @param {number} dx x轴方向变动
-     * @param {number} dy y轴方向变动
-     */
-    Mesh2D.prototype.translate = function (dx, dy) {
-        for (var n = 0; n < this.vertices.length; n++) {
-            this.vertices[n][0] += dx;
-            this.vertices[n][1] += dy;
-        }
-        this.center[0] += dx;
-        this.center[1] += dy;
-    };
-
-
-    /**
-     * 重绘物体
+     * 重计算物体所有信息
      */
     Mesh2D.prototype.reset = function() {
-        // this.points = [];
-        // this.faces = [];
-        // this.center = [0, 0];
-        // this.createPoints();
-        // this.createFaces();
+        this.vertices = [];
+        this.faces = [];
+        this.createVertices();
+        this.createFaces();
     };
 
 
