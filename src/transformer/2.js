@@ -7,24 +7,7 @@
          * @param {Object} dMouse3D 世界坐标系中的坐标增量
          */
         "translate": function(dMouse2d, dMouse3d) {
-            var mesh = stage.getMesh(_meshID);
-            if (!mesh || !_command) return;
-            if (_command == "x") {
-                dMouse2d[1] = 0;
-            } else if (_command == "y") {
-                dMouse2d[0] = 0;
-            }
-            mesh.translate(dMouse2d[0], dMouse2d[1]);
-            _help[0].translate(dMouse2d[0], dMouse2d[1]);
-            _help[1].translate(dMouse2d[0], dMouse2d[1]);
-            _help[2].translate(dMouse2d[0], dMouse2d[1]);
             stage.reDraw();
-        },
-        "rotate": function() {
-            //TODO
-        },
-        "scale": function() {
-            //TODO
         }
     };
     var _moved = {
@@ -100,12 +83,7 @@
 
 
     return {
-        /**
-         * 解绑物体
-         */
-        detach: function() {
-            detach();
-        },
+
         /**
          * 鼠标正在拖动2D组件
          * @param {Object} dMouse2D DOM坐标系的坐标增量

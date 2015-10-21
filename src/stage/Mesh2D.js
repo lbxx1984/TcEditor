@@ -39,10 +39,12 @@ define(['../math'], function (math) {
      * @param {number} dy y轴方向变动
      */
     Mesh2D.prototype.translate = function (dx, dy) {
-        // for (var n = 0; n < this.points.length; n++) {
-        //     this.points[n][0] += dx;
-        //     this.points[n][1] += dy;
-        // }
+        for (var n = 0; n < this.vertices.length; n++) {
+            this.vertices[n][0] += dx;
+            this.vertices[n][1] += dy;
+        }
+        this.center[0] += dx;
+        this.center[1] += dy;
     };
 
 

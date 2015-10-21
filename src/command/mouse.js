@@ -2,6 +2,7 @@ define(function (Require) {
 
     var _down = false;
     var _mouse = [-1, -1];
+    var _mouse3d = [0, 0, 0];
     var _hover = null;
     var _active = null;
 
@@ -74,8 +75,10 @@ define(function (Require) {
             loaded: function () {
                 var controlBar = this.ui.refs.containerleft.refs.controlbar;
                 controlBar.setState({enablebar: controlBar.state.enablebar + 'transformer|'});
+                _down = false;
             },
             mouseRightClick: function (e) {
+                _down = false;
                 active(null, this.stage);
                 hover(null, this.stage);
                 if (this.transformer.attached) {
@@ -83,9 +86,28 @@ define(function (Require) {
                 }
             },
             mousemove: function (e) {
-                hover(this.stage.getMeshByMouse(e), this.stage);
+                if (!_down) {
+                    hover(this.stage.getMeshByMouse(e), this.stage);
+                    return;
+                }
+                var mouse3d = this.stage.getMouse3D(e);
+                
+                this.transformer.$2d.dragging(
+                    [e.clientX - _mouse[0], e.clientY - _mouse[1]],
+                    [mouse3d.x - _mouse3d[0], mouse3d.y - _mouse3d[1], mouse3d.z - _mouse3d[2]]
+                );
+                _mouse = [e.clientX, e.clientY];
+                _mouse3d = [mouse3d.x, mouse3d.y, mouse3d.z];
+            },
+            mouseup: function (e) {
+                _down = false;
+                this.transformer.$2d.command = null;
             },
             mousedown: function (e) {
+                _down = true;
+                var mouse3d = this.stage.getMouse3D(e);
+                _mouse3d = [mouse3d.x, mouse3d.y, mouse3d.z];
+                _mouse = [e.clientX, e.clientY];
                 var mesh = this.stage.getMeshByMouse(e);
                 if (mesh == null) {
                     return;
@@ -94,6 +116,7 @@ define(function (Require) {
                 this.transformer.attach(mesh);
             },
             unload: function () {
+                _down = false;
                 this.transformer.detach();
                 active(null, this.stage);
                 hover(null, this.stage);

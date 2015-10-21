@@ -3,6 +3,7 @@ define(function (Require) {
         '3d': function () {
             this.stage.changeView('3d');
             this.transformer.type = '$3d';
+            this.transformer.$3d.update();
         },
         xoz: function () {
             this.stage.changeView('xoz');

@@ -5,6 +5,51 @@
 define(function (require) {
 
 
+    var draggingEngine = {
+        transform: {
+            x: function (me, dMouse2D, dMouse3D) {
+                each(me.helper, function (helper) {helper.translate(dMouse2D[0], 0);});
+                me.mesh.translate(dMouse2D[0], 0);
+                me.stage.renderMesh();
+                var geo = me.mesh.mesh;
+                geo.position.x += dMouse3D[0];
+                geo.geometry.verticesNeedUpdate = true;
+            },
+            y: function (me, dMouse2D, dMouse3D) {
+                each(me.helper, function (helper) {helper.translate(0, dMouse2D[1]);});
+                me.mesh.translate(0, dMouse2D[1]);
+                me.stage.renderMesh();
+            },
+            c: function (me, dMouse2D, dMouse3D) {
+                each(me.helper, function (helper) {helper.translate(dMouse2D[0], dMouse2D[1]);});
+                me.mesh.translate(dMouse2D[0], dMouse2D[1]);
+                me.stage.renderMesh();
+            }
+        }
+    };
+
+
+    function each(arr, func) {
+        for (var i = 0; i < arr.length; i++) {
+            func(arr[i]);
+        }
+    }
+
+
+    /**
+     * 拖动
+     *
+     * @param {Array.<number>} dMouse2D 2D Dom层面鼠标增量
+     * @param {Array.<number>} dMouse3D 3D空间鼠标增量
+     */
+    Transformer2D.prototype.dragging = function (dMouse2D, dMouse3D) {
+        if (this.mesh == null || this.command == null) {
+            return;
+        }
+        draggingEngine[this.mode][this.command](this, dMouse2D, dMouse3D);
+    };
+
+
     /**
      * 绑定物体
      * @param {Object3D} mesh 3D物体
@@ -21,6 +66,7 @@ define(function (require) {
      */
     Transformer2D.prototype.detach = function () {
         this.mesh = null;
+        this.command = null;
         this.clearHelper();
     };
 
@@ -44,38 +90,35 @@ define(function (require) {
         }
 
         function drawTransform() {
-            me.helper[0] = me.svg.path([ // x
-                ['M', x, y + 2],
-                ['L', x + size - 10, y + 2],
-                ['L', x + size - 10, y + 6],
-                ['L', x + size, y],
-                ['L', x + size - 10, y - 6],
-                ['L', x + size - 10, y - 2],
-                ['L', x, y - 2],
-                ['M', x, y + 2]
-            ]).attr({'fill': colors[0]});
+            me.helper[0] = me.svg.path([
+                ['M', x, y + 2], ['L', x + size - 10, y + 2], ['L', x + size - 10, y + 6],
+                ['L', x + size, y], ['L', x + size - 10, y - 6], ['L', x + size - 10, y - 2],
+                ['L', x, y - 2], ['M', x, y + 2]
+            ]).attr({
+                fill: colors[0],
+                cursor: 'e-resize'
+            }).mousedown(function () {
+                me.command = 'x'
+            });
             me.helper[1] = me.svg.path([
-                ['M', x + 2, y],
-                ['L', x + 2, y + size - 10],
-                ['L', x + 6, y + size - 10],
-                ['L', x, y + size],
-                ['L', x - 6, y + size - 10],
-                ['L', x - 2, y + size - 10],
-                ['L', x - 2, y],
-                ['M', x + 2, y]
-            ]).attr({'fill': colors[1]});
-            me.helper[2] = me.svg.circle(x, y, 5).attr({'fill': hoverColor});
-
-            me.helper[0][0].tcEditorCmd = 'x';
-            me.helper[1][0].tcEditorCmd = 'y';
-            me.helper[2][0].tcEditorCmd = 'c';
-            me.helper[0][0].tcEditorCursor = 'eResize';
-            me.helper[1][0].tcEditorCursor = 'sResize';
-            me.helper[2][0].tcEditorCursor = 'move';
-
-            //console.log(me.helper[0][0].tcEditorCmd);
+                ['M', x + 2, y], ['L', x + 2, y + size - 10], ['L', x + 6, y + size - 10],
+                ['L', x, y + size], ['L', x - 6, y + size - 10], ['L', x - 2, y + size - 10],
+                ['L', x - 2, y], ['M', x + 2, y]
+            ]).attr({
+                cursor: 's-resize',
+                fill: colors[1]
+            }).mousedown(function () {
+                me.command = 'y';
+            });
+            me.helper[2] = me.svg.circle(x, y, 5).attr({
+                fill: hoverColor,
+                cursor: 'move'
+            }).mousedown(function () {
+                me.command = 'c';
+            });
         }
     };
+
 
     /**
      * 移除所有helper
@@ -98,6 +141,7 @@ define(function (require) {
         this.stage = param.stage;
         this.svg = param.stage.helperRender;
         this.mode = 'transform';
+        this.command = null;
         this.param = {
             scale: 0.5, // [0, 2]
             renderSize: 50,
