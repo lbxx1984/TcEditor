@@ -132,6 +132,17 @@ define(function (require) {
     };
 
 
+    Transformer2D.prototype.setMode = function () {};
+
+    Transformer2D.prototype.setSpace = function () {};
+
+    Transformer2D.prototype.setSize = function (a) {
+        this.size = a;
+        this.param.scale = 0.5 * this.size;
+        this.clearHelper();
+        this.render();
+    };
+
     /**
      * 构造函数
      *
@@ -149,8 +160,17 @@ define(function (require) {
             renderSize: 50,
             floatSize: 50, // finalSize = renderSize + scale * floatSize 
         };
+        this.size = 1;
         this.mesh = null;
         this.helper = [];
+        var me =this;
+        this.stage.param.container.addEventListener('rendered', function () {
+            if (me.mesh != null) {
+                me.mesh = me.stage.children[me.mesh.mesh.uuid];
+                me.clearHelper();
+                me.render();
+            }
+        });
     }
 
 

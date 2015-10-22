@@ -248,6 +248,9 @@ define(['raphael', './Mesh2D'], function (Raphael, Mesh2D) {
         this.loadMesh();
         this.renderGrid();
         this.renderMesh();
+        var evt =  document.createEvent('HTMLEvents')
+        evt.initEvent('rendered', false, true);
+        this.param.container.dispatchEvent(evt);
     };
 
 

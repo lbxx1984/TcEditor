@@ -57,8 +57,15 @@ define(function (require) {
                     prop['data-ui-value'] = item.value;
                     prop.className += item.value === me.state[item.group] ? ' active' : '';
                 }
-                if (item.disableKey && item.disableWhen.indexOf(me.state[item.disableKey] + ';') > -1) {
-                    prop.className += ' disable';
+                if (item.disable) {
+                    var disable = false;
+                    for (var key in item.disable) {
+                        if (item.disable[key].indexOf(me.state[key]) > -1) {
+                            disable = true;
+                            break;
+                        }
+                    }
+                    prop.className += disable ? ' disable' : '';
                 }
                 return <div {...prop}>{item.label}</div>;
             }

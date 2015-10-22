@@ -88,12 +88,12 @@ define(function (Require) {
                     {
                         label: '', class: ' icon icon-pingmufangda', cmd: 'tool-gridenlarge',
                         type: 'button', title: 'enlarge grid',
-                        disableKey: 'cameraview', disableWhen: 'xoy;xoz;zoy;'
+                        disable: {cameraview: 'xoy;xoz;zoy;'}
                     },
                     {
                         label: '', class: ' icon icon-pingmusuoxiao', cmd: 'tool-gridnarrow',
                         type: 'button', titel: 'narrow grid',
-                        disableKey: 'cameraview', disableWhen: 'xoy;xoz;zoy;'
+                        disable: {cameraview: 'xoy;xoz;zoy;'}
                     },
                     {
                         label: '', class: ' icon', cmd: 'tool-gridtoggle',
@@ -116,11 +116,13 @@ define(function (Require) {
                     },
                     {
                         label: '', class: ' icon icon-llfilterrotate', cmd: 'trans-rotate',
-                        type: 'radio', group: 'transformer', value: 'rotate', title: 'rotate'
+                        type: 'radio', group: 'transformer', value: 'rotate', title: 'rotate',
+                        disable: {cameraview: 'xoy;xoz;zoy;'}
                     },
                     {
                         label: '', class: ' icon icon-icicfangdatubiao', cmd: 'trans-scale',
-                        type: 'radio', group: 'transformer', value: 'scale', title: 'scale'
+                        type: 'radio', group: 'transformer', value: 'scale', title: 'scale',
+                        disable: {cameraview: 'xoy;xoz;zoy;'}
                     },
                     {
                         label: '', class: ' icon icon-jiafangda', cmd: 'trans-enlarge',
@@ -134,7 +136,10 @@ define(function (Require) {
                         label: '', class: ' icon icon-world', cmd: 'trans-coordinatetoggle',
                         type: 'radio', group: 'transformerspace', value: 'world',
                         title: 'toggle world/local coordinate',
-                        disableKey: 'transformer', disableWhen: 'scale;'
+                        disable: {
+                            transformer: 'scale;',
+                            cameraview: 'xoy;xoz;zoy;'
+                        }
                     }
                 ]
             }
