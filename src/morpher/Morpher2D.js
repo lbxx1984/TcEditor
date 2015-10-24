@@ -1,4 +1,5 @@
-define(function (require) {
+define(['../math'], function (math) {
+
 
     /**
      * @constructor
@@ -17,22 +18,52 @@ define(function (require) {
 
         this.joints = []; // 存放关节svg
         this.helper = [];   // 存放关节控制器svg
-        this.geo = null; // 当前绑定的物体
+        this.geo = null; // 当前绑定的物体3D
         this.hover = null; // 鼠标当前经过的关节
-        this.joint = null; // 当前绑定的关节
+        this.joint = null; // 当前绑定的关节索引
         this.command = null; // 当前关节操作命令
 
         this.stage.param.container.addEventListener('rendered', function () {
             if (me.geo == null) return;
-            me.attach(me.geo.mesh);
+            me.attach(me.geo);
             if (me.joint == null) return;
             me.attachJoint(me.joint);
         });
     }
 
 
+    Morpher2D.prototype.dragging = function (d2, d3) {
+        if (this.geo == null || this.joint == null || this.command == null) return;
+        // 2D
+        d2[0] = this.command === 'y' ? 0 : d2[0];
+        d2[1] = this.command === 'x' ? 0 : d2[1];
+        this.helper[0].translate(d2[0], d2[1]);
+        this.helper[1].translate(d2[0], d2[1]);
+        this.helper[2].translate(d2[0], d2[1]);
+        this.joints[this.joint].translate(d2[0], d2[1]);
+        // 3D
+        var mesh3d = this.geo;
+        var view = this.stage.param.eyes;
+        var cmd = this.command;
+        var vector = mesh3d.geometry.vertices[this.joint];
+        var matrix = math.rotateMatrix(mesh3d);
+        var world = math.Local2Global(vector.x, vector.y, vector.z, matrix, mesh3d);
+        world[0] += 'xozx;xozc;xoyx;xoyc;'.indexOf(view + cmd + ';') > -1 ? d3[0] : 0;
+        world[1] += 'xoyy;xoyc;zoyy;zoyc;'.indexOf(view + cmd + ';') > -1 ? d3[1] : 0;
+        world[2] += 'zoyx;zoyc;xozy;xozc;'.indexOf(view + cmd + ';') > -1 ? d3[2] : 0;
+        var local = math.Global2Local(world[0], world[1], world[2], mesh3d);
+        vector.x = local[0];
+        vector.y = local[1];
+        vector.z = local[2];
+        // redraw
+        mesh3d.geometry.verticesNeedUpdate = true;
+        this.stage.children[this.geo.uuid].reset();
+        this.stage.renderMesh();
+    };
+
+
     Morpher2D.prototype.attach = function (mesh) {
-        this.geo = this.stage.children[mesh.uuid];
+        this.geo = mesh;
         this.render();
     };
 
@@ -46,8 +77,8 @@ define(function (require) {
 
 
     Morpher2D.prototype.attachJoint = function (jointIndex) {
-        if (isNaN(jointIndex) || jointIndex > this.joints.length) return;
         this.joint = jointIndex;
+        if (isNaN(jointIndex) || jointIndex > this.joints.length) return;
         this.renderTransformer();
     };
 
@@ -74,11 +105,12 @@ define(function (require) {
 
     Morpher2D.prototype.render = function () {
         this.clear();
-        if (!this.geo) return;
+        if (!this.geo || !this.stage.children[this.geo.uuid]) return;
         // 添加关节
         var me = this;
-        for (var n = 0; n < this.geo.vertices.length; n++) {
-            var vector = this.geo.vertices[n];
+        var geo2d = this.stage.children[this.geo.uuid];
+        for (var n = 0; n < geo2d.vertices.length; n++) {
+            var vector = geo2d.vertices[n];
             var joint = this.svg
                 .circle(vector[0], vector[1], 5)
                 .attr({fill: this.helperColor})
@@ -100,9 +132,9 @@ define(function (require) {
 
 
     Morpher2D.prototype.renderTransformer = function () {
-        if (!this.geo || this.joint == null) return;
+        if (!this.geo || this.joint == null || !this.stage.children[this.geo.uuid]) return;
 
-        var center = this.geo.vertices[this.joint];
+        var center = this.stage.children[this.geo.uuid].vertices[this.joint];
         var colors = this.stage.param.colors[this.stage.param.eyes];
         var hoverColor = this.stage.param.meshHoverColor;
         var x = center[0];

@@ -64,6 +64,7 @@ define(['./Morpher3D', './Morpher2D'], function (Morpher3D, Morpher2D) {
 
     Morpher.prototype.update = function (type) {
         this.type = type;
+        this.$3d.updateAttachedJoint();
     };
 
 

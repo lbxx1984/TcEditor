@@ -12,8 +12,8 @@ define(['math', 'three/TransformControls'], function (math) {
         this.helperHoverColor = param.helperHoverColor || 0xffff00;
         this.baseRule = 1000;
         this.joints = [];
-        this.geo = null; // 当前绑定的物体
-        this.joint = null; // 当前绑定的关节
+        this.geo = null; // 当前绑定的3D物体
+        this.joint = null; // 当前绑定的3D关节
         this.hover = null; // 鼠标经过的关节
         this.jointCtrler.addEventListener('objectChange', changeHandler);
 
@@ -35,18 +35,20 @@ define(['math', 'three/TransformControls'], function (math) {
     }
 
 
-    /**
-     * 从舞台移除所有关节
-     */
-    Morpher3D.prototype.clearStage = function () {
-        for (var n = 0; n < this.joints.length; n++) {
-            var joint = this.joints[n];
-            if (!joint.added) {
-                break;
-            }
-            joint.added = false;
-            this.stage.scene.remove(joint);
-        }
+    Morpher3D.prototype.updateAttachedJoint = function () {
+        if (this.joint == null || this.geo == null) return;
+        var joint = this.joint;
+        var mesh = this.geo;
+        var camerapos = this.stage.camera.position;
+        var matrix = math.rotateMatrix(mesh);
+        var vector = mesh.geometry.vertices[joint.index];
+        var pos = math.Local2Global(vector.x, vector.y, vector.z, matrix, mesh);
+        var meshpos = new THREE.Vector3(pos[0], pos[1], pos[2]);
+        joint.position.x = pos[0];
+        joint.position.y = pos[1];
+        joint.position.z = pos[2];
+        joint.scale.x = joint.scale.y = joint.scale.z = meshpos.distanceTo(camerapos) / this.baseRule;
+        this.jointCtrler.update();
     };
 
 
@@ -134,10 +136,12 @@ define(['math', 'three/TransformControls'], function (math) {
 
     /**
      * 绑定关节控制器
+     *
+     * @param {number} mesh 关节索引
      */
-    Morpher3D.prototype.attachJoint = function (mesh) {
-        if (isNaN(mesh) || mesh >= this.joints.length) return;
-        mesh = this.joints[mesh];
+    Morpher3D.prototype.attachJoint = function (jointIndex) {
+        if (isNaN(jointIndex) || jointIndex >= this.joints.length) return;
+        var mesh = this.joints[jointIndex];
         this.jointCtrler.attach(mesh);
         this.stage.scene.add(this.jointCtrler);
         this.jointCtrler.update();
@@ -155,6 +159,21 @@ define(['math', 'three/TransformControls'], function (math) {
         this.stage.updateWithCamera.jointMover = null;
         this.joint = null;
     }
+
+
+    /**
+     * 从舞台移除所有关节
+     */
+    Morpher3D.prototype.clearStage = function () {
+        for (var n = 0; n < this.joints.length; n++) {
+            var joint = this.joints[n];
+            if (!joint.added) {
+                break;
+            }
+            joint.added = false;
+            this.stage.scene.remove(joint);
+        }
+    };
 
 
     return Morpher3D;

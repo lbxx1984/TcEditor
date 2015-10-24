@@ -56,7 +56,7 @@ define(function (require) {
             floatSize: 50, // finalSize = renderSize + scale * floatSize 
         };
         this.size = 1;
-        this.mesh = null;
+        this.mesh = null; // 当前绑定的3D物体
         this.helper = [];
         var me =this;
         this.stage.param.container.addEventListener('rendered', function () {

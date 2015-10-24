@@ -140,9 +140,25 @@ define(function (Require) {
                     }
                     return;
                 }
+                if (!_down) return;
+                var mouse3d = this.stage.getMouse3D(e);
+                this.morpher.$2d.dragging(
+                    [e.clientX - _mouse[0], e.clientY - _mouse[1]],
+                    [mouse3d.x - _mouse3d[0], mouse3d.y - _mouse3d[1], mouse3d.z - _mouse3d[2]]
+                );
+                _mouse = [e.clientX, e.clientY];
+                _mouse3d = [mouse3d.x, mouse3d.y, mouse3d.z];
+            },
+            mouseup: function (e) {
+                _down = false;
+                this.morpher.$2d.command = null;
             },
             mousedown: function (e) {
                 var mesh = null;
+                var mouse3d = this.stage.getMouse3D(e);
+                _down = true;
+                _mouse3d = [mouse3d.x, mouse3d.y, mouse3d.z];
+                _mouse = [e.clientX, e.clientY];
                 switch (this.morpher.state) {
                     case 0:
                         mesh = this.stage.getMeshByMouse(e);
@@ -169,6 +185,7 @@ define(function (Require) {
                 }
             },
             mouseRightClick: function (e) {
+                _down = false;
                 if (this.morpher.state === 2) {
                     this.morpher.detachJoint();
                     return;
@@ -181,6 +198,7 @@ define(function (Require) {
                 }
             },
             unload: function () {
+                _down = false;
                 hover(null, this.stage);
                 active(null, this.stage);
                 this.morpher.detach();

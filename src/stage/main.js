@@ -7,6 +7,54 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
 
 
     /**
+     * @constructor
+     *
+     * @param {Object} param 初始化参数
+     * @param {Object} param.container1 摄像机控制器dom
+     * @param {HtmlElement} param.container2 2D舞台dom
+     * @param {HtmlElement} param.container3 3D舞台dom
+     */
+    function Stage(param) {
+        this.type = '$3d';
+        this.container1 = param.container1;
+        this.container2 = param.container2;
+        this.container3 = param.container3;
+        // 3D舞台
+        this.$3d = new Stage3D({
+            showGrid: true,
+            clearColor: 0x464646,
+            gridColor: 0x5D5D5D,
+            container: param.container3,
+            meshHoverColor: 0xd97915,
+            width: param.container3.clientWidth,
+            height: param.container3.clientHeight
+        });
+        // 2D舞台
+        this.$2d = new Stage2D({
+            stage3d: this.$3d,
+            showGrid: true,
+            clearColor: '#464646',
+            gridColor: '#5D5D5D',
+            gridStep: 20,
+            scale: 2,
+            container: param.container2,
+            width: param.container3.clientWidth,
+            height: param.container3.clientHeight
+        });
+        // 3D摄像机控制器
+        this.cameraController = new CameraController({
+            textureUrl: 'resources/textures/',
+            container: param.container1,
+            hoverColor: 0xD97915,
+            animate: true
+        });
+        // 绑定摄像机和控制器
+        this.$3d.plugin.cameraController = this.cameraController;
+        this.cameraController.param.stages.push(this.$3d);
+    }
+
+
+    /**
      * 修改物体颜色
      *
      * @param {string} uuid 物体标识
@@ -164,54 +212,6 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
         this.$3d.resize(state.clientWidth, state.clientHeight);
         this.$2d.resize(state.clientWidth, state.clientHeight);
     };
-
-
-    /**
-     * @constructor
-     *
-     * @param {Object} param 初始化参数
-     * @param {Object} param.container1 摄像机控制器dom
-     * @param {HtmlElement} param.container2 2D舞台dom
-     * @param {HtmlElement} param.container3 3D舞台dom
-     */
-    function Stage(param) {
-        this.type = '$3d';
-        this.container1 = param.container1;
-        this.container2 = param.container2;
-        this.container3 = param.container3;
-        // 3D舞台
-        this.$3d = new Stage3D({
-            showGrid: true,
-            clearColor: 0x464646,
-            gridColor: 0x5D5D5D,
-            container: param.container3,
-            meshHoverColor: 0xd97915,
-            width: param.container3.clientWidth,
-            height: param.container3.clientHeight
-        });
-        // 2D舞台
-        this.$2d = new Stage2D({
-            stage3d: this.$3d,
-            showGrid: true,
-            clearColor: '#464646',
-            gridColor: '#5D5D5D',
-            gridStep: 40,
-            scale: 4,
-            container: param.container2,
-            width: param.container3.clientWidth,
-            height: param.container3.clientHeight
-        });
-        // 3D摄像机控制器
-        this.cameraController = new CameraController({
-            textureUrl: 'resources/textures/',
-            container: param.container1,
-            hoverColor: 0xD97915,
-            animate: true
-        });
-        // 绑定摄像机和控制器
-        this.$3d.plugin.cameraController = this.cameraController;
-        this.cameraController.param.stages.push(this.$3d);
-    }
 
 
     return Stage;
