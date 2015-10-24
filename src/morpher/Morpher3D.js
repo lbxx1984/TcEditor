@@ -14,8 +14,7 @@ define(['math', 'three/TransformControls'], function (math) {
         this.joints = [];
         this.geo = null; // 当前绑定的物体
         this.joint = null; // 当前绑定的关节
-        this.state = 0; // 状态机，0未attach；1已经attach未选中关节；2已选中关节
-        this.hover = null;
+        this.hover = null; // 鼠标经过的关节
         this.jointCtrler.addEventListener('objectChange', changeHandler);
 
         /**关节移动处理**/
@@ -71,13 +70,14 @@ define(['math', 'three/TransformControls'], function (math) {
     /**
      * 鼠标经过控制点
      */
-    Morpher3D.prototype.hoverJoint = function (mesh) {
+    Morpher3D.prototype.hoverJoint = function (meshIndex) {
         if (this.hover != null) {
             this.hover.material.setValues({color: this.helperColor});
         }
-        this.hover = mesh;
+        if (isNaN(meshIndex)) return;
+        this.hover = this.joints[meshIndex];
         if (this.hover != null) {
-            mesh.material.setValues({color: this.helperHoverColor});
+            this.hover.material.setValues({color: this.helperHoverColor});
         }
     };
 
@@ -120,7 +120,6 @@ define(['math', 'three/TransformControls'], function (math) {
         }
         this.stage.updateWithCamera.morpher = this;
         this.geo = mesh;
-        this.state = 1;
     };
 
 
@@ -128,14 +127,7 @@ define(['math', 'three/TransformControls'], function (math) {
      * 控制器解绑物体
      */
     Morpher3D.prototype.detach = function () {
-        if (this.state === 0) {
-            return;
-        }
-        if (this.state === 2) {
-            this.detachJoint();
-        }
         this.clearStage();
-        this.state = 0;
         this.stage.updateWithCamera.morpher = null;
     };
 
@@ -144,7 +136,8 @@ define(['math', 'three/TransformControls'], function (math) {
      * 绑定关节控制器
      */
     Morpher3D.prototype.attachJoint = function (mesh) {
-        this.state = 2;
+        if (isNaN(mesh) || mesh >= this.joints.length) return;
+        mesh = this.joints[mesh];
         this.jointCtrler.attach(mesh);
         this.stage.scene.add(this.jointCtrler);
         this.jointCtrler.update();
@@ -157,10 +150,6 @@ define(['math', 'three/TransformControls'], function (math) {
      * 解除关节控制器
      */
     Morpher3D.prototype.detachJoint = function () {
-        if (this.state !== 2) {
-            return;
-        }
-        this.state = 1;
         this.jointCtrler.detach();
         this.stage.scene.remove(this.jointCtrler);
         this.stage.updateWithCamera.jointMover = null;

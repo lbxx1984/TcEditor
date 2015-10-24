@@ -12,6 +12,7 @@ define(function (Require) {
         _down = true;
         _mouse = [e.clientX, e.clientY];
     }
+
     function mouseup(e) {
         _down = false;
     }
@@ -124,14 +125,14 @@ define(function (Require) {
         pickjoint: {
             mousemove: function (e) {
                 var mesh = null;
-                if (this.morpher.getState() === 0 && !_down) {
+                if (this.morpher.state === 0 && !_down) {
                     hover(this.stage.getMeshByMouse(e), this.stage);
                     return;
                 }
-                if (this.morpher.getState() === 1 && !_down) {
+                if (this.morpher.state === 1 && !_down) {
                     this.morpher.callFunction('hoverJoint');
-                    mesh = this.stage.getMeshByMouse(e, this.morpher.getJoints());
-                    if (mesh) {
+                    mesh = this.morpher.getHoverJoint(e);
+                    if (mesh != null) {
                         this.morpher.callFunction('hoverJoint', mesh);
                     }
                     else {
@@ -142,24 +143,24 @@ define(function (Require) {
             },
             mousedown: function (e) {
                 var mesh = null;
-                switch (this.morpher.getState()) {
+                switch (this.morpher.state) {
                     case 0:
                         mesh = this.stage.getMeshByMouse(e);
                         if (mesh != null) {
-                            this.morpher.callFunction('attach', mesh);
+                            this.morpher.attach(mesh);
                             active(mesh, this.stage);
                         }
                         break;
                     case 1:
-                        mesh = this.stage.getMeshByMouse(e, this.morpher.getJoints());
-                        if (mesh) {
-                            this.morpher.callFunction('attachJoint', mesh);
+                        mesh = this.morpher.getHoverJoint(e);
+                        if (mesh != null) {
+                            this.morpher.attachJoint(mesh);
                         }
                         else {
                             mesh = this.stage.getMeshByMouse(e);
                             if (mesh) {
                                 active(mesh, this.stage);
-                                this.morpher.callFunction('attach', mesh);
+                                this.morpher.attach(mesh);
                             }
                         }
                         break;
@@ -168,21 +169,21 @@ define(function (Require) {
                 }
             },
             mouseRightClick: function (e) {
-                hover(null, this.stage);
-                active(null, this.stage);
-                if (this.morpher.getState() === 2) {
-                    this.morpher.callFunction('detachJoint');
+                if (this.morpher.state === 2) {
+                    this.morpher.detachJoint();
                     return;
                 }
-                if (this.morpher.getState() === 1) {
-                    this.morpher.callFunction('detach');
+                if (this.morpher.state === 1) {
+                    hover(null, this.stage);
+                    active(null, this.stage);
+                    this.morpher.detach();
                     return;
                 }
             },
             unload: function () {
                 hover(null, this.stage);
                 active(null, this.stage);
-                this.morpher.callFunction('detach');
+                this.morpher.detach();
             }
         }
     };

@@ -1,6 +1,8 @@
 define(['require', 'three/TransformControls', './Transformer2D'], function (require) {
 
+
     var Transformer2D = require('./Transformer2D');
+
 
     function Transformer(stage) {
         this.type = '$3d';
@@ -10,6 +12,7 @@ define(['require', 'three/TransformControls', './Transformer2D'], function (requ
         this.mesh = null;
         this.attached = false;
     }
+
 
     Transformer.prototype.callFunction = function (func, param) {
         if (
@@ -22,9 +25,11 @@ define(['require', 'three/TransformControls', './Transformer2D'], function (requ
         return null;
     };
 
+
     Transformer.prototype.get = function (key) {
         return this[this.type][key];
     };
+
 
     Transformer.prototype.attach = function (mesh) {
         this.mesh = mesh;
@@ -35,6 +40,7 @@ define(['require', 'three/TransformControls', './Transformer2D'], function (requ
         this.$3d.update();
         this.attached = true;
     };
+
 
     Transformer.prototype.detach = function () {
         if (!this.attached) {
@@ -48,11 +54,12 @@ define(['require', 'three/TransformControls', './Transformer2D'], function (requ
         this.attached = false;
     };
 
+
     Transformer.prototype.update = function (type) {
         this.type = type;
-        this.$2d.attach(this.mesh);
         this.$3d.update();
     };
+
 
     return Transformer;
 });

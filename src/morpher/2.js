@@ -12,50 +12,14 @@
  */
 function Morpher2D(stage) {
 
-    var _svg = stage.svgContent();
-    var _selectColor = stage.getColor("select");
-    var _hoverColor = stage.getColor("hover");
-    var _meshID = null;
-    var _jointIndex = null;
-    var _command = null;
-    var _joints = [];
-    var _controller = [];
-    var _size = 0.5;        //min:0; max:2
-    var _renderSize = 50;
-    var _floatSize = 50;    //finalSize = _renderSize + _size * _floatSize
-
-    /**
-     * 清空svg画布中的所有关节徽标及关节拖拽徽标
-     */
-    function clear() {
-        for (var n = 0; n < _joints.length; n++) {
-            _joints[n].remove();
-        }
-        _joints = [];
-        for (var n = 0; n < _controller.length; n++) {
-            _controller[n].remove();
-        }
-        _controller = [];
-    }
 
     /**
      * 刷新整个控制器，包括重绘关节，重绘拖拽徽标
      */
     function update() {
-        //初始化
-        var mesh = stage.getMesh(_meshID),
-            joint;
-        if (!mesh) return;
-        clear();
+
         //添加关节
-        for (var n = 0; n < mesh.points.length; n++) {
-            joint = _svg.circle(mesh.points[n][0], mesh.points[n][1], 5).attr({
-                "fill": _selectColor
-            });
-            joint[0].index = n;
-            joint[0].morpherType = "JOINT";
-            _joints.push(joint);
-        }
+        
         //添加关节控制器
         if (_jointIndex == null || _jointIndex >= _joints.length) return;
         produceController(mesh.points[_jointIndex][0], mesh.points[_jointIndex][1]);

@@ -9,7 +9,8 @@ define(function (require) {
         transform: function (me, dMouse2D, dMouse3D) {
             var cmd = me.command;
             var view = me.stage.param.eyes;
-            var geo = me.mesh.mesh;
+            var mesh2d = me.stage.children[me.mesh.uuid];
+            var geo = mesh2d.mesh;
 
             dMouse2D[0] = (cmd === 'y') ? 0 : dMouse2D[0];
             dMouse2D[1] = (cmd === 'x') ? 0 : dMouse2D[1];
@@ -24,7 +25,7 @@ define(function (require) {
             geo.position.z = geo.position.z + dz;
             geo.geometry.verticesNeedUpdate = true;
 
-            me.mesh.reset();
+            mesh2d.reset();
             me.stage.renderMesh();
         }
     };
@@ -34,6 +35,34 @@ define(function (require) {
         for (var i = 0; i < arr.length; i++) {
             func(arr[i]);
         }
+    }
+
+
+    /**
+     * 构造函数
+     *
+     * @constructor
+     * @param {Object} param 初始化对象
+     * @param {Stage2D} param.stage 2D舞台对象
+     */
+    function Transformer2D(param) {
+        this.stage = param.stage;
+        this.svg = param.stage.helperRender;
+        this.mode = 'transform';
+        this.command = null;
+        this.param = {
+            scale: 0.5, // [0, 2]
+            renderSize: 50,
+            floatSize: 50, // finalSize = renderSize + scale * floatSize 
+        };
+        this.size = 1;
+        this.mesh = null;
+        this.helper = [];
+        var me =this;
+        this.stage.param.container.addEventListener('rendered', function () {
+            if (me.mesh == null) return;
+            me.attach(me.mesh);
+        });
     }
 
 
@@ -57,7 +86,7 @@ define(function (require) {
      */
     Transformer2D.prototype.attach = function (mesh) {
         if (!mesh) return;
-        this.mesh = this.stage.children[mesh.uuid];
+        this.mesh = mesh;
         this.clearHelper();
         this.render();
     };
@@ -78,7 +107,9 @@ define(function (require) {
      */
     Transformer2D.prototype.render = function () {
         if (!this.mesh) return;
-        var center = this.mesh.center;
+        var mesh = this.stage.children[this.mesh.uuid];
+        if (!mesh) return;
+        var center = mesh.center;
         var colors = this.stage.param.colors[this.stage.param.eyes];
         var hoverColor = this.stage.param.meshHoverColor;
         var x = center[0];
@@ -122,9 +153,6 @@ define(function (require) {
     };
 
 
-    /**
-     * 移除所有helper
-     */
     Transformer2D.prototype.clearHelper = function () {
         while (this.helper.length > 0) {
             this.helper.pop().remove();
@@ -134,7 +162,9 @@ define(function (require) {
 
     Transformer2D.prototype.setMode = function () {};
 
+
     Transformer2D.prototype.setSpace = function () {};
+
 
     Transformer2D.prototype.setSize = function (a) {
         this.size = a;
@@ -143,37 +173,6 @@ define(function (require) {
         this.render();
     };
 
-    /**
-     * 构造函数
-     *
-     * @constructor
-     * @param {Object} param 初始化对象
-     * @param {Stage2D} param.stage 2D舞台对象
-     */
-    function Transformer2D(param) {
-        this.stage = param.stage;
-        this.svg = param.stage.helperRender;
-        this.mode = 'transform';
-        this.command = null;
-        this.param = {
-            scale: 0.5, // [0, 2]
-            renderSize: 50,
-            floatSize: 50, // finalSize = renderSize + scale * floatSize 
-        };
-        this.size = 1;
-        this.mesh = null;
-        this.helper = [];
-        var me =this;
-        this.stage.param.container.addEventListener('rendered', function () {
-            if (me.mesh != null) {
-                me.mesh = me.stage.children[me.mesh.mesh.uuid];
-                me.clearHelper();
-                me.render();
-            }
-        });
-    }
-
 
     return Transformer2D;
-
 });
