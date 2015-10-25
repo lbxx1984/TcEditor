@@ -1,4 +1,6 @@
-define(['./tool', './mouse', './create', './trans', './view'], function (tool, mouse, create, trans, view) {
+define([
+    './tool', './mouse', './create', './trans', './view', './tab'
+], function (tool, mouse, create, trans, view, tab) {
 
 
     /**
@@ -15,7 +17,8 @@ define(['./tool', './mouse', './create', './trans', './view'], function (tool, m
             mouse: mouse,
             create: create,
             trans: trans,
-            view: view
+            view: view,
+            tab: tab
         };
         // 当前处于激活状态的引擎，一般用来处理鼠标事件
         this.currentEngine = null;
@@ -84,18 +87,26 @@ define(['./tool', './mouse', './create', './trans', './view'], function (tool, m
     Routing.prototype.mouseup = function (e) {
         this.callEngine('mouseup', e);
     };
+
+
     Routing.prototype.mousedown = function (e) {
         if (this.stage.cameraController.mousedown) {
             return;
         }
         this.callEngine('mousedown', e);
     };
+
+
     Routing.prototype.mouseleave = function (e) {
         this.callEngine('mouseleave', e);
     };
+
+
     Routing.prototype.mouseRightClick = function (e) {
         this.callEngine('mouseRightClick', e);
     };
+
+
     Routing.prototype.mousemove = function (e) {
         if (
             this.stage == null
@@ -105,8 +116,10 @@ define(['./tool', './mouse', './create', './trans', './view'], function (tool, m
             return;
         }
         var pos = this.stage.getMouse3D(e);
-        this.ui.refs.containerright.setState({
-            mouse3d: {x: parseInt(pos.x, 10), y: parseInt(pos.y, 10), z: parseInt(pos.z, 10)}
+        this.ui.refs.containerright.refs.mousepositionbar.setState({
+            x: parseInt(pos.x, 10),
+            y: parseInt(pos.y, 10),
+            z: parseInt(pos.z, 10)
         });
         this.callEngine('mousemove', e);
     };

@@ -1,4 +1,4 @@
-define(['../math'], function (math) {
+define(['math'], function (math) {
 
 
     /**

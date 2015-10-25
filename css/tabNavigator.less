@@ -1,0 +1,35 @@
+.tab-navigator {
+    position: fixed;
+    top: 0px;
+    height: 41px;
+    width: 300px;
+    border-bottom: 1px solid #383838;
+    font-family: 微软雅黑, Arial, Helvetica, Verdana;
+    -moz-user-select: none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+    .tab-button {
+        display: inline-block;
+        width: 90px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        color: #FFF;
+        border-left: 1px solid #383838;
+        border-right: 1px solid #030303;
+        border-bottom: 1px solid #000;
+        font-weight: 500;
+        cursor: pointer;
+    }
+    .tab-button:nth-child(1) {
+        border-left: 0px;
+    }
+    .tab-button:hover {
+        background-color: #2A333A;
+        color: #d97915;
+    }
+    .active {
+        background-color: #D97915;
+        color: #FFF;
+    }
+}

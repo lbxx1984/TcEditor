@@ -1,12 +1,27 @@
 define(function (Require) {
     return {
         defaultCommandState: {
+            activetab: 'stage',
             cameraview: '3d',
             systemtool: 'cameramove',
             transformer: 'move',
             transformerspace: 'world',
             enablebar: ''
         },
+        tab: [
+            {
+                label: 'Stage',
+                cmd: 'tab-stage'
+            },
+            {
+                label: 'Geometry',
+                cmd: 'tab-geometry'
+            },
+            {
+                label: 'Material',
+                cmd: 'tab-material'
+            }
+        ],
         menu: [
             {
                 label: 'Geometry',

@@ -3,7 +3,7 @@
  * @author Haitao Li
  * @mail 279641976@qq.com
  */
-define(['../math'], function (math) {
+define(['math'], function (math) {
 
 
     /**

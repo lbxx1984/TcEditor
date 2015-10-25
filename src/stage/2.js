@@ -46,14 +46,7 @@
         _meshSelected = id;
         drawMeshes(_meshCTX);
     }
-    /**
-     * 根据id获取2D物体
-     * @param {number} id 物体id
-     * @return {Object} 2D物体对象
-     */
-    _this.getMesh = function(id) {
-        return _meshes[id];
-    }
+
     /**
      * 删除物体
      * @param {number} 物体id

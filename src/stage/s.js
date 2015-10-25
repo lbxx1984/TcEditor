@@ -113,44 +113,4 @@ Stage.prototype.setGridColor = function(e) {
     this.$2d.setGridColor(e);
 }
 
-/**
- * 获取鼠标下物体的关节徽标
- * @param {Object} e 鼠标事件对象
- * @param {Array} joints 3D空间中的关节徽标数组
- * @return {Object} 3D空间中的3D徽标
- */
-Stage.prototype.getMorpherJointByMouse = function(e, joints) {
-    var geo = null;
-    if (this.view == "3d") {
-        geo = this.$3d.selectGeometry(joints, e);
-    } else if (e.target.tagName == "circle" && e.target.morpherType == "JOINT") {
-        geo = joints[e.target.index];
-    }
-    return geo;
-}
-/**
- * 获取鼠标下的变换器把手名称
- * @param {Object} e 鼠标事件句柄
- * @return 变形器把手名称
- *        本方法只在非3D状态下有效
- */
-Stage.prototype.getTransformerCommand = function(e) {
-    if (this.view == "3d" || !e || !e.target) return null;
-    if (e.target.tcType == "T2D") return {
-        cmd: e.target.tcItem,
-        cursor: "workspace_" + e.target.tcCursor
-    };
-    return null
-}
-
-/**
- * 为舞台系统绑定组件
- * @param {Object} stage2d 2D组件
- * @param {Object} stage3d 3D组件
- * @param {Object} cameraController 3D组件用的摄像机控制器
- */
-Stage.prototype.bind = function(stage2d, stage3d, cameraController) {
-    cameraController.addStage(stage3d);
-    stage2d.bindStage(stage3d);
-}
 

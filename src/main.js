@@ -2,7 +2,7 @@
  * @file 主启动文件
  */
 require([
-    './ui/application.jsx', './stage/main', './command/main', './transformer/main', './morpher/main'
+    './application.jsx', './stage/main', './command/main', './transformer/main', './morpher/main'
 ], function (App, Stage, Routing, Transformer, Morpher) {
 
     var routing = new Routing('mouse-cameramove');

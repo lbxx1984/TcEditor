@@ -1,13 +1,16 @@
 define([
-    '../config', './menu.jsx', './controlBar.jsx', './stage.jsx'
+    'config', 'component/menu.jsx', 'component/controlBar.jsx', 'layout/containerStage.jsx'
 ], function (config, Menu, ControlBar, Stage) {
     return React.createClass({
         render: function () {
+
             var props = this.props;
+
             var menuProps = {
                 datasource: config.menu,
                 clickHandler: menuClickHandler
             };
+
             var controlBarProps = {
                 defaultState: config.defaultCommandState,
                 datasource: config.controlBar,

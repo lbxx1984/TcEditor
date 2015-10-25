@@ -1,9 +1,9 @@
-define(['./containerRight.jsx', './containerLeft.jsx'], function (ContainerRight, ContainerLeft) {
+define(['layout/containerRight.jsx', 'layout/containerLeft.jsx'], function (ContainerRight, ContainerLeft) {
     return React.createClass({
         render: function () {
             return (
                 <div>
-                    <ContainerRight ref="containerright"/>
+                    <ContainerRight {...this.props} ref="containerright"/>
                     <ContainerLeft {...this.props} ref="containerleft"/>
                 </div>
             );

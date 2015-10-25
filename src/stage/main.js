@@ -22,7 +22,7 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
         // 3D舞台
         this.$3d = new Stage3D({
             showGrid: true,
-            clearColor: 0x464646,
+            clearColor: 0x383838,
             gridColor: 0x5D5D5D,
             container: param.container3,
             meshHoverColor: 0xd97915,
@@ -33,7 +33,7 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
         this.$2d = new Stage2D({
             stage3d: this.$3d,
             showGrid: true,
-            clearColor: '#464646',
+            clearColor: '#383838',
             gridColor: '#5D5D5D',
             gridStep: 20,
             scale: 2,
