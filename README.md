@@ -1,4 +1,4 @@
-###Install：
+﻿###Install：
 ```bash
 npm install
 ```
@@ -8,3 +8,7 @@ edp ws start
 ```
 ###Access:
 [http://localhost:8088/](http://localhost:8088/)
+###Build:
+```bash
+edp build
+```

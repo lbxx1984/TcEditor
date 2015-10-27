@@ -1,7 +1,7 @@
 /**
  * @file 主启动文件
  */
-require([
+define([
     './application.jsx', './stage/main', './command/main', './transformer/main', './morpher/main'
 ], function (App, Stage, Routing, Transformer, Morpher) {
 

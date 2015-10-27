@@ -1,4 +1,4 @@
-define(['math', 'three/TransformControls'], function (math) {
+define(['math'], function (math) {
 
 
     /**

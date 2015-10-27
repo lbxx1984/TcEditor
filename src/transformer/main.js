@@ -1,4 +1,4 @@
-define(['require', 'three/TransformControls', './Transformer2D'], function (require) {
+define(['require', './Transformer2D'], function (require) {
 
 
     var Transformer2D = require('./Transformer2D');

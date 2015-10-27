@@ -1,14 +1,13 @@
 {
-    "name": "ReactJSDemo",
+    "name": "TcEditor5",
     "version": "0.0.1",
-    "description": "ReactJSDemo",
+    "description": "TcEditor5",
     "main": "index",
     "dependencies": {
         "react-tools": ">=0.0.0",
         "edp": ">=0.0.0"
     },
-    "author": "lihaitao03@baidu.com",
-    "repository": "empty",
+    "author": "lbxxlht@163.com",
     "license": "MIT",
     "readme": "README"
 }

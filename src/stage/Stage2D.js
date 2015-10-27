@@ -3,7 +3,7 @@
  * @author Haitao Li
  * @mail 279641976@qq.com
  */
-define(['raphael', './Mesh2D'], function (Raphael, Mesh2D) {
+define(['./Mesh2D'], function (Mesh2D) {
 
 
     /**

@@ -12,7 +12,9 @@ exports.exclude = [
     'module.conf',
     '.gitignore',
     'package.json',
+    '*.conf',
     '*.md',
+    '*.log',
     'node_modules',
     'deps',
     'compiler'
@@ -32,19 +34,27 @@ exports.getProcessors = function () {
     var reactProcessor = new ReactPressor({     // react编译
         files: ['*.jsx.js']
     });
-    var jsCompressor = new JsCompressor({});    // JS压缩
-          
+    var jsCompressor = new JsCompressor({       // JS压缩
+        files: ['main.js']
+    }); 
     var lessProcessor = new LessCompiler({      // less编译
         files: ['main.less']
     });
-    var moduleCompiler = new ModuleCompiler();  // AMD模块编译
+    var cssCompressor = new CssCompressor({     // css压缩
+        files: ['main.less']
+    });
+    var moduleCompiler = new ModuleCompiler({   // AMD模块编译
+        configFile: 'build.conf'
+    });  
     
     return {
         'default': [
             moveDeps,
             reactProcessor,
             lessProcessor,
-            jsCompressor
+            moduleCompiler,
+            jsCompressor,
+            cssCompressor
         ]
     };
 };
