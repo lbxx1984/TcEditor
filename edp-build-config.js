@@ -46,7 +46,15 @@ exports.getProcessors = function () {
     var moduleCompiler = new ModuleCompiler({   // AMD模块编译
         configFile: 'build.conf'
     });  
-    
+    var outputCleaner = new OutputCleaner({     // 清理垃圾
+        files: [
+            '*.less',
+            '*.js',
+            '!src/main.js',
+            '!css/main.less'
+        ]
+    });
+
     return {
         'default': [
             moveDeps,
@@ -54,7 +62,8 @@ exports.getProcessors = function () {
             lessProcessor,
             moduleCompiler,
             jsCompressor,
-            cssCompressor
+            cssCompressor,
+            outputCleaner
         ]
     };
 };
