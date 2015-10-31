@@ -2,8 +2,8 @@
  * @file 主启动文件
  */
 define([
-    './application.jsx', './stage/main', './command/main', './transformer/main', './morpher/main'
-], function (App, Stage, Routing, Transformer, Morpher) {
+    './application.jsx', './stage/main', './command/main', './transformer/main', './morpher/main', './extend'
+], function (App, Stage, Routing, Transformer, Morpher, extend) {
 
     var routing = new Routing('mouse-cameramove');
     var uiProps = {

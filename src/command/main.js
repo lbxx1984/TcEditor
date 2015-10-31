@@ -38,7 +38,7 @@ define([
         }
         var cmds = cmd.split('-');
         var engines = this.engines;
-        if (cmds.length === 2 && engines.hasOwnProperty(cmds[0])) {
+        if (cmds.length >= 2 && engines.hasOwnProperty(cmds[0])) {
             var engine = engines[cmds[0]];
             // click命令，执行完毕后不保存状态
             if (typeof engine[cmds[1]] === 'function') {

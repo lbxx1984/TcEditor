@@ -1,6 +1,7 @@
 define([
-    'config', 'component/mousePositionBar.jsx', 'component/tabNavigator.jsx'
-], function (config, MousePositionBar, TabNavigator) {
+    'config', 'component/mousePositionBar.jsx', 'component/tabNavigator.jsx',
+    'component/stage.jsx', 'component/material.jsx', 'component/geometry.jsx'
+], function (config, MousePositionBar, TabNavigator, Stage, Material, Geometry) {
     return React.createClass({
         getInitialState: function () {
             return {
@@ -16,6 +17,16 @@ define([
                 clickHandler: tabClickHandler,
                 activetab: this.state.activetab
             };
+            var stageProps = {
+                display: this.state.activetab === 'stage' ? 'block' : 'none',
+                commandRouting: props.commandRouting
+            };
+            var geometryProps = {
+                display: this.state.activetab === 'geometry' ? 'block' : 'none'
+            };
+            var materialProps = {
+                display: this.state.activetab === 'material' ? 'block' : 'none'
+            };
 
             function tabClickHandler(e) {
                 props.commandRouting(e.target.dataset.uiCmd);
@@ -24,13 +35,12 @@ define([
             return (
                 <div className="container-right">
                     <TabNavigator {...tabProps}/>
-                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>asd
+                    <Stage {...stageProps} ref="stageContent"/>
+                    <Geometry {...geometryProps}/>
+                    <Material {...materialProps}/>
                     <MousePositionBar ref="mousepositionbar"/>
                 </div>
             );
         }
     });
-});
+})

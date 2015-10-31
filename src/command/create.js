@@ -3,12 +3,12 @@
  */
 define(['../geometry/main'], function (geometry) {
 
-
+    var _mouseDraged = false;
     var _down = false;
     var _mouse3D = null;
     var _tempMesh = null;
     var exports = {};
-    
+
 
     /**自动注册接口**/
     for (var key in geometry) {
@@ -38,12 +38,14 @@ define(['../geometry/main'], function (geometry) {
 
     function mousedown(e) {
         _down = true;
+        _mouseDraged = false;
         _mouse3D = this.stage.getMouse3D(e);
     }
 
 
     function mouseleave(e) {
         _down = false;
+        _mouseDraged = false;
         this.stage.$3d.scene.remove(_tempMesh);
     }
 
@@ -53,6 +55,7 @@ define(['../geometry/main'], function (geometry) {
             if (!_down) {
                 return;
             }
+            _mouseDraged = true
             var newMouse3D = this.stage.getMouse3D(e);
             this.stage.$3d.scene.remove(_tempMesh);
             _tempMesh = produceTempMesh({
@@ -70,12 +73,16 @@ define(['../geometry/main'], function (geometry) {
     function mouseup(type) {
         return function (e) {
             _down = false;
-            if (_tempMesh == null) {
+            if (_tempMesh == null || !_mouseDraged) {
                 return;
             }
+            _mouseDraged = false;
             var mesh = _tempMesh.clone();
             this.stage.$3d.scene.remove(_tempMesh);
             this.stage.add(mesh);
+            // 刷新右侧
+            mesh.birth = new Date().getTime();
+            this.ui.refs.containerright.refs.stageContent.refs.meshBox.setState(this.stage.$3d.children);
         };
     }
 

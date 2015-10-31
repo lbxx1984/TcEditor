@@ -40,31 +40,8 @@ Stage.prototype.meshTransform = function(geo, type, item, value, sync) {
         this.eventHandle["onMesh3DFresh"]();
     }
 }
-/**
- * 删除物体
- * @param {number} id 物体id
- */
-Stage.prototype.meshDelete = function(id) {
-    var geo = this.$3d.getChild(id);
-    if (geo) {
-        this.$3d.removeGeometry(geo);
-        this.$2d.deleteMesh(geo.tid);
-    }
-}
-/**
- * 设置物体可见性
- * @param {number} id 物体id
- * @param {boolean} value 是否可见
- */
-Stage.prototype.meshVisible = function(id, value) {
-    var geo = this.$3d.getChild(id);
-    if (geo) {
-        geo.visible = value;
-        if (this.view != "3d") {
-            this.$2d.meshVisible(id, value);
-        }
-    }
-}
+
+
 /**
  * 锁定物体
  * @param {number} id 物体id
@@ -76,14 +53,7 @@ Stage.prototype.meshLock = function(id, value) {
         geo.locked = value;
     }
 }
-/**
- * 根据物体获取3D物体
- * @param {number} id 物体id
- * @return {Object} 3D物体
- */
-Stage.prototype.getGeometryByID = function(id) {
-    return this.$3d.getChild(id);
-}
+
 
 
 /**

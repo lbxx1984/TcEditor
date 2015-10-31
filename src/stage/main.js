@@ -22,8 +22,8 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
         // 3D舞台
         this.$3d = new Stage3D({
             showGrid: true,
-            clearColor: 0x383838,
-            gridColor: 0x5D5D5D,
+            clearColor: 0x3D3D3D,
+            gridColor: 0x8F908A,
             container: param.container3,
             meshHoverColor: 0xd97915,
             width: param.container3.clientWidth,
@@ -33,8 +33,8 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
         this.$2d = new Stage2D({
             stage3d: this.$3d,
             showGrid: true,
-            clearColor: '#383838',
-            gridColor: '#5D5D5D',
+            clearColor: '#3D3D3D',
+            gridColor: '#8F908A',
             gridStep: 20,
             scale: 2,
             container: param.container2,
@@ -52,6 +52,18 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
         this.$3d.plugin.cameraController = this.cameraController;
         this.cameraController.param.stages.push(this.$3d);
     }
+
+
+    /**
+     * 切换物体属性
+     *
+     * @param {string} uuid 物体uuid
+     */
+    Stage.prototype.toogleMeshProp = function(uuid, prop) {
+        var v = !this.$3d.children[uuid][prop];
+        this.$3d.children[uuid][prop] = v;
+        this.$2d.renderMesh();
+    };
 
 
     /**
@@ -119,6 +131,18 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
     Stage.prototype.add = function (mesh) {
         this.$3d.children[mesh.uuid] = mesh;
         this.$3d.scene.add(mesh);
+    };
+
+
+    /**
+     * 删除物体
+     * @param {string} uuid 物体uuid
+     */
+    Stage.prototype.remove = function(uuid) {
+        this.$3d.scene.remove(this.$3d.children[uuid]);
+        delete this.$3d.children[uuid];
+        this.$2d.loadMesh();
+        this.$2d.renderMesh();
     };
 
 
