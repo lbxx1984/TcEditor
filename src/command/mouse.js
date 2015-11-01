@@ -3,8 +3,6 @@ define(function (Require) {
     var _down = false;
     var _mouse = [-1, -1];
     var _mouse3d = [0, 0, 0];
-    var _hover = null;
-    var _active = null;
 
     /**通用事件工厂**/
 
@@ -17,47 +15,8 @@ define(function (Require) {
         _down = false;
     }
 
-    /**辅助方法**/
-
-    /**
-     * 鼠标移入移出物体改变颜色
-     */
-    function hover(mesh, stage) {
-        clearHover();
-        if (!mesh) return;
-        _hover = mesh;
-        addHover();
-        function clearHover() {
-            if (!_hover) return;
-            var temp = _hover;
-            _hover = null;
-            if (_active && _active.uuid === temp.uuid) return;
-            stage.changeMeshColor(temp.uuid);
-        }
-        function addHover() {
-            if (!_hover) return;
-            if (_active && _active.uuid === _hover.uuid) return;
-            stage.changeMeshColor(_hover.uuid, 'hover');
-        }
-    }
-
-    /**
-     * 让物体处于激活状态
-     */
-    function active(mesh, stage) {
-        if (_active) {
-            stage.$2d.activeMesh = stage.activeMesh = '';
-            stage.changeMeshColor(_active.uuid);
-        }
-        _active = mesh;
-        if (_active) {
-            stage.$2d.activeMesh = stage.activeMesh = _active.uuid;
-            stage.changeMeshColor(_active.uuid, 'active');
-        }
-    }
-
-
     return {
+
         cameramove: {
             mousemove: function (e) {
                 if (!_down) {
@@ -78,15 +37,17 @@ define(function (Require) {
             },
             mouseRightClick: function (e) {
                 _down = false;
-                active(null, this.stage);
-                hover(null, this.stage);
+                this.stage.changeMeshColor(null, 'active');
                 if (this.transformer.attached) {
                     this.transformer.detach();
                 }
             },
             mousemove: function (e) {
                 if (!_down) {
-                    hover(this.stage.getMeshByMouse(e), this.stage);
+                    var mesh = this.stage.getMeshByMouse(e);
+                    if (mesh == null || (mesh != null && !this.stage.activeMesh[mesh.uuid])) {
+                        this.stage.changeMeshColor(mesh, 'hover');
+                    }
                     return;
                 }
                 var mouse3d = this.stage.getMouse3D(e);
@@ -102,6 +63,10 @@ define(function (Require) {
                 this.transformer.$2d.command = null;
             },
             mousedown: function (e) {
+                // 右键
+                if (e.button === 2) {
+                    return;
+                }
                 _down = true;
                 var mouse3d = this.stage.getMouse3D(e);
                 _mouse3d = [mouse3d.x, mouse3d.y, mouse3d.z];
@@ -110,14 +75,15 @@ define(function (Require) {
                 if (mesh == null) {
                     return;
                 }
-                active(mesh, this.stage);
+                this.stage.changeMeshColor(null, 'active');
+                this.stage.changeMeshColor(mesh, 'active');
                 this.transformer.attach(mesh);
             },
             unload: function () {
                 _down = false;
                 this.transformer.detach();
-                active(null, this.stage);
-                hover(null, this.stage);
+                this.stage.changeMeshColor(null, 'active');
+                this.stage.changeMeshColor(null, 'active');
                 var controlBar = this.ui.refs.containerleft.refs.controlbar;
                 controlBar.setState({enablebar: controlBar.state.enablebar.replace(/transformer\|/g, '')});
             }
@@ -126,7 +92,10 @@ define(function (Require) {
             mousemove: function (e) {
                 var mesh = null;
                 if (this.morpher.state === 0 && !_down) {
-                    hover(this.stage.getMeshByMouse(e), this.stage);
+                    mesh = this.stage.getMeshByMouse(e);
+                    if (mesh == null || (mesh != null && !this.stage.activeMesh[mesh.uuid])) {
+                        this.stage.changeMeshColor(mesh, 'hover');
+                    }
                     return;
                 }
                 if (this.morpher.state === 1 && !_down) {
@@ -136,7 +105,10 @@ define(function (Require) {
                         this.morpher.callFunction('hoverJoint', mesh);
                     }
                     else {
-                        hover(this.stage.getMeshByMouse(e), this.stage);
+                        mesh = this.stage.getMeshByMouse(e);
+                        if (mesh == null || (mesh != null && !this.stage.activeMesh[mesh.uuid])) {
+                            this.stage.changeMeshColor(mesh, 'hover');
+                        }
                     }
                     return;
                 }
@@ -154,6 +126,7 @@ define(function (Require) {
                 this.morpher.$2d.command = null;
             },
             mousedown: function (e) {
+                if (e.button === 2) return;
                 var mesh = null;
                 var mouse3d = this.stage.getMouse3D(e);
                 _down = true;
@@ -164,7 +137,8 @@ define(function (Require) {
                         mesh = this.stage.getMeshByMouse(e);
                         if (mesh != null) {
                             this.morpher.attach(mesh);
-                            active(mesh, this.stage);
+                            this.stage.changeMeshColor(null, 'active');
+                            this.stage.changeMeshColor(mesh, 'active');
                         }
                         break;
                     case 1:
@@ -175,7 +149,8 @@ define(function (Require) {
                         else {
                             mesh = this.stage.getMeshByMouse(e);
                             if (mesh) {
-                                active(mesh, this.stage);
+                                this.stage.changeMeshColor(null, 'active');
+                                this.stage.changeMeshColor(mesh, 'active');
                                 this.morpher.attach(mesh);
                             }
                         }
@@ -191,16 +166,16 @@ define(function (Require) {
                     return;
                 }
                 if (this.morpher.state === 1) {
-                    hover(null, this.stage);
-                    active(null, this.stage);
+                    this.stage.changeMeshColor(null, 'active');
+                    this.stage.changeMeshColor(null, 'hover');
                     this.morpher.detach();
                     return;
                 }
             },
             unload: function () {
                 _down = false;
-                hover(null, this.stage);
-                active(null, this.stage);
+                this.stage.changeMeshColor(null, 'active');
+                this.stage.changeMeshColor(null, 'hover');
                 this.morpher.detach();
             }
         }

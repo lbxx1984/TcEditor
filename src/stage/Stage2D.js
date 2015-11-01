@@ -6,6 +6,78 @@
 define(['./Mesh2D'], function (Mesh2D) {
 
 
+    /*
+     * 2D舞台插件构造函数
+     * @constructor
+     *
+     * @param {Object} param配置参数
+     * @param {Object} param.stage3d对应的3D舞台
+     * @param {HtmlElement} param.container 舞台容器DOM
+     * @param {number} param.width 舞台宽度
+     * @param {number} param.height 舞台高度
+     * @param {boolean} param.showGrid 是否显示网格
+     * @param {number} param.gridSize 坐标格尺寸
+     * @param {string} param.clearColor 舞台背景颜色
+     * @param {string} param.gridColor 网格的颜色
+     * @param {string} param.meshColor 物体无状态时的颜色
+     * @param {string} param.meshActiveColor 物体处于选中状态的颜色
+     * @param {string} param.meshHoverColor 物体处于鼠标悬浮时的颜色
+     * @param {string} param.scale 摄像机距离
+     */
+    function Stage2D(param) {
+        // stage
+        this.stage = param.stage;
+        // stage3d
+        this.stage3d = param.stage.$3d;
+        // 物体hash，存放2D物体
+        this.children = {};
+        // 自定义事件hash表
+        this.events = {};
+        // 控制参数
+        this.param = {
+            // 舞台参数
+            container: param.container,
+            width: param.width || 1000,
+            height: param.height || 800,
+            // helper参数
+            clearColor: (param.clearColor == null) ? '#FFF' : param.clearColor,
+            showGrid: (param.showGrid == null) ? false : true,
+            gridColor: (param.gridColor == null) ? '#FFF' : param.gridColor,
+            gridHighLightColor: (param.gridHighLightColor == null) ? '#858585' : param.gridHighLightColor,
+            gridStep: (param.gridStep == null) ? 50 : param.gridStep, // 格子的空间宽度，不是图纸宽度
+            colors: {
+                xoz: ['#FF0000', '#4285F4'],
+                xoy: ['#FF0000', '#3E9B1C'],
+                zoy: ['#4285F4', '#3E9B1C']
+            },
+            // 物体参数
+            meshColor: (param.meshColor == null) ? '#F0F0F0' : param.meshColor,
+            meshActiveColor: (param.meshActiveColor == null) ? '#D97915' : param.meshActiveColor,
+            meshHoverColor: (param.mesnHoverColor == null) ? 'yellow' : param.meshHoverColor,
+            // 摄像机参数
+            eyes: 'xoz', // 观察视角: xoz、xoy、zoy
+            // 缩放比例，每一个屏幕像素代表多少个空间像素，相当于比例尺1:scale
+            scale: parseInt(param.scale, 10) || 2, 
+            cameraLookAt: {x: 0, y: 0}
+        };
+        // 坐标格绘板
+        this.gridCanvas = document.createElement('canvas');
+        // 物体绘板
+        this.meshCanvas = document.createElement('canvas');
+        // 辅助控制器绘板（SVG）
+        this.helperContainer = document.createElement('div');
+        // 绘板接口
+        this.gridRender = this.gridCanvas.getContext('2d');
+        this.meshRender = this.meshCanvas.getContext('2d');
+        this.helperRender = Raphael(this.helperContainer, this.param.width, this.param.height);
+        this.param.container.appendChild(this.gridCanvas);
+        this.param.container.appendChild(this.meshCanvas);
+        this.param.container.appendChild(this.helperContainer);
+        // 绘制
+        this.resize(this.param.width, this.param.height);
+    }
+
+
     /**
      * 获取鼠标下的可见物体
      *
@@ -14,8 +86,8 @@ define(['./Mesh2D'], function (Mesh2D) {
     Stage2D.prototype.getMeshByMouse = function(e) {
         var x = e.offsetX;
         var y = e.offsetY;
+        // 重绘一次
         var intersects = this.renderMesh(x, y);
-
         if (intersects.length === 0) {
             return null;
         }
@@ -202,11 +274,9 @@ define(['./Mesh2D'], function (Mesh2D) {
      *
      * @param {?number} x 鼠标位置
      * @param {?number} y 鼠标位置
-     * @param {?string} hover 处于hover状态的物体uuid集合，以;分割
-     * @return {?Array.<Mesh2D>} 
+     * @return {Array.<Mesh2D>} 鼠标下的物体集合
      */
-    Stage2D.prototype.renderMesh = function (x, y, hover) {
-        if (typeof hover !== 'string') hover = '';
+    Stage2D.prototype.renderMesh = function (x, y) {
         var ctx = this.meshRender;
         var param = this.param;
         ctx.clearRect(0, 0, param.width, param.height);
@@ -217,11 +287,9 @@ define(['./Mesh2D'], function (Mesh2D) {
             if (!mesh3d.visible) {
                 continue;
             }
-            var uuid = mesh3d.uuid;
-            var color = param.meshColor;
-            if (uuid === hover) color = param.meshHoverColor;
-            if (uuid === this.activeMesh) color = param.meshActiveColor; 
-            if (mesh2d.render(ctx, color, x, y)) result.push(mesh3d);
+            if (mesh2d.render(ctx, x, y)) {
+                result.push(mesh3d);
+            }
         }
         return result;
     };
@@ -235,7 +303,11 @@ define(['./Mesh2D'], function (Mesh2D) {
         var meshes = this.stage3d.children;
         for (var key in meshes) {
             if (!meshes.hasOwnProperty(key)) continue;
-            var mesh = new Mesh2D({mesh: meshes[key], stage: this});
+            var mesh = new Mesh2D({
+                mesh:meshes[key],
+                stage: this,
+                color: this.stage.activeMesh[key] ? this.param.meshActiveColor : this.param.meshColor
+            });
             this.children[key] = mesh;
         }
     };
@@ -252,76 +324,6 @@ define(['./Mesh2D'], function (Mesh2D) {
         evt.initEvent('rendered', false, true);
         this.param.container.dispatchEvent(evt);
     };
-
-
-    /*
-     * 2D舞台插件构造函数
-     * @constructor
-     *
-     * @param {Object} param配置参数
-     * @param {Object} param.stage3d对应的3D舞台
-     * @param {HtmlElement} param.container 舞台容器DOM
-     * @param {number} param.width 舞台宽度
-     * @param {number} param.height 舞台高度
-     * @param {boolean} param.showGrid 是否显示网格
-     * @param {number} param.gridSize 坐标格尺寸
-     * @param {string} param.clearColor 舞台背景颜色
-     * @param {string} param.gridColor 网格的颜色
-     * @param {string} param.meshColor 物体无状态时的颜色
-     * @param {string} param.meshActiveColor 物体处于选中状态的颜色
-     * @param {string} param.meshHoverColor 物体处于鼠标悬浮时的颜色
-     * @param {string} param.scale 摄像机距离
-     */
-    function Stage2D(param) {
-        // stage3d
-        this.stage3d = param.stage3d;
-        // 物体hash，存放2D物体
-        this.children = {};
-        //自定义事件hash表
-        this.events = {};
-        // 控制参数
-        this.param = {
-            // 舞台参数
-            container: param.container,
-            width: param.width || 1000,
-            height: param.height || 800,
-            // helper参数
-            clearColor: (param.clearColor == null) ? '#FFF' : param.clearColor,
-            showGrid: (param.showGrid == null) ? false : true,
-            gridColor: (param.gridColor == null) ? '#FFF' : param.gridColor,
-            gridHighLightColor: (param.gridHighLightColor == null) ? '#858585' : param.gridHighLightColor,
-            gridStep: (param.gridStep == null) ? 50 : param.gridStep, // 格子的空间宽度，不是图纸宽度
-            colors: {
-                xoz: ['#FF0000', '#4285F4'],
-                xoy: ['#FF0000', '#3E9B1C'],
-                zoy: ['#4285F4', '#3E9B1C']
-            },
-            // 物体参数
-            meshColor: (param.meshColor == null) ? '#F0F0F0' : param.meshColor,
-            meshActiveColor: (param.meshActiveColor == null) ? '#D97915' : param.meshActiveColor,
-            meshHoverColor: (param.mesnHoverColor == null) ? 'yellow' : param.meshHoverColor,
-            // 摄像机参数
-            eyes: 'xoz', // 观察视角: xoz、xoy、zoy
-            // 缩放比例，每一个屏幕像素代表多少个空间像素，相当于比例尺1:scale
-            scale: parseInt(param.scale, 10) || 2, 
-            cameraLookAt: {x: 0, y: 0}
-        };
-        // 坐标格绘板
-        this.gridCanvas = document.createElement('canvas');
-        // 物体绘板
-        this.meshCanvas = document.createElement('canvas');
-        // 辅助控制器绘板（SVG）
-        this.helperContainer = document.createElement('div');
-        // 绘板接口
-        this.gridRender = this.gridCanvas.getContext('2d');
-        this.meshRender = this.meshCanvas.getContext('2d');
-        this.helperRender = Raphael(this.helperContainer, this.param.width, this.param.height);
-        this.param.container.appendChild(this.gridCanvas);
-        this.param.container.appendChild(this.meshCanvas);
-        this.param.container.appendChild(this.helperContainer);
-        // 绘制
-        this.resize(this.param.width, this.param.height);
-    }
 
 
     return Stage2D;

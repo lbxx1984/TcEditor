@@ -24,7 +24,8 @@ define([
             clientY: e.clientY,
             offsetX: e.offsetX + parent.offsetLeft,
             offsetY: e.offsetY + parent.offsetTop,
-            target: e.target 
+            target: e.target,
+            button: e.button
         };
         return result;
     }

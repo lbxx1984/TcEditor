@@ -19,6 +19,10 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
         this.container1 = param.container1;
         this.container2 = param.container2;
         this.container3 = param.container3;
+        // {Array.<Mesh3D>} 处于激活状态的mesh hash.
+        this.activeMesh = {};
+        // {?Mesh3D} 处于鼠标悬浮状态的mesh
+        this.hoverMesh = null;
         // 3D舞台
         this.$3d = new Stage3D({
             showGrid: true,
@@ -31,7 +35,7 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
         });
         // 2D舞台
         this.$2d = new Stage2D({
-            stage3d: this.$3d,
+            stage: this,
             showGrid: true,
             clearColor: '#3D3D3D',
             gridColor: '#8F908A',
@@ -67,41 +71,112 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
 
 
     /**
-     * 修改物体颜色
+     * 修改物体颜色，并在必要时重新渲染2D舞台
      *
-     * @param {string} uuid 物体标识
+     * @param {?Mesh3D} mesh 物体
      * @param {?string} type 要切换的颜色 hover,active,null(原色)
+     * (null, 'hover'): 还原处于hover状态物体
+     * (null, 'active'): 还原处于active状态物体
+     * (string, 'hover'): 将uuid标明的物体设为hover状态
+     * (string, 'active'): 将uuid标明的物体设为active状态
      */
-    Stage.prototype.changeMeshColor = function (uuid, type) {
-        var mesh = this.$3d.children[uuid];
+    Stage.prototype.changeMeshColor = function (mesh, type) {
+
         var editorKey = '__tceditor__';
-        if (!mesh) {
+        var color3D = {
+            hover: this.$3d.param.meshHoverColor,
+            active: this.$3d.param.meshActiveColor
+        };
+        var color2D = {
+            normal: this.$2d.param.meshColor,
+            active: this.$2d.param.meshActiveColor,
+            hover: this.$2d.param.meshHoverColor
+        };
+        var me = this;
+
+        // 清空hover
+        if (mesh == null && type === 'hover' && this.hoverMesh != null) {
+            clearMeshColor(this.hoverMesh);
+            this.hoverMesh = null;
+            render2D();
             return;
         }
-        // 记录3D物体原始颜色
+
+        // 清空active
+        if (mesh == null && type === 'active') {
+            var del = 0;
+            for (var key in this.activeMesh) {
+                del++;
+                setMeshColor(this.activeMesh[key], this.activeMesh[key][editorKey].color, color2D.normal);
+                delete this.activeMesh[key];
+            }
+            if (del > 0) {
+                render2D();
+            }
+            return;
+        }
+
+        // 记录物体颜色
+        if (mesh == null) {
+            return;
+        }
         if (!mesh.hasOwnProperty(editorKey)) {
             mesh[editorKey] = {};
         }
         if (!mesh[editorKey].hasOwnProperty('color')) {
             mesh[editorKey].color = mesh.material.color.getHex();
         }
-        // 清理
-        if (!type) {
-            mesh.material.setValues({color: mesh[editorKey].color});
-            this.$2d.renderMesh(null, null, '');
+
+        // 设置hover
+        if (type === 'hover') {
+            if (this.hoverMesh != null && this.hoverMesh.uuid === mesh.uuid) {
+                return;
+            }
+            if (this.hoverMesh != null && this.hoverMesh.uuid !== mesh.uuid) {
+                clearMeshColor(this.hoverMesh);
+            }
+            this.hoverMesh = mesh;
+            setMeshColor(mesh, color3D.hover, color2D.hover);
+            render2D();
             return;
         }
-        // 重上色
-        var colors = {
-            hover: this.$3d.param.meshHoverColor,
-            active: this.$3d.param.meshActiveColor
-        };
-        if (colors.hasOwnProperty(type)) {
-            mesh.material.setValues({color: colors[type]});
+
+        // 设置active
+        if (type === 'active') {
+            if (this.activeMesh[mesh.uuid]) {
+                return;
+            }
+            this.activeMesh[mesh.uuid] = mesh;
+            setMeshColor(mesh, color3D.active, color2D.active);
+            render2D();
+            return;
         }
-        // 处理2D舞台
-        if (this.type === '$2d') {
-            this.$2d.renderMesh(null, null, (type === 'hover' ? uuid : ''));
+
+        // 设置物体颜色
+        function setMeshColor(geo, c1, c2) {
+            geo.material.setValues({color: c1});
+            var geo2d = me.$2d.children[geo.uuid];
+            if (geo2d) {
+                me.$2d.children[geo.uuid].color =c2;
+            }
+        }
+
+        // 还原mesh为本色或者active颜色
+        function clearMeshColor(geo) {
+            var c1 = geo[editorKey].color;
+            var c2 = color2D.normal;
+            if (me.activeMesh[geo.uuid]) {
+                c1 = color3D.active;
+                c2 = color2D.active;
+            }
+            setMeshColor(geo, c1, c2);
+        }
+
+        // 刷新2D舞台
+        function render2D() {
+            if (me.type === '$2d') {
+                me.$2d.renderMesh();
+            }
         }
     };
 

@@ -19,6 +19,8 @@ define(['math'], function (math) {
         this.mesh = param.mesh;
         // 2D舞台参数
         this.param = param.stage.param;
+        // 物体当前颜色
+        this.color = param.color || '#FFF';
         // 本物体绘制几何中心
         this.center = [0, 0];
         // 物体所有顶点的2D坐标
@@ -47,18 +49,17 @@ define(['math'], function (math) {
      * 绘制物体
      *
      * @param {Object} ctx canvas的绘制器
-     * @param {string} color 颜色
      * @param {?number} x 鼠标位置
      * @param {?number} y 鼠标位置
      * @return {boolean} 鼠标是否在物体上
      */
-    Mesh2D.prototype.render = function(ctx, color, x, y) {
+    Mesh2D.prototype.render = function(ctx, x, y) {
         var faces = this.faces;
         var points = this.vertices;
         var isMouseIn = false;
         ctx.beginPath();
         ctx.lineStyle = 2;
-        ctx.fillStyle = color;
+        ctx.fillStyle = this.color;
         for (var n = 0; n < faces.length; n++) {
             var a = faces[n][0];
             var b = faces[n][1];
