@@ -15,8 +15,20 @@ define(function (Require) {
         _down = false;
     }
 
-    return {
+    function attach(me, helper, mesh) {
+        me[helper].attach(mesh);
+        me.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({selected: mesh.uuid + ';'});
+        me.stage.changeMeshColor(null, 'active');
+        me.stage.changeMeshColor(mesh, 'active');
+    }
 
+    function detach(me, helper) {
+        me[helper].detach();
+        me.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({selected: ''});
+        me.stage.changeMeshColor(null, 'active');
+    }
+
+    return {
         cameramove: {
             mousemove: function (e) {
                 if (!_down) {
@@ -31,15 +43,15 @@ define(function (Require) {
         },
         pickgeo: {
             loaded: function () {
-                var controlBar = this.ui.refs.containerleft.refs.controlbar;
-                controlBar.setState({enablebar: controlBar.state.enablebar + 'transformer|'});
                 _down = false;
+                var controlBar = this.ui.refs.containerleft.refs.controlbar
+                controlBar.setState({enablebar: controlBar.state.enablebar + 'transformer|'}); 
             },
             mouseRightClick: function (e) {
                 _down = false;
                 this.stage.changeMeshColor(null, 'active');
                 if (this.transformer.attached) {
-                    this.transformer.detach();
+                    detach(this, 'transformer');
                 }
             },
             mousemove: function (e) {
@@ -63,7 +75,7 @@ define(function (Require) {
                 this.transformer.$2d.command = null;
             },
             mousedown: function (e) {
-                // 右键
+                // 右键返回
                 if (e.button === 2) {
                     return;
                 }
@@ -75,17 +87,15 @@ define(function (Require) {
                 if (mesh == null) {
                     return;
                 }
-                this.stage.changeMeshColor(null, 'active');
-                this.stage.changeMeshColor(mesh, 'active');
-                this.transformer.attach(mesh);
+                attach(this, 'transformer', mesh);
             },
             unload: function () {
                 _down = false;
-                this.transformer.detach();
-                this.stage.changeMeshColor(null, 'active');
-                this.stage.changeMeshColor(null, 'active');
+                detach(this, 'transformer');
                 var controlBar = this.ui.refs.containerleft.refs.controlbar;
-                controlBar.setState({enablebar: controlBar.state.enablebar.replace(/transformer\|/g, '')});
+                controlBar.setState({
+                    enablebar: controlBar.state.enablebar.replace(/transformer\|/g, '')
+                });
             }
         },
         pickjoint: {
@@ -136,9 +146,7 @@ define(function (Require) {
                     case 0:
                         mesh = this.stage.getMeshByMouse(e);
                         if (mesh != null) {
-                            this.morpher.attach(mesh);
-                            this.stage.changeMeshColor(null, 'active');
-                            this.stage.changeMeshColor(mesh, 'active');
+                            attach(this, 'morpher', mesh);
                         }
                         break;
                     case 1:
@@ -149,9 +157,7 @@ define(function (Require) {
                         else {
                             mesh = this.stage.getMeshByMouse(e);
                             if (mesh) {
-                                this.stage.changeMeshColor(null, 'active');
-                                this.stage.changeMeshColor(mesh, 'active');
-                                this.morpher.attach(mesh);
+                                attach(this, 'morpher', mesh);
                             }
                         }
                         break;
@@ -166,17 +172,13 @@ define(function (Require) {
                     return;
                 }
                 if (this.morpher.state === 1) {
-                    this.stage.changeMeshColor(null, 'active');
-                    this.stage.changeMeshColor(null, 'hover');
-                    this.morpher.detach();
+                    detach(this, 'morpher');
                     return;
                 }
             },
             unload: function () {
                 _down = false;
-                this.stage.changeMeshColor(null, 'active');
-                this.stage.changeMeshColor(null, 'hover');
-                this.morpher.detach();
+                detach(this, 'morpher');
             }
         }
     };

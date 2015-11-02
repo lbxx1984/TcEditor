@@ -8,14 +8,32 @@ define(function (Require) {
         if (me[helper].mesh && me[helper].mesh.uuid === uuid) {
             me.stage.changeMeshColor(null, 'active');
             me[helper].detach();
+            me.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({selected: ''});
         }
+    }
+
+    function attachMesh(me, helper, mesh) {
+        if (me[helper].mesh) {
+            if (me[helper].mesh.uuid === mesh.uuid) {
+                return;
+            }
+            me.stage.changeMeshColor(null, 'active');
+            me[helper].detach();
+        }
+        me[helper].attach(mesh);
+        me.stage.changeMeshColor(mesh, 'active');
+        me.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({
+            selected: mesh.uuid + ';'
+        });
     }
 
     function toogleMeshProp(me, uuid, prop) {
         me.stage.toogleMeshProp(uuid, prop);
         detachMesh(me, 'transformer', uuid);
         detachMesh(me, 'morpher', uuid);
-        me.ui.refs.containerright.refs.stageContent.refs.meshBox.setState(me.stage.$3d.children);
+        me.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({
+            meshes: me.stage.$3d.children
+        });
     }
 
     return {
@@ -42,14 +60,31 @@ define(function (Require) {
         },
         meshDelete: function (cmd) {
             var uuid = getUUID(cmd);
+            var mesh = this.stage.$3d.children[getUUID(cmd)];
+            if (mesh.locked) {
+                return;
+            }
             this.stage.remove(uuid);
             detachMesh(this, 'transformer', uuid);
             detachMesh(this, 'morpher', uuid);
-            delete this.ui.refs.containerright.refs.stageContent.refs.meshBox.state[uuid];
-            this.ui.refs.containerright.refs.stageContent.refs.meshBox.setState(this.stage.$3d.children);
+            this.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({
+                meshes: this.stage.$3d.children
+            });
         },
         meshSelect: function (cmd) {
-            console.log(cmd);
+            var sysTool = this.ui.refs.containerleft.refs.controlbar.state.systemtool;
+            var mesh = this.stage.$3d.children[getUUID(cmd)];
+            if (!mesh || !mesh.visible || mesh.locked) {
+                return;
+            }
+            if (sysTool === 'pickgeo') {
+                attachMesh(this, 'transformer', mesh);
+                return;
+            }
+            if (sysTool === 'pickjoint') {
+                attachMesh(this, 'morpher', mesh);
+                return;
+            }
         }
     };
 });

@@ -82,7 +82,9 @@ define(['../geometry/main'], function (geometry) {
             this.stage.add(mesh);
             // 刷新右侧
             mesh.birth = new Date().getTime();
-            this.ui.refs.containerright.refs.stageContent.refs.meshBox.setState(this.stage.$3d.children);
+            this.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({
+                meshes: this.stage.$3d.children
+            });
         };
     }
 
