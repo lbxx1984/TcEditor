@@ -315,3 +315,68 @@ define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stag
 
     return Stage;
 });
+
+/**
+ * 修改物体
+ * @param {Object} geo 3D物体对象
+ * @param {string} type 物体修改的类型：
+ *        joint：修改关节；
+ *        scale：缩放；
+ *        position：位置；
+ *        rotation：旋转
+ * @param {number|string} item 具体操作分量
+ *        当type为‘joint’时，item为number，表示关节的索引号
+ *        当type未其他时，item为string，取x、y、z，表示对应分量
+ * @param {Array|number} value 变更值
+ *        当type为‘joint’时，value为数组，表示关节的世界坐标
+ *        当type为其他时，value为number，表示需要设置的值
+ * @param {boolean} sync 当type为‘scale’时，是否进行三轴同时缩放
+ */
+/*
+Stage.prototype.meshTransform = function(geo, type, item, value, sync) {
+    if (!geo) return;
+    if (type == "joint") {
+        var pos = tcMath.Global2Local(value[0], value[1], value[2], geo);
+        geo.geometry.vertices[item].x = pos[0];
+        geo.geometry.vertices[item].y = pos[1];
+        geo.geometry.vertices[item].z = pos[2];
+        geo.geometry.verticesNeedUpdate = true;
+    } else {
+        if (type != "scale") {
+            geo[type][item] = value;
+        } else {
+            if (sync) {
+                geo.scale.x = geo.scale.x * value;
+                geo.scale.y = geo.scale.y * value;
+                geo.scale.z = geo.scale.z * value;
+            } else {
+                geo.scale[item] = geo.scale[item] * value;
+            }
+        }
+    }
+    this.$2d.fresh();
+    if (typeof this.eventHandle["onMesh3DFresh"] == "function") {
+        this.eventHandle["onMesh3DFresh"]();
+    }
+}
+
+    /***外部接口***/
+    /**
+     * 设置编辑器背景色
+     * @param {string} c CSS形式颜色，如红色：#FF0000
+     */
+     /*
+    _this.setRendererColor = function(c) {
+        _renderer.setClearColor(parseInt(c.substr(1), 16));
+    }
+
+    /**
+     * 设置网格颜色
+     * @param {string} e CSS颜色
+     */
+     /*
+    _this.setGridColor = function(e) {
+        _gridColor = parseInt(e.substr(1), 16);
+        _grid.setColors(_gridColor, _gridColor);
+    }
+*/
