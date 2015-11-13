@@ -1,4 +1,7 @@
-define(['./mesh.jsx'], function (Mesh) {
+define(function (require) {
+
+    var Mesh = require('./mesh.jsx');
+
     return React.createClass({
         getInitialState: function () {
             return {

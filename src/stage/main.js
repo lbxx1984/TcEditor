@@ -3,8 +3,11 @@
  * @author Haitao Li
  * @mail 279641976@qq.com
  */
-define(['./Stage2D', './Stage3D', './CameraController'], function (Stage2D, Stage3D, CameraController) {
+define(function (require) {
 
+    var Stage2D = require('./Stage2D');
+    var Stage3D = require('./Stage3D');
+    var CameraController = require('./CameraController');
 
     /**
      * @constructor

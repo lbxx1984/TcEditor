@@ -1,5 +1,6 @@
-define(['math'], function (math) {
+define(function (require) {
 
+    var math = require('math');
 
     /**
      * @constructor

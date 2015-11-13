@@ -1,5 +1,7 @@
-define(['./Morpher3D', './Morpher2D'], function (Morpher3D, Morpher2D) {
+define(function (require) {
 
+    var Morpher3D = require('./Morpher3D');
+    var Morpher2D = require('./Morpher2D');
 
     function Morpher(stage) {
         this.type = '$3d';

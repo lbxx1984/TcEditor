@@ -1,9 +1,14 @@
 /**
  * @file 主启动文件
  */
-define([
-    './application.jsx', './stage/main', './command/main', './transformer/main', './morpher/main', './extend'
-], function (App, Stage, Routing, Transformer, Morpher, extend) {
+define(function (require) {
+
+    require('./extend');
+    var App = require('./application.jsx');
+    var Stage = require('./stage/main');
+    var Routing = require('./command/main');
+    var Transformer = require('./transformer/main');
+    var Morpher = require('./morpher/main');
 
     var routing = new Routing('mouse-cameramove');
     var uiProps = {

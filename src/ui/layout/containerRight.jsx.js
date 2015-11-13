@@ -1,7 +1,12 @@
-define([
-    'config', 'component/mousePositionBar.jsx', 'component/tabNavigator.jsx',
-    'component/stage.jsx', 'component/material.jsx', 'component/geometry.jsx'
-], function (config, MousePositionBar, TabNavigator, Stage, Material, Geometry) {
+define(function (require) {
+
+    var config = require('config');
+    var MousePositionBar = require('component/mousePositionBar.jsx');
+    var TabNavigator = require('component/tabNavigator.jsx');
+    var Stage = require('component/stage.jsx');
+    var Material = require('component/material.jsx');
+    var Geometry = require('component/geometry.jsx');
+
     return React.createClass({
         getInitialState: function () {
             return {

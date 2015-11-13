@@ -3,8 +3,9 @@
  * @author Haitao Li
  * @mail 279641976@qq.com
  */
-define(['math'], function (math) {
+define(function (require) {
 
+    var math = require('math');
 
     /**
      * 构造函数

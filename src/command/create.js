@@ -1,8 +1,9 @@
 /**
  * @file 拖拽创建物体引擎
  */
-define(['../geometry/main'], function (geometry) {
+define(function (require) {
 
+    var geometry = require('../geometry/main');
     var _mouseDraged = false;
     var _down = false;
     var _mouse3D = null;

@@ -1,6 +1,12 @@
-define([
-    './tool', './mouse', './create', './trans', './view', './tab'
-], function (tool, mouse, create, trans, view, tab) {
+define(function (require) {
+
+
+    var tool = require('./tool');
+    var mouse = require('./mouse');
+    var create = require('./create');
+    var trans = require('./trans');
+    var view = require('./view');
+    var tab = require('./tab');
 
 
     /**

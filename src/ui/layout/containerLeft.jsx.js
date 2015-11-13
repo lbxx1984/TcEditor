@@ -1,6 +1,10 @@
-define([
-    'config', 'component/menu.jsx', 'component/controlBar.jsx', 'layout/containerStage.jsx'
-], function (config, Menu, ControlBar, Stage) {
+define(function (require) {
+
+    var config = require('config');
+    var Menu = require('component/menu.jsx');
+    var ControlBar = require('component/controlBar.jsx');
+    var Stage = require('layout/containerStage.jsx');
+
     return React.createClass({
         render: function () {
 

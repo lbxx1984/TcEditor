@@ -3,8 +3,9 @@
  * @author Haitao Li
  * @mail 279641976@qq.com
  */
-define(['./Mesh2D'], function (Mesh2D) {
+define(function (require) {
 
+    var Mesh2D = require('./Mesh2D');
 
     /*
      * 2D舞台插件构造函数

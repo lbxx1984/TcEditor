@@ -1,4 +1,6 @@
-define(['layout/containerRight.jsx', 'layout/containerLeft.jsx'], function (ContainerRight, ContainerLeft) {
+define(function (require) {
+    var ContainerRight = require('layout/containerRight.jsx');
+    var ContainerLeft = require('layout/containerLeft.jsx');
     return React.createClass({
         render: function () {
             return (
