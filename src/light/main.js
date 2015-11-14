@@ -85,6 +85,22 @@ define(function (require) {
 
 
     /**
+     * 卸载灯光
+     */
+    Light.prototype.remove = function (uuid) {
+        if (this.attached && this.attached.uuid === uuid) this.detach();
+        this.stage.scene.remove(this.children[uuid]);
+        this.stage.scene.remove(this.anchors[uuid]);
+        delete this.children[uuid];
+        delete this.anchors[uuid];
+        this.anchorsArray = [];
+        for (var key in this.anchors) {
+            this.anchorsArray.push(this.anchors[key]);
+        }
+    };
+
+
+    /**
      * 显示操作锚
      */
     Light.prototype.show = function () {

@@ -36,6 +36,24 @@ define(function (Require) {
         });
     }
 
+    function toogleLightProp(me, uuid, prop) {
+        var ml = me.light;
+        var light = ml.children[uuid];
+        var anchor = ml.anchors[uuid];
+        var uiState = {light: ml.children};
+        light[prop] = !light[prop];
+        anchor[prop] = !anchor[prop];
+        if (prop === 'visible') {
+            ml.stage.scene[(light.visible ? 'add' : 'remove')](light);
+        }
+        if (ml.attached && ml.attached.uuid === uuid && (!light.visible || light.locked)) {
+            ml.detach();
+            uiState.selected = '';
+        }
+        me.ui.refs.containerright.refs.stageContent.refs.lightBox.setState(uiState);
+    }
+
+
     return {
         camerazoomin: function () {
             this.stage.callFunction('zoomCamera', true);
@@ -87,16 +105,27 @@ define(function (Require) {
             }
         },
         lightVisible: function (cmd) {
-            console.log(cmd);
+            toogleLightProp(this, getUUID(cmd), 'visible');  
         },
         lightLock: function (cmd) {
-            console.log(cmd);
+            toogleLightProp(this, getUUID(cmd), 'locked');  
         },
         lightDelete: function (cmd) {
-            console.log(cmd);
+            this.light.remove(getUUID(cmd));
+            this.ui.refs.containerright.refs.stageContent.refs.lightBox.setState({
+                light: this.light.children,
+                selected: this.light.attached ? this.light.attached.uuid + ';' : ''
+            });
         },
         lightSelect: function (cmd) {
-            console.log(cmd);
+            var sysTool = this.ui.refs.containerleft.refs.controlbar.state.systemtool;
+            var uuid = getUUID(cmd);
+            var anchor = this.light.anchors[uuid];
+            if (sysTool !== 'picklight' || !anchor.visible || anchor.locked) return;
+            this.light.attach(anchor);
+            this.ui.refs.containerright.refs.stageContent.refs.lightBox.setState({
+                selected: uuid + ';'
+            });
         }
     };
 });
