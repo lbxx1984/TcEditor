@@ -341,10 +341,6 @@ define(function (require) {
         this.helper.domElement.appendChild(this.renderer.domElement);
         this.updateCameraPosition();
 
-        var light = new THREE.PointLight(0xffffff, 1.5, 3000);
-        light.position.set(0, 900, 0);
-        this.scene.add(light);
-
         animate();
 
         /**场景渲染**/

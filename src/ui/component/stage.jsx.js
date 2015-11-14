@@ -1,6 +1,7 @@
 define(function (require) {
 
     var Mesh = require('./mesh.jsx');
+    var Light = require('./light.jsx');
 
     return React.createClass({
         getInitialState: function () {
@@ -28,6 +29,9 @@ define(function (require) {
                     </div>
                     <div className="label-l1">
                         <div className={lFC} data-cmd="lightVisible" onClick={this.foldingHandler}></div>Light
+                    </div>
+                    <div style={{display: this.state.lightVisible ? 'block' : 'none'}}>
+                        <Light ref="lightBox" commandRouting={this.props.commandRouting}/>
                     </div>
                 </div>
             );

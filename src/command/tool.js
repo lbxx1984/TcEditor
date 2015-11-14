@@ -85,6 +85,18 @@ define(function (Require) {
                 attachMesh(this, 'morpher', mesh);
                 return;
             }
+        },
+        lightVisible: function (cmd) {
+            console.log(cmd);
+        },
+        lightLock: function (cmd) {
+            console.log(cmd);
+        },
+        lightDelete: function (cmd) {
+            console.log(cmd);
+        },
+        lightSelect: function (cmd) {
+            console.log(cmd);
         }
     };
 });

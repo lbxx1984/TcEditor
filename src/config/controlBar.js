@@ -33,6 +33,11 @@ define(function (Require) {
                 {
                     label: '', class: ' icon icon-shuxingxuanze', cmd: 'mouse-pickjoint',
                     type: 'radio', group: 'systemtool', value: 'pickjoint', title: 'pick up joints of geometry (B)'
+                },
+                {
+                    label: '', class: ' icon icon-bulb', cmd: 'mouse-picklight',
+                    type: 'radio', group: 'systemtool', value: 'picklight', title: 'pick up light source (L)',
+                    disable: {cameraview: 'xoy;xoz;zoy;'}
                 }
             ]
         },

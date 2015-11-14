@@ -180,6 +180,47 @@ define(function (Require) {
                 _down = false;
                 detach(this, 'morpher');
             }
+        },
+        picklight: {
+            loaded: function () {
+                _down = false;
+                this.light.show();
+            },
+            unload: function () {
+                this.light.hide();
+                this.light.detach();
+                this.ui.refs.containerright.refs.stageContent.refs.lightBox.setState({
+                    selected: ''
+                });
+            },
+            mouseRightClick: function (e) {
+                _down = false;
+                this.light.detach();
+                this.ui.refs.containerright.refs.stageContent.refs.lightBox.setState({
+                    selected: ''
+                });
+            },
+            mousemove: function (e) {
+                if (!_down) {
+                    var mesh = this.stage.getMeshByMouse(e, this.light.anchorsArray);
+                    if (mesh) {
+                        this.light.hover(mesh.uuid);
+                    }
+                    else {
+                        this.light.hover('');   
+                    }
+                    return;
+                }
+            },
+            mouseup: function (e) {
+                _down = false;
+                var mesh = this.stage.getMeshByMouse(e, this.light.anchorsArray);
+                if (!mesh) return;
+                this.light.attach(mesh);
+                this.ui.refs.containerright.refs.stageContent.refs.lightBox.setState({
+                    selected: mesh.uuid + ';'
+                });
+            }
         }
     };
 
