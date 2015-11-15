@@ -3,7 +3,7 @@ define(function (require) {
     var config = require('config');
     var Menu = require('component/menu.jsx');
     var ControlBar = require('component/controlBar.jsx');
-    var Stage = require('layout/containerStage.jsx');
+    var ContainerStage = require('layout/containerStage.jsx');
 
     return React.createClass({
         render: function () {
@@ -31,7 +31,7 @@ define(function (require) {
 
             return (
                 <div className="container-left">
-                    <Stage ref="stage"/>
+                    <ContainerStage ref="stage"/>
                     <Menu {...menuProps}/>
                     <ControlBar ref="controlbar" {...controlBarProps}/>
                 </div>
