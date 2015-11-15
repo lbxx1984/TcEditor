@@ -8,7 +8,8 @@ define(function (Require) {
         if (me[helper].mesh && me[helper].mesh.uuid === uuid) {
             me.stage.changeMeshColor(null, 'active');
             me[helper].detach();
-            me.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({selected: ''});
+            var rightContainer = me.ui.refs.containerright;
+            rightContainer.refs.stageContent.refs.meshBox.setState({selected: ''});
         }
     }
 
@@ -22,9 +23,8 @@ define(function (Require) {
         }
         me[helper].attach(mesh);
         me.stage.changeMeshColor(mesh, 'active');
-        me.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({
-            selected: mesh.uuid + ';'
-        });
+        var rightContainer = me.ui.refs.containerright;
+        rightContainer.refs.stageContent.refs.meshBox.setState({selected: mesh.uuid + ';'});
     }
 
     function toogleMeshProp(me, uuid, prop) {

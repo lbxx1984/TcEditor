@@ -1,7 +1,7 @@
 define(function (require) {
 
-    var Mesh = require('./mesh.jsx');
-    var Light = require('./light.jsx');
+    var Mesh = require('./meshes.jsx');
+    var Light = require('./lights.jsx');
 
     return React.createClass({
         getInitialState: function () {
@@ -20,7 +20,7 @@ define(function (require) {
             var mFC = 'iconfont icon-' + (this.state.meshVisible ? 'xiashixinjiantou' : 'youshixinjiantou');
             var lFC = 'iconfont icon-' + (this.state.lightVisible ? 'xiashixinjiantou' : 'youshixinjiantou');
             return (
-                <div className="tab-content stage-content" style={{display:this.props.display}}>
+                <div className="stage-content">
                     <div className="label-l1">
                         <div className={mFC} data-cmd="meshVisible" onClick={this.foldingHandler}></div>Mesh
                     </div>

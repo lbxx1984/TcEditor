@@ -32,7 +32,8 @@ define(function (require) {
             function produceLight(item) {
                 var visible = 'iconfont icon-' + (item.visible ? 'kejian' : 'bukejian2');
                 var locked = 'iconfont icon-' + (item.locked ? 'suo1' : 'suo');
-                var title = item.type.replace('Light', '') + ' ' + new Date(item.birth).format('MM/DD hh:mm:ss');
+                var name = item.name || (item.type.replace('Light', '') + ' '
+                    + new Date(item.birth).format('MM/DD hh:mm:ss'));
                 var lightProp = {
                     className: 'mesh-item' + (me.state.selected.indexOf(item.uuid + ';') > -1 ? ' selected' : ''),
                     'data-light': item.uuid,
@@ -43,7 +44,7 @@ define(function (require) {
                         <div data-cmd="delete" className="iconfont icon-lajixiang"></div>
                         <div data-cmd="visible" className={visible}></div>
                         <div data-cmd="lock" className={locked}></div>
-                        <div className="label">{title}</div>
+                        <div className="label">{name}</div>
                     </div>
                 );
             }

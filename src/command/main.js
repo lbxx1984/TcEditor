@@ -6,7 +6,6 @@ define(function (require) {
     var create = require('./create');
     var trans = require('./trans');
     var view = require('./view');
-    var tab = require('./tab');
 
 
     /**
@@ -23,8 +22,7 @@ define(function (require) {
             mouse: mouse,
             create: create,
             trans: trans,
-            view: view,
-            tab: tab
+            view: view
         };
         // 当前处于激活状态的引擎，一般用来处理鼠标事件
         this.currentEngine = null;

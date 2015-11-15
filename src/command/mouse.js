@@ -16,16 +16,18 @@ define(function (Require) {
     }
 
     function attach(me, helper, mesh) {
+        var rightContainer = me.ui.refs.containerright;
         me[helper].attach(mesh);
-        me.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({selected: mesh.uuid + ';'});
         me.stage.changeMeshColor(null, 'active');
         me.stage.changeMeshColor(mesh, 'active');
+        rightContainer.refs.stageContent.refs.meshBox.setState({selected: mesh.uuid + ';'});
     }
 
     function detach(me, helper) {
+        var rightContainer = me.ui.refs.containerright;
         me[helper].detach();
-        me.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({selected: ''});
         me.stage.changeMeshColor(null, 'active');
+        rightContainer.refs.stageContent.refs.meshBox.setState({selected: ''});
     }
 
     return {
@@ -57,7 +59,10 @@ define(function (Require) {
             mousemove: function (e) {
                 if (!_down) {
                     var mesh = this.stage.getMeshByMouse(e);
-                    if (mesh == null || (mesh != null && !this.stage.activeMesh[mesh.uuid])) {
+                    if (
+                        mesh == null
+                        || (mesh != null && !this.stage.activeMesh[mesh.uuid] && !this.transformer.attached)
+                    ) {
                         this.stage.changeMeshColor(mesh, 'hover');
                     }
                     return;
@@ -114,12 +119,12 @@ define(function (Require) {
                     if (mesh != null) {
                         this.morpher.callFunction('hoverJoint', mesh);
                     }
-                    else {
-                        mesh = this.stage.getMeshByMouse(e);
-                        if (mesh == null || (mesh != null && !this.stage.activeMesh[mesh.uuid])) {
-                            this.stage.changeMeshColor(mesh, 'hover');
-                        }
-                    }
+                    // else {
+                    //     mesh = this.stage.getMeshByMouse(e);
+                    //     if (mesh == null || (mesh != null && !this.stage.activeMesh[mesh.uuid])) {
+                    //         this.stage.changeMeshColor(mesh, 'hover');
+                    //     }
+                    // }
                     return;
                 }
                 if (!_down) return;
