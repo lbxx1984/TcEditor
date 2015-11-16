@@ -17,17 +17,21 @@ define(function (Require) {
 
     function attach(me, helper, mesh) {
         var rightContainer = me.ui.refs.containerright;
+        var leftContainer = me.ui.refs.containerleft;
         me[helper].attach(mesh);
         me.stage.changeMeshColor(null, 'active');
         me.stage.changeMeshColor(mesh, 'active');
-        rightContainer.refs.stageContent.refs.meshBox.setState({selected: mesh.uuid + ';'});
+        rightContainer.refs.verticallist.refs.meshBox.setState({selected: mesh.uuid + ';'});
+        leftContainer.refs.stage.setState({activeMesh: mesh});
     }
 
     function detach(me, helper) {
         var rightContainer = me.ui.refs.containerright;
+        var leftContainer = me.ui.refs.containerleft;
         me[helper].detach();
         me.stage.changeMeshColor(null, 'active');
-        rightContainer.refs.stageContent.refs.meshBox.setState({selected: ''});
+        rightContainer.refs.verticallist.refs.meshBox.setState({selected: ''});
+        leftContainer.refs.stage.setState({activeMesh: null});
     }
 
     return {
@@ -194,14 +198,14 @@ define(function (Require) {
             unload: function () {
                 this.light.hide();
                 this.light.detach();
-                this.ui.refs.containerright.refs.stageContent.refs.lightBox.setState({
+                this.ui.refs.containerright.refs.verticallist.refs.lightBox.setState({
                     selected: ''
                 });
             },
             mouseRightClick: function (e) {
                 _down = false;
                 this.light.detach();
-                this.ui.refs.containerright.refs.stageContent.refs.lightBox.setState({
+                this.ui.refs.containerright.refs.verticallist.refs.lightBox.setState({
                     selected: ''
                 });
             },
@@ -222,7 +226,7 @@ define(function (Require) {
                 var mesh = this.stage.getMeshByMouse(e, this.light.anchorsArray);
                 if (!mesh) return;
                 this.light.attach(mesh);
-                this.ui.refs.containerright.refs.stageContent.refs.lightBox.setState({
+                this.ui.refs.containerright.refs.verticallist.refs.lightBox.setState({
                     selected: mesh.uuid + ';'
                 });
             }

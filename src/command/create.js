@@ -83,7 +83,7 @@ define(function (require) {
             this.stage.add(mesh);
             // 刷新右侧
             mesh.birth = new Date().getTime();
-            this.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({
+            this.ui.refs.containerright.refs.verticallist.refs.meshBox.setState({
                 meshes: this.stage.$3d.children
             });
         };

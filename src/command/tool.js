@@ -9,7 +9,9 @@ define(function (Require) {
             me.stage.changeMeshColor(null, 'active');
             me[helper].detach();
             var rightContainer = me.ui.refs.containerright;
-            rightContainer.refs.stageContent.refs.meshBox.setState({selected: ''});
+            var leftContainer = me.ui.refs.containerleft;
+            rightContainer.refs.verticallist.refs.meshBox.setState({selected: ''});
+            leftContainer.refs.stage.setState({activeMesh: null});
         }
     }
 
@@ -24,14 +26,16 @@ define(function (Require) {
         me[helper].attach(mesh);
         me.stage.changeMeshColor(mesh, 'active');
         var rightContainer = me.ui.refs.containerright;
-        rightContainer.refs.stageContent.refs.meshBox.setState({selected: mesh.uuid + ';'});
+        var leftContainer = me.ui.refs.containerleft;
+        rightContainer.refs.verticallist.refs.meshBox.setState({selected: mesh.uuid + ';'});
+        leftContainer.refs.stage.setState({activeMesh: mesh});
     }
 
     function toogleMeshProp(me, uuid, prop) {
         me.stage.toogleMeshProp(uuid, prop);
         detachMesh(me, 'transformer', uuid);
         detachMesh(me, 'morpher', uuid);
-        me.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({
+        me.ui.refs.containerright.refs.verticallist.refs.meshBox.setState({
             meshes: me.stage.$3d.children
         });
     }
@@ -50,7 +54,7 @@ define(function (Require) {
             ml.detach();
             uiState.selected = '';
         }
-        me.ui.refs.containerright.refs.stageContent.refs.lightBox.setState(uiState);
+        me.ui.refs.containerright.refs.verticallist.refs.lightBox.setState(uiState);
     }
 
 
@@ -85,7 +89,7 @@ define(function (Require) {
             this.stage.remove(uuid);
             detachMesh(this, 'transformer', uuid);
             detachMesh(this, 'morpher', uuid);
-            this.ui.refs.containerright.refs.stageContent.refs.meshBox.setState({
+            this.ui.refs.containerright.refs.verticallist.refs.meshBox.setState({
                 meshes: this.stage.$3d.children
             });
         },
@@ -112,7 +116,7 @@ define(function (Require) {
         },
         lightDelete: function (cmd) {
             this.light.remove(getUUID(cmd));
-            this.ui.refs.containerright.refs.stageContent.refs.lightBox.setState({
+            this.ui.refs.containerright.refs.verticallist.refs.lightBox.setState({
                 light: this.light.children,
                 selected: this.light.attached ? this.light.attached.uuid + ';' : ''
             });
@@ -123,7 +127,7 @@ define(function (Require) {
             var anchor = this.light.anchors[uuid];
             if (sysTool !== 'picklight' || !anchor.visible || anchor.locked) return;
             this.light.attach(anchor);
-            this.ui.refs.containerright.refs.stageContent.refs.lightBox.setState({
+            this.ui.refs.containerright.refs.verticallist.refs.lightBox.setState({
                 selected: uuid + ';'
             });
         }

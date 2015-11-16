@@ -2,7 +2,7 @@ define(function (require) {
 
     var config = require('config');
     var MousePositionBar = require('component/mousePositionBar.jsx');
-    var Stage = require('component/stage.jsx');
+    var VerticalList = require('component/VerticalList.jsx');
 
     return React.createClass({
         getInitialState: function () {
@@ -10,12 +10,12 @@ define(function (require) {
         },
         render: function () {
             var props = this.props;
-            var stageProps = {
+            var vlProps = {
                 commandRouting: props.commandRouting
             };
             return (
                 <div className="container-right">
-                    <Stage {...stageProps} ref="stageContent"/>
+                    <VerticalList {...vlProps} ref="verticallist"/>
                     <MousePositionBar ref="mousepositionbar"/>
                 </div>
             );

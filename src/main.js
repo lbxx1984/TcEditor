@@ -113,7 +113,7 @@ define(function (require) {
             return;
         }
         // 显示灯光
-        routing.ui.refs.containerright.refs.stageContent.refs.lightBox.setState({
+        routing.ui.refs.containerright.refs.verticallist.refs.lightBox.setState({
             light: routing.light.children
         });
         
