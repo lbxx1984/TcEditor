@@ -45,15 +45,15 @@ define(function (require) {
         var light = new THREE.PointLight(0xffffff, 1.5, 3000);
         light.position.set(0, 900, 0);
         routing.light.add(light);
-        light = new THREE.PointLight(0xff0000, 1.5, 3000);
-        light.position.set(900, 900, 0);
-        routing.light.add(light);
-        light = new THREE.PointLight(0x0000ff, 1.5, 3000);
-        light.position.set(900, 900, 900);
-        routing.light.add(light);
-        light = new THREE.PointLight(0x00ff00, 1.5, 3000);
-        light.position.set(0, 900, 900);
-        routing.light.add(light);
+        // light = new THREE.PointLight(0xff0000, 1.5, 3000);
+        // light.position.set(900, 900, 0);
+        // routing.light.add(light);
+        // light = new THREE.PointLight(0x0000ff, 1.5, 3000);
+        // light.position.set(900, 900, 900);
+        // routing.light.add(light);
+        // light = new THREE.PointLight(0x00ff00, 1.5, 3000);
+        // light.position.set(0, 900, 900);
+        // routing.light.add(light);
 
         // 舞台事件
         stageDom.addEventListener('mousedown', function (e) {
