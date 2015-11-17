@@ -89,7 +89,7 @@ define(function (require) {
      * 鼠标事件分发
      */
     Routing.prototype.mouseup = function (e) {
-        if (e.target.dataset.isPropertyBar) {
+        if (e.target.dataset && e.target.dataset.isPropertyBar) {
             return;
         }
         this.callEngine('mouseup', e);
@@ -97,7 +97,7 @@ define(function (require) {
 
 
     Routing.prototype.mousedown = function (e) {
-        if (e.target.dataset.isPropertyBar) {
+        if (e.target.dataset && e.target.dataset.isPropertyBar) {
             return;
         }
         if (this.stage.cameraController.mousedown) {
@@ -108,7 +108,7 @@ define(function (require) {
 
 
     Routing.prototype.mouseleave = function (e) {
-        if (e.target.dataset.isPropertyBar) {
+        if (e.target.dataset && e.target.dataset.isPropertyBar) {
             return;
         }
         this.callEngine('mouseleave', e);
@@ -116,7 +116,7 @@ define(function (require) {
 
 
     Routing.prototype.mouseRightClick = function (e) {
-        if (e.target.dataset.isPropertyBar) {
+        if (e.target.dataset && e.target.dataset.isPropertyBar) {
             return;
         }
         this.callEngine('mouseRightClick', e);
@@ -128,7 +128,7 @@ define(function (require) {
             this.stage == null
             || this.ui == null
             || this.stage.cameraController.param.cameraRotated
-            || e.target.dataset.isPropertyBar
+            || (e.target.dataset && e.target.dataset.isPropertyBar)
         ) {
             return;
         }
