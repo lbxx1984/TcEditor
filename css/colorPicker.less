@@ -1,0 +1,41 @@
+.color-picker {
+    display: inline-block;
+    position: relative;
+    top: 4px;
+    width: 82px;
+    height: 17px;
+    overflow: visible;
+    border: 1px solid #383838;
+
+    .color-label {
+        position: absolute;
+        width: 80px;
+        height: 15px;
+        top: 0px;
+        left: 0px;
+        border: 1px solid #000;
+    }
+
+    .color-select {
+        display: none;
+        position: absolute;
+        width: 208px;
+        height: 43px;
+        top: -45px;
+        left: -1px;
+        border: 1px solid #383838;
+        background-color: #1F1F1F;
+    }
+
+    canvas {
+        display: block;
+        margin: 3px 3px 0 3px;
+        border: 1px solid #383838;
+    }
+
+}
+.color-picker:hover {
+    .color-select {
+        display: block;
+    }
+}

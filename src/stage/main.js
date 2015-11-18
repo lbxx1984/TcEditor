@@ -9,6 +9,7 @@ define(function (require) {
     var Stage3D = require('./Stage3D');
     var CameraController = require('./CameraController');
 
+
     /**
      * @constructor
      *
@@ -119,15 +120,8 @@ define(function (require) {
             return;
         }
 
-        // 记录物体颜色
         if (mesh == null) {
             return;
-        }
-        if (!mesh.hasOwnProperty(editorKey)) {
-            mesh[editorKey] = {};
-        }
-        if (!mesh[editorKey].hasOwnProperty('color')) {
-            mesh[editorKey].color = mesh.material.color.getHex();
         }
 
         // 设置hover
@@ -207,6 +201,13 @@ define(function (require) {
      * @param {Object} mesh 3D物体对象
      */
     Stage.prototype.add = function (mesh) {
+        var editorKey = '__tceditor__';
+        if (!mesh.hasOwnProperty(editorKey)) {
+            mesh[editorKey] = {};
+        }
+        if (!mesh[editorKey].hasOwnProperty('color')) {
+            mesh[editorKey].color = mesh.material.color.getHex();
+        }
         this.$3d.children[mesh.uuid] = mesh;
         this.$3d.scene.add(mesh);
     };

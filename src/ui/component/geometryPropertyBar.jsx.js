@@ -1,11 +1,16 @@
 define(function (require) {
+
+    var ColorPicker = require('./colorPicker.jsx');
+
     return React.createClass({
         render: function () {
+
             var props = {
                 className: 'geometry-property-bar',
                 style: {display: this.props.display}
             }
             var mesh = this.props.mesh;
+            var meshColor = mesh.hasOwnProperty('__tceditor__') ? mesh['__tceditor__'].color : '#000000';
             var name = mesh.name || (mesh.geometry.type.replace('Geometry', '') + ' '
                 + new Date(mesh.birth).format('MM/DD hh:mm:ss'));
 
@@ -35,10 +40,8 @@ define(function (require) {
                             <input type="text" value={name}/>
                         </div>
                         <div className="label-l1">
-                            <div className="label-l2">visible:</div><div className="iconfont icon-kejian"></div>
-                        </div>
-                        <div className="label-l1">
-                            <div className="label-l2">locked:</div><div className="iconfont icon-suo"></div>
+                            <div className="label-l2">color:</div>
+                            <ColorPicker value={meshColor}/>
                         </div>
                     </td>
                     <td>
