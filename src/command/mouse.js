@@ -34,6 +34,18 @@ define(function (Require) {
         leftContainer.refs.stage.setState({activeMesh: null});
     }
 
+    function attachJoint(me, joint) {
+        var leftContainer = me.ui.refs.containerleft;
+        leftContainer.refs.stage.setState({activeJoint: joint});
+        me.morpher.attachJoint(joint);
+    }
+
+    function detachJoint(me) {
+        var leftContainer = me.ui.refs.containerleft;
+        leftContainer.refs.stage.setState({activeJoint: null});
+        me.morpher.detachJoint();
+    }
+
     return {
         cameramove: {
             mousemove: function (e) {
@@ -123,12 +135,6 @@ define(function (Require) {
                     if (mesh != null) {
                         this.morpher.callFunction('hoverJoint', mesh);
                     }
-                    // else {
-                    //     mesh = this.stage.getMeshByMouse(e);
-                    //     if (mesh == null || (mesh != null && !this.stage.activeMesh[mesh.uuid])) {
-                    //         this.stage.changeMeshColor(mesh, 'hover');
-                    //     }
-                    // }
                     return;
                 }
                 if (!_down) return;
@@ -161,7 +167,7 @@ define(function (Require) {
                     case 1:
                         mesh = this.morpher.getHoverJoint(e);
                         if (mesh != null) {
-                            this.morpher.attachJoint(mesh);
+                            attachJoint(this, mesh);
                         }
                         else {
                             mesh = this.stage.getMeshByMouse(e);
@@ -177,7 +183,7 @@ define(function (Require) {
             mouseRightClick: function (e) {
                 _down = false;
                 if (this.morpher.state === 2) {
-                    this.morpher.detachJoint();
+                    detachJoint(this);
                     return;
                 }
                 if (this.morpher.state === 1) {

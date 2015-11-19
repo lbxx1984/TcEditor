@@ -1,6 +1,6 @@
 define(function (require) {
 
-    var GeometryPropertyBar = require('../component/GeometryPropertyBar.jsx');
+    var GeometryPropertyBar = require('../component/geometryPropertyBar.jsx');
 
     return React.createClass({
         getInitialState: function () {
@@ -22,13 +22,16 @@ define(function (require) {
             dom.dataset.isPropertyBar = true;
         },
         render: function () {
+
             var props = {
                 className: 'container-property',
                 style: {display: this.props.mesh ? 'block' : 'none'}
             };
             var geometryProps = {
                 mesh: this.props.mesh || this.state.defaultMesh,
-                display: this.state.currentTab === 'geometry' ? 'block' : 'none'
+                joint: this.props.joint,
+                display: this.state.currentTab === 'geometry' ? 'block' : 'none',
+                commandRouting: this.props.commandRouting
             };
             var materialProps = {
                 mesh: this.props.mesh || this.state.defaultMesh,

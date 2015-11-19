@@ -1,9 +1,12 @@
 define(function (require) {
 
+
     var Morpher3D = require('./Morpher3D');
     var Morpher2D = require('./Morpher2D');
 
+
     function Morpher(stage) {
+        var me = this;
         this.type = '$3d';
         this.$2d = new Morpher2D({
             stage: stage.$2d,
@@ -17,7 +20,13 @@ define(function (require) {
         });
         this.stage = stage;
         this.mesh = null;
+        this.joint = null;
         this.state = 0; // 状态机：(0)未attach；(1)已经attach未选中关节；(2)已选中关节
+        this.$2d.onChange = this.$3d.onChange = function () {
+            if (typeof me.onChange === 'function') {
+                me.onChange(me.joint);
+            }
+        }
     }
 
 
@@ -50,10 +59,16 @@ define(function (require) {
     };
 
 
+    /**
+     * 绑定关节
+     *
+     * @param {number} joint 关节序列，对应mesh.geometry.vectories的索引
+     */
     Morpher.prototype.attachJoint = function (joint) {
         this.$3d.attachJoint(joint);
         this.$2d.attachJoint(joint);
         this.state = 2;
+        this.joint = joint;
     };
 
 
@@ -61,6 +76,7 @@ define(function (require) {
         this.$3d.detachJoint();
         this.$2d.detachJoint();
         this.state = 1;
+        this.joint = null;
     };
 
 

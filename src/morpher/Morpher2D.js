@@ -60,6 +60,10 @@ define(function (require) {
         mesh3d.geometry.verticesNeedUpdate = true;
         this.stage.children[this.geo.uuid].reset();
         this.stage.renderMesh();
+        // fire change
+        if (typeof this.onChange === 'function') {
+            this.onChange();
+        }
     };
 
 

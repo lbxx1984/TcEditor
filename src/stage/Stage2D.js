@@ -304,16 +304,12 @@ define(function (require) {
         var meshes = this.stage3d.children;
         for (var key in meshes) {
             if (!meshes.hasOwnProperty(key)) continue;
-            var mesh = new Mesh2D({
-                mesh:meshes[key],
-                stage: this,
-                color: this.stage.activeMesh[key] ? this.param.meshActiveColor : this.param.meshColor
-            });
+            var mesh = new Mesh2D({mesh:meshes[key], stage: this});
             this.children[key] = mesh;
         }
     };
 
-
+    
     /**
      * 刷新
      */

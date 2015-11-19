@@ -9,16 +9,19 @@ define(function (require) {
         render: function () {
 
             var props = this.props;
-
             var menuProps = {
                 datasource: config.menu,
                 clickHandler: menuClickHandler
             };
-
             var controlBarProps = {
+                ref: 'controlbar',
                 defaultState: config.defaultCommandState,
                 datasource: config.controlBar,
                 clickHandler: controlBarClickHandler
+            };
+            var stageProps = {
+                ref: 'stage',
+                commandRouting: this.props.commandRouting
             };
 
             function menuClickHandler(e) {
@@ -31,9 +34,9 @@ define(function (require) {
 
             return (
                 <div className="container-left">
-                    <ContainerStage ref="stage"/>
+                    <ContainerStage {...stageProps}/>
                     <Menu {...menuProps}/>
-                    <ControlBar ref="controlbar" {...controlBarProps}/>
+                    <ControlBar {...controlBarProps}/>
                 </div>
             );
         }

@@ -25,8 +25,8 @@ define(function (require) {
             function clickHandler(e) {
                 var cmd = e.target.dataset.cmd || 'select';
                 var uuid = e.target.dataset.mesh || e.target.parentNode.dataset.mesh;
-                var cmd = 'tool-mesh' + cmd.replace(/(\w)/,function(v){return v.toUpperCase()}) + '-;' + uuid;
-                me.props.commandRouting(cmd);
+                var cmd = 'tool-mesh' + cmd.replace(/(\w)/,function(v){return v.toUpperCase()});
+                me.props.commandRouting(cmd, uuid);
             }
 
             function produceMesh(item) {

@@ -40,9 +40,6 @@ exports.getProcessors = function () {
     var lessProcessor = new LessCompiler({      // less编译
         files: ['main.less']
     });
-    var cssCompressor = new CssCompressor({     // css压缩
-        files: ['main.less']
-    });
     var moduleCompiler = new ModuleCompiler({   // AMD模块编译
         configFile: 'build.conf'
     });  
@@ -62,7 +59,6 @@ exports.getProcessors = function () {
             lessProcessor,
             moduleCompiler,
             jsCompressor,
-            cssCompressor,
             outputCleaner
         ]
     };

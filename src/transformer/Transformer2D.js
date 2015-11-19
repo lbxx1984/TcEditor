@@ -77,6 +77,9 @@ define(function (require) {
             return;
         }
         draggingEngine[this.mode](this, dMouse2D, dMouse3D);
+        if (typeof this.onChange === 'function') {
+            this.onChange();
+        }
     };
 
 
@@ -99,6 +102,12 @@ define(function (require) {
         this.mesh = null;
         this.command = null;
         this.clearHelper();
+    };
+
+
+    Transformer2D.prototype.update = function () {
+        this.clearHelper();
+        this.render();
     };
 
 

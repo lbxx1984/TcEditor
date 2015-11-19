@@ -5,12 +5,20 @@ define(function (require) {
 
 
     function Transformer(stage) {
+        var me = this;
         this.type = '$3d';
         this.$3d = new THREE.TransformControls(stage.$3d.camera, stage.$3d.renderer.domElement);
         this.$2d = new Transformer2D({stage: stage.$2d});
         this.stage = stage;
         this.mesh = null;
         this.attached = false;
+        this.$3d.addEventListener('objectChange', changeHandler);
+        this.$2d.onChange = changeHandler;
+        function changeHandler() {
+            if (typeof me.onChange === 'function') {
+                me.onChange(me.mesh);
+            }
+        }
     }
 
 

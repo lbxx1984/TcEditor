@@ -1,9 +1,5 @@
 define(function (Require) {
 
-    function getUUID(cmd) {
-        return cmd.split('-;')[1];
-    }
-
     function detachMesh(me, helper, uuid) {
         if (me[helper].mesh && me[helper].mesh.uuid === uuid) {
             me.stage.changeMeshColor(null, 'active');
@@ -74,15 +70,14 @@ define(function (Require) {
         gridtoggle: function () {
             this.stage.callFunction('toggleHelper');
         },
-        meshVisible: function (cmd) {
-            toogleMeshProp(this, getUUID(cmd), 'visible');
+        meshVisible: function (cmd, uuid) {
+            toogleMeshProp(this, uuid, 'visible');
         },
-        meshLock: function (cmd) {
-            toogleMeshProp(this, getUUID(cmd), 'locked');
+        meshLock: function (cmd, uuid) {
+            toogleMeshProp(this, uuid, 'locked');
         },
-        meshDelete: function (cmd) {
-            var uuid = getUUID(cmd);
-            var mesh = this.stage.$3d.children[getUUID(cmd)];
+        meshDelete: function (cmd, uuid) {
+            var mesh = this.stage.$3d.children[uuid];
             if (mesh.locked) {
                 return;
             }
@@ -93,9 +88,9 @@ define(function (Require) {
                 meshes: this.stage.$3d.children
             });
         },
-        meshSelect: function (cmd) {
+        meshSelect: function (cmd, uuid) {
             var sysTool = this.ui.refs.containerleft.refs.controlbar.state.systemtool;
-            var mesh = this.stage.$3d.children[getUUID(cmd)];
+            var mesh = this.stage.$3d.children[uuid];
             if (!mesh || !mesh.visible || mesh.locked) {
                 return;
             }
@@ -108,22 +103,21 @@ define(function (Require) {
                 return;
             }
         },
-        lightVisible: function (cmd) {
-            toogleLightProp(this, getUUID(cmd), 'visible');  
+        lightVisible: function (cmd, uuid) {
+            toogleLightProp(this, uuid, 'visible');  
         },
-        lightLock: function (cmd) {
-            toogleLightProp(this, getUUID(cmd), 'locked');  
+        lightLock: function (cmd, uuid) {
+            toogleLightProp(this, uuid, 'locked');  
         },
-        lightDelete: function (cmd) {
-            this.light.remove(getUUID(cmd));
+        lightDelete: function (cmd, uuid) {
+            this.light.remove(uuid);
             this.ui.refs.containerright.refs.verticallist.refs.lightBox.setState({
                 light: this.light.children,
                 selected: this.light.attached ? this.light.attached.uuid + ';' : ''
             });
         },
-        lightSelect: function (cmd) {
+        lightSelect: function (cmd, uuid) {
             var sysTool = this.ui.refs.containerleft.refs.controlbar.state.systemtool;
-            var uuid = getUUID(cmd);
             var anchor = this.light.anchors[uuid];
             if (sysTool !== 'picklight' || !anchor.visible || anchor.locked) return;
             this.light.attach(anchor);

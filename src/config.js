@@ -1,4 +1,5 @@
 define(function (Require) {
+    window.editorKey = '__tceditor__';
     return {
         defaultCommandState: {
             cameraview: '3d',

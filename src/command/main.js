@@ -1,13 +1,6 @@
 define(function (require) {
 
 
-    var tool = require('./tool');
-    var mouse = require('./mouse');
-    var create = require('./create');
-    var trans = require('./trans');
-    var view = require('./view');
-
-
     /**
      * @constructor
      */
@@ -18,11 +11,12 @@ define(function (require) {
         this.stage = null;
         // 引擎集合
         this.engines = {
-            tool: tool,
-            mouse: mouse,
-            create: create,
-            trans: trans,
-            view: view
+            tool: require('./tool'),
+            mouse: require('./mouse'),
+            create: require('./create'),
+            trans: require('./trans'),
+            view: require('./view'),
+            modify: require('./modify')
         };
         // 当前处于激活状态的引擎，一般用来处理鼠标事件
         this.currentEngine = null;

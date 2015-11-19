@@ -16,9 +16,7 @@ define(function (require) {
 
     // 初始化全局控制和UI
     var routing = new Routing('mouse-cameramove');
-    var uiProps = {
-        commandRouting: function (e) {routing.main(e);}
-    };
+    var uiProps = {commandRouting: function () {routing.main.apply(routing, arguments);}};
     routing.ui = React.render(React.createElement(App, uiProps), document.body, uiLoaded);
 
 
@@ -55,6 +53,16 @@ define(function (require) {
         // light.position.set(0, 900, 900);
         // routing.light.add(light);
 
+        // 变形器事件
+        routing.transformer.onChange = function (mesh) {
+            routing.ui.refs.containerleft.refs.stage.setState({activeMesh: mesh});
+        }
+
+        // 关节变换器事件
+        routing.morpher.onChange = function (joint) {
+            routing.ui.refs.containerleft.refs.stage.setState({activeJoint: joint});
+        }
+
         // 舞台事件
         stageDom.addEventListener('mousedown', function (e) {
             routing.mousedown(cloneMouseEvent(e));
@@ -79,7 +87,7 @@ define(function (require) {
         };
 
         // 显示信息
-        displayInformation()
+        displayInformation();
 
         // 重置鼠标事件参数
         function cloneMouseEvent(e) {
@@ -116,6 +124,5 @@ define(function (require) {
         routing.ui.refs.containerright.refs.verticallist.refs.lightBox.setState({
             light: routing.light.children
         });
-        
     }
 });

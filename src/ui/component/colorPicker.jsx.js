@@ -78,11 +78,17 @@ define(function (require) {
     }
 
     return React.createClass({
-        getInitialState: function () {
+        getDefaultProps : function () {
             return {
-                color: '#F00',
                 width: 200,
                 height: 15
+            };
+          },
+        getInitialState: function () {
+            return {
+                value: '#FF0000',
+                rgb: [0, 0, 0],
+                hsl: [0, 0, 0]
             };
         },
         renderColor: function (color) {
@@ -107,29 +113,38 @@ define(function (require) {
             ctx.fillStyle = linear;
             ctx.fillRect(0, 0, canvas.width, canvas.height); 
             ctx.stroke();
-            this.renderColor(this.state.color);
+            this.renderColor(this.state.value);
         },
         render: function () {
             var me = this;
             var prop = {
-                width: this.state.width,
-                height: this.state.height,
+                width: this.props.width,
+                height: this.props.height,
                 onClick: clickHandler
             };
-            this.state.color = this.props.value;
             function clickHandler(e) {
                 var x = e.nativeEvent.offsetX;
                 var y = e.nativeEvent.offsetY;
                 var rgb = e.target.getContext('2d').getImageData(x, y, 1, 1).data;
-                var color = RGB2CSS(rgb[0], rgb[1], rgb[2]);
-                me.setState({color: color});
+                var colors = {
+                    value: RGB2CSS(rgb[0], rgb[1], rgb[2]),
+                    rgb: [rgb[0], rgb[1], rgb[2]],
+                    hsl: RGB2HSL(rgb[0], rgb[1], rgb[2])
+                };
+                me.setState(colors);
                 if (e.target.dataset.cmd === 'canvas1') {
-                    me.renderColor(color);
+                    me.renderColor(me.state.value);
+                }
+                if (typeof me.props.onChange === 'function') {
+                    me.props.onChange({
+                        target: me,
+                        value: colors
+                    });
                 }
             }
             return (
                 <div className="color-picker">
-                    <div className="color-label" style={{backgroundColor: this.state.color}}></div>
+                    <div className="color-label" style={{backgroundColor: this.state.value}}></div>
                     <div className="color-select">
                         <canvas ref="canvas2" data-cmd="canvas2" {...prop}></canvas>
                         <canvas ref="canvas1" data-cmd="canvas1" {...prop}></canvas>

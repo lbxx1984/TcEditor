@@ -86,13 +86,13 @@ define(function (require) {
      */
     Stage.prototype.changeMeshColor = function (mesh, type) {
 
-        var editorKey = '__tceditor__';
         var color3D = {
             hover: this.$3d.param.meshHoverColor,
             active: this.$3d.param.meshActiveColor
         };
+        var mesh2d = mesh ? this.$2d.children[mesh.uuid] : null;
         var color2D = {
-            normal: this.$2d.param.meshColor,
+            normal: mesh2d ? mesh2d.color : '#000',
             active: this.$2d.param.meshActiveColor,
             hover: this.$2d.param.meshHoverColor
         };
@@ -111,7 +111,7 @@ define(function (require) {
             var del = 0;
             for (var key in this.activeMesh) {
                 del++;
-                setMeshColor(this.activeMesh[key], this.activeMesh[key][editorKey].color, color2D.normal);
+                setMeshColor(this.activeMesh[key], this.activeMesh[key][window.editorKey].color, color2D.normal);
                 delete this.activeMesh[key];
             }
             if (del > 0) {
@@ -160,7 +160,7 @@ define(function (require) {
 
         // 还原mesh为本色或者active颜色
         function clearMeshColor(geo) {
-            var c1 = geo[editorKey].color;
+            var c1 = geo[window.editorKey].color;
             var c2 = color2D.normal;
             if (me.activeMesh[geo.uuid]) {
                 c1 = color3D.active;
@@ -201,12 +201,11 @@ define(function (require) {
      * @param {Object} mesh 3D物体对象
      */
     Stage.prototype.add = function (mesh) {
-        var editorKey = '__tceditor__';
-        if (!mesh.hasOwnProperty(editorKey)) {
-            mesh[editorKey] = {};
+        if (!mesh.hasOwnProperty(window.editorKey)) {
+            mesh[window.editorKey] = {};
         }
-        if (!mesh[editorKey].hasOwnProperty('color')) {
-            mesh[editorKey].color = mesh.material.color.getHex();
+        if (!mesh[window.editorKey].hasOwnProperty('color')) {
+            mesh[window.editorKey].color = mesh.material.color.getHex();
         }
         this.$3d.children[mesh.uuid] = mesh;
         this.$3d.scene.add(mesh);
@@ -319,68 +318,3 @@ define(function (require) {
 
     return Stage;
 });
-
-/**
- * 修改物体
- * @param {Object} geo 3D物体对象
- * @param {string} type 物体修改的类型：
- *        joint：修改关节；
- *        scale：缩放；
- *        position：位置；
- *        rotation：旋转
- * @param {number|string} item 具体操作分量
- *        当type为‘joint’时，item为number，表示关节的索引号
- *        当type未其他时，item为string，取x、y、z，表示对应分量
- * @param {Array|number} value 变更值
- *        当type为‘joint’时，value为数组，表示关节的世界坐标
- *        当type为其他时，value为number，表示需要设置的值
- * @param {boolean} sync 当type为‘scale’时，是否进行三轴同时缩放
- */
-/*
-Stage.prototype.meshTransform = function(geo, type, item, value, sync) {
-    if (!geo) return;
-    if (type == "joint") {
-        var pos = tcMath.Global2Local(value[0], value[1], value[2], geo);
-        geo.geometry.vertices[item].x = pos[0];
-        geo.geometry.vertices[item].y = pos[1];
-        geo.geometry.vertices[item].z = pos[2];
-        geo.geometry.verticesNeedUpdate = true;
-    } else {
-        if (type != "scale") {
-            geo[type][item] = value;
-        } else {
-            if (sync) {
-                geo.scale.x = geo.scale.x * value;
-                geo.scale.y = geo.scale.y * value;
-                geo.scale.z = geo.scale.z * value;
-            } else {
-                geo.scale[item] = geo.scale[item] * value;
-            }
-        }
-    }
-    this.$2d.fresh();
-    if (typeof this.eventHandle["onMesh3DFresh"] == "function") {
-        this.eventHandle["onMesh3DFresh"]();
-    }
-}
-
-    /***外部接口***/
-    /**
-     * 设置编辑器背景色
-     * @param {string} c CSS形式颜色，如红色：#FF0000
-     */
-     /*
-    _this.setRendererColor = function(c) {
-        _renderer.setClearColor(parseInt(c.substr(1), 16));
-    }
-
-    /**
-     * 设置网格颜色
-     * @param {string} e CSS颜色
-     */
-     /*
-    _this.setGridColor = function(e) {
-        _gridColor = parseInt(e.substr(1), 16);
-        _grid.setColors(_gridColor, _gridColor);
-    }
-*/

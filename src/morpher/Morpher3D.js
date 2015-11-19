@@ -32,6 +32,10 @@ define(function (require) {
             geo.geometry.verticesNeedUpdate = true;
             var r = me.stage.camera.position.distanceTo(joint.position) / me.baseRule;
             joint.scale.x = joint.scale.y = joint.scale.z = r;
+            // fire change
+            if (typeof me.onChange === 'function') {
+                me.onChange();
+            }
         }
     }
 

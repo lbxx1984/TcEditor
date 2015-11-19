@@ -85,10 +85,6 @@ define(function (Require) {
             enable: 'transformer',
             children: [
                 {
-                    label: '', class: ' icon icon-yidong', cmd: 'mouse-pickgeo',
-                    type: 'radio', group: 'systemtool', value: 'pickgeo', title: 'pick up geometry (S)'
-                },
-                {
                     label: '', class: ' icon icon-move', cmd: 'trans-move',
                     type: 'radio', group: 'transformer', value: 'move', title: 'move'
                 },

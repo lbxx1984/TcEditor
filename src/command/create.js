@@ -3,13 +3,14 @@
  */
 define(function (require) {
 
+
     var geometry = require('../geometry/main');
+    var exports = {};
     var _mouseDraged = false;
     var _down = false;
     var _mouse3D = null;
     var _tempMesh = null;
-    var exports = {};
-
+    
 
     /**自动注册接口**/
     for (var key in geometry) {
@@ -100,7 +101,7 @@ define(function (require) {
      */
     function produceTempMesh(param) {
         var mesh = geometry[param.type].tempMesh({
-            material: new THREE.MeshBasicMaterial({// MeshLambertMaterial
+            material: new THREE.MeshLambertMaterial({// MeshLambertMaterial
                 color: 0xe6e6e6,
                 side: THREE.DoubleSide
             }),
