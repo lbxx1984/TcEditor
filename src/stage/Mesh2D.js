@@ -20,10 +20,10 @@ define(function (require) {
         this.mesh = param.mesh;
         // 2D舞台参数
         this.param = param.stage.param;
-        // 物体颜色
-        this.color = this.mesh[window.editorKey].color.toString(16);
-        while(this.color.length < 6) {this.color = '0' + this.color;}
-        this.color = '#' + this.color;
+        // 物体颜色，物体的本色
+        this.color = null;
+        // 渲染颜色
+        this.renderColor = null;
         // 本物体绘制几何中心
         this.center = [0, 0];
         // 物体所有顶点的2D坐标
@@ -31,8 +31,7 @@ define(function (require) {
         // 物体所有面的连接状态
         this.faces = [];
         // 创建数据
-        this.createVertices();
-        this.createFaces();
+        this.reset();
         return;     
     }
 
@@ -45,6 +44,9 @@ define(function (require) {
         this.faces = [];
         this.createVertices();
         this.createFaces();
+        this.color = this.mesh[window.editorKey].color.toString(16);
+        while(this.color.length < 6) {this.color = '0' + this.color;}
+        this.color = '#' + this.color;
     };
 
 
@@ -54,16 +56,15 @@ define(function (require) {
      * @param {Object} ctx canvas的绘制器
      * @param {?number} x 鼠标位置
      * @param {?number} y 鼠标位置
-     * @param {?string} color 物体将被渲染成的颜色
      * @return {boolean} 鼠标是否在物体上
      */
-    Mesh2D.prototype.render = function(ctx, x, y, color) {
+    Mesh2D.prototype.render = function(ctx, x, y) {
         var faces = this.faces;
         var points = this.vertices;
         var isMouseIn = false;
         ctx.beginPath();
         ctx.lineStyle = 2;
-        ctx.fillStyle = color || this.color;
+        ctx.fillStyle = this.renderColor || this.color;
         for (var n = 0; n < faces.length; n++) {
             var a = faces[n][0];
             var b = faces[n][1];

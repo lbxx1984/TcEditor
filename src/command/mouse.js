@@ -3,6 +3,7 @@ define(function (Require) {
     var _down = false;
     var _mouse = [-1, -1];
     var _mouse3d = [0, 0, 0];
+    var _lastMesh = null; // 上一次操作的物体，主要用于不同控制器之间的沟通
 
     /**通用事件工厂**/
 
@@ -64,6 +65,12 @@ define(function (Require) {
                 _down = false;
                 var controlBar = this.ui.refs.containerleft.refs.controlbar
                 controlBar.setState({enablebar: controlBar.state.enablebar + 'transformer|'}); 
+                if (_lastMesh && this.stage.$3d.children[_lastMesh.uuid]) {
+                    attach(this, 'transformer', _lastMesh);
+                }
+                else {
+                    _lastMesh = null;
+                }
             },
             mouseRightClick: function (e) {
                 _down = false;
@@ -112,6 +119,7 @@ define(function (Require) {
             },
             unload: function () {
                 _down = false;
+                _lastMesh = this.transformer.mesh;
                 detach(this, 'transformer');
                 var controlBar = this.ui.refs.containerleft.refs.controlbar;
                 controlBar.setState({
@@ -120,6 +128,15 @@ define(function (Require) {
             }
         },
         pickjoint: {
+            loaded: function (e) {
+                _down = false;
+                if (_lastMesh && this.stage.$3d.children[_lastMesh.uuid]) {
+                    attach(this, 'morpher', _lastMesh);
+                }
+                else {
+                    _lastMesh = null;
+                }
+            },
             mousemove: function (e) {
                 var mesh = null;
                 if (this.morpher.state === 0 && !_down) {
@@ -193,6 +210,7 @@ define(function (Require) {
             },
             unload: function () {
                 _down = false;
+                _lastMesh = this.morpher.mesh;
                 detach(this, 'morpher');
             }
         },

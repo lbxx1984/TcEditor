@@ -90,9 +90,7 @@ define(function (require) {
             hover: this.$3d.param.meshHoverColor,
             active: this.$3d.param.meshActiveColor
         };
-        var mesh2d = mesh ? this.$2d.children[mesh.uuid] : null;
         var color2D = {
-            normal: mesh2d ? mesh2d.color : '#000',
             active: this.$2d.param.meshActiveColor,
             hover: this.$2d.param.meshHoverColor
         };
@@ -100,7 +98,7 @@ define(function (require) {
 
         // 清空hover
         if (mesh == null && type === 'hover' && this.hoverMesh != null) {
-            clearMeshColor(this.hoverMesh);
+            clearMeshColor(this.hoverMesh, true);
             this.hoverMesh = null;
             render2D();
             return;
@@ -111,7 +109,7 @@ define(function (require) {
             var del = 0;
             for (var key in this.activeMesh) {
                 del++;
-                setMeshColor(this.activeMesh[key], this.activeMesh[key][window.editorKey].color, color2D.normal);
+                clearMeshColor(this.activeMesh[key]);
                 delete this.activeMesh[key];
             }
             if (del > 0) {
@@ -130,7 +128,7 @@ define(function (require) {
                 return;
             }
             if (this.hoverMesh != null && this.hoverMesh.uuid !== mesh.uuid) {
-                clearMeshColor(this.hoverMesh);
+                clearMeshColor(this.hoverMesh, true);
             }
             this.hoverMesh = mesh;
             setMeshColor(mesh, color3D.hover, color2D.hover);
@@ -154,15 +152,21 @@ define(function (require) {
             geo.material.setValues({color: c1});
             var geo2d = me.$2d.children[geo.uuid];
             if (geo2d) {
-                me.$2d.children[geo.uuid].color =c2;
+                me.$2d.children[geo.uuid].renderColor =c2;
             }
         }
 
-        // 还原mesh为本色或者active颜色
-        function clearMeshColor(geo) {
+        /**
+         * 还原mesh为本色或者active颜色
+         *
+         * @param {Object} geo 3D物体
+         * @param {boolean} active 是否将物体还原成激活状态颜色，如果这个物体是激活的
+         */
+        function clearMeshColor(geo, active) {
             var c1 = geo[window.editorKey].color;
-            var c2 = color2D.normal;
-            if (me.activeMesh[geo.uuid]) {
+            var geo2d = me.$2d.children[geo.uuid];
+            var c2 = geo2d ? geo2d.color : '#000';
+            if (me.activeMesh[geo.uuid] && active) {
                 c1 = color3D.active;
                 c2 = color2D.active;
             }
@@ -302,6 +306,10 @@ define(function (require) {
             this.$3d.display = false;
             this.$2d.param.eyes = value;
             this.$2d.render();
+            for (var key in this.activeMesh) {
+                this.$2d.children[key].renderColor = this.$2d.param.meshActiveColor;
+            }
+            this.$2d.renderMesh();
         }
     };
 

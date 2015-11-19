@@ -300,13 +300,17 @@ define(function (require) {
      * 载入物体
      */
     Stage2D.prototype.loadMesh = function () {
-        this.children = {};
+        var mesh2ds = {};
         var meshes = this.stage3d.children;
         for (var key in meshes) {
             if (!meshes.hasOwnProperty(key)) continue;
             var mesh = new Mesh2D({mesh:meshes[key], stage: this});
-            this.children[key] = mesh;
+            if (this.children[key]) {
+                mesh.renderColor = this.children[key].renderColor;
+            }
+            mesh2ds[key] = mesh;
         }
+        this.children = mesh2ds;
     };
 
     

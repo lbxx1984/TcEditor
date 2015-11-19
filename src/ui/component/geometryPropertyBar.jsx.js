@@ -41,6 +41,11 @@ define(function (require) {
                 callback('modify-color', mesh, parseInt(e.value.value.slice(1, 7), 16));
             }
 
+            // 显隐物体骨骼
+            function frameChangeHandler(e) {
+                callback('modify-wireframe', mesh, e.target.checked);
+            }
+
             // 格式化数字
             function numberFormat(v, type, fix) {
                 return (type === 'rotation' ? 180 * v / Math.PI : v).toFixed(fix);
@@ -115,7 +120,7 @@ define(function (require) {
                         </div>
                         <div className="label-l1">
                             <div className="label-l2">wireframe:</div>
-                            <input type="checkbox" checked={mesh.material.wireframe}/>
+                            <input type="checkbox" checked={mesh.material.wireframe} onChange={frameChangeHandler}/>
                         </div>
                     </td>
                     <td>
