@@ -16,7 +16,8 @@ define(function (require) {
             create: require('./create'),
             trans: require('./trans'),
             view: require('./view'),
-            modify: require('./modify')
+            modify: require('./modify'),
+            pop: require('./pop')
         };
         // 当前处于激活状态的引擎，一般用来处理鼠标事件
         this.currentEngine = null;

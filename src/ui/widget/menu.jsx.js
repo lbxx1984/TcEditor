@@ -5,15 +5,10 @@ define(function (require) {
             var clickHandler = this.props.clickHandler;
 
             function menulist(item) {
-                var prop = {
-                    className: 'menu-item',
-                    onClick: clickHandler,
-                    'data-ui-cmd': item.cmd
-                };
                 return (
-                    <div {...prop}>
-                        {item.label}
-                        <div className="menu-item-hotkey">{item.hotKey}</div>
+                    <div className="menu-item" data-ui-cmd={item.cmd} onClick={clickHandler}>
+                        <span data-ui-cmd={item.cmd} >{item.label}</span>
+                        <div className="menu-item-hotkey" data-ui-cmd={item.cmd}>{item.hotKey}</div>
                     </div>
                 );
             }

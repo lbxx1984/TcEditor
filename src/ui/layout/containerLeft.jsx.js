@@ -1,7 +1,7 @@
 define(function (require) {
 
     var config = require('config');
-    var Menu = require('component/menu.jsx');
+    var Menu = require('widget/menu.jsx');
     var ControlBar = require('component/controlBar.jsx');
     var ContainerStage = require('layout/containerStage.jsx');
 

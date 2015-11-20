@@ -1,6 +1,6 @@
 define(function (require) {
 
-    var ColorPicker = require('./colorPicker.jsx');
+    var ColorPicker = require('widget/colorPicker.jsx');
     var math = require('math');
 
     return React.createClass({
