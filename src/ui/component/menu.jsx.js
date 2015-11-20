@@ -10,14 +10,26 @@ define(function (require) {
                     onClick: clickHandler,
                     'data-ui-cmd': item.cmd
                 };
-                return <div {...prop}>{item.label}</div>;
+                return (
+                    <div {...prop}>
+                        {item.label}
+                        <div className="menu-item-hotkey">{item.hotKey}</div>
+                    </div>
+                );
             }
 
             function prepare(item) {
+                if (item.children instanceof Array && item.children.length > 0) {
+                    return (
+                        <div className="menu-button">
+                            <div data-ui-cmd={item.cmd} onClick={clickHandler}>{item.label}</div>
+                            <div className="menu-list">{item.children.map(menulist)}</div>
+                        </div>
+                    );
+                }
                 return (
                     <div className="menu-button">
                         <div data-ui-cmd={item.cmd} onClick={clickHandler}>{item.label}</div>
-                        <div className="menu-list">{item.children.map(menulist)}</div>
                     </div>
                 );
             }

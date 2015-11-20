@@ -26,10 +26,10 @@
     .menu-list {
         display: none;
         position: absolute;
-        top: 40px;
+        top: 41px;
         left: -1px;
-        width: 101px;
-        background-color: #1F1F1F;
+        width: 203px;
+        background-color: #171814;
         border: 1px solid #383838;
         border-top: none;
     }
@@ -39,8 +39,11 @@
         line-height: 35px;
         font-size: 0.9em;
         cursor: pointer;
-        border-top: 1px solid #1F1F1F;
         border-bottom: 1px solid #1F1F1F;
+        .menu-item-hotkey {
+            float: right;
+            margin-right: 10px;
+        }
     }
     .menu-item:hover {
         background-color: #2A333A;
@@ -49,7 +52,6 @@
         border-bottom: 1px solid #383838;
     }
     .menu-button:hover {
-        border-right: 1px solid #1F1F1F;
         color: #d97915;
         .menu-list {
             display: block;

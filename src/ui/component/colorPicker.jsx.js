@@ -19,12 +19,26 @@ define(function (require) {
     }
 
     /**
-     * Converts an HSL color value to RGB.
+     * CSS串转RGB颜色
      *
-     * @param   Number  h       The hue
-     * @param   Number  s       The saturation
-     * @param   Number  l       The lightness
-     * @return  Array           The RGB representation 0 - 255
+     * @param {string} s CSS颜色#000000，必须是6位
+     * @return {Array.<number>} RGB颜色数组，0-255
+     */
+    function CSS2RGB(s) {
+        s = s.replace('#', '');
+        var r = parseInt(s.slice(0, 2), 16);
+        var g = parseInt(s.slice(2, 4), 16);
+        var b = parseInt(s.slice(4, 6), 16);
+        return [r, g, b];
+    }
+
+    /**
+     * HSL颜色转RGB颜色
+     *
+     * @param {number} h 色相
+     * @param {number} s 饱和度
+     * @param {number} l 亮度
+     * @return {Array.<number>} RGB颜色数组，0-255
      */
     function HSL2RGB(h, s, l){
         var r, g, b;
@@ -50,12 +64,12 @@ define(function (require) {
     }
 
     /**
-     * Converts an RGB color value to HSL. Conversion formula
+     * RGB颜色转HSL颜色
      *
-     * @param   Number  r       The red color value 0 - 255
-     * @param   Number  g       The green color value 0 - 255
-     * @param   Number  b       The blue color value 0 - 255
-     * @return  Array           The HSL representation
+     * @param {number} r 红色0 - 255
+     * @param {number} g 绿色0 - 255
+     * @param {number} b 蓝色0 - 255
+     * @return {Array.<number>} HSL颜色数组，0-1
      */
     function RGB2HSL(r, g, b){
         r /= 255, g /= 255, b /= 255;
@@ -79,16 +93,13 @@ define(function (require) {
 
     return React.createClass({
         getDefaultProps : function () {
-            return {
-                width: 200,
-                height: 15
-            };
-          },
+            return {width: 200, height: 15};
+        },
         getInitialState: function () {
             return {
-                value: '#FF0000',
-                rgb: [0, 0, 0],
-                hsl: [0, 0, 0]
+                value: '#FF0000',   // 主颜色，外界可设置
+                rgb: [0, 0, 0],     // 从动颜色，外界可读，内部可设置
+                hsl: [0, 0, 0]      // 从动颜色，外界可读，内部可设置
             };
         },
         renderColor: function (color) {
@@ -116,36 +127,84 @@ define(function (require) {
             this.renderColor(this.state.value);
         },
         render: function () {
+
             var me = this;
-            var prop = {
-                width: this.props.width,
-                height: this.props.height,
-                onClick: clickHandler
-            };
+            var prop = {width: this.props.width, height: this.props.height, onClick: clickHandler};
+            var rgb = CSS2RGB(this.state.value);
+            this.state.rgb = rgb;
+            this.state.hsl = RGB2HSL(rgb[0], rgb[1], rgb[2]);
+
+            function updateColor(type, value, fireChange, renderCanvas, silent) {
+                var colors = {};
+                if (type === 'css') {
+                    colors.value = value;
+                    colors.rgb = CSS2RGB(value);
+                    colors.hsl = RGB2HSL(colors.rgb[0], colors.rgb[1], colors.rgb[2]);
+                }
+                else if (type === 'rgb') {
+                    colors.rgb = value;
+                    colors.value = RGB2CSS(colors.rgb[0], colors.rgb[1], colors.rgb[2]);
+                    colors.hsl = RGB2HSL(colors.rgb[0], colors.rgb[1], colors.rgb[2]);
+                }
+                else if (type === 'hsl') {
+                    colors.hsl = value;
+                    colors.rgb = HSL2RGB(colors.hsl[0], colors.hsl[1], colors.hsl[2]);
+                    colors.value = RGB2CSS(colors.rgb[0], colors.rgb[1], colors.rgb[2]);
+                }
+                if (!silent) {
+                    me.setState(colors);
+                }
+                if (fireChange && typeof me.props.onChange === 'function') {
+                    me.props.onChange({target: me, value: colors});
+                }
+                if (renderCanvas) {
+                    me.renderColor(colors.value);
+                }
+                return colors;
+            }
+
             function clickHandler(e) {
                 var x = e.nativeEvent.offsetX;
                 var y = e.nativeEvent.offsetY;
                 var rgb = e.target.getContext('2d').getImageData(x, y, 1, 1).data;
-                var colors = {
-                    value: RGB2CSS(rgb[0], rgb[1], rgb[2]),
-                    rgb: [rgb[0], rgb[1], rgb[2]],
-                    hsl: RGB2HSL(rgb[0], rgb[1], rgb[2])
-                };
-                me.setState(colors);
-                if (e.target.dataset.cmd === 'canvas1') {
-                    me.renderColor(me.state.value);
-                }
-                if (typeof me.props.onChange === 'function') {
-                    me.props.onChange({
-                        target: me,
-                        value: colors
-                    });
-                }
+                updateColor('rgb', rgb, true, e.target.dataset.cmd === 'canvas1');
             }
+
+            function inputChangeHandler(e) {
+                var type = e.target.dataset.cmd;
+                var index = ~~e.target.dataset.index;
+                var value = Number(e.target.value);
+                value = Math.min(e.target.max, value);
+                value = Math.max(e.target.min, value);
+                var result = type === 'rgb' ? me.state.rgb : me.state.hsl;
+                result[index] = value;
+                updateColor(type, result, true, true);
+            }
+
+            function inputBox(type, fixed, min, max, step) {
+                var index = [0, 1, 2];
+                type = type.toLowerCase();
+                function item(i) {
+                    var value = me.state[type][i].toFixed(fixed);
+                    var prop = {
+                        type: 'number', step: step, min: min, max: max, value: value,
+                        'data-cmd': type,
+                        'data-index': i,
+                        onChange: inputChangeHandler
+                    };
+                    return <input {...prop}/>;
+                }
+                return (<div className="color-input-content">{type}{index.map(item)}</div>);
+            }
+
             return (
                 <div className="color-picker">
                     <div className="color-label" style={{backgroundColor: this.state.value}}></div>
                     <div className="color-select">
+                        <div className="color-input-box">
+                            {inputBox('RGB', 0, 0, 255, 1)}
+                            {inputBox('HSL', 2, 0, 1, 0.01)}
+                        </div>
                         <canvas ref="canvas2" data-cmd="canvas2" {...prop}></canvas>
                         <canvas ref="canvas1" data-cmd="canvas1" {...prop}></canvas>
                     </div>
