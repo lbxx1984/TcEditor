@@ -93,7 +93,7 @@ define(function (require) {
 
     return React.createClass({
         getDefaultProps : function () {
-            return {width: 200, height: 15};
+            return {width: 140, height: 15};
         },
         getInitialState: function () {
             return {
@@ -129,7 +129,11 @@ define(function (require) {
         render: function () {
 
             var me = this;
-            var prop = {width: this.props.width, height: this.props.height, onClick: clickHandler};
+            var prop = {
+                width: this.props.width - 6,
+                height: this.props.height,
+                onClick: clickHandler
+            };
             var rgb = CSS2RGB(this.state.value);
             this.state.rgb = rgb;
             this.state.hsl = RGB2HSL(rgb[0], rgb[1], rgb[2]);

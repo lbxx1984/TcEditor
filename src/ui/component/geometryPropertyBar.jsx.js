@@ -116,7 +116,7 @@ define(function (require) {
                         </div>
                         <div className="label-l1">
                             <div className="label-l2">color:</div>
-                            <ColorPicker ref="materialcolor" onChange={colorChangeHandler} width="134"/>
+                            <ColorPicker ref="materialcolor" onChange={colorChangeHandler} width="140"/>
                         </div>
                         <div className="label-l1">
                             <div className="label-l2">wireframe:</div>
