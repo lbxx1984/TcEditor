@@ -17,7 +17,9 @@ define(function (Require) {
                 React.createElement(
                     Dialog,
                     {
-                        content: require('widget/colorPicker.jsx'),
+                        title: '打开文件',
+                        content: require('component/explorer.jsx'),
+                        props: {fs: this.fs},
                         onClose: dialogCloseHandler(container)
                     }
                 ),

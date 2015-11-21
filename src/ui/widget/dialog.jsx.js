@@ -14,7 +14,7 @@ define(function (require) {
             // 装载子对象
             if (typeof this.props.content === 'function') {
                 this.content = React.render(
-                    React.createElement(this.props.content, {}),
+                    React.createElement(this.props.content, this.props.props),
                     this.refs.content.getDOMNode()
                 );
             }

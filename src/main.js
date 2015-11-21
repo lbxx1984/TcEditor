@@ -12,15 +12,39 @@ define(function (require) {
     var Transformer = require('./transformer/main');
     var Morpher = require('./morpher/main');
     var Light = require('./light/main');
+    var FileSystem = require('fs');
+    
 
-
-    // 初始化全局控制和UI
+    // 创建全局控制器
     var routing = new Routing('mouse-cameramove');
-    var uiProps = {commandRouting: function () {routing.main.apply(routing, arguments);}};
-    routing.ui = React.render(React.createElement(App, uiProps), document.body, uiLoaded);
+    // 创建文件系统句柄
+    routing.fs = new FileSystem(function (fs) {
+        fs.md(window.editorKey, mdDir);
+        function mdDir() {
+            fs.cd(window.editorKey);
+        }
+    });
+    // 创建UI
+    routing.ui = React.render(
+        React.createElement(App, {commandRouting: commandRouting}),
+        document.body,
+        uiLoaded
+    );
+    // 绑定全局resize事件
+    window.onresize = function () {
+        if (routing.stage != null) {
+            routing.stage.resize();
+        }
+    };
 
 
-    // ui加载完毕，初始化各子系统
+    // UI控制回调
+    function commandRouting() {
+        routing.main.apply(routing, arguments);
+    }
+
+
+    // UI初始化回调
     function uiLoaded() {
 
         var stageRefs = this.refs.containerleft.refs.stage.refs;
@@ -105,14 +129,6 @@ define(function (require) {
     }
 
 
-    // 全局resize事件
-    window.onresize = function () {
-        if (routing.stage != null) {
-            routing.stage.resize();
-        }
-    };
-
-
     // 显示信息
     // 由于React的Render是异步的，所以这里要判断APP究竟Render完了没有，uiLoaded执行时Routing.ui的值尚不存在
     function displayInformation() {
@@ -125,4 +141,6 @@ define(function (require) {
             light: routing.light.children
         });
     }
+
+
 });
