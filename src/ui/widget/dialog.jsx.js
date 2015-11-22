@@ -13,8 +13,10 @@ define(function (require) {
         componentDidMount: function () {
             // 装载子对象
             if (typeof this.props.content === 'function') {
+                var contentProps = this.props.props;
+                contentProps.onClose = this.closeHandler;
                 this.content = React.render(
-                    React.createElement(this.props.content, this.props.props),
+                    React.createElement(this.props.content, contentProps),
                     this.refs.content.getDOMNode()
                 );
             }

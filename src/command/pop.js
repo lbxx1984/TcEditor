@@ -17,7 +17,7 @@ define(function (Require) {
                 React.createElement(
                     Dialog,
                     {
-                        title: '打开文件',
+                        title: 'Open File',
                         content: require('component/explorer.jsx'),
                         props: {fs: this.fs},
                         onClose: dialogCloseHandler(container)

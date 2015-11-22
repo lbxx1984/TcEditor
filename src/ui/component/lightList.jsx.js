@@ -30,7 +30,7 @@ define(function (require) {
             }
 
             function produceLight(item) {
-                var visible = 'iconfont icon-' + (item.visible ? 'kejian' : 'bukejian2');
+                var visible = 'iconfont icon-' + (item.visible ? 'kejian' : 'bukejian');
                 var locked = 'iconfont icon-' + (item.locked ? 'suo1' : 'suo');
                 var name = item.name || (item.type.replace('Light', '') + ' '
                     + new Date(item.birth).format('MM/DD hh:mm:ss'));
@@ -41,7 +41,7 @@ define(function (require) {
                 };
                 return (
                     <div {...lightProp}>
-                        <div data-cmd="delete" className="iconfont icon-lajixiang"></div>
+                        <div data-cmd="delete" className="iconfont icon-shanchu"></div>
                         <div data-cmd="visible" className={visible}></div>
                         <div data-cmd="lock" className={locked}></div>
                         <div className="label">{name}</div>

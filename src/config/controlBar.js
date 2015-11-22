@@ -76,7 +76,7 @@ define(function (Require) {
                 {
                     label: '', class: ' icon', cmd: 'tool-gridtoggle',
                     type: 'checkbox', title: 'hide/show grid', value: 0,
-                    styles: [' icon-kejian', ' icon-bukejian2']  
+                    styles: [' icon-kejian', ' icon-bukejian']  
                 }
             ]
         },
