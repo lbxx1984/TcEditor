@@ -12,15 +12,23 @@ define(function (Require) {
     return {
         openfile: function () {
             var container = document.createElement('div');
+            var closeHandler = dialogCloseHandler(container);
             document.body.appendChild(container);
+            function onEnter(path) {
+                console.log(path);
+                closeHandler();
+            }
             React.render(
                 React.createElement(
                     Dialog,
                     {
                         title: 'Open File',
                         content: require('component/explorer.jsx'),
-                        props: {fs: this.fs},
-                        onClose: dialogCloseHandler(container)
+                        props: {
+                            fs: this.fs,
+                            onEnter: onEnter
+                        },
+                        onClose: closeHandler
                     }
                 ),
                 container
