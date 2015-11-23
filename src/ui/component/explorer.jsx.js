@@ -19,7 +19,6 @@ define(function (require) {
         },
         getInitialState: function () {
             return {
-                selectedPath: '',
                 selected: '',
                 files: [],
                 sorter: 0, // 0名称；1大小；2时间
@@ -28,47 +27,6 @@ define(function (require) {
         },
         componentDidMount: function () {
             this.listFiles();
-        },
-        itemClick: function (e) {
-            var dom = e.target;
-            if (dom.title === 'Delete') {
-                return;
-            }
-            var path = dom.dataset.path;
-            while (!path && dom != document.body) {
-                dom = dom.parentNode;
-                path = dom.dataset.path;
-            }
-            if (dom.dataset.isFile === 'true') {
-                var arr = path.split('/');
-                var filename = arr.pop();
-                if (filename === this.state.selected) {
-                    this.enterHandler();
-                    return;
-                }
-                this.setState({
-                    selectedPath: path,
-                    selected: filename
-                });
-            }
-            else {
-                var me = this;
-                this.props.fs.cd(path, function () {
-                    me.listFiles();
-                });
-            }
-        },
-        toParentDir: function () {
-            var arr = this.props.fs.getWorkingDirectory().fullPath.split('/');
-            arr.pop();
-            var path = arr.join('/');
-            if (path.indexOf(window.editorKey) < 0) {
-                return;
-            }
-            var me = this;
-            this.props.fs.cd(path, function () {
-                me.listFiles();
-            });
         },
         listFiles: function () {
             var me = this;
@@ -82,10 +40,7 @@ define(function (require) {
                         if (me.state.desc) {
                             infos.reverse();
                         }
-                        me.setState({
-                            files: infos,
-                            selected: ''
-                        });
+                        me.setState({files: infos, selected: ''});
                         return;
                     }
                     var item = result[i];
@@ -124,7 +79,44 @@ define(function (require) {
                 return compare[me.state.sorter + ''](a, b);
             }
         },
-        sortList: function (e) {
+        itemClickHandler: function (e) {
+            var dom = e.target;
+            if (dom.title === 'deleteClickHandler') {
+                return;
+            }
+            var path = dom.dataset.path;
+            while (!path && dom != document.body) {
+                dom = dom.parentNode;
+                path = dom.dataset.path;
+            }
+            if (dom.dataset.isFile === 'true') {
+                var filename = path.split('/').pop();
+                if (filename === this.state.selected) {
+                    this.enterClickHandler();
+                    return;
+                }
+                this.setState({selected: filename});
+            }
+            else {
+                var me = this;
+                this.props.fs.cd(path, function () {
+                    me.listFiles();
+                });
+            }
+        },
+        upClickHandler: function () {
+            var arr = this.props.fs.getWorkingDirectory().fullPath.split('/');
+            arr.pop();
+            var path = arr.join('/');
+            if (path.indexOf(window.editorKey) < 0) {
+                return;
+            }
+            var me = this;
+            this.props.fs.cd(path, function () {
+                me.listFiles();
+            });
+        },
+        sortListHandler: function (e) {
             var sorter = ~~e.target.sorter;
             var desc = this.state.desc;
             if (sorter === this.state.sorter) {
@@ -135,7 +127,7 @@ define(function (require) {
             }
             this.listFiles();
         },
-        makeDir: function () {
+        makeClickHandler: function () {
             var dom = this.refs.filelist.getDOMNode();
             lastScrollTop = dom.scrollTop;
             dom.scrollTop = dom.scrollHeight;
@@ -144,20 +136,20 @@ define(function (require) {
             dom.appendChild(input);
             input.focus();
         },
-        makeDirKeyUp: function (e) {
+        makeInputKeyUpHandler: function (e) {
             if (e.keyCode === 13) {
                 var me = this;
                 me.props.fs.md(e.target.value, function () {
-                    me.makeDirRemoveInput();
+                    me.removeMakeInputDom();
                 });
                 return;
             }
             if (e.keyCode === 27) {
-                this.makeDirRemoveInput();
+                this.removeMakeInputDom();
                 return;
             }
         },
-        makeDirRemoveInput: function () {
+        removeMakeInputDom: function () {
             var dom = this.refs.filelist.getDOMNode();
             try {
                 var input = dom.getElementsByTagName('input');
@@ -171,7 +163,7 @@ define(function (require) {
             dom.scrollTop = lastScrollTop;
             this.listFiles();
         },
-        delete: function (e) {
+        deleteClickHandler: function (e) {
             var me = this;
             if (e.target.dataset.isFile === 'true') {
                 this.props.fs.del(e.target.dataset.path, result);
@@ -183,47 +175,68 @@ define(function (require) {
                 me.listFiles();
             }
         },
-        enterHandler: function (e) {
+        enterClickHandler: function (e) {
             if (this.state.selected === '') {
                 return;
             }
+            var path = this.props.fs.getWorkingDirectory().fullPath + '/' + this.state.selected;
+            var have = false;
+            for (var i = 0; i < this.state.files.length; i++) {
+                if (this.state.files[i].path === path) {
+                    have = true;
+                    break;
+                }
+            }
+            if (this.props.mode === 'saveas'
+                && have
+                && !window.confirm('The file already exists, overwrite it?')
+            ) {
+                return;
+            }
+            if (this.props.mode !== 'saveas' && !have) {
+                alert('File does not exist!');
+                return;
+            }
             if (typeof this.props.onEnter === 'function') {
-                this.props.onEnter(this.state.selectedPath);
+                this.props.onEnter(path);
             }
         },
-        closeHandler: function () {
+        closeClickHandler: function () {
             if (typeof this.props.onClose === 'function') {
                 this.props.onClose();
             }
+        },
+        inputChangeHandler: function (e) {
+            this.setState({selected: e.target.value});
         },
         render: function () {
             var me = this;
             var fileListProps = {
                 className: 'filelist',
                 ref: 'filelist',
-                onKeyUp: this.makeDirKeyUp,
-                onBlur: this.makeDirRemoveInput
+                onKeyUp: this.makeInputKeyUpHandler,
+                onBlur: this.removeMakeInputDom
             };
             function mapFiles(item) {
                 var iconProp = {
                     className: item.isFile ? 'iconfont icon-wenjian' : 'iconfont icon-wenjianjia'
                 };
-                var deleteProp = {
+                var deleteClickHandlerProp = {
                     'data-path': item.path,
                     'data-is-file': item.isFile,
-                    title: 'Delete',
+                    title: 'deleteClickHandler',
                     className: 'iconfont icon-shanchu',
-                    onClick: me.delete
+                    onClick: me.deleteClickHandler
                 };
                 var fileProp = {
                     'data-path': item.path,
                     'data-is-file': item.isFile,
                     className: 'tr',
-                    onClick: me.itemClick
+                    onClick: me.itemClickHandler
                 };
                 return (
                     <div {...fileProp}>
-                        <div {...deleteProp}></div>
+                        <div {...deleteClickHandlerProp}></div>
                         <div><div {...iconProp}></div>{item.name}</div>
                         <div>{item.isFile ? formatSize(item.size) : '--'}</div>
                         <div>{item.mtime.format('YYYY/MM/DD hh:mm:ss')}</div>
@@ -232,23 +245,24 @@ define(function (require) {
             }
             return (
                 <div className="explorer">
-                    <div className="iconfont icon-xinjianwenjianjia" onClick={this.makeDir}></div>
-                    <div className="iconfont icon-wodedingdan35" onClick={this.toParentDir}></div>
+                    <div className="iconfont icon-xinjianwenjianjia" onClick={this.makeClickHandler}></div>
+                    <div className="iconfont icon-wodedingdan35" onClick={this.upClickHandler}></div>
                     <div className="address-bar">{
                         this.props.fs.getWorkingDirectory().fullPath.replace('/' + window.editorKey, '') + '/'
                     }</div>
                     <div className="th">
-                        <div data-sorter="0" onClick={this.sortList}>name</div>
-                        <div data-sorter="1" onClick={this.sortList}>size</div>
-                        <div data-sorter="2" onClick={this.sortList}>modify time</div>
+                        <div data-sorter="0" onClick={this.sortListHandler}>name</div>
+                        <div data-sorter="1" onClick={this.sortListHandler}>size</div>
+                        <div data-sorter="2" onClick={this.sortListHandler}>modify time</div>
                     </div>
                     <div {...fileListProps}>
                         {this.state.files.map(mapFiles)}
                     </div>
                     <div className="foot-bar">
-                        <div className="button" onClick={this.closeHandler}>{this.props.button2}</div>
-                        <div className="button" onClick={this.enterHandler}>{this.props.button1}</div>
-                        file name:<input type="text" value={this.state.selected}/>
+                        <div className="button" onClick={this.closeClickHandler}>{this.props.button2}</div>
+                        <div className="button" onClick={this.enterClickHandler}>{this.props.button1}</div>
+                        file name:
+                        <input type="text" value={this.state.selected} onChange={this.inputChangeHandler}/>
                     </div>
                 </div>
             );
