@@ -13,18 +13,22 @@ define(function (require) {
     var Morpher = require('./morpher/main');
     var Light = require('./light/main');
     var IO = require('./io/main');
-    var FileSystem = require('fs');
+    var FileSystem = require('./io/filesystem');
+    var keyboard = require('./io/keyboard');
+    var config = require('./config');   
     var routing = new Routing('mouse-cameramove');
 
 
     // 顺序初始化
     setupFileSystem()
-        .then(makeWorkingSpace, unsupported)
-        .then(enterWorkingSpace, unsupported)
-        .then(setupUI, unsupported)
-        .then(setupStage, unsupported)
-        .then(bindEventHandlers, unsupported)
-        .then(displayInformation, unsupported);
+    .then(makeWorkingSpace, unsupported)
+    .then(enterWorkingSpace, unsupported)
+    .then(setupUI, unsupported)
+    .then(setupStage, unsupported)
+    .then(readEditorConf, unsupported)
+    .then(processEditorConf, unsupported)
+    .then(bindEventHandlers, unsupported)
+    .then(displayInformation, unsupported);
 
 
     function unsupported() {
@@ -85,11 +89,47 @@ define(function (require) {
             routing.morpher = new Morpher(routing.stage);
             // 灯光系统
             routing.light = new Light({stage: routing.stage});
-            // 默认灯光
-            var light = new THREE.PointLight(0xffffff, 1.5, 3000);
-            light.position.set(0, 900, 0);
-            routing.light.add(light);
+            // IO系统
+            routing.io = new IO({routing: routing});
             // 必成功
+            resolve();
+        });
+    }
+
+    function readEditorConf() {
+        var path = '/' + window.editorKey + '/' + window.editorKey + 'conf';
+        return new Promise(function (resolve, reject) {
+            routing.fs.read(path, function (result) {
+                if (result instanceof FileError) {
+                    writeDefaultConf();
+                }
+                else {
+                    try {
+                        var obj = JSON.parse(result.target.result);
+                        resolve(obj);
+                    }
+                    catch (e) {
+                        writeDefaultConf()
+                    }
+                }
+            });
+            function writeDefaultConf() {
+                var data = new Blob([JSON.stringify(config.editorDefaultConf)]);
+                routing.fs.write(path, {data: data}, function () {
+                    resolve(config.editorDefaultConf);
+                });
+            }
+        });
+    }
+
+    function processEditorConf(conf) {
+        function importLights(item) {
+            routing.io.processLight(item);
+        }
+        return new Promise(function (resolve, reject) {
+            if (conf.light instanceof Array && conf.light.length > 0) {
+                conf.light.each(importLights);
+            }
             resolve();
         });
     }
@@ -169,5 +209,13 @@ define(function (require) {
         });
     }
 
-
+    document.onkeydown = function (e) {
+        
+        if (keyboard.preventDefault(e)) {
+            e.preventDefault();
+        }
+    }
+    document.onkeyup = function (e) {
+        console.log(keyboard.translate(e));
+    }
 });

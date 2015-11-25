@@ -5,6 +5,12 @@
 /* eslint-disable */
 define(function (require) {
 
+    Array.prototype.each = function (callback) {
+        for (var i = 0; i < this.length; i++) {
+            callback(this[i]);
+        }
+    };
+
     Array.prototype.indexOf = function (val) {
         for (var i = 0; i < this.length; i++) {
             if (this[i] === val) {

@@ -44,6 +44,10 @@ define(function (require) {
                         return;
                     }
                     var item = result[i];
+                    if (item.name.indexOf(window.editorKey) === 0) {
+                        readMeta(i + 1);
+                        return;
+                    }
                     var obj = {
                         name: item.name,
                         isFile: item.isFile,
