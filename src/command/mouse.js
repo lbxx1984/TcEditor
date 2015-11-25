@@ -47,6 +47,15 @@ define(function (Require) {
         me.morpher.detachJoint();
     }
 
+    function updateControlBar(me, key, value) {
+        if (!me.ui) return;
+        var controlBar = me.ui.refs.containerleft.refs.controlbar;
+        if (controlBar.state[key] === value) return;
+        var obj = {};
+        obj[key] = value;
+        controlBar.setState(obj);
+    }
+
     return {
         cameramove: {
             mousemove: function (e) {
@@ -58,7 +67,10 @@ define(function (Require) {
             },
             mousedown: mousedown,
             mouseup: mouseup,
-            mouseleave: mouseup
+            mouseleave: mouseup,
+            loaded: function () {
+                updateControlBar(this, 'systemtool', 'cameramove');
+            }
         },
         pickgeo: {
             loaded: function () {
@@ -71,6 +83,7 @@ define(function (Require) {
                 else {
                     _lastMesh = null;
                 }
+                updateControlBar(this, 'systemtool', 'pickgeo');
             },
             mouseRightClick: function (e) {
                 _down = false;
@@ -136,6 +149,7 @@ define(function (Require) {
                 else {
                     _lastMesh = null;
                 }
+                updateControlBar(this, 'systemtool', 'pickjoint');
             },
             mousemove: function (e) {
                 var mesh = null;
@@ -218,6 +232,7 @@ define(function (Require) {
             loaded: function () {
                 _down = false;
                 this.light.show();
+                updateControlBar(this, 'systemtool', 'picklight');
             },
             unload: function () {
                 this.light.hide();

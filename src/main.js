@@ -20,7 +20,7 @@ define(function (require) {
 
 
     // 顺序初始化
-    setupFileSystem()
+    setupIO()
     .then(makeWorkingSpace, unsupported)
     .then(enterWorkingSpace, unsupported)
     .then(setupUI, unsupported)
@@ -35,8 +35,9 @@ define(function (require) {
         console.log('Your browser does not support TcEditor.');
     }
 
-    function setupFileSystem() {
+    function setupIO() {
         return new Promise(function (resolve, reject) {
+            routing.keyboard = keyboard;
             routing.fs = new FileSystem(function (fs) {
                 fs ? resolve() : reject();
             });
@@ -187,6 +188,26 @@ define(function (require) {
                     routing.stage.resize();
                 }
             };
+            // 全局鼠标事件
+            document.onkeydown = function (e) {
+                if (keyboard.preventDefault(e)) {
+                    e.preventDefault();
+                }
+            }
+            document.onkeyup = function (e) {
+                if (e.target.tagName !== 'BODY') {
+                    return;
+                }
+                // 派发系统级别快捷键事件
+                var key = keyboard.translate(e);
+                var cmd = keyboard.key2cmd(key);
+                if (cmd !== undefined) {
+                    routing.main(cmd);
+                    return;
+                }
+                // 派发component注册的自定义快捷键事件
+                keyboard.depatch(key);
+            }
             // 必成功
             resolve();
         });
@@ -209,13 +230,5 @@ define(function (require) {
         });
     }
 
-    document.onkeydown = function (e) {
-        
-        if (keyboard.preventDefault(e)) {
-            e.preventDefault();
-        }
-    }
-    document.onkeyup = function (e) {
-        console.log(keyboard.translate(e));
-    }
+
 });

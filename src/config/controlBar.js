@@ -32,7 +32,7 @@ define(function (Require) {
                 },
                 {
                     label: '', class: ' icon icon-shuxingxuanze', cmd: 'mouse-pickjoint',
-                    type: 'radio', group: 'systemtool', value: 'pickjoint', title: 'pick up joints of geometry (B)'
+                    type: 'radio', group: 'systemtool', value: 'pickjoint', title: 'pick up joints of geometry (D)'
                 },
                 {
                     label: '', class: ' icon icon-bulb', cmd: 'mouse-picklight',
@@ -47,7 +47,7 @@ define(function (Require) {
             children: [
                 {
                     label: '', class: ' icon icon-yidong1', cmd: 'mouse-cameramove',
-                    type: 'radio', group: 'systemtool', value: 'cameramove', title: 'move camera (M)'
+                    type: 'radio', group: 'systemtool', value: 'cameramove', title: 'move camera (`)'
                 },
                 {
                     label: '', class: ' icon icon-fangda', cmd: 'tool-camerazoomin',
@@ -86,16 +86,16 @@ define(function (Require) {
             children: [
                 {
                     label: '', class: ' icon icon-move', cmd: 'trans-move',
-                    type: 'radio', group: 'transformer', value: 'move', title: 'move'
+                    type: 'radio', group: 'transformer', value: 'move', title: 'move (E)'
                 },
                 {
                     label: '', class: ' icon icon-llfilterrotate', cmd: 'trans-rotate',
-                    type: 'radio', group: 'transformer', value: 'rotate', title: 'rotate',
+                    type: 'radio', group: 'transformer', value: 'rotate', title: 'rotate (R)',
                     disable: {cameraview: 'xoy;xoz;zoy;'}
                 },
                 {
                     label: '', class: ' icon icon-icicfangdatubiao', cmd: 'trans-scale',
-                    type: 'radio', group: 'transformer', value: 'scale', title: 'scale',
+                    type: 'radio', group: 'transformer', value: 'scale', title: 'scale (T)',
                     disable: {cameraview: 'xoy;xoz;zoy;'}
                 },
                 {

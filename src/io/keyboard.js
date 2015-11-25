@@ -1,4 +1,6 @@
 define(function (Require) {
+
+    // 键值hash
     var keyHash = {
         8: 'backspace',
         9: 'tab',
@@ -9,7 +11,7 @@ define(function (Require) {
         18: 'alt',
         19: 'pause',
         20: 'capslock',
-        27: 'escape',
+        27: 'esc',
         32: 'space',
         33: 'pageUp',
         34: 'pageDown',
@@ -115,15 +117,39 @@ define(function (Require) {
         222: '\''
     };
 
-    // 此处配置在全局屏蔽
+    // 全局屏蔽
     var preventDefaultAll = [
         'ctrl+s',
-        'ctrl+o'
+        'ctrl+o',
+        'ctrl+f5',
+        'f5'
     ];
-    // 此处配置INPUT中不屏蔽，document上屏蔽
+
+    // 可输入DOM上不屏蔽，document上屏蔽
     var preventDefaultIgnoreInput = [
         'backspace'
     ];
+
+    // 快捷键命令翻译
+    var keyCommandConf = {
+        'ctrl+o': 'pop-openfile',
+        '1': 'view-3d',
+        '2': 'view-xoz',
+        '3': 'view-xoy',
+        '4': 'view-zoy',
+        's': 'mouse-pickgeo',
+        'd': 'mouse-pickjoint',
+        'l': 'mouse-picklight',
+        '`': 'mouse-cameramove',
+        'e': 'trans-move',
+        'r': 'trans-rotate',
+        't': 'trans-scale',
+        '=': 'trans-enlarge',
+        '-': 'trans-narrow'
+    };
+
+    // 外部注册的events，DOM1级事件
+    var events = {};
 
     return {
         translate: function (e) {
@@ -144,7 +170,23 @@ define(function (Require) {
             if (preventDefaultAll.indexOf(key) > -1) {
                 return true;
             }
-            return preventDefaultIgnoreInput.indexOf(key) > -1 && e.target.tagName !== 'INPUT';
+            return preventDefaultIgnoreInput.indexOf(key) > -1 && e.target.tagName === 'BODY';
+        },
+        key2cmd: function (key) {
+            return keyCommandConf[key];
+        },
+        addListener: function (key, func) {
+            events[key] = func;
+        },
+        removeListener: function (key) {
+            delete events[key];
+        },
+        depatch: function (type) {
+            for (var key in events) {
+                if (key.indexOf('|' + type + '|') > -1 && typeof events[key] === 'function') {
+                    events[key](type);
+                }
+            }
         }
     };
 });
