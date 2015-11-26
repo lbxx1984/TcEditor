@@ -83,6 +83,11 @@ define(function (Require) {
                 parseInt(stage.$3d.param.cameraLookAt.x),
                 parseInt(stage.$3d.param.cameraLookAt.y),
                 parseInt(stage.$3d.param.cameraLookAt.z)
+            ],
+            s: stage.$2d.param.scale,
+            o: [
+                parseInt(stage.$2d.param.cameraLookAt.x),
+                parseInt(stage.$2d.param.cameraLookAt.y),
             ]
         };
         result.grid = {
@@ -101,12 +106,15 @@ define(function (Require) {
      */
     IO.prototype.setEditorConf = function (conf) {
         var cameraController = this.routing.stage.cameraController;
+        var stage2d = this.routing.stage.$2d;
         var stage3d = this.routing.stage.$3d;
         var controlBar = this.routing.ui.refs.containerleft.refs.controlbar;
         this.processLight(conf.defaultLight);
         cameraController.param.cameraAngleA = conf.camera.a;
         cameraController.param.cameraAngleB = conf.camera.b;
         cameraController.updateCameraPosition();
+        stage2d.param.scale = conf.camera.s;
+        stage2d.param.cameraLookAt = {x: conf.camera.o[0], y: conf.camera.o[1]};
         stage3d.param.cameraRadius = conf.camera.r;
         stage3d.param.cameraAngleA = conf.camera.a;
         stage3d.param.cameraAngleB = conf.camera.b;

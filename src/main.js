@@ -100,6 +100,7 @@ define(function (require) {
     function readEditorConf() {
         var path = '/' + window.editorKey + '/' + window.editorKey + 'conf';
         return new Promise(function (resolve, reject) {
+            // writeDefaultConf();return;
             routing.fs.read(path, function (result) {
                 if (result instanceof FileError) {
                     writeDefaultConf();

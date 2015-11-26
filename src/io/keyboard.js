@@ -7,7 +7,7 @@ define(function (Require) {
         12: 'clear',
         13: 'enter',
         16: 'shift',
-        17: 'control',
+        17: 'ctrl',
         18: 'alt',
         19: 'pause',
         20: 'capslock',
