@@ -43,6 +43,7 @@ define(function (Require) {
         coordinatetoggle: function () {
             if (!this.transformer.attached) return;
             var controlBar = this.ui.refs.containerleft.refs.controlbar;
+            if (controlBar.state.transformer === 'scale') return;
             var space = controlBar.state.transformerspace === 'world' ? 'local' : 'world';
             controlBar.setState({transformerspace: space});
             this.transformer.callFunction('setSpace', space);

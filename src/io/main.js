@@ -1,5 +1,9 @@
 define(function (Require) {
 
+
+    var editorDefaultConf = require('config/editorDefaultConf');
+
+
     /**
      * 设置matrix4
      *
@@ -18,6 +22,7 @@ define(function (Require) {
         obj.applyMatrix(m);
     }
 
+
     /**
      * 设置color值
      *
@@ -28,6 +33,7 @@ define(function (Require) {
         obj.color = new THREE.Color(c);
     }
 
+
     /**
      * io系统，负责保存打开所有文件，以及文件解析
      *
@@ -37,6 +43,7 @@ define(function (Require) {
     function IO(param) {
         this.routing = param.routing;
     }
+
 
     /**
      * 解析灯光
@@ -57,6 +64,67 @@ define(function (Require) {
         }
         this.routing.light.add(light);
     };
+
+
+    /**
+     * 获取编辑器配置
+     *
+     * @return {string} 编辑器配置
+     */
+    IO.prototype.getEditorConf = function () {
+        var me = this.routing;
+        var result = editorDefaultConf;
+        var stage = me.stage;
+        result.camera = {
+            a: parseInt(stage.cameraController.param.cameraAngleA),
+            b: parseInt(stage.cameraController.param.cameraAngleB),
+            r: parseInt(stage.$3d.param.cameraRadius),
+            l: [
+                parseInt(stage.$3d.param.cameraLookAt.x),
+                parseInt(stage.$3d.param.cameraLookAt.y),
+                parseInt(stage.$3d.param.cameraLookAt.z)
+            ]
+        };
+        result.grid = {
+            size: stage.$3d.param.gridSize,
+            visible: stage.$3d.param.showGrid
+        };
+        result.controlBar =  me.ui.refs.containerleft.refs.controlbar.state;
+        return JSON.stringify(result);
+    }
+
+
+    /**
+     * 解析编辑配置
+     *
+     * @param {Object} conf 编辑器级别配置
+     */
+    IO.prototype.setEditorConf = function (conf) {
+        var cameraController = this.routing.stage.cameraController;
+        var stage3d = this.routing.stage.$3d;
+        var controlBar = this.routing.ui.refs.containerleft.refs.controlbar;
+        this.processLight(conf.defaultLight);
+        cameraController.param.cameraAngleA = conf.camera.a;
+        cameraController.param.cameraAngleB = conf.camera.b;
+        cameraController.updateCameraPosition();
+        stage3d.param.cameraRadius = conf.camera.r;
+        stage3d.param.cameraAngleA = conf.camera.a;
+        stage3d.param.cameraAngleB = conf.camera.b;
+        stage3d.param.cameraLookAt = {x: conf.camera.l[0], y: conf.camera.l[1], z: conf.camera.l[2]};
+        stage3d.updateCameraPosition();
+        stage3d.param.gridSize = conf.grid.size;
+        stage3d.resizeGrid(true);
+        stage3d.resizeGrid(false);
+        if (conf.grid.visible === false) {
+            this.routing.stage.callFunction('toggleHelper');
+            var btn = controlBar.getDOMNode().getElementsByClassName('icon-kejian');
+            btn[0].dataset.uiValue = 1;
+            btn[0].className = btn[0].className.replace('icon-kejian', 'icon-bukejian');
+        }
+        this.routing.main('view-' + conf.controlBar.cameraview);
+        this.routing.main('mouse-' + conf.controlBar.systemtool);
+    };
+
 
     return IO;
 });

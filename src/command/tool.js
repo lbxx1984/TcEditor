@@ -124,6 +124,14 @@ define(function (Require) {
             this.ui.refs.containerright.refs.verticallist.refs.lightBox.setState({
                 selected: uuid + ';'
             });
+        },
+        detach: function () {
+            if (this.transformer.attached) {
+                detachMesh(this, 'transformer', this.transformer.mesh.uuid);
+            }
+            if (this.morpher.state !== 0) {
+                detachMesh(this, 'morpher', this.morpher.mesh.uuid);
+            }
         }
     };
 });

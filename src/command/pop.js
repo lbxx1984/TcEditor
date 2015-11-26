@@ -1,7 +1,6 @@
 define(function (Require) {
 
     var Dialog = require('widget/dialog.jsx');
-    var saving = false;
 
     function openfile(me, url) {
         me.fs.read(url, got);
@@ -13,23 +12,8 @@ define(function (Require) {
         }
     }
 
-    function savefile(me, url) {
-        // if (saving) {
-        //     return;
-        // }
-        // saving = true;
-        // // 临时随便写点儿东西
-        // var content = '';
-        // for (var i = 0; i < 100; i++) content += Math.random() + ';';
-        // //
-        // me.fs.write(url, {data: new Blob([content])}, saved);
-        // function saved() {
-        //     saving = false;
-        // }
-    }
-
     return {
-        openfile: function () {
+        open: function () {
             var me = this;
             var hotkey = '|backspace|enter|esc|';
             var container = document.createElement('div');
@@ -65,32 +49,13 @@ define(function (Require) {
                 me.keyboard.removeListener(hotkey);
             }
         },
-        saveas: function () {
-            // var me = this;
-            // var container = document.createElement('div');
-            // var closeHandler = dialogCloseHandler(container);
-            // document.body.appendChild(container);
-            // function onEnter(path) {
-            //     savefile(me, path);
-            //     closeHandler();
-            // }
-            // React.render(
-            //     React.createElement(
-            //         Dialog,
-            //         {
-            //             title: 'Save File As',
-            //             content: require('component/explorer.jsx'),
-            //             props: {
-            //                 fs: this.fs,
-            //                 button1: 'Save As',
-            //                 mode: 'saveas',
-            //                 onEnter: onEnter
-            //             },
-            //             onClose: closeHandler
-            //         }
-            //     ),
-            //     container
-            // );
-        }
+        save: function () {
+            var path = '/' + window.editorKey + '/' + window.editorKey + 'conf';
+            var data = new Blob([this.io.getEditorConf()]);
+            this.fs.write(path, {data: data}, function () {
+                console.log('conf saved!');
+            });
+        },
+        saveas: function () {}
     };
 });

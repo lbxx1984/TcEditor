@@ -26,7 +26,7 @@ define(function (require) {
     .then(setupUI, unsupported)
     .then(setupStage, unsupported)
     .then(readEditorConf, unsupported)
-    .then(processEditorConf, unsupported)
+    .then(setEditorConf, unsupported)
     .then(bindEventHandlers, unsupported)
     .then(displayInformation, unsupported);
 
@@ -123,14 +123,9 @@ define(function (require) {
         });
     }
 
-    function processEditorConf(conf) {
-        function importLights(item) {
-            routing.io.processLight(item);
-        }
+    function setEditorConf(conf) {
         return new Promise(function (resolve, reject) {
-            if (conf.light instanceof Array && conf.light.length > 0) {
-                conf.light.each(importLights);
-            }
+            routing.io.setEditorConf(conf);
             resolve();
         });
     }
@@ -198,15 +193,17 @@ define(function (require) {
                 if (e.target.tagName !== 'BODY') {
                     return;
                 }
-                // 派发系统级别快捷键事件
                 var key = keyboard.translate(e);
+                // 优先派发component注册的自定义快捷键事件
+                if (keyboard.depatch(key)){
+                    return;
+                }
+                // 派发系统级别快捷键事件
                 var cmd = keyboard.key2cmd(key);
                 if (cmd !== undefined) {
                     routing.main(cmd);
                     return;
                 }
-                // 派发component注册的自定义快捷键事件
-                keyboard.depatch(key);
             }
             // 必成功
             resolve();

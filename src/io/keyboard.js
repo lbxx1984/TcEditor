@@ -122,7 +122,8 @@ define(function (Require) {
         'ctrl+s',
         'ctrl+o',
         'ctrl+f5',
-        'f5'
+        'f5',
+        'f1'
     ];
 
     // 可输入DOM上不屏蔽，document上屏蔽
@@ -132,20 +133,23 @@ define(function (Require) {
 
     // 快捷键命令翻译
     var keyCommandConf = {
-        'ctrl+o': 'pop-openfile',
+        'ctrl+o': 'pop-open',
+        'ctrl+s': 'pop-save',
         '1': 'view-3d',
         '2': 'view-xoz',
         '3': 'view-xoy',
         '4': 'view-zoy',
-        's': 'mouse-pickgeo',
-        'd': 'mouse-pickjoint',
+        'd': 'mouse-pickgeo',
+        'f': 'mouse-pickjoint',
         'l': 'mouse-picklight',
         '`': 'mouse-cameramove',
         'e': 'trans-move',
         'r': 'trans-rotate',
         't': 'trans-scale',
         '=': 'trans-enlarge',
-        '-': 'trans-narrow'
+        '-': 'trans-narrow',
+        'g': 'trans-coordinatetoggle',
+        'esc': 'tool-detach'
     };
 
     // 外部注册的events，DOM1级事件
@@ -182,11 +186,14 @@ define(function (Require) {
             delete events[key];
         },
         depatch: function (type) {
+            var funced = false;
             for (var key in events) {
                 if (key.indexOf('|' + type + '|') > -1 && typeof events[key] === 'function') {
                     events[key](type);
+                    funced = true;
                 }
             }
+            return funced;
         }
     };
 });
