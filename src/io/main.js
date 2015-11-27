@@ -1,4 +1,4 @@
-define(function (Require) {
+define(function (require) {
 
 
     var editorDefaultConf = require('config/editorDefaultConf');
@@ -105,11 +105,14 @@ define(function (Require) {
      * @param {Object} conf 编辑器级别配置
      */
     IO.prototype.setEditorConf = function (conf) {
+
         var cameraController = this.routing.stage.cameraController;
         var stage2d = this.routing.stage.$2d;
         var stage3d = this.routing.stage.$3d;
         var controlBar = this.routing.ui.refs.containerleft.refs.controlbar;
+
         this.processLight(conf.defaultLight);
+
         cameraController.param.cameraAngleA = conf.camera.a;
         cameraController.param.cameraAngleB = conf.camera.b;
         cameraController.updateCameraPosition();
@@ -120,6 +123,7 @@ define(function (Require) {
         stage3d.param.cameraAngleB = conf.camera.b;
         stage3d.param.cameraLookAt = {x: conf.camera.l[0], y: conf.camera.l[1], z: conf.camera.l[2]};
         stage3d.updateCameraPosition();
+
         stage3d.param.gridSize = conf.grid.size;
         stage3d.resizeGrid(true);
         stage3d.resizeGrid(false);
@@ -129,8 +133,13 @@ define(function (Require) {
             btn[0].dataset.uiValue = 1;
             btn[0].className = btn[0].className.replace('icon-kejian', 'icon-bukejian');
         }
-        this.routing.main('view-' + conf.controlBar.cameraview);
-        this.routing.main('mouse-' + conf.controlBar.systemtool);
+
+        // 由于鼠标引擎是异步加载的，这里hack一下
+        var me = this;
+        setTimeout(function () {
+            me.routing.main('view-' + conf.controlBar.cameraview);
+            me.routing.main('mouse-' + conf.controlBar.systemtool);
+        }, 200);
     };
 
 

@@ -1,10 +1,11 @@
-define(function (Require) {
-    
+define(function (require) {
+
     function updateControlBar(me, view) {
         var controlBar = me.ui.refs.containerleft.refs.controlbar;
         if (controlBar.state.transformer === view) return;
         controlBar.setState({transformer: view});
     }
+
     return {
         move: function () {
             if (!this.transformer.attached) return;

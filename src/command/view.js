@@ -1,4 +1,4 @@
-define(function (Require) {
+define(function (require) {
 
     function updateControlBar(me, view) {
         var controlBar = me.ui.refs.containerleft.refs.controlbar;

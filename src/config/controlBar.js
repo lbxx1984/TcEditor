@@ -1,4 +1,4 @@
-define(function (Require) {
+define(function (require) {
     return [
         {
             label: 'VIEWS',

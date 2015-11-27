@@ -1,4 +1,4 @@
-define(function (Require) {
+define(function (require) {
 
     function detachMesh(me, helper, uuid) {
         if (me[helper].mesh && me[helper].mesh.uuid === uuid) {

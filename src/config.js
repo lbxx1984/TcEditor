@@ -1,4 +1,4 @@
-define(function (Require) {
+define(function (require) {
     window.editorKey = '__tceditor__';
     return {
         editorDefaultConf: require('./config/editorDefaultConf'),

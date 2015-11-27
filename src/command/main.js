@@ -12,7 +12,7 @@ define(function (require) {
         // 引擎集合
         this.engines = {
             tool: require('./tool'),
-            mouse: require('./mouse'),
+            mouse: require('./mouse/main'),
             create: require('./create'),
             trans: require('./trans'),
             view: require('./view'),
