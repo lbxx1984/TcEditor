@@ -7,6 +7,7 @@ define(function (require) {
         _mouse: [-1, -1],
         _mouse3d: [0, 0, 0],
         _lastMesh: null,
+        _lastJoint: null,
 
         /**
          * 绑定物体

@@ -100,7 +100,6 @@ define(function (require) {
     function readEditorConf() {
         var path = '/' + window.editorKey + '/' + window.editorKey + 'conf';
         return new Promise(function (resolve, reject) {
-            // writeDefaultConf();return;
             routing.fs.read(path, function (result) {
                 if (result instanceof FileError) {
                     writeDefaultConf();
@@ -126,8 +125,18 @@ define(function (require) {
 
     function setEditorConf(conf) {
         return new Promise(function (resolve, reject) {
-            routing.io.setEditorConf(conf);
-            resolve();
+            try {
+                routing.io.setEditorConf(conf);
+                resolve();
+            }
+            catch (e) {
+                routing.io.setEditorConf(config.editorDefaultConf);
+                var data = new Blob([JSON.stringify(config.editorDefaultConf)]);
+                var path = '/' + window.editorKey + '/' + window.editorKey + 'conf';
+                routing.fs.write(path, {data: data}, function () {
+                    resolve();
+                });
+            }
         });
     }
 

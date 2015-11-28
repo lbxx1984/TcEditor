@@ -1,5 +1,6 @@
 define(function (require) {
 
+    var math = require('math');
 
     function updateMesh(me, mesh) {
         var leftcontainer = me.ui.refs.containerleft;
@@ -35,7 +36,8 @@ define(function (require) {
         rotation: function (cmd, direction, value) {
             var mesh = this.transformer.mesh || this.morpher.mesh;
             if (!mesh) return;
-            mesh.rotation[direction] = (~~value) * Math.PI / 180;
+            value = (~~value) % 360;
+            mesh.rotation[direction] = value * Math.PI / 180;
             updateMesh(this, mesh);
         },
         scale: function (cmd, direction, value) {
@@ -65,6 +67,18 @@ define(function (require) {
             this.ui.refs.containerleft.refs.stage.setState({
                 activeMesh: mesh
             });
-        } 
+        },
+        vector: function (cmd, mesh, joint, direction, value) {
+            var vector = mesh.geometry.vertices[joint];
+            var matrix = math.rotateMatrix(mesh);
+            var world = math.Local2Global(vector.x, vector.y, vector.z, matrix, mesh);
+            world[direction] = value;
+            var local = math.Global2Local(world[0], world[1], world[2], mesh);
+            vector.x = local[0];
+            vector.y = local[1];
+            vector.z = local[2];
+            mesh.geometry.verticesNeedUpdate = true;
+            updateMesh(this, mesh);
+        }
     };
 });

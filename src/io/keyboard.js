@@ -142,7 +142,7 @@ define(function (require) {
         'd': 'mouse-pickgeo',
         'f': 'mouse-pickjoint',
         'l': 'mouse-picklight',
-        '`': 'mouse-cameramove',
+        'w': 'mouse-cameramove',
         'e': 'trans-move',
         'r': 'trans-rotate',
         't': 'trans-scale',

@@ -1,7 +1,7 @@
 define(function (require) {
 
     var Dialog = require('uiTool/dialog');
-
+    var Alert = require('uiTool/alert');
     // function openfile(me, url) {
     //     me.fs.read(url, got);
     //     function got(result) {
@@ -44,8 +44,9 @@ define(function (require) {
         save: function () {
             var path = '/' + window.editorKey + '/' + window.editorKey + 'conf';
             var data = new Blob([this.io.getEditorConf()]);
+            var alert = new Alert({});
             this.fs.write(path, {data: data}, function () {
-                console.log('conf saved!');
+                alert.pop({message: 'File Saved!'});
             });
         },
         saveas: function () {}

@@ -47,7 +47,7 @@ define(function (require) {
             children: [
                 {
                     label: '', class: ' icon icon-yidong1', cmd: 'mouse-cameramove',
-                    type: 'radio', group: 'systemtool', value: 'cameramove', title: 'move camera (`)'
+                    type: 'radio', group: 'systemtool', value: 'cameramove', title: 'move camera (W)'
                 },
                 {
                     label: '', class: ' icon icon-fangda', cmd: 'tool-camerazoomin',

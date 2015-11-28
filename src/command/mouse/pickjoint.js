@@ -23,6 +23,9 @@ define(function (require) {
             else {
                 common._lastMesh = null;
             }
+            if (common._lastJoint != null) {
+                attachJoint(this, common._lastJoint);
+            }
             common.updateControlBar(this, 'systemtool', 'pickjoint');
         },
         mousemove: function (e) {
@@ -99,6 +102,7 @@ define(function (require) {
         unload: function () {
             common._down = false;
             common._lastMesh = this.morpher.mesh;
+            common._lastJoint = this.morpher.joint;
             common.detach(this, 'morpher');
         }
     };

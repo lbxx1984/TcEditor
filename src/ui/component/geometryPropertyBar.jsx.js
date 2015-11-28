@@ -46,6 +46,12 @@ define(function (require) {
                 callback('modify-wireframe', mesh, e.target.checked);
             }
 
+            // 修改物体关节
+            function vectorChangeHandler(e) {
+                var dataset = e.target.dataset;
+                callback('modify-vector', mesh, dataset.joint, dataset.direction, e.target.value);
+            }
+
             // 格式化数字
             function numberFormat(v, type, fix) {
                 return (type === 'rotation' ? 180 * v / Math.PI : v).toFixed(fix);
@@ -77,30 +83,29 @@ define(function (require) {
                 );
             }
 
-            // 显示关节
-            function vector() {
+            // 创建关节输入框
+            function vectorBox(direction) {
+                var labels = ['x', 'y', 'z'];
                 var mesh = me.props.mesh;
                 var vertices = mesh.geometry.vertices;
                 if (me.props.joint == null || me.props.joint > vertices.length - 1) {
-                    return;
+                    return (<div></div>);
                 }
                 var joint =  vertices[me.props.joint];
                 var matrix = math.rotateMatrix(mesh);
                 var pos = math.Local2Global(joint.x, joint.y, joint.z, matrix, mesh);
+                var inputProp = {
+                    type: 'number',
+                    step: 1,
+                    'data-joint': me.props.joint,
+                    'data-direction': direction,
+                    value: numberFormat(pos[direction]),
+                    onChange: vectorChangeHandler
+                };
                 return (
-                    <div>
-                        <div className="label-l1">
-                            <div className="label-l3">x:</div>
-                            <input type="number" value={numberFormat(pos[0])}/>
-                        </div>
-                        <div className="label-l1">
-                            <div className="label-l3">y:</div>
-                            <input type="number" value={numberFormat(pos[1])}/>
-                        </div>
-                        <div className="label-l1">
-                            <div className="label-l3">z:</div>
-                            <input type="number" value={numberFormat(pos[2])}/>
-                        </div>
+                    <div className="label-l1">
+                        <div className="label-l3">{labels[direction]}:</div>
+                        <input {...inputProp}/>
                     </div>
                 );
             }
@@ -143,7 +148,9 @@ define(function (require) {
                     </td>
                     <td style={{display: this.props.joint == null ? 'none' : 'block'}}>
                         <div className="label-l1">Vector</div>
-                        {vector()}
+                        {vectorBox(0)}
+                        {vectorBox(1)}
+                        {vectorBox(2)}
                     </td>
                 </tr></table></div>
             );
