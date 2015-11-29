@@ -5,6 +5,7 @@ define(function (require) {
             cmd: 'show-file',
             children: [
                 {label: 'Open', cmd: 'pop-open', hotKey: 'ctrl + o'},
+                {label: 'Save', cmd: 'pop-save', hotKey: 'ctrl + s'},
                 {label: 'Save As', cmd: 'pop-saveas', hotKey: 'ctrl + shift + s'}
             ]
         },

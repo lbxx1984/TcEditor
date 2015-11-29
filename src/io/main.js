@@ -35,6 +35,19 @@ define(function (require) {
 
 
     /**
+     * 将3D物体转换成Object
+     *
+     * @param {Object3D} 待转换的3D物体
+     * @return {Object} 标记还原物体最少信息的对象
+     */
+    function Mesh2Obj(mesh) {
+        //var result = mesh.toJSON();
+        console.log(mesh);
+        //return result;
+    }
+
+
+    /**
      * io系统，负责保存打开所有文件，以及文件解析
      *
      * @param {Object} param 配置参数
@@ -142,6 +155,18 @@ define(function (require) {
         }, 200);
     };
 
+
+    /**
+     * 获取舞台中物体
+     *
+     * @return {Array.<Object>} 舞台物体队列
+     */
+    IO.prototype.getMeshes = function () {
+        var meshes = this.routing.stage.$3d.children;
+        for (var key in meshes) {
+            Mesh2Obj(meshes[key]);
+        }
+    };
 
     return IO;
 });

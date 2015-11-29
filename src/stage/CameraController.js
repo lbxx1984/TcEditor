@@ -189,39 +189,19 @@ define(function (require) {
         this.scene = new THREE.Scene();
         this.renderer = new THREE.WebGLRenderer({alpha: true});
         this.raycaster = new THREE.Raycaster();
+        var textureloader = new THREE.TextureLoader();
 
         /**创建控制面*/
         for (var key in info) {
-            var mesh = null;
-            if (key.indexOf('_') < 0) {
-                mesh = new THREE.Mesh(
-                    new THREE.PlaneGeometry(info[key][6], info[key][7]),
-                    new THREE.MeshLambertMaterial({
-                        map: THREE.ImageUtils.loadTexture(
-                            this.param.textureUrl + key + '_' + this.param.language + '.png'
-                        ),
-                        color: this.param.color
-                    })
-                );
-            } else {
-                mesh = new THREE.Mesh(
-                    new THREE.BoxGeometry(info[key][6], info[key][7], info[key][8]),
-                    new THREE.MeshLambertMaterial({
-                        map: THREE.ImageUtils.loadTexture(
-                            this.param.textureUrl + 'background.png'
-                        ),
-                        color: this.param.color
-                    })
-                );
-            }
-            mesh.position.x = info[key][0];
-            mesh.position.y = info[key][1];
-            mesh.position.z = info[key][2];
-            mesh.rotation.x = Math.PI * info[key][3];
-            mesh.rotation.y = Math.PI * info[key][4];
-            mesh.rotation.z = Math.PI * info[key][5];
-            mesh.tid = key;
-            this.scene.add(mesh);
+            var url = key.indexOf('_') < 0
+                ? this.param.textureUrl + key + '_' + this.param.language + '.png'
+                : this.param.textureUrl + 'background.png';
+            var geometry = key.indexOf('_') < 0
+                ? new THREE.PlaneGeometry(info[key][6], info[key][7])
+                : new THREE.BoxGeometry(info[key][6], info[key][7], info[key][8]);
+            var position = [info[key][0], info[key][1], info[key][2]];
+            var rotation = [Math.PI * info[key][3], Math.PI * info[key][4], Math.PI * info[key][5]];
+            textureloader.load(url, textureLoadedHandler(geometry, position, rotation, key));
         }
 
         /**初始化舞台*/
@@ -237,6 +217,19 @@ define(function (require) {
         dom.addEventListener('mousedown', mouseDownHandler);
 
         /**交互事件**/
+        function textureLoadedHandler(geometry, pos, rot, key) {
+            return function (texture) {
+                var mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
+                    map: texture,
+                    color: me.param.color
+                }));
+                mesh.position.set(pos[0], pos[1], pos[2]);
+                mesh.rotation.set(rot[0], rot[1], rot[2]);
+                mesh.tid = key;
+                me.scene.add(mesh);
+            }
+        }
+
         function mouseMoveHandler(event) {
             var x = event.offsetX;
             var y = event.offsetY;

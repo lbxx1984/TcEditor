@@ -48,6 +48,7 @@ define(function (require) {
             this.fs.write(path, {data: data}, function () {
                 alert.pop({message: 'File Saved!'});
             });
+            this.io.getMeshes();
         },
         saveas: function () {}
     };
