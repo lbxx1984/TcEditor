@@ -135,6 +135,7 @@ define(function (require) {
     var keyCommandConf = {
         'ctrl+o': 'pop-open',
         'ctrl+s': 'pop-save',
+        'ctrl+shift+s': 'pop-saveas',
         '1': 'view-3d',
         '2': 'view-xoz',
         '3': 'view-xoy',

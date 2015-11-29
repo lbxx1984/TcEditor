@@ -38,6 +38,7 @@ define(function (require) {
     function setupIO() {
         return new Promise(function (resolve, reject) {
             routing.keyboard = keyboard;
+            routing.filePath = null;
             routing.fs = new FileSystem(function (fs) {
                 fs ? resolve() : reject();
             });

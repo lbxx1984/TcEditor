@@ -191,13 +191,13 @@ define(function (require) {
                     break;
                 }
             }
-            if (this.props.mode === 'saveas'
+            if (this.props.mode === 'save'
                 && have
                 && !window.confirm('The file already exists, overwrite it?')
             ) {
                 return;
             }
-            if (this.props.mode !== 'saveas' && !have) {
+            if (this.props.mode !== 'save' && !have) {
                 alert('File does not exist!');
                 return;
             }
