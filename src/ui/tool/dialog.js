@@ -24,9 +24,18 @@ define(function (require) {
     Dialog.prototype.pop = function (param) {
         param = param || {};
         var me = this;
-        document.body.appendChild(this.container);
+        document.body.appendChild(me.container);
         param.onClose = function () {me.close()};
-        this.ui = React.render(React.createElement(DialogUI, param), this.container);
+        me.ui = React.render(React.createElement(DialogUI, param), this.container, function (ui) {
+            var timer = setInterval(uiFocus, 10);
+            function uiFocus() {
+                if (!me.ui) return;
+                clearInterval(timer);
+                if (param.focus) {
+                    me.ui.content.refs[param.focus].getDOMNode().focus();
+                } 
+            }
+        });
     };
 
     /**

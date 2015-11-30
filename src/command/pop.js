@@ -1,5 +1,6 @@
 define(function (require) {
 
+
     var Dialog = require('uiTool/dialog');
     var Alert = require('uiTool/alert');
 
@@ -30,9 +31,11 @@ define(function (require) {
         dialog.pop({
             title: mode === 'save' ? 'Save' : 'Open',
             content: require('component/explorer.jsx'),
+            focus: 'inputbox',
             props: {
                 fs: me.fs,
                 mode: mode,
+                button1: mode === 'save' ? 'Save' : 'Open',
                 onEnter: function (path) {
                     callback(path);
                     dialog.close();
@@ -82,7 +85,7 @@ define(function (require) {
             else {
                 alert.pop({message: 'File Saved!'});
             }
-            if (typeof callback === 'function') callback();
+            if (typeof callback === 'function') callback(result);
         });
     }
 
@@ -130,12 +133,17 @@ define(function (require) {
                     openExplorer(me, 'save', gotFilePath);
                 }
                 else {
-                    writeFile(me);
+                    writeFile(me, wroteFile);
                 }
             });
             function gotFilePath(path) {
                 me.filePath = path;
-                writeFile(me);
+                writeFile(me, wroteFile);
+            }
+            function wroteFile(result) {
+                if (result instanceof FileError) {
+                    me.filePath = null;
+                }
             }
         },
         saveas: function () {
@@ -145,7 +153,12 @@ define(function (require) {
             });
             function gotFilePath(path) {
                 me.filePath = path;
-                writeFile(me);
+                writeFile(me, wroteFile);
+            }
+            function wroteFile(result) {
+                if (result instanceof FileError) {
+                    me.filePath = null;
+                }
             }
         }
     };

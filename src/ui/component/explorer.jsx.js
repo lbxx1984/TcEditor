@@ -83,6 +83,20 @@ define(function (require) {
                 return compare[me.state.sorter + ''](a, b);
             }
         },
+        removeMakeInputDom: function () {
+            var dom = this.refs.filelist.getDOMNode();
+            try {
+                var input = dom.getElementsByTagName('input');
+                for (var i = 0; i < input.length; i++) {
+                    dom.removeChild(input[i]);
+                }
+            }
+            catch (e) {
+
+            }
+            dom.scrollTop = lastScrollTop;
+            this.listFiles();
+        },
         itemClickHandler: function (e) {
             var dom = e.target;
             if (dom.title === 'deleteClickHandler') {
@@ -153,20 +167,6 @@ define(function (require) {
                 return;
             }
         },
-        removeMakeInputDom: function () {
-            var dom = this.refs.filelist.getDOMNode();
-            try {
-                var input = dom.getElementsByTagName('input');
-                for (var i = 0; i < input.length; i++) {
-                    dom.removeChild(input[i]);
-                }
-            }
-            catch (e) {
-
-            }
-            dom.scrollTop = lastScrollTop;
-            this.listFiles();
-        },
         deleteClickHandler: function (e) {
             var me = this;
             if (e.target.dataset.isFile === 'true') {
@@ -212,6 +212,11 @@ define(function (require) {
         },
         inputChangeHandler: function (e) {
             this.setState({selected: e.target.value});
+        },
+        inputKeyUpHandler: function (e) {
+            if (e.keyCode === 13 && this.props.mode === 'save') {
+                this.enterClickHandler();
+            }
         },
         render: function () {
             var me = this;
@@ -266,7 +271,8 @@ define(function (require) {
                         <div className="button" onClick={this.closeClickHandler}>{this.props.button2}</div>
                         <div className="button" onClick={this.enterClickHandler}>{this.props.button1}</div>
                         file name:
-                        <input type="text" value={this.state.selected} onChange={this.inputChangeHandler}/>
+                        <input type="text" value={this.state.selected} ref="inputbox"
+                            onKeyUp={this.inputKeyUpHandler} onChange={this.inputChangeHandler}/>
                     </div>
                 </div>
             );
