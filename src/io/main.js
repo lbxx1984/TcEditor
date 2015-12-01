@@ -95,5 +95,28 @@ define(function (require) {
         return result;
     };
 
+    /**
+     * 获取摄像机
+     */
+    IO.prototype.getCamera = function () {
+        var stage = this.routing.stage;
+        var result = {
+            a: parseInt(stage.cameraController.param.cameraAngleA),
+            b: parseInt(stage.cameraController.param.cameraAngleB),
+            r: parseInt(stage.$3d.param.cameraRadius),
+            l: [
+                parseInt(stage.$3d.param.cameraLookAt.x),
+                parseInt(stage.$3d.param.cameraLookAt.y),
+                parseInt(stage.$3d.param.cameraLookAt.z)
+            ],
+            s: stage.$2d.param.scale,
+            o: [
+                parseInt(stage.$2d.param.cameraLookAt.x),
+                parseInt(stage.$2d.param.cameraLookAt.y),
+            ]
+        };
+        return result;
+    };
+
     return IO;
 });

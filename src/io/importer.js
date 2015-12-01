@@ -59,23 +59,25 @@ define(function (require) {
          * @param {Object} conf 舞台配置
          */
         editorConf: function (me, conf) {
-            var cameraController = me.stage.cameraController;
+
             var stage2d = me.stage.$2d;
             var stage3d = me.stage.$3d;
             var controlBar = me.ui.refs.containerleft.refs.controlbar;
 
-            me.light.add(processLight(conf.defaultLight));
+            // var cameraController = me.stage.cameraController;
 
-            cameraController.param.cameraAngleA = conf.camera.a;
-            cameraController.param.cameraAngleB = conf.camera.b;
-            cameraController.updateCameraPosition();
-            stage2d.param.scale = conf.camera.s;
-            stage2d.param.cameraLookAt = {x: conf.camera.o[0], y: conf.camera.o[1]};
-            stage3d.param.cameraRadius = conf.camera.r;
-            stage3d.param.cameraAngleA = conf.camera.a;
-            stage3d.param.cameraAngleB = conf.camera.b;
-            stage3d.param.cameraLookAt = {x: conf.camera.l[0], y: conf.camera.l[1], z: conf.camera.l[2]};
-            stage3d.updateCameraPosition();
+            // cameraController.param.cameraAngleA = conf.camera.a;
+            // cameraController.param.cameraAngleB = conf.camera.b;
+            // cameraController.updateCameraPosition();
+            // stage2d.param.scale = conf.camera.s;
+            // stage2d.param.cameraLookAt = {x: conf.camera.o[0], y: conf.camera.o[1]};
+            // stage3d.param.cameraRadius = conf.camera.r;
+            // stage3d.param.cameraAngleA = conf.camera.a;
+            // stage3d.param.cameraAngleB = conf.camera.b;
+            // stage3d.param.cameraLookAt = {x: conf.camera.l[0], y: conf.camera.l[1], z: conf.camera.l[2]};
+            // stage3d.updateCameraPosition();
+
+            me.light.add(processLight(conf.defaultLight));
 
             stage3d.param.gridSize = conf.grid.size;
             stage3d.resizeGrid(true);

@@ -57,7 +57,7 @@ define(function (require) {
         me.fs.write(confPath, {data: editorConf}, function (result) {
             if (result instanceof FileError) {
                 var alert = new Alert();
-                alert.pop({message: 'Save System Configuration Failed!'});
+                alert.pop({message: 'Fail to Save System Configuration!'});
             }
             if (typeof callback === 'function') callback();
         });
@@ -74,7 +74,8 @@ define(function (require) {
         var filePath = me.filePath;
         var fileContent = {
             meshes: me.io.getMeshes(),
-            lights: me.io.getLights()
+            lights: me.io.getLights(),
+            camera: me.io.getCamera()
         };
         fileContent = new Blob([JSON.stringify(fileContent)]);
         me.fs.write(filePath, {data: fileContent}, function (result) {
@@ -100,12 +101,22 @@ define(function (require) {
     function readFile(me, path, callback) {
         me.fs.read(path, function (result) {
             var fileContent = '';
+            var fail = false;
             if (result instanceof ProgressEvent && result.target.result.length > 0) {
                 fileContent = result.target.result;
+                try {
+                    fileContent = JSON.parse(fileContent)
+                }
+                catch (e) {
+                    fail = true;
+                }
             }
             else {
-                var alert = new Alert();
-                alert.pop({message: 'Fail to open "' + path + '"'});
+                fail = true;
+            }
+            if (fail) {
+                fileContent = null;
+                new Alert().pop({message: 'Fail to open "' + path + '"'});
             }
             if (typeof callback === 'function') callback(fileContent);
         });
@@ -118,11 +129,10 @@ define(function (require) {
             openExplorer(me, 'open', gotFilePath);
             function gotFilePath(path) {
                 readFile(me, path, function (content) {
-                    if (content.length > 0) {
-                        document.title = 'TcEditor ' + path.split('/').pop();
-                        me.filePath = path;
-                        console.log(content);
-                    }
+                    if (content == null) return;
+                    document.title = 'TcEditor ' + path.split('/').pop();
+                    me.filePath = path;
+                    console.log(content);
                 });
             }
         },
