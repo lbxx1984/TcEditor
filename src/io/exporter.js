@@ -85,6 +85,30 @@ define(function (require) {
                 result.matrix.push(mesh.matrix.elements[i]);
             }
             return result;
+        },
+
+        /**
+         * 导出camera配置
+         *
+         * @param {Object} stage 舞台对象
+         * @return {Object} 摄像机参数配置
+         */
+        camera: function (stage) {
+            return {
+                a: parseInt(stage.cameraController.param.cameraAngleA),
+                b: parseInt(stage.cameraController.param.cameraAngleB),
+                r: parseInt(stage.$3d.param.cameraRadius),
+                l: [
+                    parseInt(stage.$3d.param.cameraLookAt.x),
+                    parseInt(stage.$3d.param.cameraLookAt.y),
+                    parseInt(stage.$3d.param.cameraLookAt.z)
+                ],
+                s: stage.$2d.param.scale,
+                o: [
+                    parseInt(stage.$2d.param.cameraLookAt.x),
+                    parseInt(stage.$2d.param.cameraLookAt.y),
+                ]
+            };
         }
     };
 

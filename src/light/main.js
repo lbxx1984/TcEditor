@@ -101,6 +101,16 @@ define(function (require) {
 
 
     /**
+     * 删除所有灯光
+     */
+    Light.prototype.removeAll = function () {
+        for (var key in this.children) {
+            this.remove(key);
+        }
+    };
+
+
+    /**
      * 显示操作锚
      */
     Light.prototype.show = function () {

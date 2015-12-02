@@ -229,6 +229,16 @@ define(function (require) {
 
 
     /**
+     * 删除舞台中所有物体
+     */
+    Stage.prototype.removeAll = function () {
+        for (var key in this.$3d.children) {
+            this.remove(key);
+        }
+    };
+
+
+    /**
      * 移动舞台中的摄像机
      *
      * @param {number} dx 横向增量（DOM坐标）

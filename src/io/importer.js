@@ -19,6 +19,7 @@ define(function (require) {
         obj.applyMatrix(m);
     }
 
+
     /**
      * 设置color值
      *
@@ -29,27 +30,6 @@ define(function (require) {
         obj.color = new THREE.Color(c);
     }
 
-    /**
-     * 解析灯光
-     *
-     * @param {Object} item 灯光JSON
-     * @param {Object} 灯光对象
-     */
-    function processLight (item) {
-        if (typeof THREE[item.type] !== 'function') {
-            return;
-        }
-        var light = new THREE[item.type]();
-        for (var key in item) {
-            switch (key) {
-                case 'matrix': setMatrix4(light, item[key]);break;
-                case 'color': setColor(light, item[key]);break;
-                default: light[key] = item[key];break;
-            }
-        }
-        return light;
-    };
-
 
     return {
 
@@ -59,26 +39,10 @@ define(function (require) {
          * @param {Object} conf 舞台配置
          */
         editorConf: function (me, conf) {
-
-            var stage2d = me.stage.$2d;
             var stage3d = me.stage.$3d;
             var controlBar = me.ui.refs.containerleft.refs.controlbar;
-
-            // var cameraController = me.stage.cameraController;
-
-            // cameraController.param.cameraAngleA = conf.camera.a;
-            // cameraController.param.cameraAngleB = conf.camera.b;
-            // cameraController.updateCameraPosition();
-            // stage2d.param.scale = conf.camera.s;
-            // stage2d.param.cameraLookAt = {x: conf.camera.o[0], y: conf.camera.o[1]};
-            // stage3d.param.cameraRadius = conf.camera.r;
-            // stage3d.param.cameraAngleA = conf.camera.a;
-            // stage3d.param.cameraAngleB = conf.camera.b;
-            // stage3d.param.cameraLookAt = {x: conf.camera.l[0], y: conf.camera.l[1], z: conf.camera.l[2]};
-            // stage3d.updateCameraPosition();
-
-            me.light.add(processLight(conf.defaultLight));
-
+            var light = this.light(conf.defaultLight);
+            me.light.add(light);
             stage3d.param.gridSize = conf.grid.size;
             stage3d.resizeGrid(true);
             stage3d.resizeGrid(false);
@@ -88,14 +52,65 @@ define(function (require) {
                 btn[0].dataset.uiValue = 1;
                 btn[0].className = btn[0].className.replace('icon-kejian', 'icon-bukejian');
             }
-
             // 由于鼠标引擎是异步加载的，这里hack一下
             setTimeout(function () {
                 me.main('view-' + conf.controlBar.cameraview);
                 me.main('mouse-' + conf.controlBar.systemtool);
             }, 200);
-        }
+        },
 
+        /**
+         * 导入摄像机配置
+         *
+         * @param {Object} me routing对象
+         * @param {Object} conf 摄像机配置
+         */
+        camera: function (me, conf) {
+            var stage2d = me.stage.$2d;
+            var stage3d = me.stage.$3d;
+            var cameraController = me.stage.cameraController;
+            cameraController.param.cameraAngleA = conf.a;
+            cameraController.param.cameraAngleB = conf.b;
+            cameraController.updateCameraPosition();
+            stage2d.param.scale = conf.s;
+            stage2d.param.cameraLookAt = {x: conf.o[0], y: conf.o[1]};
+            stage3d.param.cameraRadius = conf.r;
+            stage3d.param.cameraAngleA = conf.a;
+            stage3d.param.cameraAngleB = conf.b;
+            stage3d.param.cameraLookAt = {x: conf.l[0], y: conf.l[1], z: conf.l[2]};
+            stage3d.updateCameraPosition();
+        },
+
+        /**
+         * 解析灯光对象
+         *
+         * @param {Object} item 灯光对象
+         * @return {?THREE.Light} 3D灯光对象
+         */
+        light: function (item) {
+            if (typeof THREE[item.type] !== 'function') {
+                return;
+            }
+            var light = new THREE[item.type]();
+            for (var key in item) {
+                switch (key) {
+                    case 'matrix': setMatrix4(light, item[key]);break;
+                    case 'color': setColor(light, item[key]);break;
+                    default: light[key] = item[key];break;
+                }
+            }
+            return light;
+        },
+
+        /**
+         * 解析物体对象
+         *
+         * @param {Object} mesh 物体对象
+         * @return {?THREE.Mesh} 3D物体对象
+         */
+        mesh: function (mesh) {
+            console.log(mesh);
+        }
     };
 
 });

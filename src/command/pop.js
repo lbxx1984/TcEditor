@@ -123,6 +123,28 @@ define(function (require) {
     }
 
 
+    /**
+     * 导入文件内容到舞台
+     *
+     * @param {Object} me routing对象
+     * @param {Object} content 已经解析好的文件内容
+     */
+    function loadFile(me, content) {
+        if (content.hasOwnProperty('camera')) {
+            me.io.setCamera(content.camera);
+        }
+        if (content.hasOwnProperty('lights') && content.lights instanceof Array && content.lights.length > 0) {
+            me.light.removeAll();
+            me.io.setLights(content.lights);
+        }
+        if (content.hasOwnProperty('meshes') && content.meshes instanceof Array && content.meshes.length > 0) {
+            me.stage.removeAll();
+            me.io.setMeshes(content.meshes);
+        }
+        // TODO: 检测文件保存状态
+    }
+
+
     return {
         open: function () {
             var me = this;
@@ -132,7 +154,7 @@ define(function (require) {
                     if (content == null) return;
                     document.title = 'TcEditor ' + path.split('/').pop();
                     me.filePath = path;
-                    console.log(content);
+                    loadFile(me, content);
                 });
             }
         },

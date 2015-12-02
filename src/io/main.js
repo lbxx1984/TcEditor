@@ -79,6 +79,28 @@ define(function (require) {
     };
 
     /**
+     * 导入物体到舞台
+     *
+     * @param {Array.<Object>} meshes 本Editor导出的物体对象队列
+     */
+    IO.prototype.setMeshes = function (meshes) {
+        var routing = this.routing;
+        for (var i = 0; i < meshes.length; i++) {
+            var mesh = importer.mesh(meshes[i]);
+        }
+        showMeshes();
+        function showMeshes() {
+            if (routing.ui == null) {
+                setTimeout(showMeshes, 10);
+                return;
+            }
+            routing.ui.refs.containerright.refs.verticallist.refs.meshBox.setState({
+                meshes: routing.stage.$3d.children
+            });
+        }
+    };
+
+    /**
      * 获取舞台中灯光
      *
      * @return {Array.<Object>} 舞台灯光队列
@@ -96,26 +118,42 @@ define(function (require) {
     };
 
     /**
+     * 添加舞台灯光
+     *
+     * @param {Array.<THREE.light>} 灯光队列
+     */
+    IO.prototype.setLights = function (lights) {
+        var routing = this.routing;
+        for (var i = 0; i < lights.length; i++) {
+            var light = importer.light(lights[i]);
+            routing.light.add(light);
+        }
+        showLight();
+        function showLight() {
+            if (routing.ui == null) {
+                setTimeout(showLight, 10);
+                return;
+            }
+            routing.ui.refs.containerright.refs.verticallist.refs.lightBox.setState({
+                light: routing.light.children
+            });
+        }
+    };
+
+    /**
      * 获取摄像机
      */
     IO.prototype.getCamera = function () {
-        var stage = this.routing.stage;
-        var result = {
-            a: parseInt(stage.cameraController.param.cameraAngleA),
-            b: parseInt(stage.cameraController.param.cameraAngleB),
-            r: parseInt(stage.$3d.param.cameraRadius),
-            l: [
-                parseInt(stage.$3d.param.cameraLookAt.x),
-                parseInt(stage.$3d.param.cameraLookAt.y),
-                parseInt(stage.$3d.param.cameraLookAt.z)
-            ],
-            s: stage.$2d.param.scale,
-            o: [
-                parseInt(stage.$2d.param.cameraLookAt.x),
-                parseInt(stage.$2d.param.cameraLookAt.y),
-            ]
-        };
-        return result;
+        return exporter.camera(this.routing.stage);
+    };
+
+    /**
+     * 设置摄像机
+     *
+     * @param {Object} conf 摄像机配置
+     */
+    IO.prototype.setCamera = function (conf) {
+        importer.camera(this.routing, conf);
     };
 
     return IO;
