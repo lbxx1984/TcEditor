@@ -1,7 +1,7 @@
 define(function (require) {
 
-    var MeshList = require('./meshList.jsx');
-    var LightList = require('./lightList.jsx');
+    var MeshTree = require('component/meshTree.jsx');
+    var LightList = require('component/lightList.jsx');
 
     return React.createClass({
         getInitialState: function () {
@@ -25,7 +25,7 @@ define(function (require) {
                         <div className={mFC} data-cmd="meshVisible" onClick={this.foldingHandler}></div>Mesh
                     </div>
                     <div style={{display: this.state.meshVisible ? 'block' : 'none'}}>
-                        <MeshList ref="meshBox" commandRouting={this.props.commandRouting}/>
+                        <MeshTree ref="meshBox" commandRouting={this.props.commandRouting}/>
                     </div>
                     <div className="label-l1">
                         <div className={lFC} data-cmd="lightVisible" onClick={this.foldingHandler}></div>Light

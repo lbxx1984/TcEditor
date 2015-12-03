@@ -1,8 +1,7 @@
 define(function (require) {
 
-    var config = require('config');
     var MousePositionBar = require('component/mousePositionBar.jsx');
-    var VerticalList = require('component/VerticalList.jsx');
+    var VerticalList = require('./VerticalList.jsx');
 
     return React.createClass({
         getInitialState: function () {

@@ -15,7 +15,6 @@ define(function (require) {
             };
             var controlBarProps = {
                 ref: 'controlbar',
-                defaultState: config.defaultCommandState,
                 datasource: config.controlBar,
                 clickHandler: controlBarClickHandler
             };

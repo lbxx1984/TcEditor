@@ -1,7 +1,8 @@
 define(function (require) {
+    var config = require('config');
     return React.createClass({
         getInitialState: function () {
-            return this.props.defaultState;
+            return config.defaultCommandState;
         },
         render: function () {
             var me = this;
