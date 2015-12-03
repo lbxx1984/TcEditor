@@ -10,6 +10,7 @@ define(function (require) {
     function Light(param) {
         var me = this;
         this.stage = param.stage.$3d;
+        this.ui = param.ui;
         this.hoverColor = param.hoverColor || 0xffff00;
         this.helper = new THREE.TransformControls(this.stage.camera, this.stage.renderer.domElement);
         this.helper.addEventListener('objectChange', changeHandler);
@@ -60,26 +61,28 @@ define(function (require) {
      * 添加灯光
      */
     Light.prototype.add = function (light) {
+
         if (!light.hasOwnProperty('birth')) {
-            light.visible = true;
             light.locked = false;
-            light.birth = new Date();
+            light.birth = new Date().getTime();
         }
+        this.stage.scene.add(light);
+
         var anchor =  new THREE.Mesh(
             new THREE.SphereGeometry(5, 32, 32),
             new THREE.MeshBasicMaterial({color: light.color})
         );
         anchor.uuid = light.uuid;
         anchor.locked = light.locked;
-        anchor.visible = true;
+        anchor.visible = light.visible;
         anchor.position.set(light.position.x, light.position.y, light.position.z);
         anchor.added = false;
         anchor.__normalColor__ = anchor.material.color.getHex();
-
-        if (light.visible && !light.locked) {
-            this.stage.scene.add(light);
+        if (this.ui.refs.containerleft.refs.controlbar.state.systemtool === 'picklight') {
+            anchor.added = true;
+            this.stage.scene.add(anchor);
         }
-
+        
         this.children[light.uuid] = light;
         this.anchors[light.uuid] = anchor;
         this.update();

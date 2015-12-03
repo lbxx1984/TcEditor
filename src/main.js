@@ -90,7 +90,7 @@ define(function (require) {
             // 关节变换器
             routing.morpher = new Morpher(routing.stage);
             // 灯光系统
-            routing.light = new Light({stage: routing.stage});
+            routing.light = new Light({stage: routing.stage, ui: routing.ui});
             // IO系统
             routing.io = new IO({routing: routing});
             // 必成功

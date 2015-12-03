@@ -120,6 +120,8 @@ define(function (require) {
             var result = light.toJSON().object;
             result.birth = light.birth;
             result.locked = light.locked;
+            result.visible = light.visible;
+            delete result.uuid;
             return result;
         }
     };

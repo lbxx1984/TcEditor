@@ -43,8 +43,9 @@ define(function (require) {
         var uiState = {light: ml.children};
         light[prop] = !light[prop];
         anchor[prop] = !anchor[prop];
-        if (prop === 'visible') {
-            ml.stage.scene[(light.visible ? 'add' : 'remove')](light);
+        if (prop === 'visible' && light.visible) {
+            for (var key in me.stage.$3d.children)
+                me.stage.$3d.children[key].material.needsUpdate = true;
         }
         if (ml.attached && ml.attached.uuid === uuid && (!light.visible || light.locked)) {
             ml.detach();

@@ -130,12 +130,12 @@ define(function (require) {
      * @param {Object} content 已经解析好的文件内容
      */
     function loadFile(me, content) {
-        if (content.hasOwnProperty('camera')) {
-            me.io.setCamera(content.camera);
-        }
         if (content.hasOwnProperty('lights') && content.lights instanceof Array && content.lights.length > 0) {
             me.light.removeAll();
             me.io.setLights(content.lights);
+        }
+        if (content.hasOwnProperty('camera')) {
+            me.io.setCamera(content.camera);
         }
         if (content.hasOwnProperty('meshes') && content.meshes instanceof Array && content.meshes.length > 0) {
             me.stage.removeAll();
