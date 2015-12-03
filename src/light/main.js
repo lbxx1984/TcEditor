@@ -60,20 +60,26 @@ define(function (require) {
      * 添加灯光
      */
     Light.prototype.add = function (light) {
-        light.visible = true;
-        light.locked = false;
-        light.birth = new Date();
+        if (!light.hasOwnProperty('birth')) {
+            light.visible = true;
+            light.locked = false;
+            light.birth = new Date();
+        }
         var anchor =  new THREE.Mesh(
             new THREE.SphereGeometry(5, 32, 32),
             new THREE.MeshBasicMaterial({color: light.color})
         );
         anchor.uuid = light.uuid;
-        anchor.locked = light.false;
+        anchor.locked = light.locked;
         anchor.visible = true;
         anchor.position.set(light.position.x, light.position.y, light.position.z);
         anchor.added = false;
         anchor.__normalColor__ = anchor.material.color.getHex();
-        this.stage.scene.add(light);
+
+        if (light.visible && !light.locked) {
+            this.stage.scene.add(light);
+        }
+
         this.children[light.uuid] = light;
         this.anchors[light.uuid] = anchor;
         this.update();

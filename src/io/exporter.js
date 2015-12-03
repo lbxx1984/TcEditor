@@ -109,6 +109,18 @@ define(function (require) {
                     parseInt(stage.$2d.param.cameraLookAt.y),
                 ]
             };
+        },
+
+        /**
+         * 将3D灯光对象转成Object
+         * @param {THREE.light} light 待转换的3D灯光
+         * @return {Object} 标记还原物体最少信息的对象
+         */
+        light: function (light) {
+            var result = light.toJSON().object;
+            result.birth = light.birth;
+            result.locked = light.locked;
+            return result;
         }
     };
 

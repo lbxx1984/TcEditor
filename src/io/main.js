@@ -116,10 +116,9 @@ define(function (require) {
         var lights = this.routing.light.children;
         var result = [];
         for (var key in lights) {
-            var obj = lights[key].toJSON().object;
-            delete obj.uuid;
-            compress(obj, 2);
-            result.push(obj);
+            var light = exporter.light(lights[key]);
+            compress(light, 2);
+            result.push(light);
         }
         return result;
     };
