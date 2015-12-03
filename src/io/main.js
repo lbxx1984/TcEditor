@@ -87,6 +87,9 @@ define(function (require) {
         var routing = this.routing;
         for (var i = 0; i < meshes.length; i++) {
             var mesh = importer.mesh(meshes[i]);
+            if (mesh != null) {
+                routing.stage.add(mesh);
+            }
         }
         showMeshes();
         function showMeshes() {
@@ -97,6 +100,10 @@ define(function (require) {
             routing.ui.refs.containerright.refs.verticallist.refs.meshBox.setState({
                 meshes: routing.stage.$3d.children
             });
+            if (routing.stage.type !== '$3d') {
+                routing.stage.$2d.loadMesh();
+                routing.stage.$2d.renderMesh();
+            }
         }
     };
 
