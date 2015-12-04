@@ -226,6 +226,30 @@ define(function (require) {
                 onKeyUp: this.makeInputKeyUpHandler,
                 onBlur: this.removeMakeInputDom
             };
+            return (
+                <div className="explorer">
+                    <div className="iconfont icon-xinjianwenjianjia" onClick={this.makeClickHandler}></div>
+                    <div className="iconfont icon-wodedingdan35" onClick={this.upClickHandler}></div>
+                    <div className="address-bar">{
+                        this.props.fs.getWorkingDirectory().fullPath.replace('/' + window.editorKey, '') + '/'
+                    }</div>
+                    <div className="th">
+                        <div data-sorter="0" onClick={this.sortListHandler}>name</div>
+                        <div data-sorter="1" onClick={this.sortListHandler}>size</div>
+                        <div data-sorter="2" onClick={this.sortListHandler}>modify time</div>
+                    </div>
+                    <div {...fileListProps}>
+                        {this.state.files.map(mapFiles)}
+                    </div>
+                    <div className="foot-bar">
+                        <div className="button" onClick={this.closeClickHandler}>{this.props.button2}</div>
+                        <div className="button" onClick={this.enterClickHandler}>{this.props.button1}</div>
+                        file name:
+                        <input type="text" value={this.state.selected} ref="inputbox"
+                            onKeyUp={this.inputKeyUpHandler} onChange={this.inputChangeHandler}/>
+                    </div>
+                </div>
+            );
             function mapFiles(item) {
                 var iconProp = {
                     className: item.isFile ? 'iconfont icon-wenjian' : 'iconfont icon-wenjianjia'
@@ -252,30 +276,6 @@ define(function (require) {
                     </div>
                 );
             }
-            return (
-                <div className="explorer">
-                    <div className="iconfont icon-xinjianwenjianjia" onClick={this.makeClickHandler}></div>
-                    <div className="iconfont icon-wodedingdan35" onClick={this.upClickHandler}></div>
-                    <div className="address-bar">{
-                        this.props.fs.getWorkingDirectory().fullPath.replace('/' + window.editorKey, '') + '/'
-                    }</div>
-                    <div className="th">
-                        <div data-sorter="0" onClick={this.sortListHandler}>name</div>
-                        <div data-sorter="1" onClick={this.sortListHandler}>size</div>
-                        <div data-sorter="2" onClick={this.sortListHandler}>modify time</div>
-                    </div>
-                    <div {...fileListProps}>
-                        {this.state.files.map(mapFiles)}
-                    </div>
-                    <div className="foot-bar">
-                        <div className="button" onClick={this.closeClickHandler}>{this.props.button2}</div>
-                        <div className="button" onClick={this.enterClickHandler}>{this.props.button1}</div>
-                        file name:
-                        <input type="text" value={this.state.selected} ref="inputbox"
-                            onKeyUp={this.inputKeyUpHandler} onChange={this.inputChangeHandler}/>
-                    </div>
-                </div>
-            );
         }
     });
 });

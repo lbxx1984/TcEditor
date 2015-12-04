@@ -1,5 +1,6 @@
 define(function (require) {
     return React.createClass({
+        
         render: function () {
 
             var clickHandler = this.props.clickHandler;

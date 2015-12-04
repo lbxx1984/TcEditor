@@ -6,31 +6,27 @@ define(function (require) {
     var ContainerStage = require('layout/containerStage.jsx');
 
     return React.createClass({
+        menuClickHandler: function (e) {
+            this.props.commandRouting(e.target.dataset.uiCmd);
+        },
+        controlBarClickHandler: function (e, v) {
+            this.props.commandRouting(e, v);
+        },
         render: function () {
-
-            var props = this.props;
+            var me = this;
             var menuProps = {
                 datasource: config.menu,
-                clickHandler: menuClickHandler
+                clickHandler: me.menuClickHandler
             };
             var controlBarProps = {
                 ref: 'controlbar',
                 datasource: config.controlBar,
-                clickHandler: controlBarClickHandler
+                clickHandler: me.controlBarClickHandler
             };
             var stageProps = {
                 ref: 'stage',
-                commandRouting: this.props.commandRouting
+                commandRouting: me.props.commandRouting
             };
-
-            function menuClickHandler(e) {
-                props.commandRouting(e.target.dataset.uiCmd);
-            }
-
-            function controlBarClickHandler(e, v) {
-                props.commandRouting(e, v);
-            }
-
             return (
                 <div className="container-left">
                     <ContainerStage {...stageProps}/>

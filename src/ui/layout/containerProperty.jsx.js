@@ -21,8 +21,11 @@ define(function (require) {
             }
             dom.dataset.isPropertyBar = true;
         },
+        tabChangeHandler: function (e) {
+            this.setState({currentTab: e.target.dataset.tabItem});
+        },
         render: function () {
-
+            var me = this;
             var props = {
                 className: 'container-property',
                 style: {display: this.props.mesh ? 'block' : 'none'}
@@ -37,23 +40,6 @@ define(function (require) {
                 mesh: this.props.mesh || this.state.defaultMesh,
                 display: this.state.currentTab === 'material' ? 'block' : 'none'
             };
-            var me = this;
-
-            function changeTab(e) {
-                me.setState({currentTab: e.target.dataset.tabItem});
-            }
-
-            function produceTabItem(item) {
-                var p = {
-                    className: 'tab-item' + (me.state.currentTab === item ? ' active' : ''),
-                    'data-tab-item': item,
-                    onClick: changeTab
-                };
-                return (
-                    <div {...p}>{item}</div>
-                );
-            }
-
             return (
                 <div {...props}>
                     <div className="tab-bar" data-is-property-bar="true">
@@ -62,6 +48,16 @@ define(function (require) {
                     <GeometryPropertyBar {...geometryProps}/>
                 </div>
             );
+            function produceTabItem(item) {
+                var p = {
+                    className: 'tab-item' + (me.state.currentTab === item ? ' active' : ''),
+                    'data-tab-item': item,
+                    onClick: me.tabChangeHandler
+                };
+                return (
+                    <div {...p}>{item}</div>
+                );
+            }
         }
     });
 });

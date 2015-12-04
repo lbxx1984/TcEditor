@@ -102,17 +102,6 @@ define(function (require) {
                 hsl: [0, 0, 0]      // 从动颜色，外界可读，内部可设置
             };
         },
-        renderColor: function (color) {
-            var canvas = this.refs.canvas2.getDOMNode();
-            var ctx = canvas.getContext('2d');
-            var linear = ctx.createLinearGradient(0, 1, canvas.width, 1);
-            linear.addColorStop(0.1, '#FFF');
-            linear.addColorStop(0.5, color);
-            linear.addColorStop(0.9, '#000');
-            ctx.fillStyle = linear;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.stroke();
-        },
         componentDidMount: function () {
             var canvas = this.refs.canvas1.getDOMNode();
             var ctx = canvas.getContext('2d');
@@ -126,81 +115,71 @@ define(function (require) {
             ctx.stroke();
             this.renderColor(this.state.value);
         },
+        renderColor: function (color) {
+            var canvas = this.refs.canvas2.getDOMNode();
+            var ctx = canvas.getContext('2d');
+            var linear = ctx.createLinearGradient(0, 1, canvas.width, 1);
+            linear.addColorStop(0.1, '#FFF');
+            linear.addColorStop(0.5, color);
+            linear.addColorStop(0.9, '#000');
+            ctx.fillStyle = linear;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.stroke();
+        },
+        updateColor: function (type, value, fireChange, renderCanvas, silent) {
+            var colors = {};
+            if (type === 'css') {
+                colors.value = value;
+                colors.rgb = CSS2RGB(value);
+                colors.hsl = RGB2HSL(colors.rgb[0], colors.rgb[1], colors.rgb[2]);
+            }
+            else if (type === 'rgb') {
+                colors.rgb = value;
+                colors.value = RGB2CSS(colors.rgb[0], colors.rgb[1], colors.rgb[2]);
+                colors.hsl = RGB2HSL(colors.rgb[0], colors.rgb[1], colors.rgb[2]);
+            }
+            else if (type === 'hsl') {
+                colors.hsl = value;
+                colors.rgb = HSL2RGB(colors.hsl[0], colors.hsl[1], colors.hsl[2]);
+                colors.value = RGB2CSS(colors.rgb[0], colors.rgb[1], colors.rgb[2]);
+            }
+            if (!silent) {
+                this.setState(colors);
+            }
+            if (fireChange && typeof this.props.onChange === 'function') {
+                this.props.onChange({target: this, value: colors});
+            }
+            if (renderCanvas) {
+                this.renderColor(colors.value);
+            }
+            return colors;
+        },
+        clickHandler: function (e) {
+            var x = e.nativeEvent.offsetX;
+            var y = e.nativeEvent.offsetY;
+            var rgb = e.target.getContext('2d').getImageData(x, y, 1, 1).data;
+            this.updateColor('rgb', rgb, true, e.target.dataset.cmd === 'canvas1');
+        },
+        inputChangeHandler: function (e) {
+            var type = e.target.dataset.cmd;
+            var index = ~~e.target.dataset.index;
+            var value = Number(e.target.value);
+            value = Math.min(e.target.max, value);
+            value = Math.max(e.target.min, value);
+            var result = type === 'rgb' ? this.state.rgb : this.state.hsl;
+            result[index] = value;
+            this.updateColor(type, result, true, true);
+        },
         render: function () {
-
             var me = this;
             var prop = {
                 width: this.props.width - 6,
                 height: this.props.height,
-                onClick: clickHandler
+                onClick: this.clickHandler
             };
             var rgb = CSS2RGB(this.state.value);
             this.state.rgb = rgb;
             this.state.hsl = RGB2HSL(rgb[0], rgb[1], rgb[2]);
-
-            function updateColor(type, value, fireChange, renderCanvas, silent) {
-                var colors = {};
-                if (type === 'css') {
-                    colors.value = value;
-                    colors.rgb = CSS2RGB(value);
-                    colors.hsl = RGB2HSL(colors.rgb[0], colors.rgb[1], colors.rgb[2]);
-                }
-                else if (type === 'rgb') {
-                    colors.rgb = value;
-                    colors.value = RGB2CSS(colors.rgb[0], colors.rgb[1], colors.rgb[2]);
-                    colors.hsl = RGB2HSL(colors.rgb[0], colors.rgb[1], colors.rgb[2]);
-                }
-                else if (type === 'hsl') {
-                    colors.hsl = value;
-                    colors.rgb = HSL2RGB(colors.hsl[0], colors.hsl[1], colors.hsl[2]);
-                    colors.value = RGB2CSS(colors.rgb[0], colors.rgb[1], colors.rgb[2]);
-                }
-                if (!silent) {
-                    me.setState(colors);
-                }
-                if (fireChange && typeof me.props.onChange === 'function') {
-                    me.props.onChange({target: me, value: colors});
-                }
-                if (renderCanvas) {
-                    me.renderColor(colors.value);
-                }
-                return colors;
-            }
-
-            function clickHandler(e) {
-                var x = e.nativeEvent.offsetX;
-                var y = e.nativeEvent.offsetY;
-                var rgb = e.target.getContext('2d').getImageData(x, y, 1, 1).data;
-                updateColor('rgb', rgb, true, e.target.dataset.cmd === 'canvas1');
-            }
-
-            function inputChangeHandler(e) {
-                var type = e.target.dataset.cmd;
-                var index = ~~e.target.dataset.index;
-                var value = Number(e.target.value);
-                value = Math.min(e.target.max, value);
-                value = Math.max(e.target.min, value);
-                var result = type === 'rgb' ? me.state.rgb : me.state.hsl;
-                result[index] = value;
-                updateColor(type, result, true, true);
-            }
-
-            function inputBox(type, fixed, min, max, step) {
-                var index = [0, 1, 2];
-                type = type.toLowerCase();
-                function item(i) {
-                    var value = me.state[type][i].toFixed(fixed);
-                    var prop = {
-                        type: 'number', step: step, min: min, max: max, value: value,
-                        'data-cmd': type,
-                        'data-index': i,
-                        onChange: inputChangeHandler
-                    };
-                    return <input {...prop}/>;
-                }
-                return (<div className="color-input-content">{type}{index.map(item)}</div>);
-            }
-
             return (
                 <div className="color-picker">
                     <div className="color-label" style={{backgroundColor: this.state.value}}></div>
@@ -214,6 +193,21 @@ define(function (require) {
                     </div>
                 </div>
             );
+            function inputBox(type, fixed, min, max, step) {
+                var index = [0, 1, 2];
+                type = type.toLowerCase();
+                function item(i) {
+                    var value = me.state[type][i].toFixed(fixed);
+                    var prop = {
+                        type: 'number', step: step, min: min, max: max, value: value,
+                        'data-cmd': type,
+                        'data-index': i,
+                        onChange: me.inputChangeHandler
+                    };
+                    return <input {...prop}/>;
+                }
+                return (<div className="color-input-content">{type}{index.map(item)}</div>);
+            }
         }
     });
 });

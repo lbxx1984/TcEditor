@@ -6,13 +6,17 @@ define(function (require) {
                 selected: ''
             };
         },
+        clickHandler: function (e) {
+            var cmd = e.target.dataset.cmd || 'select';
+            var uuid = e.target.dataset.light || e.target.parentNode.dataset.light;
+            var cmd = 'tool-light' + cmd.replace(/(\w)/,function(v){return v.toUpperCase()});
+            this.props.commandRouting(cmd, uuid);
+        },
         render: function () {
             var lights = [];
             var me = this;
             for (var key in this.state.light) {
-                if (!this.state.light.hasOwnProperty(key)) {
-                    continue;
-                }
+                if (!this.state.light.hasOwnProperty(key)) continue;
                 lights.push(this.state.light[key]);
             }
             var boxProp = {
@@ -21,14 +25,9 @@ define(function (require) {
                     display: lights.length ? 'block' : 'none'
                 }
             };
-
-            function clickHandler(e) {
-                var cmd = e.target.dataset.cmd || 'select';
-                var uuid = e.target.dataset.light || e.target.parentNode.dataset.light;
-                var cmd = 'tool-light' + cmd.replace(/(\w)/,function(v){return v.toUpperCase()});
-                me.props.commandRouting(cmd, uuid);
-            }
-
+            return (
+                <div {...boxProp}>{lights.map(produceLight)}</div>
+            );
             function produceLight(item) {
                 var visible = 'iconfont icon-' + (item.visible ? 'kejian' : 'bukejian');
                 var locked = 'iconfont icon-' + (item.locked ? 'suo1' : 'suo');
@@ -37,7 +36,7 @@ define(function (require) {
                 var lightProp = {
                     className: 'mesh-item' + (me.state.selected.indexOf(item.uuid + ';') > -1 ? ' selected' : ''),
                     'data-light': item.uuid,
-                    onClick: clickHandler
+                    onClick: me.clickHandler
                 };
                 return (
                     <div {...lightProp}>
@@ -48,10 +47,6 @@ define(function (require) {
                     </div>
                 );
             }
-
-            return (
-                <div {...boxProp}>{lights.map(produceLight)}</div>
-            );
         }
     });
 });
