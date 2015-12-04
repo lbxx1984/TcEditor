@@ -16,7 +16,7 @@ define(function (require) {
                 lights.push(this.state.light[key]);
             }
             var boxProp = {
-                className: 'mesh-list',
+                className: 'mesh-tree light-list',
                 style: {
                     display: lights.length ? 'block' : 'none'
                 }

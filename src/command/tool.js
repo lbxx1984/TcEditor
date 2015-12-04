@@ -79,9 +79,6 @@ define(function (require) {
         },
         meshDelete: function (cmd, uuid) {
             var mesh = this.stage.$3d.children[uuid];
-            if (mesh.locked) {
-                return;
-            }
             this.stage.remove(uuid);
             detachMesh(this, 'transformer', uuid);
             detachMesh(this, 'morpher', uuid);
