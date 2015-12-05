@@ -76,10 +76,11 @@ define(function (require) {
             result.name = mesh.name;
             result.birth = mesh.birth;
             result.locked = mesh.locked;
+            result.group = mesh.group;
             result.visible = mesh.visible;
             result.material = material2object(mesh.material);
             result.material.color = mesh[window.editorKey].color;
-            result.geometry = geometry2object(mesh.geometry);            
+            result.geometry = geometry2object(mesh.geometry);
             result.matrix =[];
             for (var i = 0; i < mesh.matrix.elements.length; i++) {
                 result.matrix.push(mesh.matrix.elements[i]);

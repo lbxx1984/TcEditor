@@ -27,6 +27,17 @@ define(function (require) {
         }
     };
 
+    String.prototype.uuid = function (tpl) {
+            tpl = tpl || 'xxxxxxxx-yyyy-yyyy-yyyy-xxxxxxxxxxxx'
+            var reg = /[xy]/g;
+            var replacer = function (c) {
+                var r = Math.random() * 16 | 0;
+                var v = c === 'x' ? r : (r & 3 | 8);
+                return v.toString(16);
+            };
+            return tpl.replace(reg, replacer).toUpperCase();
+    };
+
     Date.prototype.format = function (format) {
         var o = {
             'M+': this.getMonth() + 1,

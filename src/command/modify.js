@@ -2,10 +2,16 @@ define(function (require) {
 
     var math = require('math');
 
+    function updateContainerRight(me, data) {
+        me.ui.refs.containerright.refs.verticallist.refs.meshBox.setState(data);
+    }
+
+    function updateContainerLeft(me, mesh) {
+        me.ui.refs.containerleft.refs.stage.setState({activeMesh: mesh});
+    }
+
     function updateMesh(me, mesh) {
-        var leftcontainer = me.ui.refs.containerleft;
-        var view = leftcontainer.refs.controlbar.state.cameraview;
-        leftcontainer.refs.stage.setState({activeMesh: mesh});
+        var view = me.ui.refs.containerleft.refs.controlbar.state.cameraview;
         if (view !== '3d') {
             me.stage.$2d.children[mesh.uuid].reset();
             me.stage.$2d.renderMesh();
@@ -23,16 +29,54 @@ define(function (require) {
             me.morpher.attach(mesh);
             me.morpher.attachJoint(joint);
         }
+        updateContainerLeft(me, mesh);
     }
 
+    function toogleMeshProp(me, uuid, prop) {
+        me.stage.toogleMeshProp(uuid, prop);
+        detachMesh(me, 'transformer', uuid);
+        detachMesh(me, 'morpher', uuid);
+    }
+
+    function setMeshProp(me, meshes, prop, value) {
+        for (var i = 0; i < meshes.length; i++) {
+            var uuid = meshes[i].uuid;
+            me.stage.setMeshProp(uuid, prop, value);
+            detachMesh(me, 'transformer', uuid);
+            detachMesh(me, 'morpher', uuid);
+        }
+    }
+
+    function detachMesh(me, helper, uuid) {
+        if (me[helper].mesh && me[helper].mesh.uuid === uuid) {
+            me.stage.changeMeshColor(null, 'active');
+            me[helper].detach();
+            updateContainerRight(me, {selected: ''});
+            updateContainerLeft(me, null);
+        }
+    }
+
+    function attachMesh(me, helper, mesh) {
+        if (me[helper].mesh) {
+            if (me[helper].mesh.uuid === mesh.uuid) return;
+            me.stage.changeMeshColor(null, 'active');
+            me[helper].detach();
+        }
+        me[helper].attach(mesh);
+        me.stage.changeMeshColor(mesh, 'active');
+        updateContainerRight(me, {selected: mesh.uuid + ';'});
+        updateContainerLeft(me, mesh);
+    }
 
     return {
+        // 修改物体位置
         position: function (cmd, direction, value) {
             var mesh = this.transformer.mesh || this.morpher.mesh;
             if (!mesh) return;
             mesh.position[direction] = ~~value;
             updateMesh(this, mesh);
         },
+        // 修改物体旋转
         rotation: function (cmd, direction, value) {
             var mesh = this.transformer.mesh || this.morpher.mesh;
             if (!mesh) return;
@@ -40,6 +84,7 @@ define(function (require) {
             mesh.rotation[direction] = value * Math.PI / 180;
             updateMesh(this, mesh);
         },
+        // 修改物体缩放
         scale: function (cmd, direction, value) {
             var mesh = this.transformer.mesh || this.morpher.mesh;
             value = parseFloat(value);
@@ -47,27 +92,25 @@ define(function (require) {
             mesh.scale[direction] = value;
             updateMesh(this, mesh);
         },
+        // 修改物体名称
         name: function (cmd, mesh, name) {
             mesh.name = name;
-            this.ui.refs.containerright.refs.verticallist.refs.meshBox.setState({
-                meshes: this.stage.$3d.children
-            });
-            this.ui.refs.containerleft.refs.stage.setState({
-                activeMesh: mesh
-            });
+            updateContainerRight(this, {meshes: this.stage.$3d.children});
+            updateContainerLeft(this, mesh);
         },
+        // 修改物体颜色
         color: function (cmd, mesh, color) {
             mesh[window.editorKey].color = color;
             mesh.material.setValues({color: color});
             updateMesh(this, mesh);
         },
+        // 修改物体材质框架
         wireframe: function (cmd, mesh, v) {
             mesh.material.wireframe = v;
             mesh.material.setValues({emissive: (v ? mesh[window.editorKey].color : 0)});
-            this.ui.refs.containerleft.refs.stage.setState({
-                activeMesh: mesh
-            });
+            updateContainerLeft(this, mesh);
         },
+        // 修改物体某个关节
         vector: function (cmd, mesh, joint, direction, value) {
             var vector = mesh.geometry.vertices[joint];
             var matrix = math.rotateMatrix(mesh);
@@ -79,6 +122,49 @@ define(function (require) {
             vector.z = local[2];
             mesh.geometry.verticesNeedUpdate = true;
             updateMesh(this, mesh);
-        }
+        },
+        // 修改物体分组
+        group: function (cmd, mesh, group) {
+            mesh = this.stage.$3d.children[mesh];
+            if (!mesh) return;
+            mesh.group = group;
+            updateContainerRight(this, {meshes: this.stage.$3d.children});
+        },
+        // 修改物体可见性，批量
+        visible: function (cmd, meshes, value) {
+            if (undefined === value && meshes.length === 1) {
+                toogleMeshProp(this, meshes[0], 'visible');
+            }
+            else {
+                setMeshProp(this, meshes, 'visible', value);
+            }
+            updateContainerRight(this, {meshes: this.stage.$3d.children});
+        },
+        // 修改物体锁定状态，批量
+        lock: function (cmd, meshes, value) {
+            if (undefined === value && meshes.length === 1) {
+                toogleMeshProp(this, meshes[0], 'locked');
+            }
+            else {
+                setMeshProp(this, meshes, 'locked', value);
+            }
+            updateContainerRight(this, {meshes: this.stage.$3d.children});
+        },
+        // 删除物体
+        delete: function (cmd, uuid) {
+            var mesh = this.stage.$3d.children[uuid];
+            this.stage.remove(uuid);
+            detachMesh(this, 'transformer', uuid);
+            detachMesh(this, 'morpher', uuid);
+            updateContainerRight(this, {meshes: this.stage.$3d.children});
+        },
+        // 选择物体
+        select: function (cmd, uuid) {
+            var helpers = {pickgeo: 'transformer', pickjoint: 'morpher'};
+            var helper = helpers[this.ui.refs.containerleft.refs.controlbar.state.systemtool];
+            var mesh = this.stage.$3d.children[uuid];
+            if (!mesh || !mesh.visible || mesh.locked || !helper) return;
+            attachMesh(this, helper, mesh);
+        },
     };
 });

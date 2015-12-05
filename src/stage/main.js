@@ -66,6 +66,7 @@ define(function (require) {
      * 切换物体属性
      *
      * @param {string} uuid 物体uuid
+     * @param {string} prop 需要设置的属性
      */
     Stage.prototype.toogleMeshProp = function(uuid, prop) {
         var v = !this.$3d.children[uuid][prop];
@@ -73,6 +74,17 @@ define(function (require) {
         this.$2d.renderMesh();
     };
 
+    /**
+     * 设置物体属性
+     *
+     * @param {string} uuid 物体uuid
+     * @param {string} prop 需要设置的属性
+     * @param {string | boolean} 将要放在属性上的值
+     */
+    Stage.prototype.setMeshProp = function (uuid, prop, value) {
+        this.$3d.children[uuid][prop] = value;
+        this.$2d.renderMesh();
+    };
 
     /**
      * 修改物体颜色，并在必要时重新渲染2D舞台

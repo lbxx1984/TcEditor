@@ -75,7 +75,8 @@ define(function (require) {
         var fileContent = {
             meshes: me.io.getMeshes(),
             lights: me.io.getLights(),
-            camera: me.io.getCamera()
+            camera: me.io.getCamera(),
+            groups: me.io.getGroups()
         };
         fileContent = new Blob([JSON.stringify(fileContent)]);
         me.fs.write(filePath, {data: fileContent}, function (result) {
@@ -136,6 +137,9 @@ define(function (require) {
         }
         if (content.hasOwnProperty('camera')) {
             me.io.setCamera(content.camera);
+        }
+        if (content.hasOwnProperty('groups') && content.groups instanceof Array) {
+            me.io.setGroups(content.groups);
         }
         if (content.hasOwnProperty('meshes') && content.meshes instanceof Array && content.meshes.length > 0) {
             me.stage.removeAll();

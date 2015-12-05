@@ -148,6 +148,8 @@ define(function (require) {
 
     /**
      * 获取摄像机
+     *
+     * @return {Object} 摄像机配置
      */
     IO.prototype.getCamera = function () {
         return exporter.camera(this.routing.stage);
@@ -160,6 +162,30 @@ define(function (require) {
      */
     IO.prototype.setCamera = function (conf) {
         importer.camera(this.routing, conf);
+    };
+
+    /**
+     * 获取物体分组设置
+     *
+     * @return {Array.<Object>} 物体分组配置
+     */
+    IO.prototype.getGroups = function () {
+        var groups = this.routing.ui.refs.containerright.refs.verticallist.refs.meshBox.state.group;
+        groups = JSON.stringify(groups);
+        groups = JSON.parse(groups);
+        for (var i = 0; i < groups.length; i++) {
+            delete groups[i].children;
+        }
+        return groups;
+    };
+
+    /**
+     * 设置物体分组
+     *
+     * @param {Array.<Object>} 物体分组配置
+     */
+    IO.prototype.setGroups = function (groups) {
+        this.routing.ui.refs.containerright.refs.verticallist.refs.meshBox.setState({group: groups});
     };
 
     return IO;
