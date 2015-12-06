@@ -104,10 +104,18 @@ define(function (require) {
             mesh.material.setValues({color: color});
             updateMesh(this, mesh);
         },
+        // 修改物体阴影
+        emissive: function (cmd, mesh, color) {
+            mesh[window.editorKey].emissive = color;
+            mesh.material.setValues({emissive: color});
+            updateMesh(this, mesh);
+        },
         // 修改物体材质框架
         wireframe: function (cmd, mesh, v) {
             mesh.material.wireframe = v;
-            mesh.material.setValues({emissive: (v ? mesh[window.editorKey].color : 0)});
+            mesh.material.setValues({
+                emissive: v ? mesh[window.editorKey].color : mesh[window.editorKey].emissive
+            });
             updateContainerLeft(this, mesh);
         },
         // 修改物体某个关节

@@ -55,7 +55,9 @@ define(function (require) {
                 <div {...props}><table><tr>
                     <td style={{width: '230px'}}>
                         <div className="label-l1">
-                            <div className="label-l2">type:</div>{mesh.geometry.type}</div>
+                            <div className="label-l2">type:</div>
+                            {type}
+                        </div>
                         <div className="label-l1">
                             <div className="label-l2">name:</div>
                             <input type="text" value={name} onChange={this.nameChangeHandler}/>

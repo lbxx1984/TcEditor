@@ -1,6 +1,7 @@
 define(function (require) {
 
     var GeometryPropertyBar = require('../component/geometryPropertyBar.jsx');
+    var MaterialPropertyBar = require('../component/materialPropertyBar.jsx');
 
     return React.createClass({
         getInitialState: function () {
@@ -38,7 +39,8 @@ define(function (require) {
             };
             var materialProps = {
                 mesh: this.props.mesh || this.state.defaultMesh,
-                display: this.state.currentTab === 'material' ? 'block' : 'none'
+                display: this.state.currentTab === 'material' ? 'block' : 'none',
+                commandRouting: this.props.commandRouting
             };
             return (
                 <div {...props}>
@@ -46,6 +48,7 @@ define(function (require) {
                         {this.state.tabItems.map(produceTabItem)}
                     </div>
                     <GeometryPropertyBar {...geometryProps}/>
+                    <MaterialPropertyBar {...materialProps}/>
                 </div>
             );
             function produceTabItem(item) {

@@ -80,6 +80,7 @@ define(function (require) {
             result.visible = mesh.visible;
             result.material = material2object(mesh.material);
             result.material.color = mesh[window.editorKey].color;
+            result.material.emissive = mesh[window.editorKey].emissive;
             result.geometry = geometry2object(mesh.geometry);
             result.matrix =[];
             for (var i = 0; i < mesh.matrix.elements.length; i++) {

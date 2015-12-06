@@ -63,7 +63,7 @@ define(function (require) {
         },
         groupOperateHandler: function (e) {
             var groupUUID = e.target.dataset.uuid || e.target.parentNode.dataset.uuid;
-            var cmd = e.target.dataset.cmd;
+            var cmd = e.target.dataset.cmd || 'close';
             if (!groupUUID || !cmd) return;
             switch (cmd) {
                 case 'delete':
@@ -125,7 +125,7 @@ define(function (require) {
                 if (this.state.group[i].name === value) return;
             }
             var groups = this.state.group;
-            groups.push({name: value, uuid: ''.uuid(), close: false, visible: true, locked: false});
+            groups.push({name: value, uuid: THREE.Math.generateUUID(), close: false, visible: true, locked: false});
             this.setState({group: groups});
             this.refs.addGroup.getDOMNode().style.display = 'none';
         },

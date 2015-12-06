@@ -222,6 +222,7 @@ define(function (require) {
         }
         if (!mesh[window.editorKey].hasOwnProperty('color')) {
             mesh[window.editorKey].color = mesh.material.color.getHex();
+            mesh[window.editorKey].emissive = mesh.material.emissive.getHex();
         }
         this.$3d.children[mesh.uuid] = mesh;
         this.$3d.scene.add(mesh);
