@@ -32,6 +32,22 @@ define(function (require) {
         emissiveChangeHandler: function (e) {
             this.props.commandRouting('modify-emissive', this.props.mesh, parseInt(e.value.value.slice(1, 7), 16));
         },
+        // 显隐物体骨骼
+        frameChangeHandler: function (e) {
+            this.props.commandRouting('modify-wireframe', this.props.mesh, e.target.checked);
+        },
+        // 修改透明度，好像没什么用
+        opacityChangeHandler: function (e) {
+            this.props.commandRouting('modify-opacity', this.props.mesh, parseFloat(e.target.value));
+        },
+        // 修改渲染面
+        sideChangeHandler: function (e) {
+            this.props.commandRouting('modify-side', this.props.mesh, e.target.value);
+        },
+        // 修改纹理
+        textureChangeHandler: function (e) {
+            this.props.commandRouting('modify-texture', this.props.mesh, e.target);
+        },
         render: function () {
             var props = {
                 className: 'geometry-property-bar',
@@ -40,18 +56,6 @@ define(function (require) {
             var mesh = this.props.mesh;
             var type = mesh.material.type.replace('Material', '');
             var me = this;
-            // if (mesh.material.map) {
-            //     mesh.material.map.dispose();
-            // }
-            // var loader = new THREE.TextureLoader();
-            // loader.load('resources/textures/ash_uvgrid01.jpg', function (texture) {
-            //     mesh.material.setValues({
-            //         opacity: 0.5,
-            //         map: texture
-            //     });
-            //     mesh.material.needsUpdate = true;
-            // });
-            
             return (
                 <div {...props}><table><tr>
                     <td style={{width: '230px'}}>
@@ -67,12 +71,33 @@ define(function (require) {
                             <div className="label-l2">emissive:</div>
                             <ColorPicker ref="materialemissive" onChange={this.emissiveChangeHandler} width="140"/>
                         </div>
+                        <div className="label-l1">
+                            <div className="label-l2">wireframe:</div>
+                            <input type="checkbox" checked={mesh.material.wireframe}
+                                onChange={this.frameChangeHandler}/>
+                        </div>
                     </td>
-                    <td>
-                        <div className="label-l1">map纹理图片，这个很有用</div>
-                        <div className="label-l1">opacity，没什么乱用这个属性</div>
-                        <div className="label-l1">side渲染面数量，基本也没什么卵用</div>
-                        <div className="label-l1">wireframe显示成网格，已经实现</div>
+                    <td style={{width: '260px'}}>
+                        <div className="label-l1">
+                            <div className="label-l2"></div>
+                        </div>
+                        <div className="label-l1">
+                            <div className="label-l2">texture:</div>
+                            <input type="file" value="" onChange={this.textureChangeHandler}/>
+                        </div>
+                        <div className="label-l1">
+                            <div className="label-l2">opacity:</div>
+                            <input type="range" step="0.01" max="1" min="0" value={mesh.material.opacity}
+                                onChange={this.opacityChangeHandler}/>
+                        </div>
+                        <div className="label-l1">
+                            <div className="label-l2">side:</div>
+                            <select value={mesh.material.side} onChange={this.sideChangeHandler}>
+                                <option value={THREE.FrontSide}>FrontSide</option>
+                                <option value={THREE.BackSide}>BackSide</option>
+                                <option value={THREE.DoubleSide}>DoubleSide</option>
+                            </select>
+                        </div>
                     </td>
                 </tr></table></div>
             );

@@ -37,6 +37,7 @@ define(function (require) {
 
     function setupIO() {
         return new Promise(function (resolve, reject) {
+            routing.imgCache = {};
             routing.keyboard = keyboard;
             routing.filePath = null;
             routing.fs = new FileSystem(function (fs) {

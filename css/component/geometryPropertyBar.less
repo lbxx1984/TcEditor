@@ -7,12 +7,26 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    ::-webkit-slider-runnable-track {
+        position: relative;
+        top: -2px;
+        height: 5px;
+        background: #383838;
+    }
+    ::-webkit-slider-thumb {
+        position: relative;
+        top: -7px;
+    }
     td {
         vertical-align: top;
         padding-left: 20px;
     }
     tr>td:nth-child(1) {
         padding-left: 0px;
+    }
+    [type="file"] {
+        display: inline-block;
+        width: 70px;
     }
     [type="text"] {
         width: 140px;

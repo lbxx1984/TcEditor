@@ -98,6 +98,39 @@ define(function (require) {
             updateContainerRight(this, {meshes: this.stage.$3d.children});
             updateContainerLeft(this, mesh);
         },
+        // 修改物体纹理
+        texture: function (cmd, mesh, fileDom) {
+            var me = this;
+            var url = fileDom.value;
+            var file = fileDom.files[0];
+            if (file.type.indexOf('image/') !== 0) return;
+            var cache = me.imgCache[url];
+            if (cache) {
+                gotImg(cache);
+            }
+            else {
+                var reader = new FileReader();
+                reader.readAsDataURL(file); 
+                reader.onload=function () {
+                    var img = document.createElement('img');
+                    img.src = this.result;
+                    img.onload = function () {
+                        me.imgCache[url] = img;
+                        gotImg(img);
+                    }
+                }
+            }
+            function gotImg(imgDom) {
+                if (mesh.material.map) {
+                    mesh.material.map.image = imgDom;
+                }
+                else {
+                    mesh.material.map = new THREE.Texture(imgDom);
+                }
+                mesh.material.map.needsUpdate = true;
+                mesh.material.needsUpdate = true;
+            }
+        },
         // 修改物体颜色
         color: function (cmd, mesh, color) {
             mesh[window.editorKey].color = color;
@@ -107,7 +140,20 @@ define(function (require) {
         // 修改物体阴影
         emissive: function (cmd, mesh, color) {
             mesh[window.editorKey].emissive = color;
-            mesh.material.setValues({emissive: color});
+            mesh.material.setValues({
+                color: mesh[window.editorKey].color,
+                emissive: color
+            });
+            updateMesh(this, mesh);
+        },
+        // 修改物体透明度，好像没什么用
+        opacity: function (cmd, mesh, opacity) {
+            if (isNaN(opacity)) return;
+            mesh.material.setValues({
+                opacity: parseFloat(opacity),
+                color: mesh[window.editorKey].color,
+                transparent: opacity < 1
+            });
             updateMesh(this, mesh);
         },
         // 修改物体材质框架
@@ -117,6 +163,11 @@ define(function (require) {
                 emissive: v ? mesh[window.editorKey].color : mesh[window.editorKey].emissive
             });
             updateContainerLeft(this, mesh);
+        },
+        // 修改物体渲染面
+        side: function (cmd, mesh, v) {
+            mesh.material.setValues({side: ~~v});
+            updateMesh(this, mesh);
         },
         // 修改物体某个关节
         vector: function (cmd, mesh, joint, direction, value) {
@@ -160,10 +211,11 @@ define(function (require) {
         },
         // 删除物体
         delete: function (cmd, uuid) {
-            var mesh = this.stage.$3d.children[uuid];
-            this.stage.remove(uuid);
+            uuid = uuid[0];
             detachMesh(this, 'transformer', uuid);
             detachMesh(this, 'morpher', uuid);
+            var mesh = this.stage.$3d.children[uuid];
+            this.stage.remove(uuid);
             updateContainerRight(this, {meshes: this.stage.$3d.children});
         },
         // 选择物体
@@ -173,6 +225,6 @@ define(function (require) {
             var mesh = this.stage.$3d.children[uuid];
             if (!mesh || !mesh.visible || mesh.locked || !helper) return;
             attachMesh(this, helper, mesh);
-        },
+        }
     };
 });

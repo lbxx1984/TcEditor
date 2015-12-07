@@ -1,5 +1,13 @@
 define(function (require) {
 
+    function updateContainerRight(me, data) {
+        me.ui.refs.containerright.refs.verticallist.refs.meshBox.setState(data);
+    }
+
+    function updateContainerLeft(me, mesh) {
+        me.ui.refs.containerleft.refs.stage.setState({activeMesh: mesh});
+    }
+
     function updateUILightBox(me, obj) {
         me.ui.refs.containerright.refs.verticallist.refs.lightBox.setState(obj);
     }
@@ -19,6 +27,15 @@ define(function (require) {
             uiState.selected = '';
         }
         updateUILightBox(me, uiState);
+    }
+
+    function detachMesh(me, helper, uuid) {
+        if (me[helper].mesh && me[helper].mesh.uuid === uuid) {
+            me.stage.changeMeshColor(null, 'active');
+            me[helper].detach();
+            updateContainerRight(me, {selected: ''});
+            updateContainerLeft(me, null);
+        }
     }
 
     return {

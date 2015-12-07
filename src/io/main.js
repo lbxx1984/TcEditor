@@ -2,6 +2,7 @@ define(function (require) {
 
     var exporter = require('./exporter');
     var importer = require('./importer');
+    var Zip = require('./jszip');
 
     /**
      * 压缩模型对象
