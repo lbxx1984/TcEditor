@@ -10,10 +10,10 @@ define(function (require) {
      *
      * @param {Object} me routing对象
      * @param {string} mode explorer工作模式，open,save
-     * @param {Function} callback 成功选择文件或创建文件后的回调，回传文件路径
-     *                            explorer不负责创建文件，只回传路径
+     * @param {Function} callback 成功选择文件或创建文件后的回调，回传文件路径，explorer不负责创建文件，只回传路径
+     * @param {string} filetype 保存时自动添加的文件扩展名
      */
-    function openExplorer(me, mode, callback) {
+    function openExplorer(me, mode, callback, filetype) {
         var hotkey = '|backspace|enter|esc|';
         var dialog = new Dialog({
             onClose: function () {
@@ -36,6 +36,7 @@ define(function (require) {
                 fs: me.fs,
                 mode: mode,
                 button1: mode === 'save' ? 'Save' : 'Open',
+                filetype: filetype,
                 onEnter: function (path) {
                     callback(path);
                     dialog.close();
@@ -46,156 +47,68 @@ define(function (require) {
 
 
     /**
-     * 保存editor配置到本地
-     *
-     * @param {Object} me routing对象
-     * @param {Function} callback 保存成功后回调
-     */
-    function writeEditorConf(me, callback) {
-        var confPath = '/' + window.editorKey + '/' + window.editorKey + 'conf';
-        var editorConf = new Blob([me.io.getEditorConf()]);
-        me.fs.write(confPath, {data: editorConf}, function (result) {
-            if (result instanceof FileError) {
-                var alert = new Alert();
-                alert.pop({message: 'Fail to Save System Configuration!'});
-            }
-            if (typeof callback === 'function') callback();
-        });
-    }
-
-
-    /**
      * 保存当前文件
+     * 由于save和save as保存文件的流程是相同的，所以提出来
      *
      * @param {Object} me routing对象
-     * @param {Function} callback 保存成功后回调
+     * @param {string} filePath 文件的路径
      */
-    function writeFile(me, callback) {
-        var filePath = me.filePath;
-        var fileContent = {
-            meshes: me.io.getMeshes(),
-            lights: me.io.getLights(),
-            camera: me.io.getCamera(),
-            groups: me.io.getGroups()
-        };
-        fileContent = new Blob([JSON.stringify(fileContent)]);
-        me.fs.write(filePath, {data: fileContent}, function (result) {
+    function writeFile(me, filePath) {
+        me.io.writeTCM(filePath, function (result) {
             var alert = new Alert();
             if (result instanceof FileError) {
                 alert.pop({message: 'File Save Failed!'});
+                me.filePath = null;
             }
             else {
                 alert.pop({message: 'File Saved!'});
+                me.filePath = filePath;
             }
-            if (typeof callback === 'function') callback(result);
         });
-    }
-
-
-    /**
-     * 读取文件
-     *
-     * @param {Object} me routing对象
-     * @param {string} path 文件路径
-     * @param {Function} callback 读取成功后的回调，回传文件内容''
-     */
-    function readFile(me, path, callback) {
-        me.fs.read(path, function (result) {
-            var fileContent = '';
-            var fail = false;
-            if (result instanceof ProgressEvent && result.target.result.length > 0) {
-                fileContent = result.target.result;
-                try {
-                    fileContent = JSON.parse(fileContent)
-                }
-                catch (e) {
-                    fail = true;
-                }
-            }
-            else {
-                fail = true;
-            }
-            if (fail) {
-                fileContent = null;
-                new Alert().pop({message: 'Fail to open "' + path + '"'});
-            }
-            if (typeof callback === 'function') callback(fileContent);
-        });
-    }
-
-
-    /**
-     * 导入文件内容到舞台
-     *
-     * @param {Object} me routing对象
-     * @param {Object} content 已经解析好的文件内容
-     */
-    function loadFile(me, content) {
-        if (content.hasOwnProperty('lights') && content.lights instanceof Array && content.lights.length > 0) {
-            me.light.removeAll();
-            me.io.setLights(content.lights);
-        }
-        if (content.hasOwnProperty('camera')) {
-            me.io.setCamera(content.camera);
-        }
-        if (content.hasOwnProperty('groups') && content.groups instanceof Array) {
-            me.io.setGroups(content.groups);
-        }
-        if (content.hasOwnProperty('meshes') && content.meshes instanceof Array && content.meshes.length > 0) {
-            me.stage.removeAll();
-            me.io.setMeshes(content.meshes);
-        }
-        // TODO: 检测文件保存状态
     }
 
 
     return {
         open: function () {
             var me = this;
-            openExplorer(me, 'open', gotFilePath);
-            function gotFilePath(path) {
-                readFile(me, path, function (content) {
-                    if (content == null) return;
-                    document.title = 'TcEditor ' + path.split('/').pop();
-                    me.filePath = path;
-                    loadFile(me, content);
+            openExplorer(me, 'open', gotPath);
+            function gotPath(path) {
+                me.io.readTCM(path, function (result) {
+                    if (typeof result === 'string') {
+                        document.title = 'TcEditor';
+                        var alert = new Alert();
+                        alert.pop({message: result});
+                    }
+                    else {
+                        document.title = 'TcEditor ' + path.split('/').pop();
+                    }
                 });
             }
         },
         save: function () {
             var me = this;
-            writeEditorConf(me, function () {
+            this.io.writeEditorConf(function (result) {
+                if (result instanceof FileError) {
+                    var alert = new Alert();
+                    alert.pop({message: 'Fail to Save System Configuration!'});
+                }
                 if (me.filePath === null) {
-                    openExplorer(me, 'save', gotFilePath);
+                    openExplorer(me, 'save', function (path) {writeFile(me, path);}, 'tcm');
                 }
                 else {
-                    writeFile(me, wroteFile);
+                    writeFile(me, me.filePath);
                 }
             });
-            function gotFilePath(path) {
-                me.filePath = path;
-                writeFile(me, wroteFile);
-            }
-            function wroteFile(result) {
-                if (result instanceof FileError) {
-                    me.filePath = null;
-                }
-            }
         },
         saveas: function () {
             var me = this;
-            writeEditorConf(me, function () {
-                openExplorer(me, 'save', gotFilePath);
-            });
-            function gotFilePath(path) {
-                me.filePath = path;
-                writeFile(me, wroteFile);
-            }
-            function wroteFile(result) {
+            this.io.writeEditorConf(function (result) {
                 if (result instanceof FileError) {
-                    me.filePath = null;
+                    var alert = new Alert();
+                    alert.pop({message: 'Fail to Save System Configuration!'});
                 }
-            }
+                openExplorer(me, 'save', function (path) {writeFile(me, path);}, 'tcm');
+            });
         }
     };
 });

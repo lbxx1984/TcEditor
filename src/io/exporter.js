@@ -1,6 +1,29 @@
+/**
+ * 负责将three内置类型对象转换成Object
+ */
 define(function (require) {
 
     var editorDefaultConf = require('config/editorDefaultConf');
+
+    /**
+     * 纹理转换成对象
+     *
+     * @param {Texture} texture 纹理对象
+     * @return {Object} 足够描述纹理的对象，其中不含img数据，只含有img地址
+     */
+    function texture2object(texture) {
+        var result = {
+            image: texture.image ? (texture.image.url || texture.uuid) : texture.uuid,
+            mapping: texture.mapping,
+            repeat: [texture.repeat.x, texture.repeat.y],
+            offset: [texture.offset.x, texture.offset.y],
+            wrap: [texture.wrapS, texture.wrapT],
+            minFilter: texture.minFilter,
+            magFilter: texture.magFilter,
+            anisotropy: texture.anisotropy
+        };
+        return result;
+    }
 
     /**
      * 材质转对象
@@ -9,12 +32,22 @@ define(function (require) {
      * @return {Object} 足够描述材质的对象
      */
     function material2object(material) {
-        var result = material.toJSON();
-        delete result.metadata;
-        delete result.uuid;
-        result.opacity = material.opacity;
-        result.visible = material.visible;
-        result.wireframe = material.wireframe;
+        var result = {
+            color: material.color.getHex(),
+            emissive: material.emissive.getHex(),
+            opacity: material.opacity,
+            transparent: material.transparent,
+            side: material.side,
+            type: material.type,
+            visible: material.visible,
+            wireframe: material.wireframe
+        };
+        if (material.map) {
+            result.map = texture2object(material.map);
+        }
+        else {
+            result.map = null;
+        }
         return result;
     }
 

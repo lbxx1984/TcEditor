@@ -1,3 +1,6 @@
+/**
+ * 负责将Object转换成THREE内置类型对象
+ */
 define(function (require) {
 
 
@@ -132,6 +135,7 @@ define(function (require) {
                     switch (key) {
                         case 'color': materialValue[key] = new THREE.Color(mesh.material[key]); break;
                         case 'emissive': materialValue[key] = new THREE.Color(mesh.material[key]); break;
+                        case 'map': break;
                         default: materialValue[key] = mesh.material[key]; break;
                     }
                 }
@@ -143,7 +147,7 @@ define(function (require) {
                         case 'material': break;
                         case 'geometry': break;
                         case 'matrix': setMatrix4(geo3D, mesh[key]); break;
-                        case 'birth': geo3D[key] = new Date(mesh[key]); break;
+                        case 'birth': geo3D[key] = new Date(mesh[key]).getTime(); break;
                         default: geo3D[key] = mesh[key]; break;
                     }
                 }

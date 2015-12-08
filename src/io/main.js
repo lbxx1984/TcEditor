@@ -1,39 +1,12 @@
 define(function (require) {
 
+
+    var config = require('config'); 
     var exporter = require('./exporter');
     var importer = require('./importer');
-    var Zip = require('./jszip');
+    var compressor = require('./compressor');
+    var tcmLoader = require('./tcmLoader');
 
-    /**
-     * 压缩模型对象
-     *
-     * @param {Object} obj 模型对象
-     * @param {number} fixed 保留的小数点位数
-     */
-    function compress(obj, fixed) {
-        for (var key in obj) {
-            if (typeof obj[key] === 'string') {
-                continue;
-            }
-            if (obj[key] instanceof Array) {
-                var arr = obj[key];
-                for (var i = 0; i < arr.length; i++) {
-                    arr[i] = compressNumber(arr[i]);
-                }
-                continue;
-            }
-            if (typeof obj[key] === 'number') {
-                obj[key] = compressNumber(obj[key]);
-            }
-            if (typeof obj[key] === 'object') {
-                compress(obj[key], fixed);
-                continue;
-            }
-        }
-        function compressNumber(a) {
-            return a.toString().indexOf('.') > -1 ? parseFloat(a.toFixed(fixed)) : a;
-        }
-    }
 
     /**
      * io系统，负责保存打开所有文件，以及文件解析
@@ -45,149 +18,136 @@ define(function (require) {
         this.routing = param.routing;
     }
 
-    /**
-     * 获取编辑器配置
-     *
-     * @return {string} 编辑器配置
-     */
-    IO.prototype.getEditorConf = function () {
-        return JSON.stringify(exporter.editorConf(this.routing));
-    };
 
     /**
-     * 解析编辑配置
+     * 从本地读取TCM文件并导入舞台
      *
-     * @param {Object} conf 编辑器级别配置
+     * @param {string} path 文件的绝对路径
+     * @param {function} callback 回调函数 
      */
-    IO.prototype.setEditorConf = function (conf) {
-        importer.editorConf(this.routing, conf);
-    };
-
-    /**
-     * 获取舞台中物体
-     *
-     * @return {Array.<Object>} 舞台物体队列
-     */
-    IO.prototype.getMeshes = function () {
-        var result = [];
-        var children = this.routing.stage.$3d.children;
-        for (var key in children) {
-            var mesh = exporter.mesh(children[key]);
-            compress(mesh, 2);
-            result.push(mesh);
-        }
-        return result;
-    };
-
-    /**
-     * 导入物体到舞台
-     *
-     * @param {Array.<Object>} meshes 本Editor导出的物体对象队列
-     */
-    IO.prototype.setMeshes = function (meshes) {
-        var routing = this.routing;
-        for (var i = 0; i < meshes.length; i++) {
-            var mesh = importer.mesh(meshes[i]);
-            if (mesh != null) {
-                routing.stage.add(mesh);
+    IO.prototype.readTCM = function (path, callback) {
+        var me = this.routing;
+        me.fs.read(path, gotFile);
+        function loadFile(content) {
+            // TODO: 检测上一个文件保存状态
+            if (content.hasOwnProperty('lights') && content.lights instanceof Array && content.lights.length > 0) {
+                tcmLoader.light(me, content.lights);
             }
+            if (content.hasOwnProperty('camera')) {
+                importer.camera(me, content.camera);
+            }
+            if (content.hasOwnProperty('groups') && content.groups instanceof Array) {
+                me.ui.refs.containerright.refs.verticallist.refs.meshBox.setState({group: content.groups});
+            }
+            if (content.hasOwnProperty('meshes') && content.meshes instanceof Array && content.meshes.length > 0) {
+                tcmLoader.mesh(me, content.meshes);
+            }
+            if (typeof callback === 'function') callback();
         }
-        showMeshes();
-        function showMeshes() {
-            if (routing.ui == null) {
-                setTimeout(showMeshes, 10);
+        function gotFile(result) {
+            var content = '';
+            var fail = false;
+            if (result instanceof ProgressEvent && result.target.result.length > 0) {
+                content = result.target.result;
+                try {
+                    content = JSON.parse(content)
+                }
+                catch (e) {
+                    fail = true;
+                }
+            }
+            else {
+                fail = true;
+            }
+            if (fail && typeof callback === 'function') {
+                callback('fail to open file.');
                 return;
             }
-            routing.ui.refs.containerright.refs.verticallist.refs.meshBox.setState({
-                meshes: routing.stage.$3d.children
-            });
-            if (routing.stage.type !== '$3d') {
-                routing.stage.$2d.loadMesh();
-                routing.stage.$2d.renderMesh();
+            loadFile(content);
+        }
+    };
+
+
+    /**
+     * 向本地写入TCM文件
+     *
+     * @param {string} path 文件的绝对路径
+     * @param {function} callback 回调函数 
+     */
+    IO.prototype.writeTCM = function (path, callback) {
+        var me = this.routing;
+        var content = {};
+        content.meshes = [];
+        content.lights = [];
+        content.camera = exporter.camera(me.stage);
+        content.groups = [];
+        // 导出物体
+        for (var key in me.stage.$3d.children) {
+            var mesh = exporter.mesh(me.stage.$3d.children[key]);
+            compressor(mesh, 2);
+            content.meshes.push(mesh);
+        }
+        // 导出灯光
+        for (var key in me.light.children) {
+            var light = exporter.light(me.light.children[key]);
+            compressor(light, 2);
+            content.lights.push(light);
+        }
+        // 导出分组
+        var groups = JSON.stringify(me.ui.refs.containerright.refs.verticallist.refs.meshBox.state.group);
+        content.groups = JSON.parse(groups);
+        for (var i = 0; i < content.groups.length; i++) {
+            delete content.groups[i].children;
+        }
+        // 写入文件
+        console.log(content);
+        me.fs.write(path, {data: new Blob([JSON.stringify(content)])}, function (result) {
+            if (typeof callback === 'function') {
+                callback(result);
             }
-        }
+        });
     };
 
-    /**
-     * 获取舞台中灯光
-     *
-     * @return {Array.<Object>} 舞台灯光队列
-     */
-    IO.prototype.getLights = function () {
-        var lights = this.routing.light.children;
-        var result = [];
-        for (var key in lights) {
-            var light = exporter.light(lights[key]);
-            compress(light, 2);
-            result.push(light);
-        }
-        return result;
-    };
 
     /**
-     * 添加舞台灯光
+     * 从本地读取编辑器配置并导入，如果本地配置出错则导入默认配置
      *
-     * @param {Array.<THREE.light>} 灯光队列
+     * @param {function} callback 导入完成后的回调
      */
-    IO.prototype.setLights = function (lights) {
-        var routing = this.routing;
-        for (var i = 0; i < lights.length; i++) {
-            var light = importer.light(lights[i]);
-            routing.light.add(light);
-        }
-        showLight();
-        function showLight() {
-            if (routing.ui == null) {
-                setTimeout(showLight, 10);
-                return;
+    IO.prototype.readEditorConf = function (callback) {
+        var me = this.routing;
+        var path = '/' + window.editorKey + '/' + window.editorKey + 'conf';
+        me.fs.read(path, function (result) {
+            var conf = config.editorDefaultConf;
+            if (!(result instanceof FileError)) {
+                try {
+                    conf = JSON.parse(result.target.result);
+                }
+                catch (e) {}
             }
-            routing.ui.refs.containerright.refs.verticallist.refs.lightBox.setState({
-                light: routing.light.children
-            });
-        }
+            try {
+                importer.editorConf(me, conf);
+            }
+            catch (e) {}
+            if (typeof callback === 'function') callback();
+        });
     };
 
-    /**
-     * 获取摄像机
-     *
-     * @return {Object} 摄像机配置
-     */
-    IO.prototype.getCamera = function () {
-        return exporter.camera(this.routing.stage);
-    };
 
     /**
-     * 设置摄像机
+     * 将编辑器配置写入本地
      *
-     * @param {Object} conf 摄像机配置
+     * @param {function} callback 写入完成后的回调
      */
-    IO.prototype.setCamera = function (conf) {
-        importer.camera(this.routing, conf);
+    IO.prototype.writeEditorConf = function (callback) {
+        var me = this.routing;
+        var confPath = '/' + window.editorKey + '/' + window.editorKey + 'conf';
+        var confContent = new Blob([JSON.stringify(exporter.editorConf(this.routing))]);
+        me.fs.write(confPath, {data: confContent}, function (result) {
+            if (typeof callback === 'function') callback(result);
+        });
     };
 
-    /**
-     * 获取物体分组设置
-     *
-     * @return {Array.<Object>} 物体分组配置
-     */
-    IO.prototype.getGroups = function () {
-        var groups = this.routing.ui.refs.containerright.refs.verticallist.refs.meshBox.state.group;
-        groups = JSON.stringify(groups);
-        groups = JSON.parse(groups);
-        for (var i = 0; i < groups.length; i++) {
-            delete groups[i].children;
-        }
-        return groups;
-    };
-
-    /**
-     * 设置物体分组
-     *
-     * @param {Array.<Object>} 物体分组配置
-     */
-    IO.prototype.setGroups = function (groups) {
-        this.routing.ui.refs.containerright.refs.verticallist.refs.meshBox.setState({group: groups});
-    };
 
     return IO;
 });

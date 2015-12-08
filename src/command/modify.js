@@ -116,6 +116,7 @@ define(function (require) {
                     img.src = this.result;
                     img.onload = function () {
                         me.imgCache[url] = img;
+                        img.url = url;
                         gotImg(img);
                     }
                 }

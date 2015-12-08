@@ -184,6 +184,13 @@ define(function (require) {
                 return;
             }
             var path = this.props.fs.getWorkingDirectory().fullPath + '/' + this.state.selected;
+            if (
+                typeof this.props.filetype === 'string'
+                && this.props.filetype.length > 0
+                && path.split('.').pop() !== this.props.filetype
+            ) {
+                path = path + '.' + this.props.filetype;
+            }
             var have = false;
             for (var i = 0; i < this.state.files.length; i++) {
                 if (this.state.files[i].path === path) {

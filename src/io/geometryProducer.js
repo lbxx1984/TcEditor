@@ -1,3 +1,6 @@
+/**
+ * 负责将Object转换成THREE.Geometry对象
+ */
 define(function (require) {
 
     var body = {

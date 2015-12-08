@@ -47,6 +47,7 @@ define(function (require) {
         // 修改纹理
         textureChangeHandler: function (e) {
             this.props.commandRouting('modify-texture', this.props.mesh, e.target);
+            e.target.blur();
         },
         render: function () {
             var props = {

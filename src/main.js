@@ -14,19 +14,16 @@ define(function (require) {
     var Light = require('./light/main');
     var IO = require('./io/main');
     var FileSystem = require('./io/filesystem');
-    var keyboard = require('./io/keyboard');
-    var config = require('./config');   
+    var keyboard = require('./io/keyboard');  
     var routing = new Routing('mouse-cameramove');
 
 
     // 顺序初始化
     setupIO()
-    .then(makeWorkingSpace, unsupported)
     .then(enterWorkingSpace, unsupported)
     .then(setupUI, unsupported)
     .then(setupStage, unsupported)
-    .then(readEditorConf, unsupported)
-    .then(setEditorConf, unsupported)
+    .then(loadEditorConf, unsupported)
     .then(bindEventHandlers, unsupported)
     .then(displayInformation, unsupported);
 
@@ -37,29 +34,28 @@ define(function (require) {
 
     function setupIO() {
         return new Promise(function (resolve, reject) {
+            routing.filePath = null;
             routing.imgCache = {};
             routing.keyboard = keyboard;
-            routing.filePath = null;
+            routing.io = new IO({routing: routing});
             routing.fs = new FileSystem(function (fs) {
                 fs ? resolve() : reject();
             });
         });
     }
 
-    function makeWorkingSpace() {
+    function enterWorkingSpace() {
         return new Promise(function (resolve, reject) {
             routing.fs.md(window.editorKey, function (result) {
                 result instanceof FileError ? reject() : resolve();
             });
-        });
-    }
-
-    function enterWorkingSpace() {
-        return new Promise(function (resolve, reject) {
-            routing.fs.cd(window.editorKey, function (result) {
-                result instanceof FileError ? reject() : resolve();
+        }).then(function () {
+            return new Promise(function (resolve, reject) {
+                routing.fs.cd(window.editorKey, function (result) {
+                    result instanceof FileError ? reject() : resolve();
+                });
             });
-        });
+        }, unsupported);
     }
 
     function setupUI() {
@@ -92,53 +88,16 @@ define(function (require) {
             routing.morpher = new Morpher(routing.stage);
             // 灯光系统
             routing.light = new Light({stage: routing.stage, ui: routing.ui});
-            // IO系统
-            routing.io = new IO({routing: routing});
             // 必成功
             resolve();
         });
     }
 
-    function readEditorConf() {
-        var path = '/' + window.editorKey + '/' + window.editorKey + 'conf';
+    function loadEditorConf() {
         return new Promise(function (resolve, reject) {
-            routing.fs.read(path, function (result) {
-                if (result instanceof FileError) {
-                    writeDefaultConf();
-                }
-                else {
-                    try {
-                        var obj = JSON.parse(result.target.result);
-                        resolve(obj);
-                    }
-                    catch (e) {
-                        writeDefaultConf()
-                    }
-                }
-            });
-            function writeDefaultConf() {
-                var data = new Blob([JSON.stringify(config.editorDefaultConf)]);
-                routing.fs.write(path, {data: data}, function () {
-                    resolve(config.editorDefaultConf);
-                });
-            }
-        });
-    }
-
-    function setEditorConf(conf) {
-        return new Promise(function (resolve, reject) {
-            try {
-                routing.io.setEditorConf(conf);
+            routing.io.readEditorConf(function () {
                 resolve();
-            }
-            catch (e) {
-                routing.io.setEditorConf(config.editorDefaultConf);
-                var data = new Blob([JSON.stringify(config.editorDefaultConf)]);
-                var path = '/' + window.editorKey + '/' + window.editorKey + 'conf';
-                routing.fs.write(path, {data: data}, function () {
-                    resolve();
-                });
-            }
+            });
         });
     }
 
