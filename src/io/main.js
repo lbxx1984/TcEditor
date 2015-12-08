@@ -6,6 +6,7 @@ define(function (require) {
     var importer = require('./importer');
     var compressor = require('./compressor');
     var tcmLoader = require('./tcmLoader');
+    var Zip = require('./jszip');
 
 
     /**
@@ -27,7 +28,7 @@ define(function (require) {
      */
     IO.prototype.readTCM = function (path, callback) {
         var me = this.routing;
-        me.fs.read(path, gotFile);
+        me.fs.read(path, gotFile, {type: 'readAsArrayBuffer'});
         function loadFile(content) {
             // TODO: 检测上一个文件保存状态
             if (content.hasOwnProperty('lights') && content.lights instanceof Array && content.lights.length > 0) {
@@ -45,25 +46,16 @@ define(function (require) {
             if (typeof callback === 'function') callback();
         }
         function gotFile(result) {
-            var content = '';
-            var fail = false;
-            if (result instanceof ProgressEvent && result.target.result.length > 0) {
-                content = result.target.result;
-                try {
-                    content = JSON.parse(content)
-                }
-                catch (e) {
-                    fail = true;
-                }
+            if (!(result instanceof ProgressEvent)) return;
+            try {
+                var zip = new Zip(result.target.result);
+                var content = zip.file('.content').asText();
+                content = JSON.parse(content);
+                loadFile(content);
             }
-            else {
-                fail = true;
-            }
-            if (fail && typeof callback === 'function') {
+            catch (e) {
                 callback('fail to open file.');
-                return;
             }
-            loadFile(content);
         }
     };
 
@@ -77,10 +69,19 @@ define(function (require) {
     IO.prototype.writeTCM = function (path, callback) {
         var me = this.routing;
         var content = {};
+        var textures = [];
         content.meshes = [];
         content.lights = [];
         content.camera = exporter.camera(me.stage);
         content.groups = [];
+        // 导出图片的base64数据
+        for (var key in me.stage.$3d.children) {
+            var material = me.stage.$3d.children[key].material;
+            if (!material.map) continue;
+            var url = material.map.image.url || material.map.uuid;
+            var image = exporter.getDataURL(material.map.image, url);
+            textures.push({url: url, image: image});
+        }
         // 导出物体
         for (var key in me.stage.$3d.children) {
             var mesh = exporter.mesh(me.stage.$3d.children[key]);
@@ -99,13 +100,23 @@ define(function (require) {
         for (var i = 0; i < content.groups.length; i++) {
             delete content.groups[i].children;
         }
-        // 写入文件
-        console.log(content);
-        me.fs.write(path, {data: new Blob([JSON.stringify(content)])}, function (result) {
+        // 写入模型文件
+        var zip = new Zip();
+        zip.file('.content', JSON.stringify(content));
+        // 写入纹理文件
+        if (textures.length > 0) {
+            zip.folder('.texture');
+            for (var i = 0; i < textures.length; i++) {
+                zip.file('.texture/' + textures[i].url, textures[i].image, {base64: true});
+            }
+        }
+        // 存储到本地
+        me.fs.write(path, {data: zip.generate({type: 'blob'})}, function (result) {
             if (typeof callback === 'function') {
                 callback(result);
             }
         });
+        saveAs(zip.generate({type: 'blob'}), path.split('/').pop());
     };
 
 

@@ -6,6 +6,7 @@ define(function (require) {
 
     // 引入扩展和子系统
     require('./extend');
+    require('io/FileSaver');
     var App = require('./application.jsx');
     var Stage = require('./stage/main');
     var Routing = require('./command/main');

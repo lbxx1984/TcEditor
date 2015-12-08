@@ -76,11 +76,13 @@ define(function (require) {
                 me.io.readTCM(path, function (result) {
                     if (typeof result === 'string') {
                         document.title = 'TcEditor';
+                        me.filePath = null;
                         var alert = new Alert();
                         alert.pop({message: result});
                     }
                     else {
                         document.title = 'TcEditor ' + path.split('/').pop();
+                        me.filePath = path;
                     }
                 });
             }
