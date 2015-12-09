@@ -4,7 +4,9 @@
 define(function (require) {
 
     function compressNumber(a, fixed) {
-        return a.toString().indexOf('.') > -1 ? parseFloat(a.toFixed(fixed)) : a;
+        var result = a.toString().indexOf('.') > -1 ? parseFloat(a.toFixed(fixed)) : a;
+        if (Math.abs(result) < 0.001) result = 0;
+        return result;
     }
 
     function compress(obj, fixed) {
@@ -15,7 +17,7 @@ define(function (require) {
             if (obj[key] instanceof Array) {
                 var arr = obj[key];
                 for (var i = 0; i < arr.length; i++) {
-                    if (isNaN(arr[i]) || typeof obj[key] !== 'number') continue;
+                    if (isNaN(arr[i]) || typeof arr[i] !== 'number') continue;
                     arr[i] = compressNumber(arr[i], fixed);
                 }
                 continue;

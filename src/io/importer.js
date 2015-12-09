@@ -26,6 +26,33 @@ define(function (require) {
     }
 
 
+    /**
+     * 载入纹理，此方法为指针方法
+     *
+     * @param {Object} me 主控制对象routing
+     * @param {Object} texture 纹理对象
+     * @param {THREE.Material} material 当前操作的material对象
+     */
+    function loadTexture(me, texture, material) {
+        if (!texture) return;
+        me.fs.read(texture.image, gotImg, {type: 'readAsDataURL'});
+        function gotImg(e) {
+            if (e instanceof FileError) return;
+            var key = texture.image.split('/').pop();
+            var img = document.createElement('img');
+            img.src = e.target.result;
+            img.path = texture.image;
+            img.onload = function () {
+                me.imgCache[key] = img;
+                material.map = new THREE.Texture(img);
+                // 导入其他信息
+                material.map.needsUpdate = true;
+                material.needsUpdate = true;
+            }
+        }
+    }
+
+
     return {
 
         /**
@@ -106,9 +133,10 @@ define(function (require) {
          * 此配置公开存放，用户可以操作
          *
          * @param {Object} mesh 物体对象
+         * @param {Object} me routing对象
          * @return {?THREE.Mesh} 3D物体对象
          */
-        mesh: function (mesh) {
+        mesh: function (mesh, me) {
             try {
                 var geometry = geometryProducer(mesh.geometry.type)(mesh.geometry.parameters);
                 var material = new THREE[mesh.material.type]();
@@ -135,7 +163,7 @@ define(function (require) {
                     switch (key) {
                         case 'color': materialValue[key] = new THREE.Color(mesh.material[key]); break;
                         case 'emissive': materialValue[key] = new THREE.Color(mesh.material[key]); break;
-                        case 'map': break;
+                        case 'map': loadTexture(me, mesh.material.map, material); break;
                         default: materialValue[key] = mesh.material[key]; break;
                     }
                 }

@@ -25,7 +25,7 @@ define(function (require) {
         mesh: function (me, meshes) {
             me.stage.removeAll();
             for (var i = 0; i < meshes.length; i++) {
-                var mesh = importer.mesh(meshes[i]);
+                var mesh = importer.mesh(meshes[i], me);
                 if (mesh != null) {
                     me.stage.add(mesh);
                 }

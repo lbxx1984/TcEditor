@@ -13,7 +13,7 @@ define(function (require) {
      */
     function texture2object(texture) {
         var result = {
-            image: texture.image ? (texture.image.url || texture.uuid) : texture.uuid,
+            image: texture.image ? (texture.image.path || texture.uuid) : texture.uuid,
             mapping: texture.mapping,
             repeat: [texture.repeat.x, texture.repeat.y],
             offset: [texture.offset.x, texture.offset.y],
@@ -158,31 +158,6 @@ define(function (require) {
             result.visible = light.visible;
             delete result.uuid;
             return result;
-        },
-
-        /**
-         * 将图片转成base64码
-         *
-         * @param {DOM} image img标签
-         * @return {string} 图片的base64码
-         */
-        getDataURL: function (image) {
-            var canvas;
-            if (image.toDataURL !== undefined) {
-                canvas = image;
-            }
-            else {
-                canvas = document.createElement('canvas');
-                canvas.width = image.width;
-                canvas.height = image.height;
-                canvas.getContext( '2d' ).drawImage(image, 0, 0, image.width, image.height);
-            }
-            if (canvas.width > 2048 || canvas.height > 2048) {
-                return canvas.toDataURL('image/jpeg', 0.6);
-            }
-            else {
-                return canvas.toDataURL('image/png');
-            }
         }
     };
 

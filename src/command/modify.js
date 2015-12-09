@@ -68,6 +68,50 @@ define(function (require) {
         updateContainerLeft(me, mesh);
     }
 
+    function uploadTexture(me, fileDom, callback) {
+        var file = fileDom.files[0];
+        callback = typeof callback === 'function' ? callback : new Function();
+        if (file.type.indexOf('image/') !== 0) {
+            callback(null);
+            return;
+        }
+        var key = file.lastModified + '.' + file.size + '.' + file.name;
+        var cache = me.imgCache[key];
+        if (cache) {
+            callback(cache);
+            return;
+        }
+        var uploadDirectory = '/' + window.editorKey + '/.texture';
+        var fileName = uploadDirectory + '/' + key;
+        // 上传文件到filesystem，以便打包时使用。
+        me.fs.md(uploadDirectory, function () {
+            me.fs.write(fileName, {}, function (e) {
+                var writer = e.target;
+                writer.onwriteend = function (e) {
+                    me.fs.read(fileName, readFile, {type: 'readAsDataURL'});
+                };
+                writer.onerror = function (e) {
+                    callback(null);
+                };
+                writer.write(file);
+            });
+        });
+        // 读取文件并创建纹理图片
+        function readFile(e) {
+            if (!(e instanceof ProgressEvent)) {
+                callback(null);
+                return;
+            }
+            var img = document.createElement('img');
+            img.src = e.target.result;
+            img.onload = function () {
+                me.imgCache[key] = img;
+                img.path = fileName;
+                callback(img);
+            }
+        }
+    }
+
     return {
         // 修改物体位置
         position: function (cmd, direction, value) {
@@ -100,28 +144,8 @@ define(function (require) {
         },
         // 修改物体纹理
         texture: function (cmd, mesh, fileDom) {
-            var me = this;
-            var url = fileDom.value;
-            var file = fileDom.files[0];
-            if (file.type.indexOf('image/') !== 0) return;
-            var cache = me.imgCache[url];
-            if (cache) {
-                gotImg(cache);
-            }
-            else {
-                var reader = new FileReader();
-                reader.readAsDataURL(file); 
-                reader.onload=function () {
-                    var img = document.createElement('img');
-                    img.src = this.result;
-                    img.onload = function () {
-                        me.imgCache[url] = img;
-                        img.url = url;
-                        gotImg(img);
-                    }
-                }
-            }
-            function gotImg(imgDom) {
+            uploadTexture(this, fileDom,  function (imgDom) {
+                if (!imgDom) return;
                 if (mesh.material.map) {
                     mesh.material.map.image = imgDom;
                 }
@@ -130,7 +154,7 @@ define(function (require) {
                 }
                 mesh.material.map.needsUpdate = true;
                 mesh.material.needsUpdate = true;
-            }
+            });
         },
         // 修改物体颜色
         color: function (cmd, mesh, color) {
