@@ -1,7 +1,7 @@
 define(function (require) {
 
-    var GeometryPropertyBar = require('../component/geometryPropertyBar.jsx');
-    var MaterialPropertyBar = require('../component/materialPropertyBar.jsx');
+    var GeometryPropertyBar = require('component/geometryPropertyBar.jsx');
+    var MaterialPropertyBar = require('component/materialPropertyBar.jsx');
 
     return React.createClass({
         getInitialState: function () {

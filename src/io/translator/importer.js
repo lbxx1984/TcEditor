@@ -4,7 +4,7 @@
 define(function (require) {
 
 
-    var geometryProducer = require('./geometryProducer');
+    //var geometryProducer = require('./geometryProducer');
 
 
     /**
@@ -63,24 +63,7 @@ define(function (require) {
          * @param {Object} conf 舞台配置
          */
         editorConf: function (me, conf) {
-            var stage3d = me.stage.$3d;
-            var controlBar = me.ui.refs.containerleft.refs.controlbar;
-            var light = this.light(conf.defaultLight);
-            me.light.add(light);
-            stage3d.param.gridSize = conf.grid.size;
-            stage3d.resizeGrid(true);
-            stage3d.resizeGrid(false);
-            if (conf.grid.visible === false) {
-                me.stage.callFunction('toggleHelper');
-                var btn = controlBar.getDOMNode().getElementsByClassName('icon-kejian');
-                btn[0].dataset.uiValue = 1;
-                btn[0].className = btn[0].className.replace('icon-kejian', 'icon-bukejian');
-            }
-            // 由于鼠标引擎是异步加载的，这里hack一下
-            setTimeout(function () {
-                me.main('view-' + conf.controlBar.cameraview);
-                me.main('mouse-' + conf.controlBar.systemtool);
-            }, 200);
+
         },
 
         /**

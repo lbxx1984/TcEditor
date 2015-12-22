@@ -3,7 +3,7 @@
  */
 define(function (require) {
 
-    var importer = require('./importer');
+    var importer = require('../translator/importer');
 
     return {
         light: function (me, lights) {

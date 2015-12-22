@@ -40,12 +40,15 @@ define(function (require) {
 
     /**
      * 关闭并销毁窗体
+     *
+     * @param {boolean} callOnClose 是否调用默认回调
      */
-    Dialog.prototype.close = function () {
+    Dialog.prototype.close = function (callOnClose) {
         React.unmountComponentAtNode(this.container);
         document.body.removeChild(this.container);
         this.ui = null;
-        if (typeof this.param.onClose === 'function') {
+        callOnClose = callOnClose === undefined ? true : callOnClose;
+        if (typeof this.param.onClose === 'function' && callOnClose) {
             this.param.onClose();
         }
     };

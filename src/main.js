@@ -3,10 +3,9 @@
  */
 define(function (require) {
 
-
     // 引入扩展和子系统
     require('./extend');
-    require('io/FileSaver');
+    require('io/util/FileSaver');
     var App = require('./application.jsx');
     var Stage = require('./stage/main');
     var Routing = require('./command/main');
@@ -14,10 +13,10 @@ define(function (require) {
     var Morpher = require('./morpher/main');
     var Light = require('./light/main');
     var IO = require('./io/main');
-    var FileSystem = require('./io/filesystem');
+    var FileSystem = require('./io/util/filesystem');
     var keyboard = require('./io/keyboard');  
     var routing = new Routing('mouse-cameramove');
-
+    var config = require('config');
 
     // 顺序初始化
     setupIO()
@@ -27,7 +26,6 @@ define(function (require) {
     .then(loadEditorConf, unsupported)
     .then(bindEventHandlers, unsupported)
     .then(displayInformation, unsupported);
-
 
     function unsupported() {
         console.log('Your browser does not support TcEditor.');
@@ -95,26 +93,28 @@ define(function (require) {
     }
 
     function loadEditorConf() {
-        return new Promise(function (resolve, reject) {
-            routing.io.readEditorConf(function () {
-                resolve();
-            });
-        });
+        function gotConf(result) {
+            var conf = config.editorDefaultConf;
+            try {conf = JSON.parse(result);} catch (e) {}
+            return routing.io.callLoader('conf', conf);
+        }
+        function gotNothing() {
+            return routing.io.callLoader('conf', config.editorDefaultConf);
+        }
+        return routing.io.readFile('/' + window.editorKey + '/' + window.editorKey + 'conf').then(gotConf, gotNothing);
     }
 
     function bindEventHandlers() {
         // 重置鼠标事件参数
         function cloneMouseEvent(e) {
-            var parent = e.target.parentNode;
-            var result = {
+            return {
                 clientX: e.clientX,
                 clientY: e.clientY,
-                offsetX: e.offsetX + parent.offsetLeft,
-                offsetY: e.offsetY + parent.offsetTop,
+                offsetX: e.offsetX + e.target.parentNode.offsetLeft,
+                offsetY: e.offsetY + e.target.parentNode.offsetTop,
                 target: e.target,
                 button: e.button
             };
-            return result;
         }
         return new Promise(function (resolve, reject) {
             var containerleft = routing.ui.refs.containerleft;
@@ -198,6 +198,5 @@ define(function (require) {
             }
         });
     }
-
 
 });

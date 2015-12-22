@@ -4,7 +4,7 @@
 define(function (require) {
 
 
-    var geometry = require('../geometry/main');
+    var geometry = require('./geometry/main');
     var exports = {};
     var _mouseDraged = false;
     var _down = false;

@@ -13,7 +13,7 @@ define(function (require) {
         this.engines = {
             tool: require('./tool'),
             mouse: require('./mouse/main'),
-            create: require('./create'),
+            create: require('./create/main'),
             trans: require('./trans'),
             view: require('./view'),
             modify: require('./modify'),

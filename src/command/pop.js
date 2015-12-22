@@ -1,49 +1,7 @@
 define(function (require) {
 
 
-    var Dialog = require('uiTool/dialog');
     var Alert = require('uiTool/alert');
-
-
-    /**
-     * 打开explorer
-     *
-     * @param {Object} me routing对象
-     * @param {string} mode explorer工作模式，open,save
-     * @param {Function} callback 成功选择文件或创建文件后的回调，回传文件路径，explorer不负责创建文件，只回传路径
-     * @param {string} filetype 保存时自动添加的文件扩展名
-     */
-    function openExplorer(me, mode, callback, filetype) {
-        var hotkey = '|backspace|enter|esc|';
-        var dialog = new Dialog({
-            onClose: function () {
-                me.keyboard.removeListener(hotkey);
-            }
-        });
-        me.keyboard.addListener(hotkey, function (e) {
-            switch (e) {
-                case 'backspace': dialog.ui.content.upClickHandler();break;
-                case 'enter': dialog.ui.content.enterClickHandler();break;
-                case 'esc': dialog.close();break;
-                default: break;
-            }
-        });
-        dialog.pop({
-            title: mode === 'save' ? 'Save' : 'Open',
-            content: require('component/explorer.jsx'),
-            focus: 'inputbox',
-            props: {
-                fs: me.fs,
-                mode: mode,
-                button1: mode === 'save' ? 'Save' : 'Open',
-                filetype: filetype,
-                onEnter: function (path) {
-                    callback(path);
-                    dialog.close();
-                }
-            }
-        });
-    }
 
 
     /**
@@ -71,29 +29,50 @@ define(function (require) {
     return {
         open: function () {
             var me = this;
-            openExplorer(me, 'open', gotPath);
-            function gotPath(path) {
-                me.io.readTCM(path, function (result) {
-                    if (typeof result === 'string') {
-                        document.title = 'TcEditor';
-                        me.filePath = null;
-                        var alert = new Alert();
-                        alert.pop({message: result});
-                    }
-                    else {
-                        document.title = 'TcEditor ' + path.split('/').pop();
-                        me.filePath = path;
-                    }
-                });
-            }
+            var io = this.io;
+            var filepath = '';
+            var alert = new Alert();
+            io.openExplorer('Open').then(
+                function (path) {
+                    filepath = path;
+                    return io.readFile(path, 'readAsArrayBuffer');
+                },
+                function () {}
+            ).then(
+                function (result) {
+                    document.title = 'TcEditor ' + filepath.split('/').pop();
+                    me.filePath = filepath;
+                    console.log(result);
+                },
+                function () {
+                    document.title = 'TcEditor';
+                    me.filePath = null;
+                    alert.pop({message: 'File Open Failed'});
+                }
+            );
         },
         save: function () {
+            var alert = new Alert();
+            var io = this.io;
+            var confPath = '/' + window.editorKey + '/' + window.editorKey + 'conf';
+            io.callExporter('conf').then(
+                function (result) {
+                    return io.writeFile(confPath, new Blob([JSON.stringify(result)]));
+                },
+                function () {
+                    alert.pop('Fail to Read System Configuration!');
+                }
+            ).then(
+                function () {
+                    console.log('save conf over');
+                },
+                function () {
+                    alert.pop('Fail to Save System Configuration!');
+                }
+            )
+            /**
             var me = this;
             this.io.writeEditorConf(function (result) {
-                if (result instanceof FileError) {
-                    var alert = new Alert();
-                    alert.pop({message: 'Fail to Save System Configuration!'});
-                }
                 if (me.filePath === null) {
                     openExplorer(me, 'save', function (path) {writeFile(me, path);}, 'tcm');
                 }
@@ -101,16 +80,17 @@ define(function (require) {
                     writeFile(me, me.filePath);
                 }
             });
+            */
         },
         saveas: function () {
-            var me = this;
-            this.io.writeEditorConf(function (result) {
-                if (result instanceof FileError) {
-                    var alert = new Alert();
-                    alert.pop({message: 'Fail to Save System Configuration!'});
-                }
-                openExplorer(me, 'save', function (path) {writeFile(me, path);}, 'tcm');
-            });
+            // var me = this;
+            // this.io.writeEditorConf(function (result) {
+            //     if (result instanceof FileError) {
+            //         var alert = new Alert();
+            //         alert.pop({message: 'Fail to Save System Configuration!'});
+            //     }
+            //     openExplorer(me, 'save', function (path) {writeFile(me, path);}, 'tcm');
+            // });
         }
     };
 });

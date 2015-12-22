@@ -1,16 +1,28 @@
+/**
+ * 纯Promise异步IO操作接口
+ */
 define(function (require) {
 
+    // var exporter = require('./translator/exporter');
+    // var importer = require('./translator/importer');
+    // var compressor = require('./util/compressor');
+    // var tcmLoader = require('./loader/tcmLoader');
+    // var Zip = require('./util/jszip');
+    var Dialog = require('uiTool/dialog');
 
-    var config = require('config'); 
-    var exporter = require('./exporter');
-    var importer = require('./importer');
-    var compressor = require('./compressor');
-    var tcmLoader = require('./tcmLoader');
-    var Zip = require('./jszip');
+    // loader引擎集合，一部分loader以文件类型为名称，一部分以功能为名称
+    var loaders = {
+        conf: require('./loader/confLoader')
+    };
 
+    // exporter引擎集合，理论上每个loader都有一个同名的exporter与之对应
+    var exporters = {
+        conf: require('./exporter/confExporter')
+    };
 
     /**
-     * io系统，负责保存打开所有文件，以及文件解析
+     * IO系统，负责保存打开所有文件，以及文件解析
+     * IO系统所有接口返回Promise异步对象
      *
      * @param {Object} param 配置参数
      * @param {Object} param.routing 全局控制路由
@@ -19,6 +31,120 @@ define(function (require) {
         this.routing = param.routing;
     }
 
+    /**
+     * 读取本地文件
+     */
+    IO.prototype.readFile = function (path, type) {
+        var types = ['readAsBinaryString', 'readAsText', 'readAsDataURL', 'readAsArrayBuffer'];
+        var fs = this.routing.fs;
+        type = types.indexOf(type) < 0 ? 'readAsText' : type;
+        return new Promise(function (resolve, reject) {
+            fs.read(path, gotFile, {type: type});
+            function gotFile(evt) {
+                if (evt instanceof FileError) {
+                    reject();
+                }
+                else {
+                    resolve(evt.target.result)
+                }
+            }
+        });
+    };
+
+    /**
+     * 写入本地文件
+     */
+    IO.prototype.writeFile = function (path, blob) {
+        var fs = this.routing.fs;
+        return new Promise(function (resolve, reject) {
+            fs.write(path, {data: blob}, function (result) {
+                if (result instanceof FileError) {
+                    reject();
+                }
+                else {
+                    resolve();
+                }
+            });
+        });
+    };
+
+    /**
+     * 异步调用各种loader
+     */
+    IO.prototype.callLoader = function (loader, data) {
+        var routing = this.routing;
+        return new Promise(function (resolve, reject) {
+            if (loaders.hasOwnProperty(loader) && typeof loaders[loader] === 'function') {
+                loaders[loader].apply(routing, [data, callback]);
+            }
+            else {
+                reject();
+            }
+            function callback(evt) {
+                resolve();
+            }
+        });
+    };
+
+    /**
+     * 异步调用各种exporter
+     */
+    IO.prototype.callExporter = function (exporter) {
+        var routing = this.routing;
+        return new Promise(function (resolve, reject) {
+            if (exporters.hasOwnProperty(exporter) && typeof exporters[exporter] === 'function') {
+                var result = exporters[exporter].apply(routing, []);
+                resolve(result);
+            }
+            else {
+                reject();
+            }
+        });
+    };
+
+    /**
+     * 打开文件选择器
+     *
+     * @param {string} mode explorer工作模式: Open, Save
+     * @param {string} filetype 保存时自动添加的文件扩展名
+     */
+    IO.prototype.openExplorer = function (mode, filetype) {
+        var hotkey = '|backspace|enter|esc|';
+        var me = this.routing;
+        return new Promise(function (resolve, reject) {
+            var dialog = new Dialog({
+                onClose: function () {
+                    me.keyboard.removeListener(hotkey);
+                    reject();
+                }
+            });
+            me.keyboard.addListener(hotkey, function (e) {
+                switch (e) {
+                    case 'backspace': dialog.ui.content.upClickHandler(); break;
+                    case 'enter': dialog.ui.content.enterClickHandler(); break;
+                    case 'esc': dialog.close(); reject(); break;
+                    default: break;
+                }
+            });
+            dialog.pop({
+                title: mode,
+                content: require('component/explorer.jsx'),
+                focus: 'inputbox',
+                props: {
+                    fs: me.fs,
+                    mode: mode,
+                    button1: mode,
+                    filetype: filetype,
+                    onEnter: function (path) {
+                        resolve(path);
+                        dialog.close(false);
+                    }
+                }
+            });
+        });
+    };
+
+
 
     /**
      * 从本地读取TCM文件并导入舞台
@@ -26,9 +152,10 @@ define(function (require) {
      * @param {string} path 文件的绝对路径
      * @param {function} callback 回调函数 
      */
+    /*
     IO.prototype.readTCM = function (path, callback) {
         var me = this.routing;
-        me.fs.read(path, gotFile, {type: 'readAsArrayBuffer'});
+        me.fs.read(path, gotFile, {type: ''});
         // 解析TCM文件
         function gotFile(result) {
             if (!(result instanceof ProgressEvent)) return;
@@ -92,7 +219,7 @@ define(function (require) {
             }
         }
     };
-
+*/
 
     /**
      * 向本地写入TCM文件
@@ -101,6 +228,7 @@ define(function (require) {
      * @param {function} callback 回调函数 
      * @param {?boolean} savefile 是否推送文件下载
      */
+     /*
     IO.prototype.writeTCM = function (path, callback, savefile) {
         var me = this.routing;
         var zip = new Zip();
@@ -166,47 +294,7 @@ define(function (require) {
             }
         }
     };
-
-
-    /**
-     * 从本地读取编辑器配置并导入，如果本地配置出错则导入默认配置
-     *
-     * @param {function} callback 导入完成后的回调
-     */
-    IO.prototype.readEditorConf = function (callback) {
-        var me = this.routing;
-        var path = '/' + window.editorKey + '/' + window.editorKey + 'conf';
-        me.fs.read(path, function (result) {
-            var conf = config.editorDefaultConf;
-            if (!(result instanceof FileError)) {
-                try {
-                    conf = JSON.parse(result.target.result);
-                }
-                catch (e) {}
-            }
-            try {
-                importer.editorConf(me, conf);
-            }
-            catch (e) {}
-            if (typeof callback === 'function') callback();
-        });
-    };
-
-
-    /**
-     * 将编辑器配置写入本地
-     *
-     * @param {function} callback 写入完成后的回调
-     */
-    IO.prototype.writeEditorConf = function (callback) {
-        var me = this.routing;
-        var confPath = '/' + window.editorKey + '/' + window.editorKey + 'conf';
-        var confContent = new Blob([JSON.stringify(exporter.editorConf(this.routing))]);
-        me.fs.write(confPath, {data: confContent}, function (result) {
-            if (typeof callback === 'function') callback(result);
-        });
-    };
-
+*/
 
     return IO;
 });

@@ -3,7 +3,7 @@
  */
 define(function (require) {
 
-    var editorDefaultConf = require('config/editorDefaultConf');
+
 
     /**
      * 纹理转换成对象
@@ -80,22 +80,7 @@ define(function (require) {
 
     return {
 
-        /**
-         * 导出舞台配置
-         *
-         * @param {Object} me routing对象
-         * @return {Object} 舞台配置
-         */
-        editorConf: function (me) {
-            var result = editorDefaultConf;
-            var stage = me.stage;
-            result.grid = {
-                size: stage.$3d.param.gridSize,
-                visible: stage.$3d.param.showGrid
-            };
-            result.controlBar =  me.ui.refs.containerleft.refs.controlbar.state;
-            return result;
-        },
+
 
         /**
          * 将3D物体转换成Object
