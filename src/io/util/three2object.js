@@ -1,9 +1,7 @@
 /**
- * 负责将three内置类型对象转换成Object
+ * 将three对象导出成object
  */
 define(function (require) {
-
-
 
     /**
      * 纹理转换成对象
@@ -79,8 +77,6 @@ define(function (require) {
     }
 
     return {
-
-
 
         /**
          * 将3D物体转换成Object

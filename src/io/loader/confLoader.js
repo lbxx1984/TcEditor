@@ -24,7 +24,7 @@ define(function (require) {
         setTimeout(function () {
             me.main('view-' + data.controlBar.cameraview);
             me.main('mouse-' + data.controlBar.systemtool);
-            callback();
+            callback(true);
         }, 200);
     }
 

@@ -3,13 +3,15 @@
  */
 define(function (require) {
 
+
     /**
      * 物体创建器
      */
     var geometryProducer = {
-        PlaneGeometry: 'return new THREE.PlaneGeometry'
+        PlaneGeometry: 'var param = arguments[0];\nreturn new THREE.PlaneGeometry'
             + '(param.width, param.height, param.widthSegments, param.heightSegments);'
     };
+
 
     /**
      * 设置matrix4，系统导出matrix的是列优先，呵呵
@@ -27,6 +29,41 @@ define(function (require) {
         );
         obj.applyMatrix(m);
     }
+
+
+    /**
+     * 载入纹理，本方法为异步，但不影响整个模型加载过程
+     *
+     * @param {Object} me 主控制对象routing
+     * @param {Object} texture 纹理对象
+     * @param {THREE.Material} material 当前操作的material对象
+     */
+    function setTexture(me, texture, material) {
+        if (!texture) return;
+        var key = texture.image.split('/').pop();
+        if (me.imgCache[key]) {
+            addMap(me.imgCache[key]);
+        }
+        else {
+            me.fs.read(texture.image, gotImg, {type: 'readAsDataURL'});
+        }
+        function addMap(img) {
+            material.map = new THREE.Texture(img);
+            material.map.needsUpdate = true;
+            material.needsUpdate = true;
+        }
+        function gotImg(e) {
+            if (e instanceof FileError) return;
+            var img = document.createElement('img');
+            img.src = e.target.result;
+            img.path = texture.image;
+            img.onload = function () {
+                me.imgCache[key] = this;
+                addMap(this);
+            }
+        }
+    }
+
 
     return {
 
@@ -50,7 +87,7 @@ define(function (require) {
                 }
             }
             return light;
-        }
+        },
 
         /**
          * 解析物体对象
@@ -60,7 +97,6 @@ define(function (require) {
          * @param {Object} me routing对象
          * @return {?THREE.Mesh} 3D物体对象
          */
-        /*
         mesh: function (mesh, me) {
             try {
                 if (!geometryProducer.hasOwnProperty(mesh.geometry.type)) {
@@ -75,22 +111,20 @@ define(function (require) {
                     var face = geometry.faces[i];
                     face.a = faces[i * 3];
                     face.b = faces[i * 3 + 1];
-                    face.x = faces[i * 3 + 2];
+                    face.c = faces[i * 3 + 2];
                 }
-
                 // 导入顶点
                 var vertices = mesh.geometry.vertices;
                 for (var i = 0; i < geometry.vertices.length; i++) {
                     geometry.vertices[i].set(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]);
                 }
-
                 // 导入材质
                 var materialValue = {};
                 for (var key in mesh.material) {
                     switch (key) {
                         case 'color': materialValue[key] = new THREE.Color(mesh.material[key]); break;
                         case 'emissive': materialValue[key] = new THREE.Color(mesh.material[key]); break;
-                        case 'map': loadTexture(me, mesh.material.map, material); break;
+                        case 'map': setTexture(me, mesh.material.map, material); break;
                         default: materialValue[key] = mesh.material[key]; break;
                     }
                 }
@@ -105,7 +139,6 @@ define(function (require) {
                         default: geo3D[key] = mesh[key]; break;
                     }
                 }
-
                 return geo3D;
             }
             catch (e) {
@@ -113,7 +146,6 @@ define(function (require) {
                 return null;
             }
         }
-        */
     };
 
 });

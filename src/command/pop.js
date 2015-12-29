@@ -1,50 +1,23 @@
 define(function (require) {
 
-
     var Alert = require('uiTool/alert');
-
-
-    /**
-     * 保存当前文件
-     * 由于save和save as保存文件的流程是相同的，所以提出来
-     *
-     * @param {Object} me routing对象
-     * @param {string} filePath 文件的路径
-     */
-    function writeFile(me, filePath) {
-        me.io.writeTCM(filePath, function (result) {
-            var alert = new Alert();
-            if (result instanceof FileError) {
-                alert.pop({message: 'File Save Failed!'});
-                me.filePath = null;
-            }
-            else {
-                alert.pop({message: 'File Saved!'});
-                me.filePath = filePath;
-            }
-        });
-    }
-
 
     return {
         open: function () {
             var me = this;
-            var io = this.io;
             var filepath = '';
             var alert = new Alert();
-            io.openExplorer('Open').then(
-                function (path) {
-                    filepath = path;
-                    return io.readFile(path, 'readAsArrayBuffer');
-                },
-                function () {}
-            ).then(
-                function (result) {
+            me.io.openExplorer('Open').then(function (path) {
+                filepath = path;
+                return me.io.readFile(path, 'readAsArrayBuffer');
+            }).then(function (result) {
+                return me.io.callLoader(filepath.split('.').pop().toLowerCase(), result);
+            }).then(
+                function () {
                     document.title = 'TcEditor ' + filepath.split('/').pop();
                     me.filePath = filepath;
-                    console.log(result);
                 },
-                function () {
+                function (evt) {
                     document.title = 'TcEditor';
                     me.filePath = null;
                     alert.pop({message: 'File Open Failed'});
@@ -52,45 +25,66 @@ define(function (require) {
             );
         },
         save: function () {
-            var alert = new Alert();
-            var io = this.io;
+            var me = this;
             var confPath = '/' + window.editorKey + '/' + window.editorKey + 'conf';
-            io.callExporter('conf').then(
-                function (result) {
-                    return io.writeFile(confPath, new Blob([JSON.stringify(result)]));
-                },
+            var writingPath = null;
+            var alert = new Alert();
+            me.io.callExporter('conf').then(function (result) {
+                return me.io.writeFile(confPath, new Blob([JSON.stringify(result)]));
+            }).then(
                 function () {
-                    alert.pop('Fail to Read System Configuration!');
-                }
-            ).then(
-                function () {
-                    console.log('save conf over');
+                    return me.filePath == null ? me.io.openExplorer('Save') : me.filePath;
                 },
                 function () {
                     alert.pop('Fail to Save System Configuration!');
+                    return me.filePath == null ? me.io.openExplorer('Save') : me.filePath;
                 }
-            )
-            /**
-            var me = this;
-            this.io.writeEditorConf(function (result) {
-                if (me.filePath === null) {
-                    openExplorer(me, 'save', function (path) {writeFile(me, path);}, 'tcm');
+            ).then(function (path) {
+                writingPath = path.indexOf('.tcm') === path.length - 4 ? path : path + '.tcm';
+                return me.io.callExporter('tcm');
+            }).then(function (tcm) {
+                return me.io.writeFile(writingPath, tcm);
+            }).then(
+                function () {
+                    alert.pop({message: 'File Saved!'});
+                    me.filePath = writingPath;
+                    document.title = 'TcEditor ' + writingPath.split('/').pop();
+                },
+                function () {
+                    alert.pop({message: 'File Save Failed!'});
                 }
-                else {
-                    writeFile(me, me.filePath);
-                }
-            });
-            */
+            );
         },
         saveas: function () {
-            // var me = this;
-            // this.io.writeEditorConf(function (result) {
-            //     if (result instanceof FileError) {
-            //         var alert = new Alert();
-            //         alert.pop({message: 'Fail to Save System Configuration!'});
-            //     }
-            //     openExplorer(me, 'save', function (path) {writeFile(me, path);}, 'tcm');
-            // });
+            var me = this;
+            var confPath = '/' + window.editorKey + '/' + window.editorKey + 'conf';
+            var writingPath = null;
+            var alert = new Alert();
+            me.io.callExporter('conf').then(function (result) {
+                return me.io.writeFile(confPath, new Blob([JSON.stringify(result)]));
+            }).then(
+                function () {
+                    return me.io.openExplorer('Save');
+                },
+                function () {
+                    alert.pop('Fail to Save System Configuration!');
+                    return me.io.openExplorer('Save');
+                }
+            ).then(function (path) {
+                writingPath = path.indexOf('.tcm') === path.length - 4 ? path : path + '.tcm';
+                return me.io.callExporter('tcm');
+            }).then(function (tcm) {
+                return me.io.writeFile(writingPath, tcm);
+            }).then(
+                function () {
+                    alert.pop({message: 'File Saved!'});
+                    me.filePath = writingPath;
+                    document.title = 'TcEditor ' + writingPath.split('/').pop();
+                },
+                function () {
+                    alert.pop({message: 'File Save Failed!'});
+                }
+            );
         }
     };
 });

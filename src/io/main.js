@@ -3,21 +3,18 @@
  */
 define(function (require) {
 
-    // var exporter = require('./translator/exporter');
-    // var importer = require('./translator/importer');
-    // var compressor = require('./util/compressor');
-    // var tcmLoader = require('./loader/tcmLoader');
-    // var Zip = require('./util/jszip');
     var Dialog = require('uiTool/dialog');
 
     // loader引擎集合，一部分loader以文件类型为名称，一部分以功能为名称
     var loaders = {
-        conf: require('./loader/confLoader')
+        conf: require('./loader/confLoader'),
+        tcm: require('./loader/tcmLoader')
     };
 
     // exporter引擎集合，理论上每个loader都有一个同名的exporter与之对应
     var exporters = {
-        conf: require('./exporter/confExporter')
+        conf: require('./exporter/confExporter'),
+        tcm: require('./exporter/tcmExporter')
     };
 
     /**
@@ -78,10 +75,15 @@ define(function (require) {
                 loaders[loader].apply(routing, [data, callback]);
             }
             else {
-                reject();
+                reject('Unable to parse ' + loader.toUpperCase() + ' file.');
             }
             function callback(evt) {
-                resolve();
+                if (!evt) {
+                    reject('fail to parse.');
+                }
+                else {
+                    resolve();
+                }
             }
         });
     };
@@ -93,11 +95,16 @@ define(function (require) {
         var routing = this.routing;
         return new Promise(function (resolve, reject) {
             if (exporters.hasOwnProperty(exporter) && typeof exporters[exporter] === 'function') {
-                var result = exporters[exporter].apply(routing, []);
-                resolve(result);
+                var result = exporters[exporter].apply(routing, [callback]);
+                if (result) {
+                    resolve(result);
+                }
             }
             else {
                 reject();
+            }
+            function callback(e) {
+                !e ? reject() : resolve(e);
             }
         });
     };
@@ -132,169 +139,18 @@ define(function (require) {
                 focus: 'inputbox',
                 props: {
                     fs: me.fs,
-                    mode: mode,
+                    mode: mode.toLowerCase(),
                     button1: mode,
                     filetype: filetype,
                     onEnter: function (path) {
                         resolve(path);
+                        me.keyboard.removeListener(hotkey);
                         dialog.close(false);
                     }
                 }
             });
         });
     };
-
-
-
-    /**
-     * 从本地读取TCM文件并导入舞台
-     *
-     * @param {string} path 文件的绝对路径
-     * @param {function} callback 回调函数 
-     */
-    /*
-    IO.prototype.readTCM = function (path, callback) {
-        var me = this.routing;
-        me.fs.read(path, gotFile, {type: ''});
-        // 解析TCM文件
-        function gotFile(result) {
-            if (!(result instanceof ProgressEvent)) return;
-            try {
-                var zip = new Zip(result.target.result);
-                if (!zip.files['.content']) {
-                    callback('fail to open file.');
-                    return;
-                }
-                var textures = [];
-                for (var url in zip.files) {
-                    if (url.indexOf('.texture/') !== 0) continue;
-                    textures.push(url);
-                }
-                loadTexture(zip, textures, function () {
-                    var content = JSON.parse(zip.files['.content'].asText());
-                    loadContent(content);
-                });
-            }
-            catch (e) {
-                callback('fail to open file.');
-            }
-        }
-        // 载入模型
-        function loadContent(content) {
-            // TODO: 检测上一个文件保存状态
-            if (content.hasOwnProperty('lights') && content.lights instanceof Array && content.lights.length > 0) {
-                tcmLoader.light(me, content.lights);
-            }
-            if (content.hasOwnProperty('camera')) {
-                importer.camera(me, content.camera);
-            }
-            if (content.hasOwnProperty('groups') && content.groups instanceof Array) {
-                me.ui.refs.containerright.refs.verticallist.refs.meshBox.setState({group: content.groups});
-            }
-            if (content.hasOwnProperty('meshes') && content.meshes instanceof Array && content.meshes.length > 0) {
-                tcmLoader.mesh(me, content.meshes);
-            }
-            if (typeof callback === 'function') callback();
-        }
-        // 载入纹理，将纹理存储到本地文件系统中
-        function loadTexture(zip, textures, callback) {
-            if (textures.length === 0) {
-                callback();
-                return;
-            }
-            var url = textures.pop();
-            var filePath = '/' + window.editorKey + '/' + url;
-            me.fs.md('/' + window.editorKey + '/.texture', writeTexture);
-            function writeTexture() {
-                me.fs.write(filePath, {}, function (e) {
-                    var writer = e.target;
-                    writer.onwriteend = function (e) {
-                        loadTexture(zip, textures, callback);
-                    };
-                    writer.onerror = function (e) { 
-                        loadTexture(zip, textures, callback);
-                    };
-                    writer.write(new Blob([zip.files[url].asArrayBuffer()]));
-                });
-            }
-        }
-    };
-*/
-
-    /**
-     * 向本地写入TCM文件
-     *
-     * @param {string} path 文件的绝对路径
-     * @param {function} callback 回调函数 
-     * @param {?boolean} savefile 是否推送文件下载
-     */
-     /*
-    IO.prototype.writeTCM = function (path, callback, savefile) {
-        var me = this.routing;
-        var zip = new Zip();
-        var textures = [];
-        var content = {};
-        content.meshes = [];
-        content.lights = [];
-        content.groups = [];
-
-        // 导出摄像机
-        content.camera = exporter.camera(me.stage);
-        // 导出物体
-        for (var key in me.stage.$3d.children) {
-            var geo = me.stage.$3d.children[key];
-            var mesh = exporter.mesh(geo);
-            compressor(mesh, 2);
-            content.meshes.push(mesh);
-            if (geo.material.map && geo.material.map.image && geo.material.map.image.path) {
-                textures.push(geo.material.map.image.path);
-            }
-        }
-        // 导出灯光
-        for (var key in me.light.children) {
-            var light = exporter.light(me.light.children[key]);
-            compressor(light, 2);
-            content.lights.push(light);
-        }
-        // 导出分组
-        var groups = JSON.stringify(me.ui.refs.containerright.refs.verticallist.refs.meshBox.state.group);
-        content.groups = JSON.parse(groups);
-        for (var i = 0; i < content.groups.length; i++) {
-            delete content.groups[i].children;
-        }
-
-        // 写入模型文件
-        zip.file('.content', JSON.stringify(content));
-        // 写入纹理文件
-        zipTextures();
-        function zipTextures() {
-            if (textures.length === 0) {
-                writeFile();
-                return;
-            }
-            var path = textures.pop();
-            var fileName = path.split('/').pop();
-            me.fs.read(path, function (e) {
-                if (e instanceof FileError) {
-                    zipTextures();
-                    return;
-                }
-                zip.file('.texture/' + fileName, e.target.result);
-                zipTextures();
-            }, {type: 'readAsArrayBuffer'});
-        }
-        function writeFile() {
-            if (savefile) {
-                saveAs(zip.generate({type: 'blob'}), path.split('/').pop());
-            }
-            else {
-                me.fs.write(path, {data: zip.generate({type: 'blob'})}, function (result) {
-                    if (typeof callback === 'function') callback();
-                });
-            }
-        }
-    };
-*/
 
     return IO;
 });
