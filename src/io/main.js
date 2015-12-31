@@ -4,6 +4,7 @@
 define(function (require) {
 
     var Dialog = require('uiTool/dialog');
+    var saver = require('./util/FileSaver');
 
     // loader引擎集合，一部分loader以文件类型为名称，一部分以功能为名称
     var loaders = {
@@ -122,14 +123,14 @@ define(function (require) {
             var dialog = new Dialog({
                 onClose: function () {
                     me.keyboard.removeListener(hotkey);
-                    reject();
+                    reject(true);
                 }
             });
             me.keyboard.addListener(hotkey, function (e) {
                 switch (e) {
                     case 'backspace': dialog.ui.content.upClickHandler(); break;
                     case 'enter': dialog.ui.content.enterClickHandler(); break;
-                    case 'esc': dialog.close(); reject(); break;
+                    case 'esc': dialog.close(); reject(true); break;
                     default: break;
                 }
             });
@@ -149,6 +150,42 @@ define(function (require) {
                     }
                 }
             });
+        });
+    };
+
+    /**
+     * 打开浏览器的upload窗口上传本地文件
+     */
+    IO.prototype.upload = function () {
+        var inputDOM = this.routing.ui.refs.importdoor.getDOMNode();
+        return new Promise(function (resolve, reject) {
+            inputDOM.onchange = function (evt) {
+                var file = evt.target.files[0];
+                var reader = new FileReader();
+                reader.onload = function() {
+                    evt.target.onchange = null;
+                    evt.target.value = '';
+                    resolve({
+                        name: file.name,
+                        blob: this.result
+                    });
+                }
+                reader.onerror = function (e) {
+                    reject(e);
+                }
+                reader.readAsArrayBuffer(file);
+            };
+            inputDOM.click();
+        });
+    };
+
+    /**
+     * 推送文件加载到本地
+     */
+    IO.prototype.download = function (blob, filename) {
+        saver(blob, filename);
+        return new Promise(function (resolve, reject) {
+            resolve();
         });
     };
 

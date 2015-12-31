@@ -7,6 +7,7 @@ define(function (require) {
                 <div>
                     <ContainerRight {...this.props} ref="containerright"/>
                     <ContainerLeft {...this.props} ref="containerleft"/>
+                    <input type="file" ref="importdoor" style={{display: 'none'}}/>
                 </div>
             );
         }
