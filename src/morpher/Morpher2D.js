@@ -47,12 +47,12 @@ define(function (require) {
         var view = this.stage.param.eyes;
         var cmd = this.command;
         var vector = mesh3d.geometry.vertices[this.joint];
-        var matrix = math.rotateMatrix(mesh3d);
-        var world = math.Local2Global(vector.x, vector.y, vector.z, matrix, mesh3d);
+        var matrix = math.getRotateMatrix(mesh3d);
+        var world = math.local2world(vector.x, vector.y, vector.z, matrix, mesh3d);
         world[0] += 'xozx;xozc;xoyx;xoyc;'.indexOf(view + cmd + ';') > -1 ? d3[0] : 0;
         world[1] += 'xoyy;xoyc;zoyy;zoyc;'.indexOf(view + cmd + ';') > -1 ? d3[1] : 0;
         world[2] += 'zoyx;zoyc;xozy;xozc;'.indexOf(view + cmd + ';') > -1 ? d3[2] : 0;
-        var local = math.Global2Local(world[0], world[1], world[2], mesh3d);
+        var local = math.world2local(world[0], world[1], world[2], mesh3d);
         vector.x = local[0];
         vector.y = local[1];
         vector.z = local[2];

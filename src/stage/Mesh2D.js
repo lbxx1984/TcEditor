@@ -117,13 +117,13 @@ define(function (require) {
      * 将3D物体中每个顶点的3D坐标转换成本物体的2D投影坐标
      */
     Mesh2D.prototype.createVertices = function () {
-        var matrix = math.rotateMatrix(this.mesh);
+        var matrix = math.getRotateMatrix(this.mesh);
         this.vertices = [];
-        this.center = this.RectangularToDisplay(math.Local2Global(0, 0, 0, matrix, this.mesh));
+        this.center = this.RectangularToDisplay(math.local2world(0, 0, 0, matrix, this.mesh));
         var vertices = this.mesh.geometry.vertices;
         for (var n = 0; n < vertices.length; n++) {
             var vertice = vertices[n];
-            vertice = math.Local2Global(vertice.x, vertice.y, vertice.z, matrix, this.mesh);
+            vertice = math.local2world(vertice.x, vertice.y, vertice.z, matrix, this.mesh);
             vertice = this.RectangularToDisplay(vertice);
             this.vertices.push(vertice);
         }

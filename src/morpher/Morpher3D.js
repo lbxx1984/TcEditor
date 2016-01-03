@@ -25,7 +25,7 @@ define(function (require) {
             }
             var joint = me.joint;
             var geo = me.geo;
-            var pos = math.Global2Local(joint.position.x, joint.position.y, joint.position.z, geo);
+            var pos = math.world2local(joint.position.x, joint.position.y, joint.position.z, geo);
             geo.geometry.vertices[joint.index].x = pos[0];
             geo.geometry.vertices[joint.index].y = pos[1];
             geo.geometry.vertices[joint.index].z = pos[2];
@@ -45,9 +45,9 @@ define(function (require) {
         var joint = this.joint;
         var mesh = this.geo;
         var camerapos = this.stage.camera.position;
-        var matrix = math.rotateMatrix(mesh);
+        var matrix = math.getRotateMatrix(mesh);
         var vector = mesh.geometry.vertices[joint.index];
-        var pos = math.Local2Global(vector.x, vector.y, vector.z, matrix, mesh);
+        var pos = math.local2world(vector.x, vector.y, vector.z, matrix, mesh);
         var meshpos = new THREE.Vector3(pos[0], pos[1], pos[2]);
         joint.position.x = pos[0];
         joint.position.y = pos[1];
@@ -100,11 +100,11 @@ define(function (require) {
         }
         this.clearStage();
         var camerapos = this.stage.camera.position;
-        var matrix = math.rotateMatrix(mesh);
+        var matrix = math.getRotateMatrix(mesh);
         var vertices = mesh.geometry.vertices;
 
         for (var n = 0; n < vertices.length; n++) {
-            var pos = math.Local2Global(vertices[n].x, vertices[n].y, vertices[n].z, matrix, mesh);
+            var pos = math.local2world(vertices[n].x, vertices[n].y, vertices[n].z, matrix, mesh);
             var meshpos = new THREE.Vector3(pos[0], pos[1], pos[2]);
             var np = null;
             if (n == this.joints.length) {

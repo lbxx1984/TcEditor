@@ -197,10 +197,10 @@ define(function (require) {
         // 修改物体某个关节
         vector: function (cmd, mesh, joint, direction, value) {
             var vector = mesh.geometry.vertices[joint];
-            var matrix = math.rotateMatrix(mesh);
-            var world = math.Local2Global(vector.x, vector.y, vector.z, matrix, mesh);
+            var matrix = math.getRotateMatrix(mesh);
+            var world = math.local2world(vector.x, vector.y, vector.z, matrix, mesh);
             world[direction] = value;
-            var local = math.Global2Local(world[0], world[1], world[2], mesh);
+            var local = math.world2local(world[0], world[1], world[2], mesh);
             vector.x = local[0];
             vector.y = local[1];
             vector.z = local[2];

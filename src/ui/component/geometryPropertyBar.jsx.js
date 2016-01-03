@@ -129,8 +129,8 @@ define(function (require) {
                     return (<div></div>);
                 }
                 var joint =  vertices[me.props.joint];
-                var matrix = math.rotateMatrix(mesh);
-                var pos = math.Local2Global(joint.x, joint.y, joint.z, matrix, mesh);
+                var matrix = math.getRotateMatrix(mesh);
+                var pos = math.local2world(joint.x, joint.y, joint.z, matrix, mesh);
                 var inputProp = {
                     type: 'number',
                     step: 1,
