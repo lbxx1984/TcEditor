@@ -52,7 +52,8 @@ define(function (require) {
                     me.filePath = writingPath;
                     document.title = 'TcEditor ' + writingPath.split('/').pop();
                 },
-                function () {
+                function (evt) {
+                    if (evt) return; // close dialog by user.
                     alert.pop({message: 'File Save Failed!'});
                 }
             );
@@ -74,7 +75,8 @@ define(function (require) {
                     me.filePath = writingPath;
                     document.title = 'TcEditor ' + writingPath.split('/').pop();
                 },
-                function () {
+                function (evt) {
+                    if (evt) return; // close dialog by user.
                     alert.pop({message: 'File Save Failed!'});
                 }
             );

@@ -20,7 +20,6 @@ function copyDirSync(src, dest) {
 
 function MoveDeps(options) {
     AbstractProcessor.call(this, options);
-    this.moved = false;
 }
 
 MoveDeps.prototype = new AbstractProcessor();
@@ -28,11 +27,6 @@ MoveDeps.prototype = new AbstractProcessor();
 MoveDeps.prototype.name = 'MoveDeps';
 
 MoveDeps.prototype.process = function (file, processContext, callback) {
-    if (this.moved) {
-        callback();
-        return;
-    }
-    this.moved = true;
     fs.mkdirSync('./build');
     fs.mkdirSync('./build/deps');
     copyDirSync('./deps', './build/deps');

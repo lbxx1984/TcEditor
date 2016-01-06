@@ -26,11 +26,15 @@ exports.getProcessors = function () {
     // 自定义pressor
     var ReactPressor = require('./compiler/ReactPressor');
     var MoveDeps = require('./compiler/MoveDeps');
+    var EncodeTTF = require('./compiler/EncodeTTF');
 
     // 创建pressor实例
+    var encodeTTF = new EncodeTTF({
+        files: ['main.less']                    // 将ttf文件以base64编码读入，并写如iconfont.less中
+    });
     var moveDeps = new MoveDeps({               // 移动deps文件中的文件
         files: ['index.html']
-    });              
+    });         
     var reactProcessor = new ReactPressor({     // react编译
         files: ['*.jsx.js']
     });
@@ -47,6 +51,10 @@ exports.getProcessors = function () {
         files: [
             '*.less',
             '*.js',
+            '*.eot',
+            '*.svg',
+            '*.ttf',
+            '*.woff',
             '!src/main.js',
             '!css/main.less'
         ]
@@ -57,6 +65,7 @@ exports.getProcessors = function () {
             moveDeps,
             reactProcessor,
             lessProcessor,
+            encodeTTF,
             moduleCompiler,
             jsCompressor,
             outputCleaner
