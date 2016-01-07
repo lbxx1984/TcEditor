@@ -25,14 +25,14 @@ exports.getProcessors = function () {
 
     // 自定义pressor
     var ReactPressor = require('./compiler/ReactPressor');
-    var MoveDeps = require('./compiler/MoveDeps');
+    var MergeDeps = require('./compiler/MergeDeps');
     var EncodeTTF = require('./compiler/EncodeTTF');
 
     // 创建pressor实例
     var encodeTTF = new EncodeTTF({
         files: ['main.less']                    // 将ttf文件以base64编码读入，并写如iconfont.less中
     });
-    var moveDeps = new MoveDeps({               // 移动deps文件中的文件
+    var mergeDeps = new MergeDeps({               // 移动deps文件中的文件
         files: ['index.html']
     });         
     var reactProcessor = new ReactPressor({     // react编译
@@ -46,7 +46,7 @@ exports.getProcessors = function () {
     });
     var moduleCompiler = new ModuleCompiler({   // AMD模块编译
         configFile: 'build.conf'
-    });  
+    });
     var outputCleaner = new OutputCleaner({     // 清理垃圾
         files: [
             '*.less',
@@ -62,7 +62,7 @@ exports.getProcessors = function () {
 
     return {
         'default': [
-            moveDeps,
+            mergeDeps,
             reactProcessor,
             lessProcessor,
             encodeTTF,
