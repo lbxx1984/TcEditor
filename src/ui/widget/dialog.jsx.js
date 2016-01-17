@@ -1,33 +1,28 @@
 define(function (require) {
-    return React.createClass({
+
+    var DialogUI = React.createClass({
         getDefaultProps : function () {
             return {title: 'title'};
         },
-        resize: function () {
-            var dom = this.getDOMNode();
-            var doc = document.documentElement;
-            dom.className = 'dialog';
-            dom.style.cssText = 'left:' + 0.5 * (doc.clientWidth - dom.clientWidth) + 'px;'
-                + 'top:' + (0.38 * (doc.clientHeight - dom.clientHeight) + document.body.scrollTop) + 'px';
-        },
         componentDidMount: function () {
-            // 装载子对象
-            if (typeof this.props.content === 'function') {
-                var contentProps = this.props.props;
-                contentProps.onClose = this.closeHandler;
-                this.content = React.render(
-                    React.createElement(this.props.content, contentProps),
-                    this.refs.content.getDOMNode()
-                );
-            }
-            // 重新设置Dialog位置
-            this.resize();
+            if (typeof this.props.content !== 'function') return;
+            var me = this;
+            this.content = React.render(
+                React.createElement(this.props.content, this.props.contentProps),
+                this.refs.content.getDOMNode(),
+                function () {me.resize();}
+            );
+        },
+        resize: function () {
+            var dom = this.getDOMNode().parentNode;
+            var doc = document.documentElement;
+            var left = 0.5 * (doc.clientWidth - dom.clientWidth);
+            var top = 0.38 * (doc.clientHeight - dom.clientHeight);
+            dom.style.cssText = 'left:' + left + 'px;top:' + top + 'px';
         },
         closeHandler: function () {
             React.unmountComponentAtNode(this.refs.content.getDOMNode());
-            if (typeof this.props.onClose === 'function') {
-                this.props.onClose();
-            }
+            typeof this.props.onClose === 'function' && this.props.onClose();
         },
         render: function () {
             return (
@@ -41,4 +36,45 @@ define(function (require) {
             );
         }
     });
+
+    /**
+     * dialog构造函数
+     */
+    function Dialog() {
+        this.container = document.createElement('div');
+        this.container.className = 'dialog';
+    }
+
+    /**
+     * 弹出dialog
+     *
+     * @param {Object} param dialog配置
+     * @param {?string} param.title 标题
+     * @param {Function} param.content dialog中的子内容
+     * @param {Object} param.props content初始化时传入的参数
+     */
+    Dialog.prototype.pop = function (param) {
+        document.body.appendChild(this.container);
+        var me = this;
+        param = param || {};
+        this.ui = React.render(React.createElement(DialogUI, param), this.container, function () {
+            var timer = setInterval(uiFocus, 10);
+            function uiFocus() {
+                if (!me.ui) return;
+                clearInterval(timer);
+                param.focus && me.ui.content.refs[param.focus].getDOMNode().focus();
+            }
+        });
+    };
+
+    /**
+     * 关闭并销毁窗体
+     */
+    Dialog.prototype.close = function () {
+        React.unmountComponentAtNode(this.container);
+        document.body.removeChild(this.container);
+        this.ui = null;
+    };
+
+    return Dialog;
 });

@@ -1,5 +1,6 @@
 define(function (require) {
-    return React.createClass({
+
+    var AlertUI = React.createClass({
         getInitialState: function () {
             return {
                 left: 0,
@@ -15,8 +16,8 @@ define(function (require) {
             var doc = document.documentElement;
             dom.className = 'alert';
 
-            var minTop = document.body.scrollTop - dom.clientHeight - 5
-            var maxTop = document.body.scrollTop + 5;
+            var minTop = - dom.clientHeight - 5
+            var maxTop = 5;
             var curTop = minTop;
             this.setState({left: 0.5 * (doc.clientWidth - dom.clientWidth), top: curTop});
             
@@ -51,4 +52,45 @@ define(function (require) {
             );
         }
     });
+
+    /**
+     * dialog构造函数
+     *
+     * @param {Object} param 构造配置
+     * @param {Function} param.onClose 窗体销毁后的回调
+     */
+    function Alert(param) {
+        this.container = document.createElement('div');
+        this.param = param || {};
+    }
+
+    /**
+     * 弹出dialog
+     *
+     * @param {Object} param dialog配置
+     * @param {?string} param.title 标题
+     * @param {Function} param.content dialog中的子内容
+     * @param {Object} param.props content初始化时传入的参数
+     */
+    Alert.prototype.pop = function (param) {
+        param = param || {};
+        var me = this;
+        document.body.appendChild(this.container);
+        param.onClose = function () {me.close()};
+        this.ui = React.render(React.createElement(AlertUI, param), this.container);
+    };
+
+    /**
+     * 关闭并销毁窗体
+     */
+    Alert.prototype.close = function () {
+        React.unmountComponentAtNode(this.container);
+        document.body.removeChild(this.container);
+        this.ui = null;
+        if (typeof this.param.onClose === 'function') {
+            this.param.onClose();
+        }
+    };
+
+    return Alert;
 });

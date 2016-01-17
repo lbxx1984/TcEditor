@@ -3,7 +3,7 @@
  */
 define(function (require) {
 
-    var Dialog = require('uiTool/dialog');
+    var Dialog = require('widget/dialog.jsx');
     var saver = require('./util/FileSaver');
 
     // loader引擎集合，一部分loader以文件类型为名称，一部分以功能为名称
@@ -39,12 +39,7 @@ define(function (require) {
         return new Promise(function (resolve, reject) {
             fs.read(path, gotFile, {type: type});
             function gotFile(evt) {
-                if (evt instanceof FileError) {
-                    reject();
-                }
-                else {
-                    resolve(evt.target.result)
-                }
+                evt instanceof FileError ? reject() : resolve(evt.target.result);
             }
         });
     };
@@ -56,12 +51,7 @@ define(function (require) {
         var fs = this.routing.fs;
         return new Promise(function (resolve, reject) {
             fs.write(path, {data: blob}, function (result) {
-                if (result instanceof FileError) {
-                    reject();
-                }
-                else {
-                    resolve();
-                }
+                result instanceof FileError ? reject() : resolve();
             });
         });
     };
@@ -79,12 +69,7 @@ define(function (require) {
                 reject('Unable to parse ' + loader.toUpperCase() + ' file.');
             }
             function callback(evt) {
-                if (!evt) {
-                    reject('fail to parse.');
-                }
-                else {
-                    resolve();
-                }
+                !evt ? reject('fail to parse.') : resolve();
             }
         });
     };
@@ -97,9 +82,7 @@ define(function (require) {
         return new Promise(function (resolve, reject) {
             if (exporters.hasOwnProperty(exporter) && typeof exporters[exporter] === 'function') {
                 var result = exporters[exporter].apply(routing, [callback]);
-                if (result) {
-                    resolve(result);
-                }
+                result && resolve(result);
             }
             else {
                 reject();
@@ -107,49 +90,6 @@ define(function (require) {
             function callback(e) {
                 !e ? reject() : resolve(e);
             }
-        });
-    };
-
-    /**
-     * 打开文件选择器
-     *
-     * @param {string} mode explorer工作模式: Open, Save
-     * @param {string} filetype 保存时自动添加的文件扩展名
-     */
-    IO.prototype.openExplorer = function (mode, filetype) {
-        var hotkey = '|backspace|enter|esc|';
-        var me = this.routing;
-        return new Promise(function (resolve, reject) {
-            var dialog = new Dialog({
-                onClose: function () {
-                    me.keyboard.removeListener(hotkey);
-                    reject(true);
-                }
-            });
-            me.keyboard.addListener(hotkey, function (e) {
-                switch (e) {
-                    case 'backspace': dialog.ui.content.upClickHandler(); break;
-                    case 'enter': dialog.ui.content.enterClickHandler(); break;
-                    case 'esc': dialog.close(); reject(true); break;
-                    default: break;
-                }
-            });
-            dialog.pop({
-                title: mode,
-                content: require('component/explorer.jsx'),
-                focus: 'inputbox',
-                props: {
-                    fs: me.fs,
-                    mode: mode.toLowerCase(),
-                    button1: mode,
-                    filetype: filetype,
-                    onEnter: function (path) {
-                        resolve(path);
-                        me.keyboard.removeListener(hotkey);
-                        dialog.close(false);
-                    }
-                }
-            });
         });
     };
 
@@ -165,10 +105,7 @@ define(function (require) {
                 reader.onload = function() {
                     evt.target.onchange = null;
                     evt.target.value = '';
-                    resolve({
-                        name: file.name,
-                        blob: this.result
-                    });
+                    resolve({name: file.name, blob: this.result});
                 }
                 reader.onerror = function (e) {
                     reject(e);
@@ -184,8 +121,48 @@ define(function (require) {
      */
     IO.prototype.download = function (blob, filename) {
         saver(blob, filename);
+        return new Promise(function (resolve, reject) {resolve();});
+    };
+
+    /**
+     * 打开文件选择器
+     *
+     * @param {string} mode explorer工作模式: Open, Save
+     * @param {string} filetype 保存时自动添加的文件扩展名
+     */
+    IO.prototype.openExplorer = function (mode, filetype) {
+        var hotkey = '|backspace|enter|esc|';
+        var me = this.routing;
         return new Promise(function (resolve, reject) {
-            resolve();
+            var dialog = null;
+            var closeDialog = function (path) {
+                me.keyboard.removeListener(hotkey);
+                dialog.close();
+                typeof path === 'string' ? resolve(path) : reject(true);
+            };
+            dialog = new Dialog();
+            me.keyboard.addListener(hotkey, function (e) {
+                switch (e) {
+                    case 'backspace': dialog.ui.content.upClickHandler(); break;
+                    case 'enter': dialog.ui.content.enterClickHandler(); break;
+                    case 'esc': closeDialog(); break;
+                    default: break;
+                }
+            });
+            dialog.pop({
+                title: mode,
+                focus: 'inputbox',
+                content: require('component/explorer.jsx'),
+                onClose: closeDialog,
+                contentProps: {
+                    fs: me.fs,
+                    mode: mode.toLowerCase(),
+                    button1: mode,
+                    filetype: filetype,
+                    onEnter: function (path) {closeDialog(path);},
+                    onCancel: function () {closeDialog();}
+                }
+            });
         });
     };
 

@@ -1,6 +1,6 @@
 define(function (require) {
 
-    var Alert = require('uiTool/alert');
+    var Alert = require('widget/alert.jsx');
 
     function saveEditorConf(me) {
         var confPath = '/' + window.editorKey + '/' + window.editorKey + 'conf';

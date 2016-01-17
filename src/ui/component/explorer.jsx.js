@@ -1,15 +1,14 @@
 define(function (require) {
+
     var lastScrollTop = 0;
-    // 转换文件大小
+
     function formatSize(n) {
         var i = 0;
         var unit = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'];
-        while (n > 1024) {
-            n = n / 1024;
-            i++;
-        }
+        while (n > 1024) {n = n / 1024; i++;}
         return n.toFixed(i === 0 ? 0 : 2) + unit[i];
     }
+
     return React.createClass({
         getDefaultProps : function () {
             return {
@@ -37,9 +36,7 @@ define(function (require) {
                 function readMeta(i) {
                     if (i === result.length) {
                         infos.sort(sort);
-                        if (me.state.desc) {
-                            infos.reverse();
-                        }
+                        if (me.state.desc) infos.reverse();
                         me.setState({files: infos, selected: ''});
                         return;
                     }
@@ -64,22 +61,12 @@ define(function (require) {
             // 文件列表排序方法
             function sort(a, b) {
                 var compare = {
-                    '0': function (a, b) {
-                        return a.name.localeCompare(b.name);
-                    },
-                    '1': function (a, b) {
-                        return a.size < b.size;
-                    },
-                    '2': function (a, b) {
-                        return a.mtime.getTime() - b.mtime.getTime();
-                    }
+                    '0': function (a, b) {return a.name.localeCompare(b.name);},
+                    '1': function (a, b) {return a.size < b.size;},
+                    '2': function (a, b) {return a.mtime.getTime() - b.mtime.getTime();}
                 }
-                if (a.isFile && !b.isFile) {
-                    return 1;
-                }
-                if (!a.isFile && b.isFile) {
-                    return -1;
-                }
+                if (a.isFile && !b.isFile) return 1;
+                if (!a.isFile && b.isFile) return -1;
                 return compare[me.state.sorter + ''](a, b);
             }
         },
@@ -87,9 +74,7 @@ define(function (require) {
             var dom = this.refs.filelist.getDOMNode();
             try {
                 var input = dom.getElementsByTagName('input');
-                for (var i = 0; i < input.length; i++) {
-                    dom.removeChild(input[i]);
-                }
+                for (var i = 0; i < input.length; i++) dom.removeChild(input[i]);
             }
             catch (e) {
 
@@ -99,9 +84,7 @@ define(function (require) {
         },
         itemClickHandler: function (e) {
             var dom = e.target;
-            if (dom.title === 'deleteClickHandler') {
-                return;
-            }
+            if (dom.title === 'deleteClickHandler') return;
             var path = dom.dataset.path;
             while (!path && dom != document.body) {
                 dom = dom.parentNode;
@@ -117,22 +100,16 @@ define(function (require) {
             }
             else {
                 var me = this;
-                this.props.fs.cd(path, function () {
-                    me.listFiles();
-                });
+                this.props.fs.cd(path, function () {me.listFiles();});
             }
         },
         upClickHandler: function () {
             var arr = this.props.fs.getWorkingDirectory().fullPath.split('/');
             arr.pop();
             var path = arr.join('/');
-            if (path.indexOf(window.editorKey) < 0) {
-                return;
-            }
+            if (path.indexOf(window.editorKey) < 0) return;
             var me = this;
-            this.props.fs.cd(path, function () {
-                me.listFiles();
-            });
+            this.props.fs.cd(path, function () {me.listFiles();});
         },
         sortListHandler: function (e) {
             var sorter = ~~e.target.sorter;
@@ -213,8 +190,8 @@ define(function (require) {
             }
         },
         closeClickHandler: function () {
-            if (typeof this.props.onClose === 'function') {
-                this.props.onClose();
+            if (typeof this.props.onCancel === 'function') {
+                this.props.onCancel();
             }
         },
         inputChangeHandler: function (e) {
