@@ -42,7 +42,7 @@ MergeDeps.prototype.process = function (file, processContext, callback) {
         var script = scripts.pop();
         var replace = scripts.length === 0
             ? '<script type="text/javascript" src="./dep/dep.js"></script>\n'
-                + '<script type="text/javascript" src="./src/main.js?v=' + timer + '"></script>'
+                + '<script type="text/javascript" src="./src/main.js?v=2016-1-7"></script>'
             : '';
         code = code.replace(script, replace);
     }

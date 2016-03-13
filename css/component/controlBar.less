@@ -1,0 +1,86 @@
+.control-bar {
+    position: relative;
+    top: 0px;
+    border-top: 1px solid #383838;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    cursor: default;
+    -moz-user-select: none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+
+    .disable {
+        display: none;
+    }
+    .control-bar-item-inline {
+        display: inline-block;
+        .disable {
+            background-color: #383838;
+        }
+    }
+    .control-bar-item-nextline {
+        position: absolute;
+        left: 0px;
+        top: 43px;
+        border-right: 1px solid #595959;
+        border-bottom: 1px solid #595959;
+        .control-bar-label {
+            background-color: #1F1F1F;
+        }
+        .control-bar-button {
+            background-color: #1F1F1F;
+            display: block;
+        }
+        .active {
+            background-color: #D97915;
+        }
+        .disable {
+            background-color: #383838;
+        }
+    }
+    .control-bar-label {
+        display: inline-block;
+        background-color: #1F1F1F;
+        min-width: 80px;
+        height: 39px;
+        line-height: 39px;
+        padding-right: 10px;
+        padding-left: 5px;
+        border-right: 1px solid #000;
+        border-left: 1px solid #383838;
+        text-align: center;
+        color: #D97915;
+        font-weight: bold;
+        font-style: italic;
+        font-family: 微软雅黑, Arial, Helvetica, Verdana;
+    }
+    .control-bar-button {
+        display: inline-block;
+        background-color: #1F1F1F;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-right: 1px solid #030303;
+        border-left: 1px solid #383838;
+        color: #FFF;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .icon {
+        height: 41px;
+        font-size: 22px;
+        font-weight: normal;
+    }
+    .active {
+        background-color: #D97915;
+    }
+    .control-bar-button:hover {
+        background-color: #2A333A;    
+        color: #d97915;
+    }
+    .control-bar-button:active {
+        background-color: #21292F;
+        color: #CCC;
+    }
+}

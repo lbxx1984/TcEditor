@@ -12,6 +12,7 @@
 <script type="text/javascript" src="deps/three/three.r73.min.js"></script>
 <script type="text/javascript" src="deps/three/TransformControls.min.js"></script>
 <script type="text/javascript" src="deps/raphael.min.js"></script>
+<script type="text/javascript" src="deps/react.min.js"></script>
 <script type="text/javascript" src="deps/require.min.js"></script>
 <script type="text/javascript">
 
@@ -39,11 +40,13 @@
     require.config({
         baseUrl: './src',
         paths: {
-            react: '../deps/react-with-addons',
-            reactDOM: '../deps/react-dom'
+            config: './config',
+            math: './math',
+            component: './ui/component',
+            widget: './ui/widget',
+            layout: './ui/layout'
         }
     });
-
     // 开始启动
     require(['main']);
 </script>
