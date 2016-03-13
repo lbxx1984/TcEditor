@@ -16,6 +16,7 @@ exports.exclude = [
     '*.md',
     '*.log',
     'node_modules',
+    'old_code',
     'deps',
     'compiler'
 ];
