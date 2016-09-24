@@ -1,0 +1,106 @@
+// version 0.0.2
+
+.fcui2-wizard {
+    position: relative;
+    z-index: 0;
+    .fcui2-wizard-item {
+        position: relative;
+        display: inline-block;
+        line-height: 40px;
+        height: 40px;
+        white-space: nowrap;
+        >span {
+            margin-left: 40px;
+        }
+        .fcui2-wizard-arrow {
+            position: absolute;
+            right: -20px;
+            top: 0px;
+            width: 0px;
+            height: 0px;
+            line-height: 0px;
+            border-top: 20px solid;
+            border-bottom: 20px solid;
+            border-left: 20px solid; 
+        }
+        .fcui2-wizard-arrow-bg {
+            position: absolute;
+            right: -22px;
+            top: 0px;
+            width: 0px;
+            height: 0px;
+            line-height: 0px;
+            border-top: 20px solid;
+            border-bottom: 20px solid;
+            border-left: 20px solid; 
+        }
+        &:first-child {
+            >span {
+                margin-left: 20px;
+            }
+        }
+        &:last-child {
+            .fcui2-wizard-arrow,.fcui2-wizard-arrow-bg {
+                display: none;
+            }
+        }
+    }
+}
+
+.fcui2-wizard-normal {
+    font-family: @font-normal;
+    .fcui2-wizard-item {
+        font-size: 12px;
+        font-weight: 700;
+        .fcui2-wizard-arrow {
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+        }
+        .fcui2-wizard-arrow-bg {
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+        }
+    }
+    .fcui2-wizard-item-normal {
+        cursor: pointer;
+        background-color: @color-bg-caption;
+        .fcui2-wizard-arrow {
+            border-left-color: @color-bg-caption;
+        }
+        .fcui2-wizard-arrow-bg {
+            border-left-color: @color-bg; 
+        }
+        &:hover {
+            background-color: @color-btn-hover;
+            color: @color-bg;
+            .fcui2-wizard-arrow {
+                border-left-color: @color-btn-hover;
+            }
+        }
+    }
+    .fcui2-wizard-item-disabled {
+        cursor: default;
+        color: @color-disabled-text;
+        background-color: @color-bg-caption;
+        .fcui2-wizard-arrow {
+            border-left-color: @color-bg-caption;
+        }
+        .fcui2-wizard-arrow-bg {
+            border-left-color: @color-bg; 
+        }
+    }
+    .fcui2-wizard-item-active {
+        cursor: pointer;
+        background-color: @color-btn-hover;
+        color: @color-bg;
+        .fcui2-wizard-arrow {
+            border-left-color: @color-btn-hover;
+        }
+        &:hover {
+            background-color: @color-btn-hover;
+            .fcui2-wizard-arrow {
+                border-left-color: @color-btn-hover;
+            }
+        }
+    }
+}

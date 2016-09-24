@@ -1,0 +1,112 @@
+// version 0.0.2
+
+// 基础
+.fcui2-tab {
+    position: relative;
+    .fcui2-tab-item, .fcui2-tab-item-active, .fcui2-tab-item-disabled {
+        display: inline-block;
+    }
+}
+
+// 皮肤
+.fcui2-tab-normal {
+    font-family: @font-normal;
+    border-bottom: 1px solid @color-inner-border;
+    background-color: @color-gray-2;
+    border-top: 2px solid @color-outer-border;
+    border-right: 1px solid @color-outer-border;
+    .fcui2-tab-item, .fcui2-tab-item-active, .fcui2-tab-item-disabled {
+        position: relative;
+        top: -2px;
+        margin-bottom: -3px;
+        height: 37px;
+        line-height: 37px;
+        border-bottom: 1px solid;
+        border-top: 2px solid;
+        border-right: 1px solid;
+        padding: 0 20px;
+        text-align: center;
+        font-size: 14px;
+    }
+    >div:first-child {
+        border-left: 1px solid @color-outer-border;
+    }
+    .fcui2-tab-item {
+        border-color: @color-outer-border;
+        cursor: pointer;
+    }
+    .fcui2-tab-item:hover {
+        border-top-color: @color-btn-hover;
+    }
+    .fcui2-tab-item-active {
+        font-weight: 700;
+        border-bottom-color: @color-gray-1;
+        border-top-color: @color-btn-hover;
+        border-right-color: @color-outer-border;
+        background-color: @color-gray-1;
+        cursor: pointer;
+    }
+    .fcui2-tab-item-disabled {
+        border-color: @color-outer-border;
+        color: @color-disabled-text;
+        cursor: default;
+    }
+}
+
+.fcui2-tab-level-1 {
+    font-family: @font-normal;
+    background-color: @color-blue-9;
+    color: @color-bg;
+    padding-top: 10px;
+    .fcui2-tab-item, .fcui2-tab-item-active, .fcui2-tab-item-disabled {
+        margin-bottom: 2px;
+        border-bottom: 5px solid;
+        padding-bottom: 10px;
+        line-height: 33px;
+        padding: 0 20px;
+        text-align: center;
+        font-size: 14px;
+    }
+    .fcui2-tab-item {
+        border-color: @color-blue-9;
+        cursor: pointer;
+    }
+    .fcui2-tab-item:hover {
+        border-bottom-color: @color-bg;
+        cursor: pointer;
+    }
+    .fcui2-tab-item-active {
+        font-weight: 700;
+        border-bottom-color: @color-bg;
+        cursor: pointer;
+    }
+}
+
+
+.fcui2-tab-level-3 {
+    font-family: @font-normal;
+    border-bottom: 1px solid @color-inner-border;
+    .fcui2-tab-item, .fcui2-tab-item-active, .fcui2-tab-item-disabled {
+        border-bottom: 2px solid;
+        padding-bottom: 8px;
+        line-height: 33px;
+        padding: 0 0px;
+        margin: 0 10px;
+        text-align: center;
+        color: @color-text-3;
+        font-size: 12px;
+    }
+    .fcui2-tab-item {
+        border-color: @color-gray-1;
+        cursor: pointer;
+    }
+    .fcui2-tab-item:hover {
+        border-bottom-color: @color-btn-hover;
+        cursor: pointer;
+    }
+    .fcui2-tab-item-active {
+        font-weight: 700;
+        border-bottom-color: @color-btn-hover;
+        cursor: pointer;
+    }
+}

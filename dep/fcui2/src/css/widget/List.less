@@ -1,0 +1,42 @@
+// version 0.0.2
+
+// 基础样式
+.fcui2-list {
+    hr {
+        border: 0;
+        border-top: 1px solid;
+        margin: 0 1px;
+    }
+}
+
+// 皮肤样式
+.fcui2-list-normal {
+    hr {
+        border-top-color:  @color-disabled-icon;
+    }
+}
+
+// Renderer样式
+.fcui2-list {
+    .list-normal-item {
+        font-family: @font-normal;
+        font-size: 12px;
+        line-height: 30px;
+        white-space: nowrap;
+        text-align: left;
+        cursor: default;
+        background-color: @color-gray-1;
+        span {
+            margin: 0 10px;
+        }
+        &:hover {
+            background-color: @color-bg-hover-table;
+        }
+    }
+    .list-normal-item-disabled {
+        color: @color-disabled-text;
+        &:hover {
+            background-color: @color-gray-1;
+        }
+    }
+}

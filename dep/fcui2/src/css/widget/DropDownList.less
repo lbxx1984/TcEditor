@@ -1,0 +1,75 @@
+// version 0.0.2
+
+.fcui2-dropdownlist {
+    position: relative;
+    top: 10px;
+    margin-top: -10px;
+    display: inline-block;
+    height: 28px;
+    border: 1px solid;
+    padding: 0 0 0 10px;
+    line-height: 28px;
+    .icon-right {
+        float: right;
+        width: 20px;
+        display: inline-block;
+        line-height: 28px;
+    }
+    .label-container {
+        display: block;
+        height: 28px;
+        line-height: 28px;
+        margin-right: 21px;
+        // text-align: center;
+        word-break: break-all;
+　　    word-wrap: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.fcui2-dropdownlist-normal {
+    border-color: @color-outer-border;
+    background-color: @color-bg-btn;
+    font-size: 12px;
+    font-family: @font-normal;
+    cursor: pointer;
+    .label-container {
+        color: @color-text-3;
+    }
+    .icon-right {
+        color: @color-gray-9;
+    }
+    &:hover {
+        border-color: @color-btn-hover;
+        .icon-right {
+            color: @color-btn-hover;
+        }
+    }
+}
+
+.fcui2-dropdownlist-hover {
+    border-color: @color-btn-hover;
+    .icon-right {
+        color: @color-btn-hover;
+    }
+}
+
+.fcui2-dropdownlist-disabled {
+    color: @color-disabled-text;
+    cursor: default;
+    .label-container {
+        color: @color-disabled-text;
+    }
+    .icon-right {
+        color: @color-disabled-text;
+    }
+}
+
+.fcui2-dropdownlist-disabled:hover {
+    border-color: @color-outer-border;
+    .icon-right {
+        color: @color-disabled-text;
+    }
+}

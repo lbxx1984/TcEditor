@@ -1,0 +1,33 @@
+// version 0.0.2
+
+.fcui2-checkbox {
+    display: inline-block;
+    height: 28px;
+    line-height: 28px;
+    input {
+        position: relative;
+        top: 3px;
+        width: 14px;
+        height: 14px;
+    }
+}
+
+.fcui2-checkbox-normal {
+    .fcui2-checkbox-label {
+        cursor: pointer;
+        font-size: 12px;
+    }
+    input {
+        cursor: pointer;
+    }
+}
+
+.fcui2-checkbox-disabled {
+    .fcui2-checkbox-label {
+        cursor: default;
+        color: @color-disabled-text;
+    }
+    input {
+        cursor: default;
+    }
+}

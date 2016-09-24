@@ -1,0 +1,26 @@
+// version 0.0.2
+
+.fcui2-layer {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    border: 1px solid;
+    z-index: 10000;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.fcui2-layer-normal {
+    background-color: @color-bg;
+    border-color: @color-outer-border;
+    font-family: @font-normal;
+}
+
+.fcui2-layer-warning {
+    overflow: visible;
+    background-color: @color-bg;
+    border-color: @color-error;
+    color: @color-error;
+    font-size: 12px;
+    font-family: @font-normal;
+}
