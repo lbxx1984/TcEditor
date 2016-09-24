@@ -1,38 +1,23 @@
-exports.port = 8088;
+exports.port = 8089;
 exports.directoryIndexes = true;
 exports.documentRoot = __dirname;
-
-var jsxMidlayer = require(__dirname + '/edp-midlayer-react');
 
 // 导入配置
 exports.getLocations = function () {
     return [
         {
-            location: /\.jsx.js($|\?)/,
+            location: /\.(es6|jsx)\.js/,
             handler: [
-                file(),
-                jsxMidlayer.compileHTML()
+                babel({
+                    sourceMaps: 'both'
+                }, {
+                    forceTransform: true
+                })
             ]
         },
         {
             location: /\/$/,
             handler: home( 'index.html' )
-        },
-        {
-            location: /^\/redirect-local/,
-            handler: redirect('redirect-target', false)
-        },
-        {
-            location: /^\/redirect-remote/,
-            handler: redirect('http://www.baidu.com', false)
-        },
-        {
-            location: /^\/redirect-target/,
-            handler: content('redirectd!')
-        },
-        {
-            location: '/empty',
-            handler: empty()
         },
         {
             location: /\.css($|\?)/,

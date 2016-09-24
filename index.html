@@ -5,17 +5,12 @@
 <meta http-equiv="pragma" content="no-cache" />
 <meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate, pre-check=0, post-check=0" />
 <meta http-equiv="expires" content="0" />
-<title>TcEditor</title>
-<link href="css/main.css" type="text/css" rel="stylesheet" charset="utf-8"/>
+<title>TcEditor 5</title>
+<link href="src/css/main.css" type="text/css" rel="stylesheet" charset="utf-8"/>
 </head>
 <body>
-<script type="text/javascript" src="deps/three/three.r73.min.js"></script>
-<script type="text/javascript" src="deps/three/TransformControls.min.js"></script>
-<script type="text/javascript" src="deps/raphael.min.js"></script>
-<script type="text/javascript" src="deps/react.min.js"></script>
-<script type="text/javascript" src="deps/require.min.js"></script>
+<script type="text/javascript" src="dep/require.min.js"></script>
 <script type="text/javascript">
-
     // 浏览器检查
     var support = 0;
     support += (function () {
@@ -30,24 +25,16 @@
         }
     })() ? 0 : 1;
     support += typeof window.FileReader === 'function' ? 0 : 10;
-    support += typeof window.requestFileSystem === 'function'
-        || typeof window.webkitRequestFileSystem === 'function' ? 0 : 100;
+    support += typeof window.requestFileSystem === 'function' || typeof window.webkitRequestFileSystem === 'function'
+        ? 0 : 100;
     if (support > 0) {
         window.location = 'unsupport.html?code=' + support;
     }
-
-    // 注册依赖配置
+    // 依赖配置
     require.config({
-        baseUrl: './src',
-        paths: {
-            config: './config',
-            math: './math',
-            component: './ui/component',
-            widget: './ui/widget',
-            layout: './ui/layout'
-        }
+        baseUrl: './src'
     });
-    // 开始启动
+    // 启动
     require(['main']);
 </script>
 </body>

@@ -4,7 +4,6 @@
     "description": "TcEditor5",
     "main": "index",
     "dependencies": {
-        "react-tools": ">=0.0.0",
         "edp": ">=0.0.0"
     },
     "author": "lbxxlht@163.com",

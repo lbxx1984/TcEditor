@@ -4,10 +4,10 @@ npm install
 ```
 ###Start：
 ```bash
-edp ws start
+edp webserver
 ```
 ###Access:
-[http://localhost:8088/](http://localhost:8088/)
+[http://localhost:8088/](http://localhost:8089/)
 ###Build:
 ```bash
 edp build
