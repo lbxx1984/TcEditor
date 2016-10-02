@@ -33,13 +33,13 @@ define(function (require) {
         fill: function (param, slient) {
             var setted = false;
             if (slient === false) {
-                model = _.extend({}, model, param);
+                model = this.store = _.extend({}, model, param);
                 dispatchOnChange(this);
                 return;
             }
             for (var key in param) {
                 if (!param.hasOwnProperty(key)) continue;
-                setted = setted || this.set(key, param[key], true);
+                setted = this.set(key, param[key], true) || setted;
             }
             if (setted && !slient) {
                 dispatchOnChange(this);
@@ -60,7 +60,7 @@ define(function (require) {
                 model[key] = value;
                 dispatchOnChange(this);
                 return true;
-            }
+            } 
             if (_.isEqual(model[key], value)) {
                 return false;
             }

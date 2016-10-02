@@ -7,7 +7,8 @@ define(function (require) {
 
 
     var React = require('react');
-    var Button = require('fcui2/Button.jsx');
+    var Menu = require('./components/Menu.jsx');
+    var CommandBar = require('./components/CommandBar.jsx');
 
 
     return React.createClass({
@@ -21,8 +22,9 @@ define(function (require) {
         },
         render: function () {
             return (
-                <div>
-                    <Button/>
+                <div style={{fontFamily: '微软雅黑'}}>
+                    <Menu menu={this.props.menu}/>
+                    <CommandBar datasource={this.props.command}/>
                 </div>
             );
         }

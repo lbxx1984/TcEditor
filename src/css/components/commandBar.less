@@ -1,0 +1,63 @@
+.tc-command-bar {
+
+    position: fixed;
+    top: 41px;
+    left: 0px;
+    height: 40px;
+    right: 0px;
+    border-bottom: 1px solid @border-bottom-color;
+    border-top: 1px solid @border-top-color;
+
+    .command-label, .command-text-button, .command-icon-button {
+        display: inline-block;
+        border-left: 1px solid @border-left-color;
+        border-right: 1px solid @border-right-color;
+        height: 40px;
+        line-height: 40px;
+    }
+    .command-label {
+        position: relative;
+        top: -3px;
+        color: @font-color-label;
+        font-size: 14px;
+        font-weight: 700;
+        font-style: italic;
+        padding: 0 10px;
+        cursor: default;
+    }
+    .command-text-button {
+        position: relative;
+        top: -3px;
+        width: 40px;
+        font-family: "微软雅黑";
+        color: @font-color-main;
+        text-align: center;
+        font-size: 14px;
+        cursor: pointer;
+        font-weight: 700;
+        &:hover {
+            background-color: @background-color-hover;
+            color: @font-color-hover;
+        }
+    }
+    .command-icon-button {
+        display: inline-block;
+        border-left: 1px solid @border-left-color;
+        border-right: 1px solid @border-right-color;
+        height: 40px;
+        width: 40px;
+        text-align: center;
+        cursor: pointer;
+        &:hover {
+            background-color: @background-color-hover;
+            color: @font-color-hover;
+            .iconfont {
+                color: @font-color-hover;
+            }
+        }
+        .iconfont {
+            color: @font-color-main;
+            font-size: 22px;
+        }
+    }
+}

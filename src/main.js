@@ -6,24 +6,23 @@
 define(function (require) {
 
 
-    // 核心依赖
     var ReactDOM = require('react-dom');
     var React = require('react');
     var App = require('./App.jsx');
     var _ = require('underscore');
 
 
-    // 核心model
     var model = require('./model');
+    var config = require ('./config');
 
 
-    model.set('a', 1);
+    model.fill(config);
 
 
     // 监听model
     model.onChange = function (store) {
         render(store);
-    }
+    };
 
 
     // 渲染
