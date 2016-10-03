@@ -8,31 +8,38 @@ define(function (require) {
 
     var ReactDOM = require('react-dom');
     var React = require('react');
-    var App = require('./App.jsx');
     var _ = require('underscore');
 
-
-    var model = require('./model');
     var config = require ('./config');
+    var App = require('./App.jsx');
+    var dispatcher = require('./common/dispatcher');
+    var model = require('./common/model');
 
 
     model.fill(config);
-
-
-    // 监听model
     model.onChange = function (store) {
         render(store);
     };
-
-
-    // 渲染
     render(model.store);
 
 
     function render(store) {
-        var props = _.extend({}, store);
+        var props = _.extend({}, store, {dispatch: dispatch});
         ReactDOM.render(React.createElement(App, props), document.getElementById('main'));
     }
 
+
+    function dispatch() {
+        if (arguments.length === 0) return;
+        var args = [].slice.apply(arguments);
+        var handler = args.shift();
+        if (typeof handler !== 'string') {
+            args.unshift(handler);
+            handler = typeof handler.type === 'string' ? handler.type : '';
+        }
+        if (typeof dispatcher[handler] === 'function') {
+            return dispatcher[handler].apply(model, args);
+        }
+    }
 
 });

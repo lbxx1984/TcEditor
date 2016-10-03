@@ -69,6 +69,15 @@ define(function (require) {
                 dispatchOnChange(this);
             }
             return true;
+        },
+
+        /**
+         * 获取model中的数据
+         *
+         * @param {string} key 域名
+         */
+        get: function (key) {
+            return model[key];
         }
     };
 

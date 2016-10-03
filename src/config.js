@@ -7,6 +7,11 @@ define(function (require) {
 
 
     return {
+        stage: {
+            colorStage: ['#3D3D3D', 0x3d3d3d],
+            colorGrid: ['#8F908A', 0x8F908A],
+            cameraRadius3D: 2000
+        },
         menu: [
             {
                 label: 'File',

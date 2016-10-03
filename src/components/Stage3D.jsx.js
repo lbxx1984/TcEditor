@@ -1,0 +1,160 @@
+/**
+ * @file 3D 舞台
+ * @author Brian Li
+ * @email lbxxlht@163.com
+ */
+define(function (require) {
+
+
+    var React = require('react');   
+    var THREE = require('three');
+    var animation = require('../common/animation');
+
+
+    return React.createClass({
+
+        contextTypes: {
+            dispatch: React.PropTypes.func
+        },
+
+        // @override
+        getDefaultProps: function () {
+            return {
+                // 摄像机到期观察点的距离，可以理解为焦距
+                cameraRadius: 2000,
+                // 摄像机视线与XOZ平面夹角
+                cameraAngleA: 40,
+                // 摄像机视线在XOZ平面投影与X轴夹角
+                cameraAngleB: 45,
+                // 摄像机的观察点，3D坐标
+                cameraLookAt: {x: 0, y: 0, z: 0},
+                // 鼠标拖拽舞台时，摄像机的移动速度
+                cameraMoveSpeed: 2,
+                // 是否显示网格
+                gridVisible: true,
+                // 网格的总尺寸
+                gridSize: 2000,
+                // 网格的单元格大小
+                gridStep: 100,
+                // 编辑器背景颜色
+                colorStage: 0xffffff,
+                // 网格的颜色
+                colorGrid: 0xffffff
+            };
+        },
+
+        componentDidMount: function () {
+            // 射线，用于鼠标拾取物体
+            this.raycaster = new THREE.Raycaster();
+            // 网格
+            this.grid = new THREE.GridHelper(
+                this.props.gridSize, this.props.gridStep,
+                this.props.colorGrid, this.props.colorGrid
+            );
+            // 坐标轴
+            this.axis = new THREE.AxisHelper(200);
+            // 坐标纸
+            this.coordinate = new THREE.Mesh(
+                new THREE.PlaneGeometry(10000, 10000, 1, 1),
+                new THREE.MeshBasicMaterial({visible: false,side: THREE.DoubleSide})
+            );
+            // 网格的容器，主要作用是接受对网格的操作
+            this.coordinateContainer = new THREE.Object3D();
+            // 3D摄像机
+            this.camera = new THREE.PerspectiveCamera(
+                60, this.refs.container.offsetWidth / this.refs.container.offsetHeight, 1, 20000
+            );
+            // 3D场景
+            this.scene = new THREE.Scene();
+            // WebGL渲染器
+            this.renderer = new THREE.WebGLRenderer({antialias: true});
+            // 初始化3D场景
+            if (this.props.gridVisible) {
+                this.scene.add(this.grid);
+                this.scene.add(this.axis);
+            }
+            this.coordinate.rotation.x = Math.PI * 0.5;
+            this.coordinateContainer.add(this.coordinate);
+            this.scene.add(this.coordinateContainer);
+            this.renderer.setClearColor(this.props.colorStage);
+            this.renderer.setSize(this.refs.container.offsetWidth, this.refs.container.offsetHeight);
+            this.refs.container.appendChild(this.renderer.domElement);
+            updateCameraPosition(this, this.props);
+            // 开启渲染引擎
+            animation.add('stage3d', animaterFactory(this));
+            // 绑定事件
+            window.addEventListener('resize', this.onResize);
+            this.refs.container.addEventListener('mousewheel', this.onMouseWheel);
+        },
+
+        componentWillReceiveProps: function (nextProps) {
+            if (nextProps.cameraRadius !== this.props.cameraRadius) {
+                updateCameraPosition(this, nextProps);
+            }
+        },
+
+        componentWillUnmount: function () {
+            animation.remove('stage3d');
+            window.removeEventListener('resize', this.onResize);
+            this.refs.container.removeEventListener('mousewheel', this.onMouseWheel);
+        },
+
+        onMouseWheel: function (evt) {
+            var r = this.props.cameraRadius - 0.2 * this.props.cameraRadius * evt.wheelDelta
+                * this.props.cameraMoveSpeed / this.refs.container.offsetWidth;
+            r = Math.max(r, 50);
+            r = Math.min(r, 5000);
+            this.context.dispatch('changeCameraRadius3D', r);
+            evt.stopPropagation();
+            return false;
+        },
+
+        onResize: function () {
+            this.camera.aspect = this.refs.container.offsetWidth / this.refs.container.offsetHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(this.refs.container.offsetWidth, this.refs.container.offsetHeight);
+        },
+
+        render: function () {
+            return (<div className="tc-stage-3d" ref="container"></div>);
+        }
+    });
+
+
+    // 设置摄像机位置
+    function updateCameraPosition(me, props) {
+        props = props || me.props;
+        var cameraAngleA = props.cameraAngleA;
+        var cameraAngleB = props.cameraAngleB;
+        var cameraRadius = props.cameraRadius;
+        var cameraLookAt = props.cameraLookAt;
+        var coordinateContainer = me.coordinateContainer;
+        var grid = me.grid;
+        var y = cameraRadius * Math.sin(Math.PI * cameraAngleA / 180);
+        var x = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.cos(Math.PI * cameraAngleB / 180);
+        var z = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.sin(Math.PI * cameraAngleB / 180);
+        if (Math.abs(cameraAngleA) < 2) {
+            coordinateContainer.rotation.z = grid.rotation.z = Math.PI * 0.5 - Math.PI * cameraAngleB / 180;
+            coordinateContainer.rotation.x = grid.rotation.x = Math.PI * 1.5;
+        }
+        else {
+            coordinateContainer.rotation.z = grid.rotation.z = 0;
+            coordinateContainer.rotation.x = grid.rotation.x = 0;
+        }
+        me.camera.position.set(
+            x + cameraLookAt.x,
+            y + cameraLookAt.y,
+            z + cameraLookAt.z
+        );
+    }
+
+
+    // 渲染器工厂
+    function animaterFactory(me) {
+        return function () {
+            me.camera.lookAt(me.props.cameraLookAt);
+            me.renderer.render(me.scene, me.camera);
+        };
+    }
+
+});
