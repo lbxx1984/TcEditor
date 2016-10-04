@@ -17,6 +17,10 @@ define(function (require) {
 
 
     model.fill(config);
+    model.fill({
+        mouse3d: {x: 0, y: 0, z: 0},
+        mouse2d: {x: 0, y: 0}
+    });
     model.onChange = function (store) {
         render(store);
     };

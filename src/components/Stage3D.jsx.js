@@ -8,6 +8,7 @@ define(function (require) {
 
     var React = require('react');   
     var THREE = require('three');
+    var CameraController = require('./CameraController.jsx');
     var animation = require('../common/animation');
 
 
@@ -21,7 +22,7 @@ define(function (require) {
         getDefaultProps: function () {
             return {
                 // 摄像机到期观察点的距离，可以理解为焦距
-                cameraRadius: 2000,
+                cameraRadius: 1000,
                 // 摄像机视线与XOZ平面夹角
                 cameraAngleA: 40,
                 // 摄像机视线在XOZ平面投影与X轴夹角
@@ -33,9 +34,9 @@ define(function (require) {
                 // 是否显示网格
                 gridVisible: true,
                 // 网格的总尺寸
-                gridSize: 2000,
+                gridSize: 2500,
                 // 网格的单元格大小
-                gridStep: 100,
+                gridStep: 50,
                 // 编辑器背景颜色
                 colorStage: 0xffffff,
                 // 网格的颜色
@@ -88,7 +89,11 @@ define(function (require) {
         },
 
         componentWillReceiveProps: function (nextProps) {
-            if (nextProps.cameraRadius !== this.props.cameraRadius) {
+            if (
+                nextProps.cameraRadius !== this.props.cameraRadius
+                || nextProps.cameraAngleA !== this.props.cameraAngleA
+                || nextProps.cameraAngleB !== this.props.cameraAngleB
+            ) {
                 updateCameraPosition(this, nextProps);
             }
         },
@@ -104,7 +109,7 @@ define(function (require) {
                 * this.props.cameraMoveSpeed / this.refs.container.offsetWidth;
             r = Math.max(r, 50);
             r = Math.min(r, 5000);
-            this.context.dispatch('changeCameraRadius3D', r);
+            this.context.dispatch('changeCamera3D', {cameraRadius: r});
             evt.stopPropagation();
             return false;
         },
@@ -115,8 +120,47 @@ define(function (require) {
             this.renderer.setSize(this.refs.container.offsetWidth, this.refs.container.offsetHeight);
         },
 
+        onMouseMove: function (e) {
+            var x = e.nativeEvent.offsetX;
+            var y = e.nativeEvent.offsetY;
+            var width = this.refs.container.offsetWidth;
+            var height = this.refs.container.offsetHeight;
+            this.raycaster.setFromCamera(
+                new THREE.Vector3((x / width) * 2 - 1, - (y / height) * 2 + 1, 0),
+                this.camera
+            );
+            var intersects = this.raycaster.intersectObjects([this.coordinate]);
+            var point = new THREE.Vector3();
+            if (intersects.length > 0) {
+                point = intersects[0].point;
+                if (Math.abs(point.x) < 5) {
+                    point.x = 0;
+                }
+                if (Math.abs(point.y) < 5) {
+                    point.y = 0;
+                }
+                if (Math.abs(point.z) < 5) {
+                    point.z = 0;
+                }
+            }
+            this.context.dispatch('changeMouse3D', point);
+        },
+
         render: function () {
-            return (<div className="tc-stage-3d" ref="container"></div>);
+            var containerProps = {
+                className: 'tc-stage-3d',
+                ref: 'container',
+                onMouseMove: this.onMouseMove
+            };
+            var controllerProps = {
+                cameraAngleA: this.props.cameraAngleA,
+                cameraAngleB: this.props.cameraAngleB
+            };
+            return (
+                <div {...containerProps}>
+                    <CameraController {...controllerProps}/>
+                </div>
+            );
         }
     });
 

@@ -9,6 +9,7 @@ define(function (require) {
     var React = require('react');
     var Menu = require('./components/Menu.jsx');
     var CommandBar = require('./components/CommandBar.jsx');
+    var InformationBar = require('./components/InformationBar.jsx');
     var Stage3D = require('./components/Stage3D.jsx');
 
 
@@ -24,15 +25,21 @@ define(function (require) {
         },
         render: function () {
             var stage3dProps = {
-                cameraRadius: this.props.stage.cameraRadius3D,
+                cameraRadius: this.props.stage.camera3D.cameraRadius,
+                cameraAngleA: this.props.stage.camera3D.cameraAngleA,
+                cameraAngleB: this.props.stage.camera3D.cameraAngleB,
                 colorStage: this.props.stage.colorStage[1],
                 colorGrid: this.props.stage.colorGrid[1]
+            };
+            var informationBarProps = {
+                mouse3d: this.props.mouse3d
             };
             return (
                 <div className="tc-root-container">
                     <Menu menu={this.props.menu}/>
                     <CommandBar datasource={this.props.command}/>
                     <Stage3D {...stage3dProps}/>
+                    <InformationBar {...informationBarProps}/>
                 </div>
             );
         }

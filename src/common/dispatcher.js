@@ -10,9 +10,15 @@ define(function (require) {
 
 
     return {
-        // 修改3D舞台焦距
-        changeCameraRadius3D: function (v) {
-            this.set('stage', _.extend({}, this.get('stage'), {cameraRadius3D: v}));
+        // 修改3D摄像机
+        changeCamera3D: function (param) {
+            var stage = _.extend({}, this.get('stage'));
+            stage.camera3D = _.extend({}, stage.camera3D, param);
+            this.set('stage', stage);
+        },
+        // 修改3D鼠标
+        changeMouse3D: function (point) {
+            this.set('mouse3d', point);
         }
     };
 
