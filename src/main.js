@@ -17,9 +17,23 @@ define(function (require) {
 
 
     model.fill(config);
+    // 这些数据需要从local storage里读出来
     model.fill({
+        stage: {
+            colorStage: ['#3D3D3D', 0x3d3d3d],
+            colorGrid: ['#8F908A', 0x8F908A],
+            camera3D: {
+                cameraRadius: 1000,
+                cameraAngleA: 40,
+                cameraAngleB: 45
+            },
+            gridVisible: true,
+            gridSize3D: 2500,
+            gridStep3D: 50
+        },
         mouse3d: {x: 0, y: 0, z: 0},
-        mouse2d: {x: 0, y: 0}
+        view: 'view-3d',
+        tool: 'camera-move',
     });
     model.onChange = function (store) {
         render(store);

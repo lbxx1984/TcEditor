@@ -54,12 +54,12 @@ define(function (require) {
             );
             // 坐标轴
             this.axis = new THREE.AxisHelper(200);
-            // 坐标纸
+            // 坐标纸，不可见，专门显示鼠标事件
             this.coordinate = new THREE.Mesh(
                 new THREE.PlaneGeometry(10000, 10000, 1, 1),
-                new THREE.MeshBasicMaterial({visible: false,side: THREE.DoubleSide})
+                new THREE.MeshBasicMaterial({visible: false, side: THREE.DoubleSide})
             );
-            // 网格的容器，主要作用是接受对网格的操作
+            // 坐标纸容器，主要作用是接受对网格的操作
             this.coordinateContainer = new THREE.Object3D();
             // 3D摄像机
             this.camera = new THREE.PerspectiveCamera(
@@ -69,11 +69,9 @@ define(function (require) {
             this.scene = new THREE.Scene();
             // WebGL渲染器
             this.renderer = new THREE.WebGLRenderer({antialias: true});
-            // 初始化3D场景
-            if (this.props.gridVisible) {
-                this.scene.add(this.grid);
-                this.scene.add(this.axis);
-            }
+            // 初始化舞台
+            this.scene.add(this.grid);
+            this.scene.add(this.axis);
             this.coordinate.rotation.x = Math.PI * 0.5;
             this.coordinateContainer.add(this.coordinate);
             this.scene.add(this.coordinateContainer);
@@ -95,6 +93,19 @@ define(function (require) {
                 || nextProps.cameraAngleB !== this.props.cameraAngleB
             ) {
                 updateCameraPosition(this, nextProps);
+            }
+            if (nextProps.gridSize !== this.props.gridSize || nextProps.gridStep !== this.props.gridStep) {
+                this.scene.remove(this.grid);
+                this.grid = new THREE.GridHelper(
+                    nextProps.gridSize, nextProps.gridStep,
+                    nextProps.colorGrid, nextProps.colorGrid
+                );
+                this.grid.visible = nextProps.gridVisible;
+                this.scene.add(this.grid);
+            }
+            if (nextProps.gridVisible !== this.props.gridVisible) {
+                this.grid.visible = nextProps.gridVisible;
+                this.axis.visible = nextProps.gridVisible;
             }
         },
 
