@@ -71,6 +71,9 @@ define(function (require) {
             {
                 icon: 'icon-suoxiao', value: 'camera-zoomOut', title: 'zoom out (MOUSE WHEEL DOWN)'
             },
+            {
+                icon: 'icon-reset', value: 'camera-reset', title: 'reset camera'
+            },
             'GRID',
             {
                 icon: 'icon-pingmufangda', value: 'stage-enlargeGrid', title: 'enlarge grid'

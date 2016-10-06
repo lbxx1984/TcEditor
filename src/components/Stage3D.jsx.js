@@ -40,11 +40,16 @@ define(function (require) {
                 // 编辑器背景颜色
                 colorStage: 0xffffff,
                 // 网格的颜色
-                colorGrid: 0xffffff
+                colorGrid: 0xffffff,
+                // 当前的命令
+                tool: ''
             };
         },
 
         componentDidMount: function () {
+            this.mousedown = false;
+            this.mouseCurrent2D = {x: 0, y: 0};
+            this.mouseCurrent3D = {x: 0, y: 0, z: 0};
             // 射线，用于鼠标拾取物体
             this.raycaster = new THREE.Raycaster();
             // 网格
@@ -91,6 +96,7 @@ define(function (require) {
                 nextProps.cameraRadius !== this.props.cameraRadius
                 || nextProps.cameraAngleA !== this.props.cameraAngleA
                 || nextProps.cameraAngleB !== this.props.cameraAngleB
+                || nextProps.cameraLookAt !== this.props.cameraLookAt
             ) {
                 updateCameraPosition(this, nextProps);
             }
@@ -132,38 +138,60 @@ define(function (require) {
         },
 
         onMouseMove: function (e) {
-            var x = e.nativeEvent.offsetX;
-            var y = e.nativeEvent.offsetY;
-            var width = this.refs.container.offsetWidth;
-            var height = this.refs.container.offsetHeight;
-            this.raycaster.setFromCamera(
-                new THREE.Vector3((x / width) * 2 - 1, - (y / height) * 2 + 1, 0),
-                this.camera
-            );
-            var intersects = this.raycaster.intersectObjects([this.coordinate]);
-            var point = new THREE.Vector3();
-            if (intersects.length > 0) {
-                point = intersects[0].point;
-                if (Math.abs(point.x) < 5) {
-                    point.x = 0;
-                }
-                if (Math.abs(point.y) < 5) {
-                    point.y = 0;
-                }
-                if (Math.abs(point.z) < 5) {
-                    point.z = 0;
-                }
+            var mouse2D = {x: e.clientX, y: e.clientY};
+            var mouse3D = getMouse3D(e.nativeEvent.offsetX, e.nativeEvent.offsetY, this, this.coordinate);
+            var mouseDelta2D = {
+                x: mouse2D.x - this.mouseCurrent2D.x,
+                y: mouse2D.y - this.mouseCurrent2D.y
+            };
+            var mouseDelta3D = {
+                x: mouse3D.x - this.mouseCurrent3D.x,
+                y: mouse3D.y - this.mouseCurrent3D.y,
+                z: mouse3D.z - this.mouseCurrent3D.z
+            };
+            this.mouseCurrent2D = mouse2D;
+            this.mouseCurrent3D = mouse3D;
+            this.context.dispatch('changeMouse3D', mouse3D);
+            // 拖拽命令
+            if (this.props.tool && this.mousedown && !this.isCameraRotating) {
+                this.context.dispatch(this.props.tool, {
+                    stage3D: this,
+                    mouseDown2D: this.mouseDown2D,
+                    mouseDown3D: this.mouseDown3D,
+                    mouseCurrent2D: mouse2D,
+                    mouseCurrent3D: mouse3D,
+                    mouseDelta2D: mouseDelta2D,
+                    mouseDelta3D: mouseDelta3D
+                }, true);
             }
-            this.context.dispatch('changeMouse3D', point);
+        },
+
+        onMouseDown: function (e) {
+            this.mousedown = true;
+            this.mouseDown2D = {x: e.clientX, y: e.clientY};
+            this.mouseDown3D = getMouse3D(e.nativeEvent.offsetX, e.nativeEvent.offsetY, this, this.coordinate);
+            this.mouseCurrent2D = {x: e.clientX, y: e.clientY};
+            this.mouseCurrent3D = this.mouseDown3D.clone();
+        },
+
+        onMouseUp: function (e) {
+            this.mousedown = false;
+            this.mouseDown2D = {x: 0, y: 0};
+            this.mouseDown3D = {x: 0, y: 0, z: 0};
+            this.mouseCurrent2D = {x: 0, y: 0};
+            this.mouseCurrent3D = {x: 0, y: 0, z: 0};
         },
 
         render: function () {
             var containerProps = {
                 className: 'tc-stage-3d',
                 ref: 'container',
-                onMouseMove: this.onMouseMove
+                onMouseMove: this.onMouseMove,
+                onMouseDown: this.onMouseDown,
+                onMouseUp: this.onMouseUp
             };
             var controllerProps = {
+                parentStage: this,
                 cameraAngleA: this.props.cameraAngleA,
                 cameraAngleB: this.props.cameraAngleB
             };
@@ -211,5 +239,29 @@ define(function (require) {
             me.renderer.render(me.scene, me.camera);
         };
     }
+
+
+    // 获取根据坐标纸获取3D鼠标位置
+    function getMouse3D(x, y, me, geo) {
+        var width = me.refs.container.offsetWidth;
+        var height = me.refs.container.offsetHeight;
+        me.raycaster.setFromCamera(new THREE.Vector3((x / width) * 2 - 1, - (y / height) * 2 + 1, 0), me.camera);
+        var intersects = me.raycaster.intersectObjects([geo]);
+        var point = new THREE.Vector3();
+        if (intersects.length > 0) {
+            point = intersects[0].point;
+            if (Math.abs(point.x) < 5) {
+                point.x = 0;
+            }
+            if (Math.abs(point.y) < 5) {
+                point.y = 0;
+            }
+            if (Math.abs(point.z) < 5) {
+                point.z = 0;
+            }
+        }
+        return point.clone();
+    }
+
 
 });

@@ -111,7 +111,7 @@ define(function (require) {
             for (var key in CTRL_FACE) {
                 var item = CTRL_FACE[key];
                 var url = key.indexOf('_') < 0
-                    ? 'resource/textures/' + key + '_ch.png' : 'resource/textures/background.png';
+                    ? 'resource/textures/' + key + '_en.png' : 'resource/textures/background.png';
                 var geometry = key.indexOf('_') < 0
                     ? new THREE.PlaneGeometry(item[6], item[7])
                     : new THREE.BoxGeometry(item[6], item[7], item[8]);
@@ -201,6 +201,7 @@ define(function (require) {
             b += this.props.cameraMoveSpeed * db * 90 / Math.PI / window.screen.availWidth;
             b = b > 360 ? b - 360 : b;
             b = b < 0 ? b + 360 : b;
+            this.props.parentStage.isCameraRotating = true;
             this.context.dispatch('changeCamera3D', {
                 cameraAngleA: a,
                 cameraAngleB: b
@@ -210,6 +211,7 @@ define(function (require) {
         onWindowMouseUp: function (e) {
             this.mousedown = false;
             this.cameraRotated = false;
+            this.props.parentStage.isCameraRotating = false;
             window.removeEventListener('mousemove', this.onWindowMouseMove);
             window.removeEventListener('mouseup', this.onWindowMouseUp);
         },

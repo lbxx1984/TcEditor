@@ -23,7 +23,6 @@ define(function (require) {
         },
         onButtonClick: function (e) {
             this.context.dispatch(e.target.dataset.uiCmd);
-            console.log(e.target.dataset.uiCmd);
         },
         render: function () {
             return (

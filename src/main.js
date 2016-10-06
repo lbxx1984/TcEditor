@@ -25,7 +25,8 @@ define(function (require) {
             camera3D: {
                 cameraRadius: 1000,
                 cameraAngleA: 40,
-                cameraAngleB: 45
+                cameraAngleB: 45,
+                lookAt: {x: 0, y: 0, z: 0}
             },
             gridVisible: true,
             gridSize3D: 2500,

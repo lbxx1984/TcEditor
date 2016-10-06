@@ -28,11 +28,13 @@ define(function (require) {
                 cameraRadius: this.props.stage.camera3D.cameraRadius,
                 cameraAngleA: this.props.stage.camera3D.cameraAngleA,
                 cameraAngleB: this.props.stage.camera3D.cameraAngleB,
+                cameraLookAt: this.props.stage.camera3D.lookAt,
                 gridVisible: this.props.stage.gridVisible,
                 gridSize: this.props.stage.gridSize3D,
                 gridStep: this.props.stage.gridStep3D,
                 colorStage: this.props.stage.colorStage[1],
-                colorGrid: this.props.stage.colorGrid[1]
+                colorGrid: this.props.stage.colorGrid[1],
+                tool: this.props.tool
             };
             var informationBarProps = {
                 mouse3d: this.props.mouse3d
