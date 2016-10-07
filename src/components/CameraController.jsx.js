@@ -79,7 +79,7 @@ define(function (require) {
                 cameraRadius: 90,
                 cameraAngleA: 40,
                 cameraAngleB: 45,
-                cameraMoveSpeed: 1.5,
+                cameraMoveSpeed: 2,
                 textureColor: 0xffffff,
                 hoverColor: 0xD97915,
             };

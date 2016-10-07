@@ -30,7 +30,7 @@ define(function (require) {
                 // 摄像机的观察点，3D坐标
                 cameraLookAt: {x: 0, y: 0, z: 0},
                 // 鼠标拖拽舞台时，摄像机的移动速度
-                cameraMoveSpeed: 2,
+                cameraMoveSpeed: 4,
                 // 是否显示网格
                 gridVisible: true,
                 // 网格的总尺寸
@@ -74,6 +74,10 @@ define(function (require) {
             this.scene = new THREE.Scene();
             // WebGL渲染器
             this.renderer = new THREE.WebGLRenderer({antialias: true});
+            // 临时灯光
+                var light = new THREE.PointLight(0xffffff, 1, 1000);
+                light.position.set(0, 100, 0);
+                this.scene.add(light);
             // 初始化舞台
             this.scene.add(this.grid);
             this.scene.add(this.axis);
@@ -180,6 +184,10 @@ define(function (require) {
             this.mouseDown3D = {x: 0, y: 0, z: 0};
             this.mouseCurrent2D = {x: 0, y: 0};
             this.mouseCurrent3D = {x: 0, y: 0, z: 0};
+            if (typeof this.props.tool === 'string' && this.props.tool.indexOf('geometry-') === 0 && this.tempMesh) {
+                this.context.dispatch('addMesh', this.tempMesh);
+                this.tempMesh = null;
+            }
         },
 
         render: function () {

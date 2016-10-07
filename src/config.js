@@ -32,7 +32,7 @@ define(function (require) {
                 label: 'Geometry',
                 children: [
                     {
-                        label: 'Plane', value: 'geometry-plane'
+                        label: 'Plane', value: 'geometry-plane;tool'
                     }
                 ]
             }

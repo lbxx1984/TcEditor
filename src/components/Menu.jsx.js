@@ -11,6 +11,9 @@ define(function (require) {
 
 
     return React.createClass({
+        contextTypes: {
+            dispatch: React.PropTypes.func
+        },
         // @override
         getDefaultProps: function () {
             return {};
@@ -18,6 +21,12 @@ define(function (require) {
         // @override
         getInitialState: function () {
             return {};
+        },
+        onClick: function (e) {
+            var value = e.target.value;
+            if (value.indexOf(';tool') > -1) {
+                this.context.dispatch('changeSystemTool', value.replace(';tool', ''));
+            }
         },
         render: function () {
             return (
@@ -32,9 +41,13 @@ define(function (require) {
     function menuFactory(me) {
         var doms = [];
         me.props.menu.map(function (menu) {
-            doms.push(
-                <DropDownList key={'menu-' + menu.label} label={menu.label} datasource={menu.children}/>
-            );
+            var props = {
+                key: 'menu-' + menu.label,
+                label: menu.label,
+                datasource: menu.children,
+                onClick: me.onClick
+            };
+            doms.push(<DropDownList {...props}/>);
         });
         return doms;
     }
