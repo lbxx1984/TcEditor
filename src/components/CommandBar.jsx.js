@@ -26,7 +26,7 @@ define(function (require) {
         },
         render: function () {
             return (
-                <div className="tc-command-bar">
+                <div className="tc-command-bar" style={this.props.style}>
                     {mainFactory(this)}
                 </div>
             );

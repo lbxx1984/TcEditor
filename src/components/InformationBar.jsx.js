@@ -21,7 +21,7 @@ define(function (require) {
         render: function () {
             var point = this.props.mouse3d;
             return (
-                <div className="tc-information-bar">
+                <div className="tc-information-bar" style={this.props.style}>
                     <span className="axis-label">x: {point.x.toFixed(2)}</span>
                     <span className="axis-label">y: {point.y.toFixed(2)}</span>
                     <span className="axis-label">z: {point.z.toFixed(2)}</span>

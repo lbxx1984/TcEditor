@@ -24,6 +24,9 @@ define(function (require) {
             };
         },
         render: function () {
+            var style = {
+                right: this.props.panel.length ? 300 : 'auto'
+            };
             var stage3dProps = {
                 cameraRadius: this.props.stage.camera3D.cameraRadius,
                 cameraAngleA: this.props.stage.camera3D.cameraAngleA,
@@ -34,22 +37,32 @@ define(function (require) {
                 gridStep: this.props.stage.gridStep3D,
                 colorStage: this.props.stage.colorStage[1],
                 colorGrid: this.props.stage.colorGrid[1],
-                tool: this.props.tool
+                tool: this.props.tool,
+                mesh3d: this.props.mesh3d,
+                style: style
             };
             var informationBarProps = {
-                mouse3d: this.props.mouse3d
+                mouse3d: this.props.mouse3d,
+                style: style
             };
             var commandBarProps = {
                 datasource: this.props.command,
                 view: this.props.view,
                 tool: this.props.tool,
-                gridVisible: this.props.stage.gridVisible
+                gridVisible: this.props.stage.gridVisible,
+                style: style
+            };
+            var menuProps = {
+                panel: this.props.panel,
+                menu: this.props.menu,
+                cameraAngleA: this.props.stage.camera3D.cameraAngleA,
+                style: style
             };
             return (
                 <div className="tc-root-container">
-                    <Menu menu={this.props.menu}/>
-                    <CommandBar {...commandBarProps}/>
                     <Stage3D {...stage3dProps}/>
+                    <Menu {...menuProps}/>
+                    <CommandBar {...commandBarProps}/>
                     <InformationBar {...informationBarProps}/>
                 </div>
             );

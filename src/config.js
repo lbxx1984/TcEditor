@@ -12,19 +12,31 @@ define(function (require) {
                 label: 'File',
                 children: [
                     {
-                        label: 'Open　　　　　ctrl + o', value: 'file-open'
+                        label: 'Open', value: 'file-open', hotKey: 'ctrl + o'
                     },
                     {
-                        label: 'Save　　 　　　ctrl + s', value: 'file-save'
+                        label: 'Save', value: 'file-save', hotKey: 'ctrl + s'
                     },
                     {
-                        label: 'Save As　　　　ctrl + shift + s', value: 'file-saveAs'
+                        label: 'Save As', value: 'file-saveAs', hotKey: 'ctrl + shift + s'
                     },
                     {
                         label: 'Import', value: 'file-import'
                     },
                     {
                         label: 'Export', value: 'file-export'
+                    }
+                ]
+            },
+            {
+                label: 'View',
+                key: 'view',
+                children: [
+                    {
+                        label: 'Show Meshes Panel', value: 'view-meshPanel', key: 'meshPanel'
+                    },
+                    {
+                        label: 'Show Camera Panel', value: 'view-cameraPanel', key: 'cameraPanel'
                     }
                 ]
             },

@@ -40,9 +40,7 @@ define(function (require) {
                 // 编辑器背景颜色
                 colorStage: 0xffffff,
                 // 网格的颜色
-                colorGrid: 0xffffff,
-                // 当前的命令
-                tool: ''
+                colorGrid: 0xffffff
             };
         },
 
@@ -75,8 +73,8 @@ define(function (require) {
             // WebGL渲染器
             this.renderer = new THREE.WebGLRenderer({antialias: true});
             // 临时灯光
-                var light = new THREE.PointLight(0xffffff, 1, 1000);
-                light.position.set(0, 100, 0);
+                var light = new THREE.PointLight(0xffffff, 1, 5000);
+                light.position.set(0, 1000, 0);
                 this.scene.add(light);
             // 初始化舞台
             this.scene.add(this.grid);
@@ -85,7 +83,7 @@ define(function (require) {
             this.coordinateContainer.add(this.coordinate);
             this.scene.add(this.coordinateContainer);
             this.renderer.setClearColor(this.props.colorStage);
-            this.renderer.setSize(this.refs.container.offsetWidth, this.refs.container.offsetHeight);
+            this.renderer.setSize(this.refs.container.offsetWidth - 1, this.refs.container.offsetHeight);
             this.refs.container.appendChild(this.renderer.domElement);
             updateCameraPosition(this, this.props);
             // 开启渲染引擎
@@ -96,6 +94,7 @@ define(function (require) {
         },
 
         componentWillReceiveProps: function (nextProps) {
+            // 热更新摄像机
             if (
                 nextProps.cameraRadius !== this.props.cameraRadius
                 || nextProps.cameraAngleA !== this.props.cameraAngleA
@@ -104,6 +103,7 @@ define(function (require) {
             ) {
                 updateCameraPosition(this, nextProps);
             }
+            // 热更新坐标纸
             if (nextProps.gridSize !== this.props.gridSize || nextProps.gridStep !== this.props.gridStep) {
                 this.scene.remove(this.grid);
                 this.grid = new THREE.GridHelper(
@@ -113,9 +113,18 @@ define(function (require) {
                 this.grid.visible = nextProps.gridVisible;
                 this.scene.add(this.grid);
             }
+            // 热更新舞台标记
             if (nextProps.gridVisible !== this.props.gridVisible) {
                 this.grid.visible = nextProps.gridVisible;
                 this.axis.visible = nextProps.gridVisible;
+            }
+            // 物体
+            if (nextProps.mesh3d != this.props.mesh3d) {
+                nextProps.mesh3d.map(function (mesh) {
+                    if (mesh.added) return;
+                    mesh.added = true;
+                    this.scene.add(mesh);
+                });
             }
         },
 
@@ -138,7 +147,7 @@ define(function (require) {
         onResize: function () {
             this.camera.aspect = this.refs.container.offsetWidth / this.refs.container.offsetHeight;
             this.camera.updateProjectionMatrix();
-            this.renderer.setSize(this.refs.container.offsetWidth, this.refs.container.offsetHeight);
+            this.renderer.setSize(this.refs.container.offsetWidth - 1, this.refs.container.offsetHeight);
         },
 
         onMouseMove: function (e) {
@@ -159,6 +168,12 @@ define(function (require) {
             // 拖拽命令
             if (this.props.tool && this.mousedown && !this.isCameraRotating) {
                 this.context.dispatch(this.props.tool, {
+                    cameraInfo: {
+                        radius: this.props.cameraRadius,
+                        angleA: this.props.cameraAngleA,
+                        angleB: this.props.cameraAngleB,
+                        lookAt: this.props.cameraLookAt
+                    },
                     stage3D: this,
                     mouseDown2D: this.mouseDown2D,
                     mouseDown3D: this.mouseDown3D,
@@ -184,7 +199,9 @@ define(function (require) {
             this.mouseDown3D = {x: 0, y: 0, z: 0};
             this.mouseCurrent2D = {x: 0, y: 0};
             this.mouseCurrent3D = {x: 0, y: 0, z: 0};
+            // 拖拽生成了新的mesh
             if (typeof this.props.tool === 'string' && this.props.tool.indexOf('geometry-') === 0 && this.tempMesh) {
+                this.tempMesh.added = true;
                 this.context.dispatch('addMesh', this.tempMesh);
                 this.tempMesh = null;
             }
@@ -194,6 +211,7 @@ define(function (require) {
             var containerProps = {
                 className: 'tc-stage-3d',
                 ref: 'container',
+                style: this.props.style,
                 onMouseMove: this.onMouseMove,
                 onMouseDown: this.onMouseDown,
                 onMouseUp: this.onMouseUp

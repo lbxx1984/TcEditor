@@ -23,6 +23,12 @@ define(function (require) {
         // 修改系统工具集
         changeSystemTool: function (value) {
             this.set('tool', value);
+        },
+        // 添加物体
+        addMesh: function (obj3D) {
+            var arr = [].concat(this.get('mesh3d'));
+            arr.push(obj3D);
+            this.set('mesh3d', arr);
         }
     };
 

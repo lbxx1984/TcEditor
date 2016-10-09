@@ -13,6 +13,7 @@ define(function (require) {
     return {
         // 拖拽创建平面
         'geometry-plane': function (param, dragging) {
+            if (Math.abs(param.cameraInfo.angleA) < 2) return;
             var stage = param.stage3D;
             var mouseDown3D = param.mouseDown3D;
             var mouseCurrent3D = param.mouseCurrent3D;
