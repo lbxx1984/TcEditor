@@ -45,7 +45,7 @@ define(function (require) {
         var doms = [];
         var panelHash = {};
         me.props.panel.map(function (panel) {
-            panelHash[panel] = true;
+            panelHash[panel.type] = true;
         });
         me.props.menu.map(function (menu) {
             var props = {

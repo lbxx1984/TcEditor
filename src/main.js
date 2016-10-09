@@ -20,7 +20,9 @@ define(function (require) {
     // 这些数据需要从local storage里读出来，或者从文件里读出来
     model.fill({
         mesh3d: [],
-        panel: ['meshPanel'],
+        panel: [
+            {type: 'meshPanel', expend: true}
+        ],
         stage: {
             colorStage: ['#3D3D3D', 0x3d3d3d],
             colorGrid: ['#8F908A', 0x8F908A],

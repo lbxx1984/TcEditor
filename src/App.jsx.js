@@ -11,6 +11,7 @@ define(function (require) {
     var CommandBar = require('./components/CommandBar.jsx');
     var InformationBar = require('./components/InformationBar.jsx');
     var Stage3D = require('./components/Stage3D.jsx');
+    var MeshListPanel = require('./components/MeshListPanel.jsx');
 
 
     return React.createClass({
@@ -25,7 +26,7 @@ define(function (require) {
         },
         render: function () {
             var style = {
-                right: this.props.panel.length ? 300 : 'auto'
+                right: this.props.panel.length ? 301 : 'auto'
             };
             var stage3dProps = {
                 cameraRadius: this.props.stage.camera3D.cameraRadius,
@@ -64,10 +65,25 @@ define(function (require) {
                     <Menu {...menuProps}/>
                     <CommandBar {...commandBarProps}/>
                     <InformationBar {...informationBarProps}/>
+                    {this.props.panel.length ? panelFactory(this) : null}
                 </div>
             );
         }
     });
 
+
+    function panelFactory(me) {
+        var doms = [];
+        me.props.panel.map(function (item, index) {
+            switch (item.type) {
+                case 'meshPanel':
+                    doms.push(<MeshListPanel item={item} meshes={me.props.mesh3d} key={item.type} index={index}/>);
+                    break;
+                default:
+                    break;
+            }
+        });
+        return <div className="tc-panel-container">{doms}</div>;
+    }
 
 });
