@@ -1,0 +1,46 @@
+.tc-panel-container {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    width: 300px;
+    border-top: 1px solid @border-top-color;
+    border-left: 1px solid @border-left-color;
+    overflow-x: hidden;
+    cursor: default;
+    .iconfont {
+        cursor: pointer;
+        &:hover {
+            color: @font-color-hover;
+        }
+    }
+    .icon-disabled, .icon-disabled:hover {
+        cursor: default;
+        color: @font-color-disabled;
+    }
+    .tc-panel-title-bar {
+        color: @font-color-main;
+        line-height: 30px;
+        margin: 0 10px;
+        .icon-xiashixinjiantou, .icon-youshixinjiantou {
+            margin-right: 5px;
+        }
+        .icon-guanbi1 {
+            float: right;
+        }
+    }
+    .tc-panel-content-container {
+        border: 1px solid;
+        border-left-color: @border-right-color;
+        border-right-color: @border-right-color;
+        border-bottom-color: @border-top-color;
+        border-top-color: @border-bottom-color;
+        margin: 0 10px;
+        >div:first-child {
+            border-top: 1px solid @border-top-color;
+        }
+        >div:last-child {
+            border-bottom: 1px solid @border-bottom-color;
+        }
+    }
+}

@@ -19,16 +19,14 @@ define(function (require) {
         render: function () {
             var containerProp = {
                 ref: 'container',
-                className: 'list-normal-item' + (this.props.disabled ? ' list-normal-item-disabled' : ''),
+                className: 'list-normal-item'
+                    + (this.props.disabled ? ' list-normal-item-disabled' : '')
+                    + (this.props.checked ? ' list-normal-item-checked' : ''),
                 onClick: this.onClick
             };
+
             return (
                 <div {...containerProp}>
-                    {
-                        this.props.hasOwnProperty('checked')
-                        ? <span className="tc-menu-checked">{this.props.checked ? '√' : ''}</span>
-                        : null
-                    }
                     <span>{this.props.label}</span>
                     {this.props.hotKey ? <span className="tc-menu-hotkey">{this.props.hotKey}</span> : null}
                 </div>

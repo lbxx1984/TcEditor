@@ -26,7 +26,7 @@ define(function (require) {
         },
         render: function () {
             var style = {
-                right: this.props.panel.length ? 301 : 'auto'
+                right: this.props.panel.length ? 301 : 0
             };
             var stage3dProps = {
                 cameraRadius: this.props.stage.camera3D.cameraRadius,
@@ -40,7 +40,8 @@ define(function (require) {
                 colorGrid: this.props.stage.colorGrid[1],
                 tool: this.props.tool,
                 mesh3d: this.props.mesh3d,
-                style: style
+                style: style,
+                panelCount: this.props.panel.length
             };
             var informationBarProps = {
                 mouse3d: this.props.mouse3d,
@@ -77,7 +78,14 @@ define(function (require) {
         me.props.panel.map(function (item, index) {
             switch (item.type) {
                 case 'meshPanel':
-                    doms.push(<MeshListPanel item={item} meshes={me.props.mesh3d} key={item.type} index={index}/>);
+                    var meshListProps = {
+                        key: item.type,
+                        item: item,
+                        index: index,
+                        mesh: me.props.mesh3d,
+                        group: me.props.group
+                    };
+                    doms.push(<MeshListPanel {...meshListProps}/>);
                     break;
                 default:
                     break;

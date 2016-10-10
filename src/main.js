@@ -19,9 +19,13 @@ define(function (require) {
     model.fill(config);
     // 这些数据需要从local storage里读出来，或者从文件里读出来
     model.fill({
-        mesh3d: [],
+        mesh3d: {},
         panel: [
             {type: 'meshPanel', expend: true}
+        ],
+        group: [
+            {label: 'default group', expend: true},
+            {label: 'body', expend: false}
         ],
         stage: {
             colorStage: ['#3D3D3D', 0x3d3d3d],

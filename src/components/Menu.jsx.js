@@ -26,9 +26,16 @@ define(function (require) {
         },
         onClick: function (e) {
             var value = e.target.value;
+            // 工具类命令
             if (value.indexOf(';tool') > -1) {
                 this.context.dispatch('changeSystemTool', value.replace(';tool', ''));
-                Math.abs(this.props.cameraAngleA) < 2 && this.context.dispatch('changeCamera3D', {cameraAngleA: 40}); 
+                Math.abs(this.props.cameraAngleA) < 2 && this.context.dispatch('changeCamera3D', {cameraAngleA: 40});
+                return;
+            }
+            // 一次性执行命令
+            if (value.indexOf('view-') === 0) {
+                this.context.dispatch('changePanelConfig', value);
+                return;
             }
         },
         render: function () {

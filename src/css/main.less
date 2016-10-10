@@ -1,11 +1,14 @@
+@font-normal: 'Helvetica', 'Tahoma', 'Arial', 'Heiti SC', 'Microsoft YaHei', '微软雅黑', sans-serif;
 @import "colors";
 @import "../../dep/fcui2/src/css/main";
 @import "./iconfont/iconfont";
+@import "./components/panelContainer";
 @import "./components/menu";
 @import "./components/commandBar";
 @import "./components/informationBar";
 @import "./components/stage3d";
 @import "./components/cameraController";
+@import "./components/meshList";
 
 body {
     margin: 0;
@@ -14,19 +17,11 @@ body {
 }
 
 .tc-root-container {
-    font-family: "微软雅黑";
-}
-.tc-panel-container {
-    position: fixed;
-    top: 0px;
-    bottom: 0px;
-    right: 0px;
-    width: 300px;
-    border-left: 1px solid @border-left-color;
-    overflow-x: hidden;
+    font-family: @font-normal;
 }
 
-.tc-command-bar, .tc-camera-controller, .tc-information-bar {
+
+.tc-command-bar, .tc-camera-controller, .tc-information-bar, .tc-panel-container {
     moz-user-select: -moz-none;
     -moz-user-select: none;
     -o-user-select: none;

@@ -118,13 +118,23 @@ define(function (require) {
                 this.grid.visible = nextProps.gridVisible;
                 this.axis.visible = nextProps.gridVisible;
             }
-            // 物体
+            // 热更新物体
             if (nextProps.mesh3d != this.props.mesh3d) {
-                nextProps.mesh3d.map(function (mesh) {
-                    if (mesh.added) return;
-                    mesh.added = true;
+                for (var key in nextProps.mesh3d) {
+                    if (!nextProps.mesh3d.hasOwnProperty(key)) continue;
+                    var mesh = nextProps.mesh3d[key];
+                    mesh.tc = mesh.tc || {};
+                    if (mesh.tc.add) continue;
+                    mesh.tc.add = true;
                     this.scene.add(mesh);
-                });
+                }
+            }
+            // 热更新舞台
+            if (nextProps.panelCount !== this.props.panelCount && nextProps.panelCount * this.props.panelCount === 0) {
+                var me = this;
+                setTimeout(function () {
+                    me.onResize();
+                }, 0);
             }
         },
 
@@ -201,7 +211,6 @@ define(function (require) {
             this.mouseCurrent3D = {x: 0, y: 0, z: 0};
             // 拖拽生成了新的mesh
             if (typeof this.props.tool === 'string' && this.props.tool.indexOf('geometry-') === 0 && this.tempMesh) {
-                this.tempMesh.added = true;
                 this.context.dispatch('addMesh', this.tempMesh);
                 this.tempMesh = null;
             }

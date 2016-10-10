@@ -47,7 +47,7 @@ body {
     .fcui2-list {
         border-top: 0;
         .list-normal-item {
-            font-family: '微软雅黑';
+            font-family: @font-normal;
             font-size: 14px;
             min-width: 150px;
             background-color: @background-color-layer;
@@ -60,12 +60,9 @@ body {
                 text-align: right;
                 float: right;
             }
-            .tc-menu-checked {
-                display: inline-block;
-                font-size: 12px;
-                font-weight: 700;
-                width: 0px; 
-            }
+        }
+        .list-normal-item-checked {
+            background-color: @background-color-hover;
         }
     }
     .fcui2-layer-normal {

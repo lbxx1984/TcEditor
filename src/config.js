@@ -33,7 +33,7 @@ define(function (require) {
                 key: 'view',
                 children: [
                     {
-                        label: 'Show Meshes Panel', value: 'view-meshPanel', key: 'meshPanel'
+                        label: 'Show Mesh Panel', value: 'view-meshPanel', key: 'meshPanel'
                     },
                     {
                         label: 'Show Camera Panel', value: 'view-cameraPanel', key: 'cameraPanel'
