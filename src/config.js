@@ -7,6 +7,10 @@ define(function (require) {
 
 
     return {
+        colors: {
+            normalMeshHover: [0xffff00, '#d97915'],
+            selectedMesh: [0xd97915, '#d97915']
+        },
         menu: [
             {
                 label: 'File',
@@ -65,13 +69,13 @@ define(function (require) {
             },
             'TOOLS',
             {
-                icon: 'icon-yidong', value: 'tools-pickGeometry', title: 'pick up geometry (D)'
+                icon: 'icon-yidong', value: 'tool-pickGeometry', title: 'pick up geometry (D)'
             },
             {
-                icon: 'icon-shuxingxuanze', value: 'tools-pickJoint', title: 'pick up joints of geometry (F)'
+                icon: 'icon-shuxingxuanze', value: 'tool-pickJoint', title: 'pick up joints of geometry (F)'
             },
             {
-                icon: 'icon-bulb', value: 'tools-pickLight', title: 'pick up light source (L)'
+                icon: 'icon-bulb', value: 'tool-pickLight', title: 'pick up light source (L)'
             },
             'CAMERA',
             {

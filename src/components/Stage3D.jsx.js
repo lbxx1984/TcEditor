@@ -120,14 +120,17 @@ define(function (require) {
             }
             // 热更新物体
             if (nextProps.mesh3d != this.props.mesh3d) {
+                this.meshArray = [];
                 for (var key in nextProps.mesh3d) {
                     if (!nextProps.mesh3d.hasOwnProperty(key)) continue;
                     var mesh = nextProps.mesh3d[key];
                     mesh.tc = mesh.tc || {};
+                    this.meshArray.push(mesh);
                     if (mesh.tc.add) continue;
                     mesh.tc.add = true;
                     this.scene.add(mesh);
                 }
+
             }
             // 热更新舞台
             if (nextProps.panelCount !== this.props.panelCount && nextProps.panelCount * this.props.panelCount === 0) {
@@ -175,23 +178,30 @@ define(function (require) {
             this.mouseCurrent2D = mouse2D;
             this.mouseCurrent3D = mouse3D;
             this.context.dispatch('changeMouse3D', mouse3D);
+            var callbackParam = {
+                event: e,
+                cameraInfo: {
+                    radius: this.props.cameraRadius,
+                    angleA: this.props.cameraAngleA,
+                    angleB: this.props.cameraAngleB,
+                    lookAt: this.props.cameraLookAt
+                },
+                stage3D: this,
+                mouseDown2D: this.mouseDown2D,
+                mouseDown3D: this.mouseDown3D,
+                mouseCurrent2D: mouse2D,
+                mouseCurrent3D: mouse3D,
+                mouseDelta2D: mouseDelta2D,
+                mouseDelta3D: mouseDelta3D
+            };
             // 拖拽命令
             if (this.props.tool && this.mousedown && !this.isCameraRotating) {
-                this.context.dispatch(this.props.tool, {
-                    cameraInfo: {
-                        radius: this.props.cameraRadius,
-                        angleA: this.props.cameraAngleA,
-                        angleB: this.props.cameraAngleB,
-                        lookAt: this.props.cameraLookAt
-                    },
-                    stage3D: this,
-                    mouseDown2D: this.mouseDown2D,
-                    mouseDown3D: this.mouseDown3D,
-                    mouseCurrent2D: mouse2D,
-                    mouseCurrent3D: mouse3D,
-                    mouseDelta2D: mouseDelta2D,
-                    mouseDelta3D: mouseDelta3D
-                }, true);
+                this.context.dispatch(this.props.tool, callbackParam, true);
+                return;
+            }
+            // 普通鼠标移动
+            if (this.props.tool && !this.isCameraRotating) {
+                this.context.dispatch(this.props.tool, callbackParam, false);
             }
         },
 
@@ -210,9 +220,14 @@ define(function (require) {
             this.mouseCurrent2D = {x: 0, y: 0};
             this.mouseCurrent3D = {x: 0, y: 0, z: 0};
             // 拖拽生成了新的mesh
-            if (typeof this.props.tool === 'string' && this.props.tool.indexOf('geometry-') === 0 && this.tempMesh) {
+            if (this.tempMesh && !this.isCameraRotating) {
                 this.context.dispatch('addMesh', this.tempMesh);
                 this.tempMesh = null;
+                return;
+            }
+            // 普通mouseup
+            if (typeof this.props.tool === 'string') {
+                this.context.dispatch(this.props.tool, 'mouseup');
             }
         },
 
@@ -245,7 +260,6 @@ define(function (require) {
         var cameraAngleA = props.cameraAngleA;
         var cameraAngleB = props.cameraAngleB;
         var cameraRadius = props.cameraRadius;
-        var cameraLookAt = props.cameraLookAt;
         var coordinateContainer = me.coordinateContainer;
         var grid = me.grid;
         var y = cameraRadius * Math.sin(Math.PI * cameraAngleA / 180);
@@ -260,9 +274,9 @@ define(function (require) {
             coordinateContainer.rotation.x = grid.rotation.x = 0;
         }
         me.camera.position.set(
-            x + cameraLookAt.x,
-            y + cameraLookAt.y,
-            z + cameraLookAt.z
+            x + props.cameraLookAt.x,
+            y + props.cameraLookAt.y,
+            z + props.cameraLookAt.z
         );
     }
 
@@ -282,20 +296,7 @@ define(function (require) {
         var height = me.refs.container.offsetHeight;
         me.raycaster.setFromCamera(new THREE.Vector3((x / width) * 2 - 1, - (y / height) * 2 + 1, 0), me.camera);
         var intersects = me.raycaster.intersectObjects([geo]);
-        var point = new THREE.Vector3();
-        if (intersects.length > 0) {
-            point = intersects[0].point;
-            if (Math.abs(point.x) < 5) {
-                point.x = 0;
-            }
-            if (Math.abs(point.y) < 5) {
-                point.y = 0;
-            }
-            if (Math.abs(point.z) < 5) {
-                point.z = 0;
-            }
-        }
-        return point.clone();
+        return intersects.length > 0 ? intersects[0].point.clone() : new THREE.Vector3();
     }
 
 

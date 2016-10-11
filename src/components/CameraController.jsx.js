@@ -171,16 +171,15 @@ define(function (require) {
                     this.intersected.material.setValues({color: this.props.hoverColor});
                 }
             }
-            else {
-                if (this.intersected) {
-                    this.intersected.material.setValues({color: this.props.textureColor});
-                }
+            else if (this.intersected) {
+                this.intersected.material.setValues({color: this.props.textureColor});
                 this.intersected = null;
             }
         },
 
         onMouseDown: function (e) {
             this.mousedown = true;
+            this.props.parentStage.isCameraRotating = true;
             this.mousePos = [e.clientX, e.clientY];
             window.addEventListener('mousemove', this.onWindowMouseMove);
             window.addEventListener('mouseup', this.onWindowMouseUp);
@@ -193,7 +192,6 @@ define(function (require) {
             var b = this.props.cameraAngleB;
             if (da === 0 && db === 0) return;
             this.mousePos = [e.clientX, e.clientY];
-            this.cameraRotated = true;
             da = this.props.cameraMoveSpeed * da * 90 / Math.PI / window.screen.availHeight;
             da = a < 90 && a + da > 90 ? 0 : da;
             da = a > -90 && a + da < -90 ? 0 : da;
@@ -210,18 +208,14 @@ define(function (require) {
 
         onWindowMouseUp: function (e) {
             this.mousedown = false;
-            this.cameraRotated = false;
             this.props.parentStage.isCameraRotating = false;
             window.removeEventListener('mousemove', this.onWindowMouseMove);
             window.removeEventListener('mouseup', this.onWindowMouseUp);
         },
 
         onMouseUp: function (e) {
-            if (this.cameraRotated || !this.mousedown) {
-                this.cameraRotated = false;
-                return;
-            }
             this.mousedown = false;
+            this.props.parentStage.isCameraRotating = false;
             if (this.intersected == null) return;
             var c = ANGLE_CONFIG[this.intersected.tid];
             this.context.dispatch('changeCamera3D', {
@@ -230,13 +224,21 @@ define(function (require) {
             });
         },
 
+        onMouseOut: function () {
+            if (this.intersected) {
+                this.intersected.material.setValues({color: this.props.textureColor});
+            }
+            this.intersected = null;
+        },
+
         render: function () {
             var containerProps = {
                 className: 'tc-camera-controller',
                 ref: 'container',
                 onMouseMove: this.onMouseMove,
                 onMouseDown: this.onMouseDown,
-                onMouseUp: this.onMouseUp
+                onMouseUp: this.onMouseUp,
+                onMouseOut: this.onMouseOut
             };
             return (
                 <div {...containerProps}></div>

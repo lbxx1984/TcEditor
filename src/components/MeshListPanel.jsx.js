@@ -22,7 +22,11 @@ define(function (require) {
         },
         // @override
         shouldComponentUpdate: function(nextProps, nextState) {
-            if (nextProps.mesh === this.props.mesh && nextProps.group === this.props.group) {
+            if (
+                nextProps.mesh === this.props.mesh
+                && nextProps.group === this.props.group
+                && nextProps.selectedMesh === this.props.selectedMesh
+            ) {
                 return false;
             }
             return true;
@@ -34,6 +38,7 @@ define(function (require) {
                 <div className="tc-meshlist">
                     <div className="tc-panel-title-bar">
                         <span className="iconfont icon-guanbi1"></span>
+                        <span className="iconfont icon-xinjianwenjianjia"></span>
                         <span className={'iconfont ' + expendBtnIcon}></span>
                         Mesh
                     </div>
@@ -68,6 +73,12 @@ define(function (require) {
             groupItem.locked = groupItem.locked && item.tc.locked;
             groupItem.visible = groupItem.visible || item.visible;
         }
+        result.map(function (item) {
+            if (item.children.length === 0) {
+                item.locked = false;
+                item.visible = true;
+            }
+        });
         return result;
     }
 
@@ -82,9 +93,9 @@ define(function (require) {
             doms.push(
                 <div className="folder-container" key={'group-contianer-' + group.label}>
                     <span className={'del-icon iconfont icon-shanchu' + delIcon}></span>
+                    <span className={'folder-icon iconfont ' + folderIcon}></span>
                     <span className={'visible-icon iconfont ' + visibleIcon}></span>
                     <span className={'lock-icon iconfont ' + lockedIcon}></span>
-                    <span className={'folder-icon iconfont ' + folderIcon}></span>
                     <div className="main-label">{group.label}</div>
                 </div>
             );
@@ -97,9 +108,11 @@ define(function (require) {
             var lockedIcon = tc.locked ? 'icon-suo1' : 'icon-suo';
             tc.birth = tc.birth || new Date();
             var name = tc.name || mesh.geometry.type.replace('Geometry', ' ')
-                + uiUtil.dateFormat(tc.birth, 'YYYY-MM-DD hh:mm');
+                + uiUtil.dateFormat(tc.birth, 'DD/MM hh:mm:ss');
+            var containerClass = 'mesh-container'
+                + (me.props.selectedMesh && me.props.selectedMesh.uuid === mesh.uuid ? ' mesh-selected' : '')
             doms.push(
-                <div className="mesh-container" key={mesh.uuid}>
+                <div className={containerClass} key={mesh.uuid}>
                     <span className={'del-icon iconfont icon-shanchu'}></span>
                     <span className={'visible-icon iconfont ' + visibleIcon}></span>
                     <span className={'lock-icon iconfont ' + lockedIcon}></span>
@@ -108,5 +121,6 @@ define(function (require) {
             );
         }
     }
+
 
 });

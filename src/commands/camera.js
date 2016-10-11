@@ -12,10 +12,11 @@ define(function (require) {
     return {
         // 平移摄像机
         'camera-move': function (param, dragging) {
-            if (!dragging) {
-                this.get('tool') !== 'camera-move' && this.set('tool', 'camera-move');
+            if (this.get('tool') !== 'camera-move') {
+                this.set('tool', 'camera-move');
                 return;
             }
+            if (!dragging) return;
             var stage = param.stage3D;
             var angleB = stage.props.cameraAngleB;
             var speed = stage.props.cameraMoveSpeed;

@@ -46,7 +46,9 @@ define(function (require) {
             var hash = _.extend({}, this.get('mesh3d'));
             obj3D.tc = {
                 birth: new Date(),
-                add: true
+                add: true,
+                materialColor: obj3D.material.color.getHex(),
+                materialEmissive: obj3D.material.emissive.getHex()
             };
             hash[obj3D.uuid] = obj3D;
             this.set('mesh3d', hash);

@@ -1,5 +1,8 @@
 .tc-meshlist {
-
+    .icon-xinjianwenjianjia {
+        float: right;
+        margin-right: 10px;
+    }
     .folder-container, .mesh-container {
         position: relative;
         border-left: 1px solid @border-left-color;
@@ -9,8 +12,15 @@
         .iconfont {
             margin-right: 5px;
         }
+        .icon-shanchu {
+            float: right;
+        }
         .main-label {
             position: absolute;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: all;
         }
         &:hover {
             background-color: @background-color-hover;
@@ -20,34 +30,25 @@
         .folder-icon {
             margin: 0 5px;
         }
-        .visible-icon, .lock-icon {
-            float: right;
-        }
         .main-label {
             top: 2px;
             bottom: 0px;
-            left: 30px;
+            left: 70px;
             right: 70px;
         }
     }
     .mesh-container {
         .visible-icon {
-            margin-left: 15px;
+            margin-left: 25px;
         }
         .main-label {
             top: 2px;
             bottom: 0px;
-            left: 55px;
+            left: 70px;
             right: 30px;
         }
     }
-    .icon-shanchu {
-        float: right;
-    }
-    .main-label {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        word-break: all;
+    .mesh-selected {
+        background-color: @background-color-checked;
     }
 }

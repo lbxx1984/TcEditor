@@ -11,7 +11,8 @@ define(function (require) {
         require('../commands/camera'),
         require('../commands/stage'),
         require('../commands/system'),
-        require('../commands/geometry')
+        require('../commands/geometry'),
+        require('../commands/tool')
     );
 
 });
