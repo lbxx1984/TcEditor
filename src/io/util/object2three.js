@@ -53,13 +53,14 @@ define(function (require) {
             material.needsUpdate = true;
         }
         function gotImg(e) {
-            if (e instanceof FileError) return;
-            var img = document.createElement('img');
-            img.src = e.target.result;
-            img.path = texture.image;
-            img.onload = function () {
-                me.imgCache[key] = this;
-                addMap(this);
+            if (e && e.target && e.target.result) {
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.path = texture.image;
+                img.onload = function () {
+                    me.imgCache[key] = this;
+                    addMap(this);
+                }
             }
         }
     }

@@ -39,7 +39,12 @@ define(function (require) {
         return new Promise(function (resolve, reject) {
             fs.read(path, gotFile, {type: type});
             function gotFile(evt) {
-                evt instanceof FileError ? reject() : resolve(evt.target.result);
+                if (evt && evt.target && evt.target.result) {
+                    resolve(evt.target.result);
+                }
+                else {
+                    reject();
+                }
             }
         });
     };
@@ -51,7 +56,12 @@ define(function (require) {
         var fs = this.routing.fs;
         return new Promise(function (resolve, reject) {
             fs.write(path, {data: blob}, function (result) {
-                result instanceof FileError ? reject() : resolve();
+                if (result) {
+                    resolve();
+                }
+                else {
+                    reject();
+                }
             });
         });
     };

@@ -57,12 +57,13 @@ define(function (require) {
             var path = textures.pop();
             var fileName = path.split('/').pop();
             me.fs.read(path, function (e) {
-                if (e instanceof FileError) {
+                if (e && e.target && e.target.result) {
+                    zip.file('.texture/' + fileName, e.target.result);
                     zipTextures();
-                    return;
                 }
-                zip.file('.texture/' + fileName, e.target.result);
-                zipTextures();
+                else {
+                    zipTextures();
+                }
             }, {type: 'readAsArrayBuffer'});
         }
         

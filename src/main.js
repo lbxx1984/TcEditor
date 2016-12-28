@@ -46,12 +46,22 @@ define(function (require) {
     function enterWorkingSpace() {
         return new Promise(function (resolve, reject) {
             routing.fs.md(window.editorKey, function (result) {
-                result instanceof FileError ? reject() : resolve();
+                if (result && (result.isDirectory || result.isFile)) {
+                    resolve();
+                }
+                else {
+                    reject();
+                }
             });
         }).then(function () {
             return new Promise(function (resolve, reject) {
                 routing.fs.cd(window.editorKey, function (result) {
-                    result instanceof FileError ? reject() : resolve();
+                    if (result && (result.isDirectory || result.isFile)) {
+                        resolve();
+                    }
+                    else {
+                        reject();
+                    }
                 });
             });
         }, unsupported);
