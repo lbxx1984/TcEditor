@@ -2,7 +2,7 @@
  * 树
  * @author Brian Li
  * @email lbxxlht@163.com
- * @version 0.0.2.1
+ * @version 0.0.2.2
  */
 define(function (require) {
 
@@ -54,6 +54,10 @@ define(function (require) {
          * @attention tree的value类型是字符串，用JSON.stringify方法将示例中的数据结构转换，因此操作value时不能出环
          * @param {Object} expand 树的展开状态，以TreeItemObject.value为key，存在的key表示该子树的根层级为展开状态
          */
+        // @override
+        contextTypes: {
+            appSkin: React.PropTypes.string
+        },
         // @override
         mixins: [InputWidget],
         // @override

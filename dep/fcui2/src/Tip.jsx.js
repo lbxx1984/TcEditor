@@ -2,7 +2,7 @@
  * 提示
  * @author Brian Li
  * @email lbxxlht@163.com
- * @version 0.0.2.1
+ * @version 0.0.2.2
  */
 define(function (require) {
 
@@ -23,11 +23,17 @@ define(function (require) {
          * @param {ReactClass} renderer Tip内部渲染的组件，如果指定，icon属性无效
          * @param {Object} renderProps Tip内部组件渲染的属性集
          * @param {String} layerLocation 浮层的定位配置，具体见src\core\layerTools.js
+         * @param {Function} contentFactory 浮层展开前，可以通过此属性方法获取新的content
          * @param {Function} onOffset 浮层位置修正回调
+         * @param {Function} layerClassName 浮层的自定义样式
          */
         /**
          * @fire Import src\Layer.jsx.js layer onOffset
          */
+        // @override
+        contextTypes: {
+            appSkin: React.PropTypes.string
+        },
         // @override
         getDefaultProps: function () {
             return {
@@ -43,16 +49,41 @@ define(function (require) {
                 renderer: null,
                 renderProps: {},
                 layerLocation: 'right left top bottom',
-                onOffset: null
+                contentFactory: null,
+                onOffset: null,
+                layerClassName: ''
             };
         },
         getInitialState: function () {
             return {
                 layerOpen: false,
-                mouseenter: false
+                mouseenter: false,
+                outerContent: null
             };
         },
         onMouseEnter: function () {
+            if (typeof this.props.contentFactory === 'function' && this.state.outerContent == null) {
+                var result = this.props.contentFactory(this);
+                if (typeof result === 'string' && result.length) {
+                    this.setState({
+                        outerContent: result,
+                        mouseenter: true,
+                        layerOpen: true
+                    });
+                    return;
+                }
+                if (result && typeof result.then === 'function') {
+                    var me = this;
+                    result.then(function (content) {
+                        me.setState({
+                            outerContent: typeof content === 'string' && content.length ? content : null,
+                            mouseenter: true,
+                            layerOpen: true
+                        });
+                    });
+                    return;
+                }
+            }
             this.setState({
                 mouseenter: true,
                 layerOpen: true
@@ -68,8 +99,8 @@ define(function (require) {
                 return;
             }
             if (typeof this.props.renderer === 'function') return;
-            result.left += '1_6_'.indexOf(result.clockPosition + '_') > -1 ? 10 : -15;
-            result.top += '12_1_'.indexOf(result.clockPosition + '_') > -1  ? -5 : 10;
+            result.left += '1_6_'.indexOf(result.clockPosition + '_') > -1 ? 25 : -15;
+            result.top += '12_1_'.indexOf(result.clockPosition + '_') > -1  ? -8 : 10;
         },
         render: function () {
             var containerProp = cTools.containerBaseProps('tip', this, {
@@ -79,23 +110,33 @@ define(function (require) {
                 },
                 style: (this.props.title || this.props.content) ? undefined : {display: 'none'}
             });
+            var skin = (this.context.appSkin ? this.context.appSkin + '-' : '')
+                    + (this.props.skin ? this.props.skin : 'normal');
+            var content = this.props.content;
+            content = this.state.outerContent == null ? content : this.state.outerContent;
             var layerProp = {
                 ref: 'layer',
-                isOpen: this.state.layerOpen && (this.props.title || this.props.content) && !this.props.disabled,
+                isOpen: this.state.layerOpen && (this.props.title || content) && !this.props.disabled,
                 anchor: this.refs.container,
                 location: this.props.layerLocation,
                 onOffset: this.offsetLayerPosition,
-                onMouseLeave: this.onMouseLeave
+                onMouseLeave: this.onMouseLeave,
+                skin: skin === 'oneux3-normal' ? 'normal' : skin
             };
             var Renderer = this.props.renderer;
             containerProp.className += typeof Renderer === 'function' ? '' : ' font-icon ' + this.props.icon;
+            var layerClassName = 'fcui2-tip-layer' + (this.props.layerClassName ? ' ' + this.props.layerClassName : '');
             return (
                 <div {...containerProp}>
                     {typeof Renderer === 'function' ? <Renderer {...this.props.renderProps}/> : null}
                     <Layer {...layerProp}>
-                        <div className="fcui2-tip-layer">
-                            <div className="tip-title">{this.props.title}</div>
-                            <div className="tip-content" dangerouslySetInnerHTML={{__html: this.props.content}}></div>
+                        <div className={layerClassName}>
+                            {this.props.title ? <div className="tip-title">{this.props.title}</div> : null}
+                            {
+                                content
+                                ? <div className="tip-content" dangerouslySetInnerHTML={{__html: content}}></div>
+                                : null
+                            }
                         </div>
                     </Layer>
                 </div>

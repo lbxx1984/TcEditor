@@ -2,7 +2,7 @@
  * 列表
  * @author Brian Li
  * @email lbxxlht@163.com
- * @version 0.0.2.1
+ * @version 0.0.2.2
  */
 define(function (require) {
 
@@ -33,6 +33,10 @@ define(function (require) {
          * @param {String} value 列表项对应的值，随事件对象通过返回
          * @param {Boolean} disabled 列表项是否可用
          */
+        // @override
+        contextTypes: {
+            appSkin: React.PropTypes.string
+        },
         // @override
         getDefaultProps: function () {
             return {

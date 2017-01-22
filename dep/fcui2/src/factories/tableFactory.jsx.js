@@ -1,6 +1,7 @@
 
 define(function (require) {
 
+    var _ = require('underscore');
     var React = require('react');
     var TableMessage = require('../components/table/MessageBar.jsx');
     var TableHeader = require('../components/table/NormalHeader.jsx');
@@ -21,7 +22,7 @@ define(function (require) {
             var fields = tools.fieldConfigFactory(me, Others);
             for (var i = 0; i < fields.length; i++) {
                 var width = cTools.getValueFromPropsAndStyle(fields[i], 'width', 0);
-                td.push(<col style={{width: width + 'px'}} key={'colgroup-' + i} />);
+                td.push(<col style={{width: width + 'px', maxWidth: width + 'px'}} key={'colgroup-' + i} />);
             }
             return <colgroup>{td}</colgroup>
         },
@@ -73,17 +74,14 @@ define(function (require) {
                 return null;
             }
             var fields = tools.fieldConfigFactory(me, Others);
-            var prop = {
-                message: me.props.message && me.props.message.content ? me.props.message.content : '',
-                buttonLabel: me.props.message && me.props.message.buttonLabel ? me.props.message.buttonLabel : '',
-                onClick: me.props.onAction,
-                colSpan: fields.length
-            };
-            return (<TableMessage {...prop}/>);
+            var messageConfig = _.extend({}, me.props.message);
+            var Message = typeof messageConfig.renderer === 'function' ? messageConfig.renderer : TableMessage;
+            delete messageConfig.renderer;
+            return (<Message {...messageConfig} onAction={me.props.onAction} colSpan={fields.length}/>);
         },
 
         // 生成行
-        lineFactory: function (me) {
+        lineFactory: function (me, isShadow) {
             var lines = [];
             var config = tools.fieldConfigFactory(me, Others);;
             var datasource = me.props.datasource instanceof Array ? me.props.datasource : [];
@@ -100,6 +98,8 @@ define(function (require) {
             }
             // 渲染行
             for (var index = 0; index < datasource.length; index++) {
+                // 影子没必要所有行全显示，只显示一部分行就差不多了。出现对不起的情况几率会大大降低，并且提高性能
+                if (isShadow && index % 3 !== 0) continue;
                 var td = [];
                 var item = datasource[index];
                 var selectState = tools.getRowSelectedState(index, me.___getValue___());

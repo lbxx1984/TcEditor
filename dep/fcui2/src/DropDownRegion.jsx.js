@@ -10,7 +10,7 @@ define(function (require) {
     var React = require('react');
     var InputWidget = require('./mixins/InputWidget');
 
-    
+
     var Layer = require('./Layer.jsx');
     var Region = require('./Region.jsx');
     var Button = require('./Button.jsx');
@@ -29,12 +29,17 @@ define(function (require) {
          * @param {String} label 下拉按钮上显示的文字，如果type为'single'并且value的值合法，将显示地域名称
          * @param {String} openLayerType 控制浮层打开的动作，onMouseEnter或onClick
          * @param {Import|Properties} src\Region.jsx.js type noLinkage provinceRenderer regionRenderer countryRenderer
+         * @param {Import|Properties} src\Region.jsx.js countries
          * @param {Import|Properties} src\mixins\InputWidget.js
          *      value onChange name validations customErrorTemplates valueTemplate
          */
         /**
          * @fire Import src\mixins\InputWidget.js XXX onChange
          */
+        // @override
+        contextTypes: {
+            appSkin: React.PropTypes.string
+        },
         // @override
         mixins: [InputWidget],
         // @override
@@ -53,6 +58,7 @@ define(function (require) {
                 provinceRenderer: undefined,
                 regionRenderer: undefined,
                 countryRenderer: undefined,
+                countries: undefined,
                 // mixin
                 valueTemplate: ''
             };
@@ -177,7 +183,8 @@ define(function (require) {
                 location: 'bottom right',
                 style: {padding: '5px 0'},
                 onMouseEnter: this.onLayerMouseEnter,
-                onMouseLeave: this.onLayerMouseLeave
+                onMouseLeave: this.onLayerMouseLeave,
+                skin: this.context.appSkin ? (this.context.appSkin + '-normal') : 'normal'
             };
             var regionProp = {
                 ref: 'region',
@@ -188,13 +195,14 @@ define(function (require) {
                 provinceRenderer: this.props.provinceRenderer,
                 regionRenderer: this.props.regionRenderer,
                 countryRenderer: this.props.countryRenderer,
+                countries: this.props.countries,
                 onChange: this.onRegionChange
             };
             var enterProp = {
                 label: buttonLabels.enter,
                 skin: 'important',
                 style: {margin: '5px 10px'},
-                disabled: this.state.multiValue === me.props.value,
+                disabled: this.state.multiValue === me.props.value || !this.state.multiValue,
                 onClick: this.onEnterClick
             };
             var cancelProp = {
@@ -209,7 +217,9 @@ define(function (require) {
             else if (this.props.openLayerType !== 'onMouseEnter') {
                 containerProp[this.props.openLayerType] = this.open;
             }
-            containerProp.className += layerProp.isOpen ? ' fcui2-dropdownlist-hover' : '';
+            var skin = this.props.skin ? this.props.skin : 'normal';
+            skin = this.context.appSkin ? (this.context.appSkin + '-' + skin) : skin;
+            containerProp.className += layerProp.isOpen ? (' fcui2-dropdownlist-' + skin + '-hover') : '';
             return (
                 <div {...containerProp}>
                     <div className="icon-right font-icon font-icon-largeable-caret-down"></div>

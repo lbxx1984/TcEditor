@@ -9,7 +9,7 @@ define(function (require) {
 
     var React = require('react');
     var InputWidget = require('./mixins/InputWidget');
-    
+
     var Layer = require('./Layer.jsx');
     var List = require('./List.jsx');
     var cTools = require('./core/componentTools');
@@ -33,6 +33,10 @@ define(function (require) {
          * @fire Import src\mixins\InputWidget.js XXX onChange
          */
         // @override
+        contextTypes: {
+            appSkin: React.PropTypes.string
+        },
+        // @override
         mixins: [InputWidget],
         // @override
         getDefaultProps: function () {
@@ -45,6 +49,9 @@ define(function (require) {
                 // mixin
                 placeholder: 'please select',
                 openLayerType: 'onMouseEnter',
+                layerLocation: '',
+                onLayerOffset: function () {},
+                hideLayerScroll: false,
                 datasource: [],
                 // mixin
                 valueTemplate: ''
@@ -85,16 +92,23 @@ define(function (require) {
                 isOpen: this.state.layerOpen && this.props.datasource.length && !this.props.disabled,
                 anchor: this.refs.container,
                 onMouseLeave: cTools.closeLayerHandlerFactory(this, 'layerOpen'),
-                style: {
-                    maxHeight: '240px',
-                    overflow: 'auto'
-                }
+                location: this.props.layerLocation,
+                onOffset: this.props.onLayerOffset,
+                skin: this.context.appSkin ? (this.context.appSkin + '-normal') : 'normal'
             };
             var listProp = {
                 datasource: this.props.datasource,
                 ref: 'list',
-                onClick: this.onListClick
+                onClick: this.onListClick,
+                style: {
+                    maxHeight: '242px',
+                    overflowY: 'auto',
+                    overflowX: 'hidden'
+                }
             };
+            if (this.props.hideLayerScroll) {
+                delete listProp.style;
+            }
             containerProp[this.props.openLayerType] = this.onMouseEnter;
             containerProp.onMouseLeave = this.onMouseLeave;
             for (var i = 0; i < this.props.datasource.length; i++) {
@@ -103,8 +117,9 @@ define(function (require) {
                     break;
                 }
             }
-            containerProp.className += layerProp.isOpen ? ' fcui2-dropdownlist-hover' : '';
-
+            var skin = this.props.skin ? this.props.skin : 'normal';
+            skin = this.context.appSkin ? (this.context.appSkin + '-' + skin) : skin;
+            containerProp.className += layerProp.isOpen ? (' fcui2-dropdownlist-' + skin + '-hover') : '';
             return (
                 <div {...containerProp}>
                     <div className="icon-right font-icon font-icon-largeable-caret-down"></div>

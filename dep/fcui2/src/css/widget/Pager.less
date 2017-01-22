@@ -1,5 +1,4 @@
-// version 0.0.2
-
+// version 0.0.3
 .fcui2-pager {
     .fcui2-button {
         margin-left: 5px;
@@ -8,13 +7,27 @@
             padding: 0;
         }
     }
+    .pager-btn{
+        width: 60px;
+    }
+    .page-jumper {
+        margin-left: 20px;
+        .fcui2-numberbox {
+            background: transparent;
+            position: relative;
+            left: 9px;
+            input {
+                padding: 0 !important;
+                text-align: center;
+            }
+        }
+    }
 }
 
 .fcui2-pager-simple {
     .fcui2-button {
         background-color: transparent;
         border: 0;
-        width: auto;
         input {
             color: @color-link; 
             &:hover {
@@ -30,6 +43,28 @@
     .fcui2-button-active {
         input {
             color: @color-text-3;
+        }
+    }
+}
+
+// oneux3
+.fcui2-pager {
+    .fcui2-button-oneux3-normal, .fcui2-button-oneux3-active {
+        -moz-border-radius: 0px;
+        -webkit-border-radius: 0px;
+        border-radius: 0px;
+    }
+}
+.fcui2-pager-simple {
+    .fcui2-button-oneux3-active {
+        background-color: @oneux3-bgcolor-c20;
+        input {
+            color: @oneux3-color-c8;
+        }
+    }
+    .fcui2-button-oneux3-normal {
+        input {
+            color: @oneux3-color-c1;
         }
     }
 }

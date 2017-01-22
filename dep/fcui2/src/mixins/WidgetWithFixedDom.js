@@ -29,22 +29,30 @@ define(function (require) {
             var conf = this.props.fixedPosition;
             typeof this.onWindowScroll === 'function' && this.onWindowScroll();
             if (!(conf instanceof Array)) return;
+            this.oldDataHash = this.oldDataHash || {};
             for (var i = 0; i < conf.length; i++) {
                 // 获取dom
                 var obj = conf[i];
                 var dom = this.refs[obj.ref];
+                var oldData = this.oldDataHash[obj.ref];
                 if (!dom || !dom.tagName || isNaN(obj.top) || !util.isDOMVisible(dom)) continue;
+                // 未记录数据则记录数据
+                if (!oldData) {
+                    this.___recordFixedDOMPosition___();
+                    oldData = this.oldDataHash[obj.ref] || {};
+                }
                 // 检查位置并设置fixed
                 var pos = util.getDOMPosition(dom);
                 var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
-                if (scrollY - dom.__posTop + obj.top < 0) {
-                    dom.className = dom.__className;
-                    dom.style.zIndex = dom.__zIndex;
-                    dom.style.top = dom.__top;
+                var fixedClass = 'fcui2-fixed-with-scroll';
+                if (scrollY - oldData.posTop + obj.top < 0) {
+                    dom.className = dom.className.replace(/ fcui2-fixed-with-scroll/g, '');
+                    dom.style.zIndex = oldData.zIndex;
+                    dom.style.top = oldData.top;
                     typeof this.onDomPositionUnFixed === 'function' && this.onDomPositionUnFixed(obj.ref);
                 }
                 else if (pos.y < obj.top) {
-                    dom.className = dom.__className + ' fcui2-fixed-with-scroll';
+                    dom.className += dom.className.indexOf(fixedClass) > -1 ? '' : ' ' + fixedClass;
                     dom.style.top = obj.top + 'px';
                     dom.style.zIndex = obj.zIndex;
                     typeof this.onDomPositionFixed === 'function' && this.onDomPositionFixed(obj.ref);
@@ -57,12 +65,16 @@ define(function (require) {
             for (var i = 0; i < conf.length; i++) {
                 var obj = conf[i];
                 var dom = this.refs[obj.ref];
-                if (!dom || !dom.tagName) continue;
+                if (!dom || !dom.tagName) {
+                    continue;
+                }
                 var pos = util.getDOMPosition(dom);
-                dom.__className = dom.className;
-                dom.__posTop = pos.top;
-                dom.__zIndex = dom.style.zIndex;
-                dom.__top = dom.style.top;
+                this.oldDataHash = this.oldDataHash || {};
+                this.oldDataHash[obj.ref] = {
+                    posTop: pos.top,
+                    zIndex: dom.style.zIndex,
+                    top: dom.style.top
+                }
             }
         }
     };

@@ -103,8 +103,8 @@ define(function (require) {
 
             this.___container___ = container;
             this.___workspace___ = workspace;
-            this.___content___ = workspace.childNodes[0];
             this.___expandButton___ = expandButton;
+            this.___content___ = workspace.childNodes[0];
             this.___enterButton___ = workspace.childNodes[1].childNodes[0];
             this.___cancelButton___ = workspace.childNodes[1].childNodes[1];
             this.___hideButton___ = workspace.childNodes[2];
@@ -133,21 +133,33 @@ define(function (require) {
 
 
         onHidden: function (e) {
-            if (!this.___container___ || !this.props.isOpen || !this.___appended___) return; 
+            if (!this.___container___ || !this.props.isOpen || !this.___appended___) return;
+            if (typeof this.props.onAction === 'function' && this.props.onAction('HideButtonClick') === false) {
+                return;
+            }
             document.body.removeChild(this.___container___);
-            document.body.style.overflow = this.___oldOverflow___;
             document.body.appendChild(this.___expandButton___);
             tools.addExpandButton(this.___expandButton___);
             tools.freshExpandButton();
-            typeof this.props.onAction === 'function' && this.props.onAction('HideButtonClick');
+            var bodyStatus = util.getNamespace('fcui2-body-scroll-status') || {};
+            bodyStatus.windowNum--;
+            if (bodyStatus.windowNum === 0) {
+                document.body.style.overflowX = bodyStatus.overflowX;
+                document.body.style.overflowY = bodyStatus.overflowY;
+            }
+            this.___alreadyHide___ = true;
         },
 
 
         onExpand: function (e) {
             if (!this.___container___ || !this.props.isOpen || !this.___appended___) return;
             document.body.appendChild(this.___container___);
-            document.body.style.overflow = 'hidden';
             document.body.removeChild(this.___expandButton___);
+            var bodyStatus = util.getNamespace('fcui2-body-scroll-status') || {};
+            bodyStatus.windowNum++;
+            document.body.style.overflowX = 'hidden';
+            document.body.style.overflowY = 'hidden';
+            this.___alreadyHide___ = false;
             typeof this.props.onAction === 'function' && this.props.onAction('ExpandButtonClick');
         },
 
@@ -195,9 +207,17 @@ define(function (require) {
                 this.___footBarContent___.innerHTML = typeof props.footBarInnerHtml === 'string'
                     ? props.footBarInnerHtml : '';
                 if (!this.___appended___) {
-                    this.___oldOverflow___ = util.getStyle(document.body, 'overflow');
+                    // 记录滚动条组航太
+                    var bodyStatus = util.getNamespace('fcui2-body-scroll-status') || {};
+                    bodyStatus.windowNum = isNaN(bodyStatus.windowNum) ? 1 : bodyStatus.windowNum + 1;
+                    bodyStatus.overflowX = !bodyStatus.hasOwnProperty('overflowX')
+                        ? util.getStyle(document.body, 'overflowX') : bodyStatus.overflowX;
+                    bodyStatus.overflowY = !bodyStatus.hasOwnProperty('overflowY')
+                        ? util.getStyle(document.body, 'overflowY') : bodyStatus.overflowY;
+                    // 添加容器
                     document.body.appendChild(this.___container___);
-                    document.body.style.overflow = 'hidden';
+                    document.body.style.overflowX = 'hidden';
+                    document.body.style.overflowY = 'hidden';
                     this.___appended___ = true;
                 }
                 renderSubtreeIntoContainer(this, props.children, this.___content___, function () {
@@ -216,7 +236,6 @@ define(function (require) {
             ReactDOM.unmountComponentAtNode(this.___content___);
             try {
                 document.body.removeChild(this.___container___);
-                document.body.style.overflow = this.___oldOverflow___;
             }
             catch (e) {
                 // DO NOTHING
@@ -230,6 +249,14 @@ define(function (require) {
             tools.removeExpandButton(this.___expandButton___);
             tools.freshExpandButton();
             this.___appended___ = false;
+            var bodyStatus = util.getNamespace('fcui2-body-scroll-status') || {};
+            if (!this.___alreadyHide___) {
+                bodyStatus.windowNum--;
+            }
+            if (bodyStatus.windowNum === 0) {
+                document.body.style.overflowX = bodyStatus.overflowX;
+                document.body.style.overflowY = bodyStatus.overflowY;
+            }
         },
 
 

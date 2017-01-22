@@ -17,7 +17,7 @@ define(function (require) {
 
 
     model.fill(config);
-    // 这些数据需要从local storage里读出来，或者从文件里读出来
+    // 这些数据需要从localStorage里读出来，或者从文件里读出来
     model.fill({
         mesh3d: {},
         selectedMesh: null,

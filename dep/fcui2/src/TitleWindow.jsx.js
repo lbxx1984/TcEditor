@@ -14,11 +14,6 @@ define(function (require) {
     var noop = function () {};
 
 
-    var windowNum = 0;
-    var overflowX = null;
-    var overflowY = null;
-
-
     return React.createClass({
         /**
          * @properties
@@ -29,7 +24,7 @@ define(function (require) {
          * @param {Object} size TitleWindow窗体的尺寸，与isFullScreen互斥
          * @param {Number} size.width TitleWindow渲染后的宽度
          * @param {Number} size.height TitleWindow渲染后的高度
-         * @param {Boolean} isFullScreen TitleWindow弹出后时候直接全屏显示
+         * @param {Boolean} isFullScreen TitleWindow弹出后时候直接全屏显示：true，全屏；'height'，高度全屏宽度自适应；'width'，宽度全屏高度自适应；其他，自适应
          * @param {Boolean} isAutoResize TitleWindow是否根据内容变化自动调整宽度
          * @param {Boolean} showCloseButton 是否显示TitleWindow标题栏中的关闭按钮
          * @param {Function} onRender TitleWindow渲染完成后的回调
@@ -42,6 +37,10 @@ define(function (require) {
          * @param {Boolean} e.returnValue 可以通过param1.returnValue = false的方法阻止继续关闭
          * @param {ReactComponent}  e.targetComponent 当前组件实例
          */
+        // @override
+        contextTypes: {
+            appSkin: React.PropTypes.string
+        },
         // @override
         getDefaultProps: function () {
             return {
@@ -171,19 +170,27 @@ define(function (require) {
             var titleBar = this.___workspace___.childNodes[0];
             var className = props.className;
             var skin = props.skin;
+            var appSkin = this.context.appSkin;
             titleBar.childNodes[0].innerHTML = props.title;
             titleBar.childNodes[1].style.display = props.showCloseButton ? 'block': 'none';
             this.___workspace___.className = 'fcui2-titlewindow'
-                + (typeof className === 'string' && className.length ? (' ' + className) : '')
-                + ' fcui2-titlewindow-' + (typeof skin === 'string' && skin.length ? skin : 'normal');
+                + ' fcui2-titlewindow-'
+                + (typeof appSkin === 'string' && appSkin.length ? appSkin + '-' : '')
+                + (typeof skin === 'string' && skin.length ? skin : 'normal')
+                + (typeof className === 'string' && className.length ? (' ' + className) : '');
             if (!props.isOpen && !this.___appended___) return;
             // open
             var me = this;
             if (props.isOpen) {
                 if (!this.___appended___) {
-                    overflowX = windowNum === 0 ? util.getStyle(document.body, 'overflowX') : overflowX;
-                    overflowY = windowNum === 0 ? util.getStyle(document.body, 'overflowY') : overflowY;
-                    windowNum++;
+                    // 记录滚动条组航太
+                    var bodyStatus = util.getNamespace('fcui2-body-scroll-status') || {};
+                    bodyStatus.windowNum = isNaN(bodyStatus.windowNum) ? 1 : bodyStatus.windowNum + 1;
+                    bodyStatus.overflowX = !bodyStatus.hasOwnProperty('overflowX')
+                        ? util.getStyle(document.body, 'overflowX') : bodyStatus.overflowX;
+                    bodyStatus.overflowY = !bodyStatus.hasOwnProperty('overflowY')
+                        ? util.getStyle(document.body, 'overflowY') : bodyStatus.overflowY;
+                    // 添加容器
                     document.body.appendChild(this.___container___);
                     document.body.style.overflow = 'hidden';
                     if (props.size) {
@@ -196,10 +203,13 @@ define(function (require) {
                             this.___content___.style.height = height + 'px';  
                         }
                     }
-                    if (props.isFullScreen) {
-                        var doc = document.documentElement;
-                        this.___content___.style.width = (doc.offsetWidth - 10) + 'px';
-                        this.___content___.style.height = (doc.offsetHeight - 10 - titleBar.offsetHeight) + 'px';
+                    var doc = document.documentElement;
+                    var isFullScreen = props.isFullScreen + '';
+                    if (isFullScreen === 'true' || isFullScreen === 'width') {
+                        this.___content___.style.width = (doc.clientWidth - 10) + 'px';
+                    }
+                    if (isFullScreen === 'true' || isFullScreen === 'height') {
+                        this.___content___.style.height = (doc.clientHeight - 10 - titleBar.offsetHeight) + 'px';
                     }
                     this.___appended___ = true;
                 }
@@ -228,17 +238,19 @@ define(function (require) {
 
         removeSubTree: function () {
             if (!this.___appended___) return;
-            windowNum--;
+            // 恢复滚动条状态
+            var bodyStatus = util.getNamespace('fcui2-body-scroll-status') || {};
+            bodyStatus.windowNum--;
+            if (bodyStatus.windowNum === 0) {
+                document.body.style.overflowX = bodyStatus.overflowX;
+                document.body.style.overflowY = bodyStatus.overflowY;
+            }
             ReactDOM.unmountComponentAtNode(this.___content___);
             this.___workspace___.style.left = '-9999px';
             this.___workspace___.style.top = '-9999px'; 
             this.___content___.style.width = 'auto';
             this.___content___.style.height = 'auto'; 
             document.body.removeChild(this.___container___);
-            if (windowNum === 0) {
-                document.body.style.overflowX = overflowX;
-                document.body.style.overflowY = overflowY;
-            }
             clearInterval(this.___workerTimer___);
             this.___appended___ = false;
         },

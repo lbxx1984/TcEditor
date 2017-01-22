@@ -2,7 +2,7 @@
  * 开关
  * @author Brian Li
  * @email lbxxlht@163.com
- * @version 0.0.2.1
+ * @version 0.0.2.2
  */
 define(function (require) {
 
@@ -31,6 +31,10 @@ define(function (require) {
          * @param {String} e.target.value switch的值，'on'或'off'
          */
         // @override
+        contextTypes: {
+            appSkin: React.PropTypes.string
+        },
+        // @override
         mixins: [InputWidget],
         // @override
         getDefaultProps: function () {
@@ -44,7 +48,7 @@ define(function (require) {
                 // self
                 labels: {
                     on: language.on,
-                    off: language.off
+                    off: ''
                 },
                 value: '',
                 // mixin
