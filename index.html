@@ -38,7 +38,8 @@
             'react-dom': '../dep/react-dom.15.3.1.min',
             'react': '../dep/react.15.3.1.min',
             'underscore': '../dep/underscore.1.8.5',
-            'three': '../dep/three.84.min'
+            'three': '../dep/three.84.min',
+            'three-lib': '../dep/three-lib'
         },
         packages: [
             {
@@ -49,7 +50,7 @@
         ]
     });
     // 启动
-    require(['main']);
+    require(['three', 'main']);
 </script>
 </body>
 </html>

@@ -8,6 +8,9 @@ define(function (require) {
 
     var React = require('react');   
     var THREE = require('three');
+    var Transformer3D = require('three-lib/TransformControls');
+
+
     var CameraController = require('./CameraController.jsx');
     var animation = require('../common/animation');
 
