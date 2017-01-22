@@ -7,10 +7,12 @@ define(function (require) {
 
 
     return {
+        // 物体主要色配置
         colors: {
             normalMeshHover: [0xffff00, '#d97915'],
             selectedMesh: [0xd97915, '#d97915']
         },
+        // 菜单配置
         menu: [
             {
                 label: 'File',
@@ -53,6 +55,7 @@ define(function (require) {
                 ]
             }
         ],
+        // 命令栏配置
         command: [
             'VIEWS',
             {
