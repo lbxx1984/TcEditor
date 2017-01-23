@@ -12,6 +12,7 @@ define(function (require) {
     var InformationBar = require('./components/InformationBar.jsx');
     var Stage3D = require('./components/Stage3D.jsx');
     var MeshListPanel = require('./components/MeshListPanel.jsx');
+    var ToolsBar = require('./components/ToolsBar.jsx');
 
 
     return React.createClass({
@@ -41,7 +42,8 @@ define(function (require) {
                 tool: this.props.tool,
                 mesh3d: this.props.mesh3d,
                 style: style,
-                panelCount: this.props.panel.length
+                panelCount: this.props.panel.length,
+                selectedMesh: this.props.selectedMesh
             };
             var informationBarProps = {
                 mouse3d: this.props.mouse3d,
@@ -60,6 +62,7 @@ define(function (require) {
                 cameraAngleA: this.props.stage.camera3D.cameraAngleA,
                 style: style
             };
+            var toolsBarProps = toolsBarPropsFactory(this.props);
             return (
                 <div className="tc-root-container">
                     <Stage3D {...stage3dProps}/>
@@ -67,6 +70,7 @@ define(function (require) {
                     <CommandBar {...commandBarProps}/>
                     <InformationBar {...informationBarProps}/>
                     {this.props.panel.length ? panelFactory(this) : null}
+                    {toolsBarProps ? <ToolsBar {...toolsBarProps}/> : null}
                 </div>
             );
         }
@@ -93,6 +97,16 @@ define(function (require) {
             }
         });
         return <div className="tc-panel-container">{doms}</div>;
+    }
+
+
+    function toolsBarPropsFactory(props) {
+        if (props.tool === 'tool-pickGeometry' && props.selectedMesh) {
+            return {
+                datasource: props.transformer3D,
+                controls: props.transformer3Dinfo
+            };
+        }
     }
 
 });

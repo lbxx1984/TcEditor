@@ -22,7 +22,14 @@ define(function (require) {
         },
         // 修改系统工具集
         changeSystemTool: function (value) {
-            this.set('tool', value);
+            var selectedMesh = this.get('selectedMesh');
+            if (selectedMesh) {
+                selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
+            }
+            this.fill({
+                tool: value,
+                selectedMesh: null
+            });
         },
         // 修改系统操作面板状态
         changePanelConfig: function (value) {

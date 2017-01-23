@@ -61,6 +61,12 @@ define(function (require) {
         view: 'view-3d',
         // 编辑器当前处于响应拖拽事件的命令
         tool: 'camera-move',
+        // 变形工具工作状态
+        transformer3Dinfo: {
+            mode: 'translate',
+            size: 1,
+            space: 'world'
+        }
     });
     model.onChange = function (store) {
         render(store);

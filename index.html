@@ -50,7 +50,9 @@
         ]
     });
     // 启动
-    require(['three', 'main']);
+    require(['three'], function () {
+        require(['main']);
+    });
 </script>
 </body>
 </html>

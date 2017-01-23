@@ -8,9 +8,9 @@ define(function (require) {
 
     var React = require('react');   
     var THREE = require('three');
+
+
     var Transformer3D = require('three-lib/TransformControls');
-
-
     var CameraController = require('./CameraController.jsx');
     var animation = require('../common/animation');
 
@@ -75,6 +75,8 @@ define(function (require) {
             this.scene = new THREE.Scene();
             // WebGL渲染器
             this.renderer = new THREE.WebGLRenderer({antialias: true});
+            // 物体变形工具
+            this.transformer = new THREE.TransformControls(this.camera, this.renderer.domElement);
             // 临时灯光
                 var light = new THREE.PointLight(0xffffff, 1, 5000);
                 light.position.set(0, 1000, 0);
@@ -82,9 +84,10 @@ define(function (require) {
             // 初始化舞台
             this.scene.add(this.grid);
             this.scene.add(this.axis);
+            this.scene.add(this.transformer);
+            this.scene.add(this.coordinateContainer);
             this.coordinate.rotation.x = Math.PI * 0.5;
             this.coordinateContainer.add(this.coordinate);
-            this.scene.add(this.coordinateContainer);
             this.renderer.setClearColor(this.props.colorStage);
             this.renderer.setSize(this.refs.container.offsetWidth - 1, this.refs.container.offsetHeight);
             this.refs.container.appendChild(this.renderer.domElement);
@@ -94,6 +97,9 @@ define(function (require) {
             // 绑定事件
             window.addEventListener('resize', this.onResize);
             this.refs.container.addEventListener('mousewheel', this.onMouseWheel);
+            this.transformer.addEventListener('objectChange', function () {
+                console.log('objectChange');
+            });
         },
 
         componentWillReceiveProps: function (nextProps) {
@@ -141,6 +147,13 @@ define(function (require) {
                 setTimeout(function () {
                     me.onResize();
                 }, 0);
+            }
+            // 热更新变形工具
+            if (nextProps.selectedMesh !== this.props.selectedMesh && nextProps.tool === 'tool-pickGeometry') {
+                this.transformer.attach(nextProps.selectedMesh);
+            }
+            if (nextProps.tool !== 'tool-pickGeometry' && this.props.tool === 'tool-pickGeometry') {
+                this.transformer.detach();
             }
         },
 
@@ -288,6 +301,7 @@ define(function (require) {
     function animaterFactory(me) {
         return function () {
             me.camera.lookAt(me.props.cameraLookAt);
+            me.transformer.update();
             me.renderer.render(me.scene, me.camera);
         };
     }

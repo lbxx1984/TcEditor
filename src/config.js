@@ -103,6 +103,15 @@ define(function (require) {
             {
                 icon: 'icon-kejian', value: 'stage-helperVisible', title: 'hide/show stage helper'
             }
+        ],
+        // 变形工具集
+        transformer3D: [
+            {icon: 'icon-move', value: 'transformer-3d-mode-translate'},
+            {icon: 'icon-llfilterrotate', value: 'transformer-3d-mode-rotate'},
+            {icon: 'icon-icicfangdatubiao', value: 'transformer-3d-mode-scale'},
+            {icon: 'icon-jiafangda', value: 'transformer-3d-size-enlarge'},
+            {icon: 'icon-jiansuoxiao', value: 'transformer-3d-size-narrow'},
+            {icon: 'icon-world', value: 'transformer-3d-space'}
         ]
     };
 
