@@ -12,7 +12,8 @@ define(function (require) {
         require('../commands/stage'),
         require('../commands/system'),
         require('../commands/geometry'),
-        require('../commands/tool')
+        require('../commands/tool'),
+        require('../commands/transformer')
     );
 
 });

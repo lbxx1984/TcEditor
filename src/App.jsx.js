@@ -43,7 +43,8 @@ define(function (require) {
                 mesh3d: this.props.mesh3d,
                 style: style,
                 panelCount: this.props.panel.length,
-                selectedMesh: this.props.selectedMesh
+                selectedMesh: this.props.selectedMesh,
+                transformer3Dinfo: this.props.transformer3Dinfo
             };
             var informationBarProps = {
                 mouse3d: this.props.mouse3d,
@@ -101,8 +102,9 @@ define(function (require) {
 
 
     function toolsBarPropsFactory(props) {
-        if (props.tool === 'tool-pickGeometry' && props.selectedMesh) {
+        if (props.tool === 'tool-pickGeometry') {
             return {
+                tool: props.tool,
                 datasource: props.transformer3D,
                 controls: props.transformer3Dinfo
             };

@@ -90,16 +90,19 @@ define(function (require) {
             this.coordinateContainer.add(this.coordinate);
             this.renderer.setClearColor(this.props.colorStage);
             this.renderer.setSize(this.refs.container.offsetWidth - 1, this.refs.container.offsetHeight);
-            this.refs.container.appendChild(this.renderer.domElement);
+            this.transformer.setSpace(this.props.transformer3Dinfo.space);
+            this.transformer.setMode(this.props.transformer3Dinfo.mode);
+            this.transformer.setSize(this.props.transformer3Dinfo.size);
             updateCameraPosition(this, this.props);
-            // 开启渲染引擎
-            animation.add('stage3d', animaterFactory(this));
+            this.refs.container.appendChild(this.renderer.domElement);
             // 绑定事件
             window.addEventListener('resize', this.onResize);
             this.refs.container.addEventListener('mousewheel', this.onMouseWheel);
             this.transformer.addEventListener('objectChange', function () {
                 console.log('objectChange');
             });
+            // 开启渲染引擎
+            animation.add('stage3d', animaterFactory(this));
         },
 
         componentWillReceiveProps: function (nextProps) {
@@ -154,6 +157,11 @@ define(function (require) {
             }
             if (nextProps.tool !== 'tool-pickGeometry' && this.props.tool === 'tool-pickGeometry') {
                 this.transformer.detach();
+            }
+            if (nextProps.transformer3Dinfo !== this.props.transformer3Dinfo) {
+                this.transformer.setSpace(nextProps.transformer3Dinfo.space);
+                this.transformer.setMode(nextProps.transformer3Dinfo.mode);
+                this.transformer.setSize(nextProps.transformer3Dinfo.size);
             }
         },
 

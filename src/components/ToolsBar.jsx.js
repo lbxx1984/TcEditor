@@ -7,6 +7,19 @@ define(function (require) {
 
 
     var React = require('react');
+    var _ = require('underscore');
+
+
+    var datasourceFilters = {
+        'tool-pickGeometry': function (datasource, controls) {
+            return datasource.map(function (item ,index) {
+                item = _.extend({}, item);
+                var value = item.value.split('-').pop();
+                item.checked = value !== 'space' ? value === controls.mode : controls.space === 'world';
+                return item;
+            });
+        }
+    };
 
 
     return React.createClass({
@@ -25,13 +38,31 @@ define(function (require) {
             this.context.dispatch(e.target.dataset.uiCmd);
         },
         render: function () {
+            var datasource = typeof datasourceFilters[this.props.tool] === 'function'
+                ? datasourceFilters[this.props.tool](this.props.datasource, this.props.controls)
+                : this.props.datasource;
             return (
                 <div className="tc-tools-bar">
-                    {JSON.stringify(this.props.datasource)}
+                    {buttonFactory(datasource, this)}
                 </div>
             );
         }
     });
+
+
+    function buttonFactory(datasource, me) {
+        var result = [];
+        datasource.map(function (item, index) {
+            var iconProps = {
+                key: 'tools-' + index,
+                'data-ui-cmd': item.value,
+                className: 'iconfont ' + item.icon + (item.checked ? ' selected' : ''),
+                onClick: me.onButtonClick
+            };
+            result.push(<div {...iconProps}></div>);
+        });
+        return result;
+    }
 
 
 });
