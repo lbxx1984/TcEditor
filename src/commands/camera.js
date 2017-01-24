@@ -13,7 +13,14 @@ define(function (require) {
         // 平移摄像机
         'camera-move': function (param, dragging) {
             if (this.get('tool') !== 'camera-move') {
-                this.set('tool', 'camera-move');
+                var selectedMesh = this.get('selectedMesh');
+                if (selectedMesh) {
+                    selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
+                }
+                this.fill({
+                    tool: 'camera-move',
+                    selectedMesh: null
+                });
                 return;
             }
             if (!dragging) return;

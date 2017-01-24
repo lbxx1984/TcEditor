@@ -34,7 +34,14 @@ define(function (require) {
     return {
         'tool-pickGeometry': function (param, dragging) {
             if (this.get('tool') !== 'tool-pickGeometry') {
-                this.set('tool', 'tool-pickGeometry');
+                var selectedMesh = this.get('selectedMesh');
+                if (selectedMesh) {
+                    selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
+                }
+                this.fill({
+                    tool: 'tool-pickGeometry',
+                    selectedMesh: null
+                });
                 return;
             }
             var lastSelected = this.get('selectedMesh');
