@@ -3,6 +3,17 @@ define(function (require) {
 
     var THREE = require('three');
     var Transformer3D = require('three-lib/TransformControls');
+    var math = require('./math');
+
+
+    // 清理所有锚点
+    function clearAnchors(me) {
+        me.anchors.map(function (anchor) {
+            if (!anchor.added) return;
+            anchor.added = false;
+            me.scene.remove(anchor);
+        });
+    }
 
 
     /**
@@ -14,15 +25,84 @@ define(function (require) {
      * @param {Object} param.renderer 变形器所在的渲染引擎
      */
     function Morpher3D(param) {
-        // 工作状态：0 闲置状态；1 已经选中物体; 2 已经选中物体某个关节
-        this.status = 0;
+        // 当前绑定物体
+        this.mesh = null;
+        // 当前处于受控状态的关节
+        this.joint = null;
+        // 锚点大小
+        this.anchorSize = 1000;
         // 舞台
         this.scene = param.scene;
         // 摄像机
         this.camera = param.camera;
         // 渲染引擎
         this.renderer = param.renderer;
+        // 关节控制器
+        this.controller = new THREE.TransformControls(this.camera, this.renderer.domElement);
+        // 关节锚点
+        this.anchors = [];
     }
+
+
+    /**
+     * 绑定物体
+     * @param {Object} mesh 待绑定的物体
+     */
+    Morpher3D.prototype.attach = function (mesh) {
+        if (!mesh) return;
+        this.mesh = mesh;
+        clearAnchors(this);
+        var camerapos = this.camera.position;
+        var matrix = math.getRotateMatrix(mesh);
+        var vertices = mesh.geometry.vertices;
+        var anchors = this.anchors;
+        var scene = this.scene;
+        var anchorSize = this.anchorSize;
+        vertices.map(function (ver, index) {
+            var pos = math.local2world(ver.x, ver.y, ver.z, matrix, mesh);
+            var meshpos = new THREE.Vector3(pos[0], pos[1], pos[2]);
+            var np = null;
+            if (index === anchors.length) {
+                np = new THREE.Mesh(
+                    new THREE.BoxGeometry(10, 10, 10, 1, 1, 1),
+                    new THREE.MeshBasicMaterial({color: 0xffff00, side: THREE.DoubleSide})
+                );
+                anchors.push(np);
+            }
+            else {
+                np = anchors[index];
+            }
+            np.index = index;
+            np.position.x = pos[0];
+            np.position.y = pos[1];
+            np.position.z = pos[2];
+            np.scale.x = np.scale.y = np.scale.z = meshpos.distanceTo(camerapos) / anchorSize;
+            np.added = true;
+            scene.add(np);
+        });
+    };
+
+
+    /**
+     * 解绑定物体
+     */
+    Morpher3D.prototype.detach = function () {
+        this.mesh = null;
+        clearAnchors(this);
+    };
+
+
+    /**
+     * 更新锚点
+     */
+    Morpher3D.prototype.updateAnchors = function () {
+        var camerapos = this.camera.position;
+        var anchorSize = this.anchorSize;
+        this.anchors.map(function (anchor, index) {
+            if (!anchor.added) return;
+            anchor.scale.x = anchor.scale.y = anchor.scale.z = camerapos.distanceTo(anchor.position) / anchorSize; 
+        });
+    };
 
 
     return Morpher3D;
@@ -33,11 +113,8 @@ define(function (require) {
     //  * @constructor
     //  */
     // function Morpher3D(param) {
-    //     var me = this;
-    //     this.stage = param.stage;
-    //     this.jointCtrler = new THREE.TransformControls(this.stage.camera, this.stage.renderer.domElement);
-    //     this.helperColor = param.helperColor || 0xd97915;
-    //     this.helperHoverColor = param.helperHoverColor || 0xffff00;
+    //     this.helperColor = param.helperColor || ;
+    //     this.helperHoverColor = param.helperHoverColor || ;
     //     this.baseRule = 1000;
     //     this.joints = [];
     //     this.geo = null; // 当前绑定的3D物体
@@ -85,23 +162,6 @@ define(function (require) {
 
 
     // /**
-    //  * 刷新，修正控制点大小
-    //  */
-    // Morpher3D.prototype.update = function () {
-    //     var camerapos = this.stage.camera.position;
-    //     var joints = this.joints;
-    //     for (var n = 0; n < joints.length; n++) {
-    //         var joint = joints[n];
-    //         if (!joint.added) {
-    //             break;
-    //         }
-    //         var s = camerapos.distanceTo(joint.position) / this.baseRule;
-    //         joint.scale.x = joint.scale.y = joint.scale.z = s; 
-    //     }
-    // };
-
-
-    // /**
     //  * 鼠标经过控制点
     //  */
     // Morpher3D.prototype.hoverJoint = function (meshIndex) {
@@ -115,55 +175,6 @@ define(function (require) {
     //     }
     // };
 
-
-    // /**
-    //  * 控制器绑定物体
-    //  *
-    //  * @param {Object} mesh 3D物体
-    //  */
-    // Morpher3D.prototype.attach = function (mesh) {
-    //     if (!mesh) {
-    //         return;
-    //     }
-    //     this.clearStage();
-    //     var camerapos = this.stage.camera.position;
-    //     var matrix = math.getRotateMatrix(mesh);
-    //     var vertices = mesh.geometry.vertices;
-
-    //     for (var n = 0; n < vertices.length; n++) {
-    //         var pos = math.local2world(vertices[n].x, vertices[n].y, vertices[n].z, matrix, mesh);
-    //         var meshpos = new THREE.Vector3(pos[0], pos[1], pos[2]);
-    //         var np = null;
-    //         if (n == this.joints.length) {
-    //             np = new THREE.Mesh(
-    //                 new THREE.BoxGeometry(10, 10, 10, 1, 1, 1),
-    //                 new THREE.MeshBasicMaterial({color: this.helperColor, side: THREE.DoubleSide})
-    //             );
-    //             this.joints.push(np);
-    //         }
-    //         else {
-    //             np = this.joints[n];
-    //         }
-    //         np.index = n;
-    //         np.position.x = pos[0];
-    //         np.position.y = pos[1];
-    //         np.position.z = pos[2];
-    //         np.scale.x = np.scale.y = np.scale.z = meshpos.distanceTo(camerapos) / this.baseRule;
-    //         np.added = true;
-    //         this.stage.scene.add(np);
-    //     }
-    //     this.stage.updateWithCamera.morpher = this;
-    //     this.geo = mesh;
-    // };
-
-
-    // /**
-    //  * 控制器解绑物体
-    //  */
-    // Morpher3D.prototype.detach = function () {
-    //     this.clearStage();
-    //     this.stage.updateWithCamera.morpher = null;
-    // };
 
 
     // /**
@@ -191,22 +202,4 @@ define(function (require) {
     //     this.stage.updateWithCamera.jointMover = null;
     //     this.joint = null;
     // }
-
-
-    // /**
-    //  * 从舞台移除所有关节
-    //  */
-    // Morpher3D.prototype.clearStage = function () {
-    //     for (var n = 0; n < this.joints.length; n++) {
-    //         var joint = this.joints[n];
-    //         if (!joint.added) {
-    //             break;
-    //         }
-    //         joint.added = false;
-    //         this.stage.scene.remove(joint);
-    //     }
-    // };
-
-
-    // return Morpher3D;
 });

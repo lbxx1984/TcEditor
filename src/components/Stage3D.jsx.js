@@ -121,6 +121,9 @@ define(function (require) {
                 || nextProps.cameraLookAt !== this.props.cameraLookAt
             ) {
                 updateCameraPosition(this, nextProps);
+                if (nextProps.tool === 'tool-pickJoint' && nextProps.selectedMesh) {
+                    this.morpher.updateAnchors();
+                }
             }
             // 热更新坐标纸
             if (nextProps.gridSize !== this.props.gridSize || nextProps.gridStep !== this.props.gridStep) {
@@ -149,9 +152,8 @@ define(function (require) {
                     mesh.tc.add = true;
                     this.scene.add(mesh);
                 }
-
             }
-            // 热更新舞台
+            // 热更新舞台尺寸
             if (nextProps.panelCount !== this.props.panelCount && nextProps.panelCount * this.props.panelCount === 0) {
                 var me = this;
                 setTimeout(function () {
@@ -169,6 +171,13 @@ define(function (require) {
                 this.transformer.setSpace(nextProps.transformer3Dinfo.space);
                 this.transformer.setMode(nextProps.transformer3Dinfo.mode);
                 this.transformer.setSize(nextProps.transformer3Dinfo.size);
+            }
+            // 热更新修改工具
+            if (nextProps.selectedMesh !== this.props.selectedMesh && nextProps.tool === 'tool-pickJoint') {
+                this.morpher[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
+            }
+            if (nextProps.tool !== 'tool-pickJoint' && this.props.tool === 'tool-pickJoint') {
+                this.morpher.detach();
             }
         },
 
@@ -323,8 +332,10 @@ define(function (require) {
     function animaterFactory(me) {
         return function () {
             me.camera.lookAt(me.props.cameraLookAt);
-            me.transformer.update();
             me.renderer.render(me.scene, me.camera);
+            if (me.props.tool === 'tool-pickGeometry' && me.props.selectedMesh) {
+                me.transformer.update();
+            }
         };
     }
 

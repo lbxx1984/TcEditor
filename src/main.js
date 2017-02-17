@@ -23,6 +23,8 @@ define(function (require) {
         mesh3d: {},
         // 当前选中的物体
         selectedMesh: null,
+        // 当前选中的物体的关节
+        selectedVector: null,
         // 右侧处于显示状态的工作卡片
         panel: [
             {type: 'meshPanel', expend: true}
