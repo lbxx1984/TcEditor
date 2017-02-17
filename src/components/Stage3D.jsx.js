@@ -11,6 +11,7 @@ define(function (require) {
 
 
     var Transformer3D = require('three-lib/TransformControls');
+    var Morpher3D = require('tools/Morpher3D');
     var CameraController = require('./CameraController.jsx');
     var animation = require('../common/animation');
 
@@ -77,6 +78,12 @@ define(function (require) {
             this.renderer = new THREE.WebGLRenderer({antialias: true});
             // 物体变形工具
             this.transformer = new THREE.TransformControls(this.camera, this.renderer.domElement);
+            // 物体关节编辑工具
+            this.morpher = new Morpher3D({
+                camera: this.camera,
+                scene: this.scene,
+                renderer: this.renderer
+            });
             // 临时灯光
                 var light = new THREE.PointLight(0xffffff, 1, 5000);
                 light.position.set(0, 1000, 0);
@@ -153,7 +160,7 @@ define(function (require) {
             }
             // 热更新变形工具
             if (nextProps.selectedMesh !== this.props.selectedMesh && nextProps.tool === 'tool-pickGeometry') {
-                this.transformer.attach(nextProps.selectedMesh);
+                this.transformer[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
             }
             if (nextProps.tool !== 'tool-pickGeometry' && this.props.tool === 'tool-pickGeometry') {
                 this.transformer.detach();
@@ -255,6 +262,12 @@ define(function (require) {
             }
         },
 
+        onContextMenu: function (e) {
+            this.context.dispatch('stage3d-context-menu', this);
+            e.stopPropagation();
+            e.preventDefault();
+        },
+
         render: function () {
             var containerProps = {
                 className: 'tc-stage-3d',
@@ -262,7 +275,8 @@ define(function (require) {
                 style: this.props.style,
                 onMouseMove: this.onMouseMove,
                 onMouseDown: this.onMouseDown,
-                onMouseUp: this.onMouseUp
+                onMouseUp: this.onMouseUp,
+                onContextMenu: this.onContextMenu
             };
             var controllerProps = {
                 parentStage: this,

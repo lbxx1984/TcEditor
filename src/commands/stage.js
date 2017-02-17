@@ -29,6 +29,14 @@ define(function (require) {
             var stage = _.extend({}, this.get('stage'));
             stage.gridVisible = !stage.gridVisible;
             this.set('stage', stage);
+        },
+        // 点击了3D舞台右键菜单
+        'stage3d-context-menu': function (stage3d) {
+            if (this.get('tool') === 'tool-pickGeometry' && this.get('selectedMesh')) {
+                var selectedMesh = this.get('selectedMesh');
+                selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
+                this.set('selectedMesh', null);
+            }
         }
     };
 
