@@ -32,10 +32,21 @@ define(function (require) {
         },
         // 点击了3D舞台右键菜单
         'stage3d-context-menu': function (stage3d) {
-            if (this.get('tool') === 'tool-pickGeometry' && this.get('selectedMesh')) {
-                var selectedMesh = this.get('selectedMesh');
+            var tool = this.get('tool');
+            var selectedMesh = this.get('selectedMesh');
+            var selectedVector = this.get('selectedVector');
+            if (
+                tool === 'tool-pickGeometry' && selectedMesh
+                || (tool === 'tool-pickJoint' && selectedMesh && !selectedVector)
+            ) {
                 selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
                 this.set('selectedMesh', null);
+                return;
+            }
+            if (tool === 'tool-pickJoint' && selectedVector) {
+                selectedVector.material.setValues({color: selectedVector.tc.materialColor});
+                this.set('selectedVector', null);
+                return;
             }
         }
     };

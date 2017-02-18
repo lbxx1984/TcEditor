@@ -49,6 +49,7 @@ define(function (require) {
         },
 
         componentDidMount: function () {
+            var me = this;
             this.mousedown = false;
             this.mouseCurrent2D = {x: 0, y: 0};
             this.mouseCurrent3D = {x: 0, y: 0, z: 0};
@@ -92,6 +93,7 @@ define(function (require) {
             this.scene.add(this.grid);
             this.scene.add(this.axis);
             this.scene.add(this.transformer);
+            this.scene.add(this.morpher.controller);
             this.scene.add(this.coordinateContainer);
             this.coordinate.rotation.x = Math.PI * 0.5;
             this.coordinateContainer.add(this.coordinate);
@@ -105,11 +107,13 @@ define(function (require) {
             // 绑定事件
             window.addEventListener('resize', this.onResize);
             this.refs.container.addEventListener('mousewheel', this.onMouseWheel);
-            this.transformer.addEventListener('objectChange', function () {
-                console.log('objectChange');
-            });
+            this.transformer.addEventListener('objectChange', objectChangeHandler);
+            this.morpher.controller.addEventListener('objectChange', objectChangeHandler);
+            function objectChangeHandler() {
+                me.isDragging = true;
+            }
             // 开启渲染引擎
-            animation.add('stage3d', animaterFactory(this));
+            animation.add('stage3d', animaterFactory(this));  
         },
 
         componentWillReceiveProps: function (nextProps) {
@@ -161,7 +165,10 @@ define(function (require) {
                 }, 0);
             }
             // 热更新变形工具
-            if (nextProps.selectedMesh !== this.props.selectedMesh && nextProps.tool === 'tool-pickGeometry') {
+            if (
+                nextProps.tool === 'tool-pickGeometry' && this.props.tool !== 'tool-pickGeometry'
+                || (nextProps.selectedMesh !== this.props.selectedMesh && nextProps.tool === 'tool-pickGeometry')
+            ) {
                 this.transformer[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
             }
             if (nextProps.tool !== 'tool-pickGeometry' && this.props.tool === 'tool-pickGeometry') {
@@ -173,11 +180,19 @@ define(function (require) {
                 this.transformer.setSize(nextProps.transformer3Dinfo.size);
             }
             // 热更新修改工具
-            if (nextProps.selectedMesh !== this.props.selectedMesh && nextProps.tool === 'tool-pickJoint') {
+            if (
+                nextProps.tool === 'tool-pickJoint' && this.props.tool !== 'tool-pickJoint'
+                || (nextProps.selectedMesh !== this.props.selectedMesh && nextProps.tool === 'tool-pickJoint')
+            ) {
                 this.morpher[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
+                this.morpher.detachAnchor();
+            }
+            if (nextProps.selectedVector !== this.props.selectedVector && nextProps.tool === 'tool-pickJoint') {
+                this.morpher[nextProps.selectedVector ? 'attachAnchor' : 'detachAnchor'](nextProps.selectedVector);
             }
             if (nextProps.tool !== 'tool-pickJoint' && this.props.tool === 'tool-pickJoint') {
                 this.morpher.detach();
+                this.morpher.detachAnchor();
             }
         },
 
@@ -259,6 +274,11 @@ define(function (require) {
             this.mouseDown3D = {x: 0, y: 0, z: 0};
             this.mouseCurrent2D = {x: 0, y: 0};
             this.mouseCurrent3D = {x: 0, y: 0, z: 0};
+            // 发生了物体操作
+            if (this.isDragging) {
+                this.isDragging = false;
+                return;
+            }
             // 拖拽生成了新的mesh
             if (this.tempMesh && !this.isCameraRotating) {
                 this.context.dispatch('addMesh', this.tempMesh);
@@ -335,6 +355,9 @@ define(function (require) {
             me.renderer.render(me.scene, me.camera);
             if (me.props.tool === 'tool-pickGeometry' && me.props.selectedMesh) {
                 me.transformer.update();
+            }
+            if (me.props.tool === 'tool-pickJoint' && me.props.selectedVector) {
+                me.morpher.controller.update();
             }
         };
     }

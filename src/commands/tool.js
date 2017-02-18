@@ -10,19 +10,21 @@ define(function (require) {
     var THREE = require('three');
     var config = require('../config');
     var intersected = null;
+    var intersectedVector = null;
 
 
     function clearIntersectedColor(obj, selected) {
+        if (!obj) return;
         var color = selected && selected.uuid === obj.uuid ? config.colors.selectedMesh[0] : obj.tc.materialColor;
         obj.material.setValues({color: color});
     }
 
-    function clearMeshColor(mesh) {
+    function clearObject3dColor(mesh) {
         if (!mesh) return;
         mesh.material.setValues({color: mesh.tc.materialColor});
     }
 
-    function getMeshByMouse3D(x, y, stage) {
+    function getObject3dByMouse3D(x, y, stage, meshes) {
         var vector = new THREE.Vector3(
             (x / stage.refs.container.offsetWidth) * 2 - 1,
             -(y / stage.refs.container.offsetHeight) * 2 + 1,
@@ -30,14 +32,20 @@ define(function (require) {
         );
         vector.unproject(stage.camera);
         stage.raycaster.ray.set(stage.camera.position, vector.sub(stage.camera.position).normalize());
-        var intersects = stage.raycaster.intersectObjects(stage.meshArray || []);
+        var intersects = stage.raycaster.intersectObjects(meshes || []);
         return intersects.length ? intersects[0].object : null;
     }
 
     function hoverMeshByMouse3d(param, selectedMesh) {
-        var obj = getMeshByMouse3D(param.event.nativeEvent.offsetX, param.event.nativeEvent.offsetY, param.stage3D);
+        var obj = getObject3dByMouse3D(
+            param.event.nativeEvent.offsetX,
+            param.event.nativeEvent.offsetY,
+            param.stage3D,
+            param.stage3D.meshArray
+        );
         if (obj) {
-            if (intersected) clearIntersectedColor(intersected, selectedMesh);
+            if (selectedMesh && obj.uuid === selectedMesh.uuid) return;
+            clearIntersectedColor(intersected, selectedMesh);
             intersected = obj;
             intersected.material.setValues({color: config.colors.normalMeshHover[0]});
         }
@@ -47,17 +55,41 @@ define(function (require) {
         }
     }
 
-    function pickupMesh(selectedMesh, me) {
-        if (selectedMesh && selectedMesh.uuid === intersected.uuid) return;
-        clearMeshColor(selectedMesh);
-        intersected.material.setValues({color: config.colors.selectedMesh[0]});
-        me.set('selectedMesh', intersected);
+    function hoverVectorByMouse3d(param, selectedVector, selectedMesh) {
+        var obj = getObject3dByMouse3D(
+            param.event.nativeEvent.offsetX,
+            param.event.nativeEvent.offsetY,
+            param.stage3D,
+            param.stage3D.morpher.anchors
+        );
+        if (obj) {
+            clearIntersectedColor(intersected, selectedMesh);
+            clearIntersectedColor(intersectedVector, selectedVector);
+            intersectedVector = obj;
+            intersectedVector.material.setValues({color: config.colors.normalMeshHover[0]});
+        }
+        else if (intersectedVector) {
+            clearIntersectedColor(intersectedVector, selectedVector);
+            intersectedVector = null;
+        }
     }
 
-    function initTools(selectedMesh, me, param) {
-        clearMeshColor(selectedMesh);
-        me.fill(param);
-        return;
+    function pickupMesh(selectedMesh, me) {
+        if (selectedMesh && selectedMesh.uuid === intersected.uuid) return;
+        clearObject3dColor(selectedMesh);
+        clearObject3dColor(me.get('selectedVector'));
+        intersected.material.setValues({color: config.colors.selectedMesh[0]});
+        me.fill({
+            selectedMesh: intersected,
+            selectedVector: null
+        });
+    }
+
+    function pickupVector(selectedVector, me) {
+        if (selectedVector && selectedVector.uuid === intersectedVector.uuid) return;
+        clearObject3dColor(selectedVector);
+        intersectedVector.material.setValues({color: config.colors.selectedMesh[0]});
+        me.set('selectedVector', intersectedVector);
     }
 
 
@@ -66,10 +98,7 @@ define(function (require) {
             var selectedMesh = this.get('selectedMesh');
             // 初始化工具
             if (this.get('tool') !== 'tool-pickGeometry') {
-                initTools(selectedMesh, this, {
-                    tool: 'tool-pickGeometry',
-                    selectedMesh: null
-                });
+                this.fill({tool: 'tool-pickGeometry'});
                 return;
             }
             // 拾取物体
@@ -87,11 +116,15 @@ define(function (require) {
             var selectedVector = this.get('selectedVector');
             // 初始化工具
             if (this.get('tool') !== 'tool-pickJoint') {
-                initTools(selectedMesh, this, {
+                this.fill({
                     tool: 'tool-pickJoint',
-                    selectedMesh: null,
                     selectedVector: null
                 });
+                return;
+            }
+            // 拾取物体拾取关节
+            if (param === 'mouseup' && intersectedVector) {
+                pickupVector(selectedVector, this);
                 return;
             }
             // 拾取物体
@@ -103,6 +136,13 @@ define(function (require) {
             if (typeof param !== 'object' || dragging) return;
             // hover物体
             if (selectedMesh == null) {
+                hoverMeshByMouse3d(param, selectedMesh);
+                return;
+            }
+            // hover关节
+            if (selectedMesh != null) {
+                hoverVectorByMouse3d(param, selectedVector, selectedMesh);
+                if (intersectedVector) return;
                 hoverMeshByMouse3d(param, selectedMesh);
                 return;
             }

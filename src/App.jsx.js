@@ -44,6 +44,7 @@ define(function (require) {
                 style: style,
                 panelCount: this.props.panel.length,
                 selectedMesh: this.props.selectedMesh,
+                selectedVector: this.props.selectedVector,
                 transformer3Dinfo: this.props.transformer3Dinfo
             };
             var informationBarProps = {
