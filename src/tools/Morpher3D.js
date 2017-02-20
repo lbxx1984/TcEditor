@@ -44,8 +44,10 @@ define(function (require) {
         this.mesh = null;
         // 当前处于受控状态的顶点
         this.vector = null;
+        // 锚点颜色
+        this.anchorColor = param.anchorColor;
         // 锚点大小
-        this.anchorSize = 1000;
+        this.anchorSize = param.anchorSize;
         // 舞台
         this.scene = param.scene;
         // 摄像机
@@ -76,6 +78,7 @@ define(function (require) {
         var anchors = this.anchors;
         var scene = this.scene;
         var anchorSize = this.anchorSize;
+        var anchorColor = this.anchorColor;
         vertices.map(function (ver, index) {
             var pos = math.local2world(ver.x, ver.y, ver.z, matrix, mesh);
             var meshpos = new THREE.Vector3(pos[0], pos[1], pos[2]);
@@ -83,7 +86,7 @@ define(function (require) {
             if (index === anchors.length) {
                 np = new THREE.Mesh(
                     new THREE.BoxGeometry(10, 10, 10, 1, 1, 1),
-                    new THREE.MeshBasicMaterial({color: 0x00CD00, side: THREE.DoubleSide})
+                    new THREE.MeshBasicMaterial({color: anchorColor, side: THREE.DoubleSide})
                 );
                 np.tc = {
                     materialColor: np.material.color.getHex()
@@ -142,6 +145,17 @@ define(function (require) {
         this.anchors.map(function (anchor, index) {
             if (!anchor.added) return;
             anchor.scale.x = anchor.scale.y = anchor.scale.z = camerapos.distanceTo(anchor.position) / anchorSize; 
+        });
+    };
+
+
+    /**
+     * 更新锚点颜色
+     */
+    Morpher3D.prototype.setAnchorColor = function (color) {
+        this.anchors.map(function (anchor) {
+            anchor.tc.materialColor = color;
+            anchor.material.setValues({color: color});
         });
     };
 

@@ -68,6 +68,11 @@ define(function (require) {
             mode: 'translate',
             size: 1,
             space: 'world'
+        },
+        // 修改工具工作状态
+        morpher3Dinfo: {
+            anchorColor: 0x00CD00,
+            anchorSize: 1000
         }
     });
     model.onChange = function (store) {

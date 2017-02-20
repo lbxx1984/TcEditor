@@ -45,7 +45,8 @@ define(function (require) {
                 panelCount: this.props.panel.length,
                 selectedMesh: this.props.selectedMesh,
                 selectedVector: this.props.selectedVector,
-                transformer3Dinfo: this.props.transformer3Dinfo
+                transformer3Dinfo: this.props.transformer3Dinfo,
+                morpher3Dinfo: this.props.morpher3Dinfo
             };
             var informationBarProps = {
                 mouse3d: this.props.mouse3d,
@@ -106,8 +107,14 @@ define(function (require) {
         if (props.tool === 'tool-pickGeometry') {
             return {
                 tool: props.tool,
-                datasource: props.transformer3D,
+                datasource: props.transformer3DTools,
                 controls: props.transformer3Dinfo
+            };
+        }
+        if (props.tool === 'tool-pickJoint') {
+            return {
+                tool: props.tool,
+                datasource: props.morpher3DTools
             };
         }
     }

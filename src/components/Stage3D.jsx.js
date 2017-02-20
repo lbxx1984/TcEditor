@@ -16,6 +16,146 @@ define(function (require) {
     var animation = require('../common/animation');
 
 
+    // 渲染器工厂
+    function animaterFactory(me) {
+        return function () {
+            me.camera.lookAt(me.props.cameraLookAt);
+            me.renderer.render(me.scene, me.camera);
+            if (me.props.tool === 'tool-pickGeometry' && me.props.selectedMesh) {
+                me.transformer.update();
+            }
+            if (me.props.tool === 'tool-pickJoint' && me.props.selectedVector) {
+                me.morpher.controller.update();
+            }
+        };
+    }
+
+    // 获取根据坐标纸获取3D鼠标位置
+    function getMouse3D(x, y, me, geo) {
+        var width = me.refs.container.offsetWidth;
+        var height = me.refs.container.offsetHeight;
+        me.raycaster.setFromCamera(new THREE.Vector3((x / width) * 2 - 1, - (y / height) * 2 + 1, 0), me.camera);
+        var intersects = me.raycaster.intersectObjects([geo]);
+        return intersects.length > 0 ? intersects[0].point.clone() : new THREE.Vector3();
+    }
+
+    // 更新摄像机位置
+    function updateCameraPosition(me, props) {
+        props = props || me.props;
+        var cameraAngleA = props.cameraAngleA;
+        var cameraAngleB = props.cameraAngleB;
+        var cameraRadius = props.cameraRadius;
+        var coordinateContainer = me.coordinateContainer;
+        var grid = me.grid;
+        var y = cameraRadius * Math.sin(Math.PI * cameraAngleA / 180);
+        var x = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.cos(Math.PI * cameraAngleB / 180);
+        var z = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.sin(Math.PI * cameraAngleB / 180);
+        if (Math.abs(cameraAngleA) < 2) {
+            coordinateContainer.rotation.z = grid.rotation.z = Math.PI * 0.5 - Math.PI * cameraAngleB / 180;
+            coordinateContainer.rotation.x = grid.rotation.x = Math.PI * 1.5;
+        }
+        else {
+            coordinateContainer.rotation.z = grid.rotation.z = 0;
+            coordinateContainer.rotation.x = grid.rotation.x = 0;
+        }
+        me.camera.position.set(
+            x + props.cameraLookAt.x,
+            y + props.cameraLookAt.y,
+            z + props.cameraLookAt.z
+        );
+    }
+
+    // 更新摄像机属性
+    function updateCameraInfo(nextProps, me) {
+        if (
+            nextProps.cameraRadius !== me.props.cameraRadius
+            || nextProps.cameraAngleA !== me.props.cameraAngleA
+            || nextProps.cameraAngleB !== me.props.cameraAngleB
+            || nextProps.cameraLookAt !== me.props.cameraLookAt
+        ) {
+            updateCameraPosition(me, nextProps);
+            if (nextProps.tool === 'tool-pickJoint' && nextProps.selectedMesh) {
+                me.morpher.updateAnchors();
+            }
+        }
+    }
+
+    // 更新坐标值
+    function updateScene(nextProps, me) {
+        if (nextProps.gridSize !== me.props.gridSize || nextProps.gridStep !== me.props.gridStep) {
+            me.scene.remove(me.grid);
+            me.grid = new THREE.GridHelper(
+                nextProps.gridSize, nextProps.gridStep,
+                nextProps.colorGrid, nextProps.colorGrid
+            );
+            me.grid.visible = nextProps.gridVisible;
+            me.scene.add(me.grid);
+        }
+        if (nextProps.gridVisible !== me.props.gridVisible) {
+            me.grid.visible = nextProps.gridVisible;
+            me.axis.visible = nextProps.gridVisible;
+        }
+        if (nextProps.panelCount !== me.props.panelCount && nextProps.panelCount * me.props.panelCount === 0) {
+            setTimeout(function () {
+                me.onResize();
+            }, 0);
+        }
+    }
+
+    // 更新物体列表
+    function updateMeshList(nextProps, me) {
+        me.meshArray = [];
+        for (var key in nextProps.mesh3d) {
+            if (!nextProps.mesh3d.hasOwnProperty(key)) continue;
+            var mesh = nextProps.mesh3d[key];
+            mesh.tc = mesh.tc || {};
+            me.meshArray.push(mesh);
+            if (mesh.tc.add) continue;
+            mesh.tc.add = true;
+            me.scene.add(mesh);
+        }
+    }
+
+    // 变形工具
+    function updateTransformer(nextProps, me) {
+        if (
+            nextProps.tool === 'tool-pickGeometry' && me.props.tool !== 'tool-pickGeometry'
+            || (nextProps.selectedMesh !== me.props.selectedMesh && nextProps.tool === 'tool-pickGeometry')
+        ) {
+            me.transformer[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
+        }
+        if (nextProps.tool !== 'tool-pickGeometry' && me.props.tool === 'tool-pickGeometry') {
+            me.transformer.detach();
+        }
+        if (nextProps.transformer3Dinfo !== me.props.transformer3Dinfo) {
+            me.transformer.setSpace(nextProps.transformer3Dinfo.space);
+            me.transformer.setMode(nextProps.transformer3Dinfo.mode);
+            me.transformer.setSize(nextProps.transformer3Dinfo.size);
+        }
+    }
+
+    // 修改工具
+    function updateMorpher(nextProps, me) {
+        if (
+            nextProps.tool === 'tool-pickJoint' && me.props.tool !== 'tool-pickJoint'
+            || (nextProps.selectedMesh !== me.props.selectedMesh && nextProps.tool === 'tool-pickJoint')
+        ) {
+            me.morpher[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
+            me.morpher.detachAnchor();
+        }
+        if (nextProps.selectedVector !== me.props.selectedVector && nextProps.tool === 'tool-pickJoint') {
+            me.morpher[nextProps.selectedVector ? 'attachAnchor' : 'detachAnchor'](nextProps.selectedVector);
+        }
+        if (nextProps.tool !== 'tool-pickJoint' && me.props.tool === 'tool-pickJoint') {
+            me.morpher.detach();
+            me.morpher.detachAnchor();
+        }
+        if (nextProps.morpher3Dinfo !== me.props.morpher3Dinfo) {
+            me.morpher.setAnchorColor(nextProps.morpher3Dinfo.anchorColor);
+        }
+    }
+
+
     return React.createClass({
 
         contextTypes: {
@@ -83,7 +223,9 @@ define(function (require) {
             this.morpher = new Morpher3D({
                 camera: this.camera,
                 scene: this.scene,
-                renderer: this.renderer
+                renderer: this.renderer,
+                anchorColor: this.props.morpher3Dinfo.anchorColor,
+                anchorSize: this.props.morpher3Dinfo.anchorSize
             });
             // 临时灯光
                 var light = new THREE.PointLight(0xffffff, 1, 5000);
@@ -117,83 +259,11 @@ define(function (require) {
         },
 
         componentWillReceiveProps: function (nextProps) {
-            // 热更新摄像机
-            if (
-                nextProps.cameraRadius !== this.props.cameraRadius
-                || nextProps.cameraAngleA !== this.props.cameraAngleA
-                || nextProps.cameraAngleB !== this.props.cameraAngleB
-                || nextProps.cameraLookAt !== this.props.cameraLookAt
-            ) {
-                updateCameraPosition(this, nextProps);
-                if (nextProps.tool === 'tool-pickJoint' && nextProps.selectedMesh) {
-                    this.morpher.updateAnchors();
-                }
-            }
-            // 热更新坐标纸
-            if (nextProps.gridSize !== this.props.gridSize || nextProps.gridStep !== this.props.gridStep) {
-                this.scene.remove(this.grid);
-                this.grid = new THREE.GridHelper(
-                    nextProps.gridSize, nextProps.gridStep,
-                    nextProps.colorGrid, nextProps.colorGrid
-                );
-                this.grid.visible = nextProps.gridVisible;
-                this.scene.add(this.grid);
-            }
-            // 热更新舞台标记
-            if (nextProps.gridVisible !== this.props.gridVisible) {
-                this.grid.visible = nextProps.gridVisible;
-                this.axis.visible = nextProps.gridVisible;
-            }
-            // 热更新物体
-            if (nextProps.mesh3d != this.props.mesh3d) {
-                this.meshArray = [];
-                for (var key in nextProps.mesh3d) {
-                    if (!nextProps.mesh3d.hasOwnProperty(key)) continue;
-                    var mesh = nextProps.mesh3d[key];
-                    mesh.tc = mesh.tc || {};
-                    this.meshArray.push(mesh);
-                    if (mesh.tc.add) continue;
-                    mesh.tc.add = true;
-                    this.scene.add(mesh);
-                }
-            }
-            // 热更新舞台尺寸
-            if (nextProps.panelCount !== this.props.panelCount && nextProps.panelCount * this.props.panelCount === 0) {
-                var me = this;
-                setTimeout(function () {
-                    me.onResize();
-                }, 0);
-            }
-            // 热更新变形工具
-            if (
-                nextProps.tool === 'tool-pickGeometry' && this.props.tool !== 'tool-pickGeometry'
-                || (nextProps.selectedMesh !== this.props.selectedMesh && nextProps.tool === 'tool-pickGeometry')
-            ) {
-                this.transformer[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
-            }
-            if (nextProps.tool !== 'tool-pickGeometry' && this.props.tool === 'tool-pickGeometry') {
-                this.transformer.detach();
-            }
-            if (nextProps.transformer3Dinfo !== this.props.transformer3Dinfo) {
-                this.transformer.setSpace(nextProps.transformer3Dinfo.space);
-                this.transformer.setMode(nextProps.transformer3Dinfo.mode);
-                this.transformer.setSize(nextProps.transformer3Dinfo.size);
-            }
-            // 热更新修改工具
-            if (
-                nextProps.tool === 'tool-pickJoint' && this.props.tool !== 'tool-pickJoint'
-                || (nextProps.selectedMesh !== this.props.selectedMesh && nextProps.tool === 'tool-pickJoint')
-            ) {
-                this.morpher[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
-                this.morpher.detachAnchor();
-            }
-            if (nextProps.selectedVector !== this.props.selectedVector && nextProps.tool === 'tool-pickJoint') {
-                this.morpher[nextProps.selectedVector ? 'attachAnchor' : 'detachAnchor'](nextProps.selectedVector);
-            }
-            if (nextProps.tool !== 'tool-pickJoint' && this.props.tool === 'tool-pickJoint') {
-                this.morpher.detach();
-                this.morpher.detachAnchor();
-            }
+            updateCameraInfo(nextProps, this);
+            updateScene(nextProps, this);
+            updateMeshList(nextProps, this);
+            updateTransformer(nextProps, this);
+            updateMorpher(nextProps, this); 
         },
 
         componentWillUnmount: function () {
@@ -319,58 +389,5 @@ define(function (require) {
             );
         }
     });
-
-
-    // 设置摄像机位置
-    function updateCameraPosition(me, props) {
-        props = props || me.props;
-        var cameraAngleA = props.cameraAngleA;
-        var cameraAngleB = props.cameraAngleB;
-        var cameraRadius = props.cameraRadius;
-        var coordinateContainer = me.coordinateContainer;
-        var grid = me.grid;
-        var y = cameraRadius * Math.sin(Math.PI * cameraAngleA / 180);
-        var x = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.cos(Math.PI * cameraAngleB / 180);
-        var z = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.sin(Math.PI * cameraAngleB / 180);
-        if (Math.abs(cameraAngleA) < 2) {
-            coordinateContainer.rotation.z = grid.rotation.z = Math.PI * 0.5 - Math.PI * cameraAngleB / 180;
-            coordinateContainer.rotation.x = grid.rotation.x = Math.PI * 1.5;
-        }
-        else {
-            coordinateContainer.rotation.z = grid.rotation.z = 0;
-            coordinateContainer.rotation.x = grid.rotation.x = 0;
-        }
-        me.camera.position.set(
-            x + props.cameraLookAt.x,
-            y + props.cameraLookAt.y,
-            z + props.cameraLookAt.z
-        );
-    }
-
-
-    // 渲染器工厂
-    function animaterFactory(me) {
-        return function () {
-            me.camera.lookAt(me.props.cameraLookAt);
-            me.renderer.render(me.scene, me.camera);
-            if (me.props.tool === 'tool-pickGeometry' && me.props.selectedMesh) {
-                me.transformer.update();
-            }
-            if (me.props.tool === 'tool-pickJoint' && me.props.selectedVector) {
-                me.morpher.controller.update();
-            }
-        };
-    }
-
-
-    // 获取根据坐标纸获取3D鼠标位置
-    function getMouse3D(x, y, me, geo) {
-        var width = me.refs.container.offsetWidth;
-        var height = me.refs.container.offsetHeight;
-        me.raycaster.setFromCamera(new THREE.Vector3((x / width) * 2 - 1, - (y / height) * 2 + 1, 0), me.camera);
-        var intersects = me.raycaster.intersectObjects([geo]);
-        return intersects.length > 0 ? intersects[0].point.clone() : new THREE.Vector3();
-    }
-
 
 });

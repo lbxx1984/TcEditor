@@ -13,7 +13,8 @@ define(function (require) {
         require('../commands/system'),
         require('../commands/geometry'),
         require('../commands/tool'),
-        require('../commands/transformer')
+        require('../commands/transformer'),
+        require('../commands/morpher')
     );
 
 });
