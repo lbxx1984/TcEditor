@@ -160,27 +160,17 @@ define(function (require) {
     };
 
 
+    /**
+     * 更新锚点尺寸
+     */
+    Morpher3D.prototype.setAnchorSize = function (size) {
+        size = Math.min(size, 1000);
+        size = Math.max(size, 500);
+        this.anchorSize = size;
+        this.updateAnchors();
+    }
+
     return Morpher3D;
-
-
-
-    // Morpher3D.prototype.updateAttachedJoint = function () {
-    //     if (this.joint == null || this.geo == null) return;
-    //     var joint = this.joint;
-    //     var mesh = this.geo;
-    //     var camerapos = this.stage.camera.position;
-    //     var matrix = math.getRotateMatrix(mesh);
-    //     var vector = mesh.geometry.vertices[joint.index];
-    //     var pos = math.local2world(vector.x, vector.y, vector.z, matrix, mesh);
-    //     var meshpos = new THREE.Vector3(pos[0], pos[1], pos[2]);
-    //     joint.position.x = pos[0];
-    //     joint.position.y = pos[1];
-    //     joint.position.z = pos[2];
-    //     joint.scale.x = joint.scale.y = joint.scale.z = meshpos.distanceTo(camerapos) / this.baseRule;
-    //     this.jointCtrler.update();
-    // };
-
-
 
 
 });

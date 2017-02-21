@@ -152,6 +152,7 @@ define(function (require) {
         }
         if (nextProps.morpher3Dinfo !== me.props.morpher3Dinfo) {
             me.morpher.setAnchorColor(nextProps.morpher3Dinfo.anchorColor);
+            me.morpher.setAnchorSize(nextProps.morpher3Dinfo.anchorSize);
         }
     }
 
