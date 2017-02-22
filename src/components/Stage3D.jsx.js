@@ -8,6 +8,7 @@ define(function (require) {
 
     var React = require('react');   
     var THREE = require('three');
+    var _ = require('underscore');
 
 
     var Transformer3D = require('three-lib/TransformControls');
@@ -62,7 +63,7 @@ define(function (require) {
             x + props.cameraLookAt.x,
             y + props.cameraLookAt.y,
             z + props.cameraLookAt.z
-        );
+       );
     }
 
     // 更新摄像机属性
@@ -72,7 +73,7 @@ define(function (require) {
             || nextProps.cameraAngleA !== me.props.cameraAngleA
             || nextProps.cameraAngleB !== me.props.cameraAngleB
             || nextProps.cameraLookAt !== me.props.cameraLookAt
-        ) {
+       ) {
             updateCameraPosition(me, nextProps);
             if (nextProps.tool === 'tool-pickJoint' && nextProps.selectedMesh) {
                 me.morpher.updateAnchors();
@@ -87,7 +88,7 @@ define(function (require) {
             me.grid = new THREE.GridHelper(
                 nextProps.gridSize, nextProps.gridStep,
                 nextProps.colorGrid, nextProps.colorGrid
-            );
+           );
             me.grid.visible = nextProps.gridVisible;
             me.scene.add(me.grid);
         }
@@ -116,12 +117,12 @@ define(function (require) {
         }
     }
 
-    // 变形工具
+    // 更新变形工具
     function updateTransformer(nextProps, me) {
         if (
             nextProps.tool === 'tool-pickGeometry' && me.props.tool !== 'tool-pickGeometry'
             || (nextProps.selectedMesh !== me.props.selectedMesh && nextProps.tool === 'tool-pickGeometry')
-        ) {
+       ) {
             me.transformer[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
         }
         if (nextProps.tool !== 'tool-pickGeometry' && me.props.tool === 'tool-pickGeometry') {
@@ -134,12 +135,12 @@ define(function (require) {
         }
     }
 
-    // 修改工具
+    // 更新修改工具
     function updateMorpher(nextProps, me) {
         if (
             nextProps.tool === 'tool-pickJoint' && me.props.tool !== 'tool-pickJoint'
             || (nextProps.selectedMesh !== me.props.selectedMesh && nextProps.tool === 'tool-pickJoint')
-        ) {
+       ) {
             me.morpher[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
             me.morpher.detachAnchor();
         }
@@ -156,6 +157,59 @@ define(function (require) {
         }
     }
 
+    // 加载灯光
+    function loadLights(me) {
+        if (!_.keys(me.props.lights).length) return;
+        _.each(me.props.lights, function (light) {
+            me.scene.add(light);
+        });
+    }
+
+    function test(me) {
+        var renderer = me.renderer;
+        var camera = me.camera;
+        var scene = me.scene;
+        var mshFloor = new THREE.Mesh(
+            new THREE.BoxGeometry(2000, 1, 2000),
+            new THREE.MeshPhongMaterial()
+        );
+        var mshBox = new THREE.Mesh(
+            new THREE.BoxGeometry(100, 100, 200),
+            new THREE.MeshPhongMaterial({color: 0x4080ff})
+        );
+        var ambient = new THREE.AmbientLight(0xffffff, 0.1);
+        var spotLight = new THREE.SpotLight(0xffffff, 1);
+        var lightHelper = new THREE.SpotLightHelper(spotLight);
+        
+
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        
+        renderer.gammaInput = true;
+        renderer.gammaOutput = true;
+        
+        spotLight.position.set(0, 1000, 0);
+        spotLight.castShadow = true;
+        spotLight.angle = Math.PI / 4;
+        spotLight.penumbra = 0.05;
+        spotLight.decay = 2;
+        spotLight.distance = 2000;
+        spotLight.shadow.mapSize.width = 1024;
+        spotLight.shadow.mapSize.height = 1024;
+        spotLight.shadow.camera.near = 1;
+        spotLight.shadow.camera.far = 200;
+        mshFloor.material.color.set(0x808080);
+        mshFloor.receiveShadow = true;
+        mshFloor.position.set(0, - 0.05, 0);
+        mshBox.castShadow = true;
+        mshBox.receiveShadow = true;
+        mshBox.position.set(40, 1.8, 0);
+        // scene.add(mshFloor);
+        scene.add(mshBox);
+        scene.add(ambient);
+        scene.add(spotLight);
+        scene.add(lightHelper);
+    }
 
     return React.createClass({
 
@@ -200,20 +254,20 @@ define(function (require) {
             this.grid = new THREE.GridHelper(
                 this.props.gridSize, this.props.gridStep,
                 this.props.colorGrid, this.props.colorGrid
-            );
+           );
             // 坐标轴
             this.axis = new THREE.AxisHelper(200);
             // 坐标纸，不可见，专门显示鼠标事件
             this.coordinate = new THREE.Mesh(
                 new THREE.PlaneGeometry(10000, 10000, 1, 1),
                 new THREE.MeshBasicMaterial({visible: false, side: THREE.DoubleSide})
-            );
+           );
             // 坐标纸容器，主要作用是接受对网格的操作
             this.coordinateContainer = new THREE.Object3D();
             // 3D摄像机
             this.camera = new THREE.PerspectiveCamera(
                 60, this.refs.container.offsetWidth / this.refs.container.offsetHeight, 1, 20000
-            );
+           );
             // 3D场景
             this.scene = new THREE.Scene();
             // WebGL渲染器
@@ -228,10 +282,6 @@ define(function (require) {
                 anchorColor: this.props.morpher3Dinfo.anchorColor,
                 anchorSize: this.props.morpher3Dinfo.anchorSize
             });
-            // 临时灯光
-                var light = new THREE.PointLight(0xffffff, 1, 5000);
-                light.position.set(0, 1000, 0);
-                this.scene.add(light);
             // 初始化舞台
             this.scene.add(this.grid);
             this.scene.add(this.axis);
@@ -252,11 +302,13 @@ define(function (require) {
             this.refs.container.addEventListener('mousewheel', this.onMouseWheel);
             this.transformer.addEventListener('objectChange', objectChangeHandler);
             this.morpher.controller.addEventListener('objectChange', objectChangeHandler);
-            function objectChangeHandler() {
-                me.isDragging = true;
-            }
+            function objectChangeHandler() {me.isDragging = true;}
             // 开启渲染引擎
             animation.add('stage3d', animaterFactory(this));  
+            // 加载灯光对象
+            loadLights(this);
+            // 测试
+            test(this);
         },
 
         componentWillReceiveProps: function (nextProps) {
@@ -387,7 +439,7 @@ define(function (require) {
                 <div {...containerProps}>
                     <CameraController {...controllerProps}/>
                 </div>
-            );
+           );
         }
     });
 

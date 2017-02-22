@@ -41,6 +41,7 @@ define(function (require) {
                 colorGrid: this.props.stage.colorGrid[1],
                 tool: this.props.tool,
                 mesh3d: this.props.mesh3d,
+                lights: this.props.lights,
                 style: style,
                 panelCount: this.props.panel.length,
                 selectedMesh: this.props.selectedMesh,

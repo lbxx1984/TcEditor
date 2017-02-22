@@ -6,21 +6,25 @@
 define(function (require) {
 
 
+    var THREE = require('three');
     var ReactDOM = require('react-dom');
     var React = require('react');
     var _ = require('underscore');
+
 
     var config = require ('./config');
     var App = require('./App.jsx');
     var dispatcher = require('./common/dispatcher');
     var model = require('./common/model');
-
+    
 
     model.fill(config);
     // 这些数据需要从localStorage里读出来，或者从文件里读出来
     model.fill({
         // 舞台中的物体hash
         mesh3d: {},
+        // 舞台中的灯光hash
+        lights: {},
         // 当前选中的物体
         selectedMesh: null,
         // 当前选中的物体的关节

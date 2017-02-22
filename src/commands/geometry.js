@@ -30,9 +30,16 @@ define(function (require) {
             }
             var width = Math.abs(mouseDown3D.x - mouseCurrent3D.x);
             var height = Math.abs(mouseDown3D.z - mouseCurrent3D.z);
-            var material = new THREE.MeshLambertMaterial({color: 0xe6e6e6, side: THREE.DoubleSide});
+            var material = new THREE.MeshPhongMaterial({
+                color: 0xff0000,
+                side: THREE.DoubleSide,
+                hading: THREE.SmoothShading
+            });
+            // var geometry = new THREE.BoxGeometry(width, height, 1);
             var geometry = new THREE.PlaneGeometry(width, height, 5, 5);
             stage.tempMesh = new THREE.Mesh(geometry, material);
+            stage.tempMesh.receiveShadow = true;
+            stage.tempMesh.castShadow = true; 
             stage.tempMesh.rotation.x = Math.PI / 2;
             stage.tempMesh.position.set(
                 (mouseDown3D.x + mouseCurrent3D.x) / 2,
