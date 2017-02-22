@@ -54,6 +54,7 @@ define(function (require) {
             obj3D.tc = {
                 birth: new Date(),
                 add: true,
+                anchorColor: 0x00CD00,
                 materialColor: obj3D.material.color.getHex(),
                 materialEmissive: obj3D.material.emissive.getHex()
             };

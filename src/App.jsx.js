@@ -112,9 +112,13 @@ define(function (require) {
             };
         }
         if (props.tool === 'tool-pickJoint') {
+            var datasource = JSON.parse(JSON.stringify(props.morpher3DTools));
+            var color = props.morpher3Dinfo.anchorColor.toString(16);
+            while(color.length < 6) color = '0' + color;
+            datasource[0].color = '#' + color;
             return {
                 tool: props.tool,
-                datasource: props.morpher3DTools
+                datasource: datasource
             };
         }
     }

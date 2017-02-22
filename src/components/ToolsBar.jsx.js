@@ -59,6 +59,11 @@ define(function (require) {
                 className: 'iconfont ' + item.icon + (item.checked ? ' selected' : ''),
                 onClick: me.onButtonClick
             };
+            if (item.hasOwnProperty('color')) {
+                iconProps.style = {
+                    color: item.color
+                };
+            }
             result.push(<div {...iconProps}></div>);
         });
         return result;

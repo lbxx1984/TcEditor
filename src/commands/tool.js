@@ -81,6 +81,9 @@ define(function (require) {
         intersected.material.setValues({color: config.colors.selectedMesh[0]});
         me.fill({
             selectedMesh: intersected,
+            morpher3Dinfo: _.extend({}, me.get('morpher3Dinfo'), {
+                anchorColor: intersected.tc.anchorColor
+            }),
             selectedVector: null
         });
     }

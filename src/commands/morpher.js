@@ -8,22 +8,28 @@ define(function (require) {
 
     var _ = require('underscore');
     var Dialog = require('fcui2/Dialog.jsx');
-    var AnchorColorSetter = require('../components/dialogContent/MorpherAnchorColorSetter.jsx');
+    var ColorSetter = require('../components/dialogContent/ColorSetter.jsx');
 
     var dialog = new Dialog();
 
 
     return {
         'morpher-3d-anchor-color': function () {
-            var info = _.extend({}, this.get('morpher3Dinfo'));
             var me = this;
             dialog.pop({
-                contentProps: {},
-                content: AnchorColorSetter,
+                contentProps: {
+                    value: this.get('morpher3Dinfo').anchorColor,
+                    onChange: function (value) {
+                        var info = _.extend({}, me.get('morpher3Dinfo'));
+                        var mesh = me.get('selectedMesh');
+                        mesh && mesh.tc && (mesh.tc.anchorColor = value);
+                        info.anchorColor = value;
+                        me.set('morpher3Dinfo', info)
+                    }
+                },
+                content: ColorSetter,
                 title: 'Please Choose Anchor Color'
             });
-            // info.anchorColor = 0xff0000;
-            // this.set('morpher3Dinfo', info);
         },
         'morpher-3d-size-enlarge': function () {
             var info = _.extend({}, this.get('morpher3Dinfo'));
