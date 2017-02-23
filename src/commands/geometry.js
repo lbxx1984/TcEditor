@@ -31,16 +31,13 @@ define(function (require) {
             var width = Math.abs(mouseDown3D.x - mouseCurrent3D.x);
             var height = Math.abs(mouseDown3D.z - mouseCurrent3D.z);
             var material = new THREE.MeshPhongMaterial({
-                color: 0xff0000,
-                side: THREE.DoubleSide,
-                hading: THREE.SmoothShading
+                color: 0xffffff, shading: THREE.FlatShading,
+                side: THREE.DoubleSide
             });
-            // var geometry = new THREE.BoxGeometry(width, height, 1);
             var geometry = new THREE.PlaneGeometry(width, height, 5, 5);
             stage.tempMesh = new THREE.Mesh(geometry, material);
-            stage.tempMesh.receiveShadow = true;
-            stage.tempMesh.castShadow = true; 
-            stage.tempMesh.rotation.x = Math.PI / 2;
+            stage.tempMesh.rotation.x = -1.5 * Math.PI;
+            stage.tempMesh.rotation.y = Math.PI;
             stage.tempMesh.position.set(
                 (mouseDown3D.x + mouseCurrent3D.x) / 2,
                 (mouseDown3D.y + mouseCurrent3D.y) / 2,

@@ -16,7 +16,8 @@ define(function (require) {
     var App = require('./App.jsx');
     var dispatcher = require('./common/dispatcher');
     var model = require('./common/model');
-    
+    var defaultLight = new THREE.PointLight(0xffffff);
+    defaultLight.position.set(0, 1000, 0);
 
     model.fill(config);
     // 这些数据需要从localStorage里读出来，或者从文件里读出来
@@ -24,11 +25,13 @@ define(function (require) {
         // 舞台中的物体hash
         mesh3d: {},
         // 舞台中的灯光hash
-        lights: {},
+        lights: {defaultLight: defaultLight},
         // 当前选中的物体
         selectedMesh: null,
         // 当前选中的物体的关节
         selectedVector: null,
+        // 当前选中的灯光
+        selectedLight: null,
         // 右侧处于显示状态的工作卡片
         panel: [
             {type: 'meshPanel', expend: true}
@@ -46,7 +49,7 @@ define(function (require) {
             // 3D摄像机配置
             camera3D: {
                 // 摄像机到期观察点的距离，可以理解为焦距
-                cameraRadius: 1000,
+                cameraRadius: 2500,
                 // 摄像机视线与XOZ平面夹角
                 cameraAngleA: 40,
                 // 摄像机视线在XOZ平面投影与X轴夹角
@@ -57,7 +60,7 @@ define(function (require) {
             // 舞台中网格是否显示
             gridVisible: true,
             // 舞台中3D网格大小
-            gridSize3D: 2500,
+            gridSize3D: 5000,
             // 舞台中3D网格单元格大小
             gridStep3D: 50
         },

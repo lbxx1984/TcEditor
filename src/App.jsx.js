@@ -46,6 +46,7 @@ define(function (require) {
                 panelCount: this.props.panel.length,
                 selectedMesh: this.props.selectedMesh,
                 selectedVector: this.props.selectedVector,
+                selectedLight: this.props.selectedLight,
                 transformer3Dinfo: this.props.transformer3Dinfo,
                 morpher3Dinfo: this.props.morpher3Dinfo
             };

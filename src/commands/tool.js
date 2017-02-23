@@ -36,12 +36,12 @@ define(function (require) {
         return intersects.length ? intersects[0].object : null;
     }
 
-    function hoverMeshByMouse3d(param, selectedMesh) {
+    function hoverMeshByMouse3d(param, selectedMesh, targetMeshes) {
         var obj = getObject3dByMouse3D(
             param.event.nativeEvent.offsetX,
             param.event.nativeEvent.offsetY,
             param.stage3D,
-            param.stage3D.meshArray
+            targetMeshes ? targetMeshes : param.stage3D.meshArray
         );
         if (obj) {
             if (selectedMesh && obj.uuid === selectedMesh.uuid) return;
@@ -95,6 +95,13 @@ define(function (require) {
         me.set('selectedVector', intersectedVector);
     }
 
+    function pickupLight(selectedLight, me) {
+        if (selectedLight && selectedLight.uuid === intersected.uuid) return;
+        clearObject3dColor(selectedLight);
+        me.fill({
+            selectedLight: intersected,
+        });
+    }
 
     return {
         'tool-pickGeometry': function (param, dragging) {
@@ -149,6 +156,30 @@ define(function (require) {
                 hoverMeshByMouse3d(param, selectedMesh);
                 return;
             }
+        },
+        'tool-pickLight': function (param, dragging) {
+            var selectedLight = this.get('selectedLight');
+            // 初始化工具
+            if (this.get('tool') !== 'tool-pickLight') {
+                clearObject3dColor(this.get('selectedMesh'));
+                clearObject3dColor(this.get('selectedVector'));
+                this.fill({
+                    tool: 'tool-pickLight',
+                    selectedMesh: null,
+                    selectedVector: null,
+                    selectedLight: null
+                });
+                return;
+            }
+            // 拾取物体
+            if (param === 'mouseup' && intersected) {
+                pickupLight(selectedLight, this);
+                return;
+            }
+            // 拖拽容忍
+            if (typeof param !== 'object' || dragging) return;
+            // hover物体
+            hoverMeshByMouse3d(param, null, param.stage3D.lightHelper.anchorArray);
         }
     };
 
