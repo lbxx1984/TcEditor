@@ -95,7 +95,7 @@ define(function (require) {
             me.grid = new THREE.GridHelper(
                 nextProps.gridSize, nextProps.gridStep,
                 nextProps.colorGrid, nextProps.colorGrid
-           );
+            );
             me.grid.visible = nextProps.gridVisible;
             me.scene.add(me.grid);
         }
@@ -186,6 +186,39 @@ define(function (require) {
         });
     }
 
+    // 加载物体
+    function loadMeshes(me) {
+        if (!_.keys(me.props.mesh3d).length) return;
+        _.each(me.props.mesh3d, function (item) {
+            me.scene.add(item);
+        });
+    }
+
+    // 加载工具
+    function loadTools(me) {
+        if (me.props.tool === 'tool-pickGeometry') {
+            me.transformer[me.props.selectedMesh ? 'attach' : 'detach'](me.props.selectedMesh);
+        }
+        if (me.props.tool === 'tool-pickJoint') {
+            me.morpher[me.props.selectedMesh ? 'attach' : 'detach'](me.props.selectedMesh);
+            if (me.props.selectedMesh && me.props.selectedVector) {
+                me.morpher.attachAnchor(me.morpher.anchors[me.props.selectedVector.tc.index]);
+            }
+            else {
+                me.morpher.detachAnchor();
+            }
+        }
+        if (me.props.tool === 'tool-pickLight') {
+            me.lightHelper.attach();
+            if (me.props.selectedLight) {
+                me.lightHelper.controller.attach(me.lightHelper.anchors[me.props.selectedLight.tc.lightKey]);
+            }
+            else {
+                me.lightHelper.controller.detach();
+            }
+        }
+    }
+
     // 舞台技术测试
     function test(me) {
         var renderer = me.renderer;
@@ -199,6 +232,7 @@ define(function (require) {
         mshBox.position.set(-100, 0, -100);
         scene.add(mshBox);
     }
+
 
     return React.createClass({
 
@@ -280,11 +314,13 @@ define(function (require) {
             });
             // 初始化舞台
             this.scene.add(this.grid);
-            this.scene.add(this.axis);
+            this.scene.add(this.axis)
             this.scene.add(this.transformer);
             this.scene.add(this.morpher.controller);
             this.scene.add(this.lightHelper.controller);
             this.scene.add(this.coordinateContainer);
+            this.grid.visible = this.props.gridVisible;
+            this.axis.visible = this.props.gridVisible;
             this.coordinate.rotation.x = Math.PI * 0.5;
             this.coordinateContainer.add(this.coordinate);
             this.renderer.setClearColor(this.props.colorStage);
@@ -303,8 +339,10 @@ define(function (require) {
             function objectChangeHandler() {me.isDragging = true;}
             // 开启渲染引擎
             animation.add('stage3d', animaterFactory(this));  
-            // 加载灯光对象
+            // 加载自定义对象
             loadLights(this);
+            loadMeshes(this);
+            loadTools(this);
             // 测试
             test(this);
         },

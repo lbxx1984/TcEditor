@@ -11,6 +11,7 @@ define(function (require) {
     var CommandBar = require('./components/CommandBar.jsx');
     var InformationBar = require('./components/InformationBar.jsx');
     var Stage3D = require('./components/Stage3D.jsx');
+    var Stage2D = require('./components/Stage2D.jsx');
     var MeshListPanel = require('./components/MeshListPanel.jsx');
     var ToolsBar = require('./components/ToolsBar.jsx');
 
@@ -28,6 +29,9 @@ define(function (require) {
         render: function () {
             var style = {
                 right: this.props.panel.length ? 301 : 0
+            };
+            var stage2dProps = {
+                view: this.props.view
             };
             var stage3dProps = {
                 cameraRadius: this.props.stage.camera3D.cameraRadius,
@@ -70,7 +74,7 @@ define(function (require) {
             var toolsBarProps = toolsBarPropsFactory(this.props);
             return (
                 <div className="tc-root-container">
-                    <Stage3D {...stage3dProps}/>
+                    {this.props.view === 'view-3d' ? <Stage3D {...stage3dProps}/> : <Stage2D {...stage2dProps}/>}
                     <Menu {...menuProps}/>
                     <CommandBar {...commandBarProps}/>
                     <InformationBar {...informationBarProps}/>

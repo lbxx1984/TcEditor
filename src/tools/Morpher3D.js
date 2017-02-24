@@ -89,7 +89,8 @@ define(function (require) {
                     new THREE.MeshBasicMaterial({color: anchorColor, side: THREE.DoubleSide})
                 );
                 np.tc = {
-                    materialColor: np.material.color.getHex()
+                    materialColor: np.material.color.getHex(),
+                    index: index
                 };
                 anchors.push(np);
             }

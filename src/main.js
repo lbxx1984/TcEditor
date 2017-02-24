@@ -17,8 +17,9 @@ define(function (require) {
     var dispatcher = require('./common/dispatcher');
     var model = require('./common/model');
     var defaultLight = new THREE.PointLight(0xffffff);
-    defaultLight.position.set(0, 1000, 0);
 
+
+    defaultLight.position.set(0, 1000, 0);
     model.fill(config);
     // 这些数据需要从localStorage里读出来，或者从文件里读出来
     model.fill({

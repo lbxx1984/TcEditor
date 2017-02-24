@@ -46,11 +46,10 @@ define(function (require) {
         });
         _.each(this.lights, function (item, key) {
             var anchor = anchors[item.uuid] ? anchors[item.uuid] : anchorFactory();
-            var anchorPos = new THREE.Vector3(item.position.x, item.position.y, item.position.z);
-            anchors[item.uuid] = anchor;
+            anchors[key] = anchor;
             anchor.material.color.setHex(item.color.getHex());
-            anchor.position.set(anchorPos.x, anchorPos.y, anchorPos.z);
-            anchor.scale.x = anchor.scale.y = anchor.scale.z = anchorPos.distanceTo(camera.position) / 2000;
+            anchor.position.set(item.position.x, item.position.y, item.position.z);
+            anchor.scale.x = anchor.scale.y = anchor.scale.z = item.position.distanceTo(camera.position) / 2000;
             anchor.tc = {
                 materialColor: item.color.getHex(),
                 lightKey: key
@@ -73,12 +72,8 @@ define(function (require) {
 
     LightHelper.prototype.update = function () {
         var camera = this.camera;
-        var anchors = this.anchors;
-        _.each(this.lights, function (item) {
-            if (!anchors[item.uuid]) return;
-            var anchor = anchors[item.uuid];
-            var anchorPos = new THREE.Vector3(anchor.position.x, anchor.position.y, anchor.position.z);
-            anchor.scale.x = anchor.scale.y = anchor.scale.z = anchorPos.distanceTo(camera.position) / 2000;
+        _.each(this.anchors, function (item) {
+            item.scale.x = item.scale.y = item.scale.z = item.position.distanceTo(camera.position) / 2000;
         });
     };
 

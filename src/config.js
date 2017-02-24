@@ -108,7 +108,8 @@ define(function (require) {
         transformer3DTools: [
             {icon: 'icon-move', value: 'transformer-3d-mode-translate'},
             {icon: 'icon-llfilterrotate', value: 'transformer-3d-mode-rotate'},
-            {icon: 'icon-icicfangdatubiao', value: 'transformer-3d-mode-scale'},
+            // 这个工具不好用，变化太剧烈，暂时下线
+            // {icon: 'icon-icicfangdatubiao', value: 'transformer-3d-mode-scale'},
             {icon: 'icon-jiafangda', value: 'transformer-3d-size-enlarge'},
             {icon: 'icon-jiansuoxiao', value: 'transformer-3d-size-narrow'},
             {icon: 'icon-world', value: 'transformer-3d-space'}

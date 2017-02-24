@@ -14,7 +14,8 @@ define(function (require) {
         require('../commands/geometry'),
         require('../commands/tool'),
         require('../commands/transformer'),
-        require('../commands/morpher')
+        require('../commands/morpher'),
+        require('../commands/view')
     );
 
 });
