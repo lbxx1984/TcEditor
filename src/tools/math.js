@@ -163,5 +163,78 @@ define(function (require) {
     };
 
 
+    /**
+     * 将直角坐标转成屏幕坐标
+     *
+     * @param {number} x 直角坐标系x坐标
+     * @param {number} y 直接坐标系y坐标
+     * @param {number} width 屏幕显示区宽度
+     * @param {number} height 屏幕显示区高度
+     * @param {Array} trans 直角坐标系的平移向量，如[100, 100]
+     * @param {number} scale 直角坐标系的缩放比例，scale越大，画出的图形越小
+     * @param {number} rotate 直角坐标系的顺时针旋转角度(不是弧度)
+     * @return {Array} [x', y'] 点在屏幕上的坐标
+     */
+    tcMath.axis2screen = function (x, y, width, height, trans, scale, rotate) {
+        var sin, cos, x1, y1;
+        trans = trans instanceof Array && trans.length === 2 ? trans : [0, 0];
+        scale = scale || 1;
+        rotate = rotate || 0;
+        sin = Math.sin(Math.PI * rotate / 180);
+        cos = Math.cos(Math.PI * rotate / 180);
+        // 平移
+        x = x - trans[0];
+        y = y - trans[1];
+        // 缩放
+        x = x / scale;
+        y = y / scale;
+        // 旋转
+        x1 = x * cos + y * sin;
+        y1 = y * cos - x * sin;
+        x = x1;
+        y = y1;
+        // 映射
+        x = x + width * 0.5;
+        y = height * 0.5 - y;
+        return [x, y];
+    };
+
+
+    /**
+     * 将屏幕坐标映射成直角坐标系
+     *
+     * @param {number} x 屏幕坐标系x坐标
+     * @param {number} y 屏幕坐标系y坐标
+     * @param {number} width 屏幕显示区宽度
+     * @param {number} height 屏幕显示区高度
+     * @param {Array} trans 直角坐标系的平移向量，如[100, 100]
+     * @param {number} scale 直角坐标系的缩放比例，scale越大，画出的图形越小
+     * @param {number} rotate 直角坐标系的顺时针旋转角度(不是弧度)
+     * @return {Array} [x', y'] 点在直角坐标系的坐标
+     */
+    tcMath.screen2axis = function (x, y, width, height, trans, scale, rotate) {
+        var sin, cos, x1, y1;
+        trans = trans instanceof Array && trans.length === 2 ? trans : [0, 0];
+        scale = scale || 1;
+        rotate = rotate || 0;
+        sin = Math.sin(Math.PI * rotate / 180);
+        cos = Math.cos(Math.PI * rotate / 180);
+        // 映射
+        x = x - width * 0.5;
+        y = height * 0.5 - y;
+        // 旋转
+        x1 = x * sin + y * cos;
+        y1 = x * cos - y * sin;
+        x = x1;
+        y = y1;
+        // 缩放
+        x = x * scale;
+        y = y * scale;
+        // 平移
+        x = x + trans[0];
+        y = y + trans[1];
+        return [x, y];
+    };
+
     return tcMath;
 });

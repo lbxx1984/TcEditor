@@ -31,9 +31,11 @@ define(function (require) {
                 right: this.props.panel.length ? 301 : 0
             };
             var stage2dProps = {
+                style: style,
                 view: this.props.view
             };
             var stage3dProps = {
+                style: style,
                 cameraRadius: this.props.stage.camera3D.cameraRadius,
                 cameraAngleA: this.props.stage.camera3D.cameraAngleA,
                 cameraAngleB: this.props.stage.camera3D.cameraAngleB,
@@ -46,7 +48,6 @@ define(function (require) {
                 tool: this.props.tool,
                 mesh3d: this.props.mesh3d,
                 lights: this.props.lights,
-                style: style,
                 panelCount: this.props.panel.length,
                 selectedMesh: this.props.selectedMesh,
                 selectedVector: this.props.selectedVector,

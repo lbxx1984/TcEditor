@@ -231,6 +231,7 @@ define(function (require) {
         mshBox.rotation.x = Math.PI / 5;
         mshBox.position.set(-100, 0, -100);
         scene.add(mshBox);
+        // console.log(camera.rotation);
     }
 
 
@@ -459,7 +460,7 @@ define(function (require) {
 
         render: function () {
             var containerProps = {
-                className: 'tc-stage-3d',
+                className: 'tc-stage',
                 ref: 'container',
                 style: this.props.style,
                 onMouseMove: this.onMouseMove,
@@ -476,7 +477,7 @@ define(function (require) {
                 <div {...containerProps}>
                     <CameraController {...controllerProps}/>
                 </div>
-           );
+            );
         }
     });
 
