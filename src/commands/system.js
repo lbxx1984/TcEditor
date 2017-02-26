@@ -26,8 +26,15 @@ define(function (require) {
             if (selectedMesh) {
                 selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
             }
+            var view = value.indexOf('geometry-') === 0 ? 'view-3d' : this.get('view');
+            var stage = _.extend({}, this.get('stage'));
+            stage.camera3D = _.extend({}, stage.camera3D);
+            stage.camera3D.cameraAngleA = value.indexOf('geometry-') === 0 && Math.abs(stage.camera3D.cameraAngleA) < 2
+                ? 40 : stage.camera3D.cameraAngleA;
             this.fill({
                 tool: value,
+                view: view,
+                stage: stage,
                 selectedMesh: null
             });
         },

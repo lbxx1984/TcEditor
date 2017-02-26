@@ -69,7 +69,6 @@ define(function (require) {
             var menuProps = {
                 panel: this.props.panel,
                 menu: this.props.menu,
-                cameraAngleA: this.props.stage.camera3D.cameraAngleA,
                 style: style
             };
             var toolsBarProps = toolsBarPropsFactory(this.props);

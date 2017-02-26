@@ -29,7 +29,6 @@ define(function (require) {
             // 工具类命令
             if (value.indexOf(';tool') > -1) {
                 this.context.dispatch('changeSystemTool', value.replace(';tool', ''));
-                Math.abs(this.props.cameraAngleA) < 2 && this.context.dispatch('changeCamera3D', {cameraAngleA: 40});
                 return;
             }
             // 一次性执行命令
