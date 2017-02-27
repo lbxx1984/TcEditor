@@ -173,16 +173,20 @@ define(function (require) {
      * @param {Array} trans 直角坐标系的平移向量，如[100, 100]
      * @param {number} scale 直角坐标系的缩放比例，scale越大，画出的图形越小
      * @param {number} rotate 直角坐标系的顺时针旋转角度(不是弧度)
-     * @param {string} axis 映射到的坐标系，xoz|xoy|zoy
+     * @param {object} stageInfo 舞台信息
+     * @param {string} stageInfo.v 映射到的坐标系，xoz|xoy|zoy
+     * @param {number} stageInfo.a 摄像机与焦点连线与XOZ平面夹角
+     * @param {number} stageInfo.b 摄像机与焦点连线XOZ平面投影，与X轴夹角
      * @return {Array} [x', y'] 点在屏幕上的坐标
      */
-    tcMath.axis2screen = function (x, y, width, height, trans, scale, rotate, axis) {
+    tcMath.axis2screen = function (x, y, width, height, trans, scale, rotate, stageInfo) {
         var sin, cos, x1, y1;
         trans = trans instanceof Array && trans.length === 2 ? trans : [0, 0];
         scale = scale || 1;
         rotate = rotate || 0;
         sin = Math.sin(Math.PI * rotate / 180);
         cos = Math.cos(Math.PI * rotate / 180);
+        stageInfo.b = (stageInfo.b % 360 + 360) % 360;
         // 平移
         x = x - trans[0];
         y = y - trans[1];
@@ -195,10 +199,18 @@ define(function (require) {
         x = x1;
         y = y1;
         // 映射
-        switch (axis) {
+        switch (stageInfo.v) {
             case 'xoz':
                 x = x + width * 0.5;
-                y = y + height * 0.5;
+                y = stageInfo.a >= 0 ? (y + height * 0.5) : (height * 0.5 - y);
+                break;
+            case 'xoy':
+                x = stageInfo.b <= 180 ? (x + width * 0.5) : (width * 0.5 - x);
+                y = height * 0.5 - y;
+                break;
+            case 'zoy':
+                x = stageInfo.b <= 90 || stageInfo.b >= 315 ? (width * 0.5 - x) : (x + width * 0.5);
+                y = height * 0.5 - y;
                 break;
             default:
                 x = x + width * 0.5;
@@ -219,21 +231,33 @@ define(function (require) {
      * @param {Array} trans 直角坐标系的平移向量，如[100, 100]
      * @param {number} scale 直角坐标系的缩放比例，scale越大，画出的图形越小
      * @param {number} rotate 直角坐标系的顺时针旋转角度(不是弧度)
-     * @param {string} axis 映射到的坐标系，xoz|xoy|zoy
+     * @param {object} stageInfo 舞台信息
+     * @param {string} stageInfo.v 映射到的坐标系，xoz|xoy|zoy
+     * @param {number} stageInfo.a 摄像机与焦点连线与XOZ平面夹角
+     * @param {number} stageInfo.b 摄像机与焦点连线XOZ平面投影，与X轴夹角
      * @return {Array} [x', y'] 点在直角坐标系的坐标
      */
-    tcMath.screen2axis = function (x, y, width, height, trans, scale, rotate, axis) {
+    tcMath.screen2axis = function (x, y, width, height, trans, scale, rotate, stageInfo) {
         var sin, cos, x1, y1;
         trans = trans instanceof Array && trans.length === 2 ? trans : [0, 0];
         scale = scale || 1;
         rotate = rotate || 0;
         sin = Math.sin(-Math.PI * rotate / 180);
         cos = Math.cos(-Math.PI * rotate / 180);
+        stageInfo.b = (stageInfo.b % 360 + 360) % 360;
         // 映射
-        switch (axis) {
+        switch (stageInfo.v) {
             case 'xoz':
                 x = x - width * 0.5;
-                y = y - height * 0.5;
+                y = stageInfo.a >= 0 ? (y - height * 0.5) : (height * 0.5 - y);
+                break;
+            case 'xoy':
+                x = stageInfo.b <= 180 ? (x - width * 0.5) : (width * 0.5 - x);
+                y = height * 0.5 - y;
+                break;
+            case 'zoy':
+                x = stageInfo.b <= 90 || stageInfo.b >= 315 ? (width * 0.5 - x) : (x - width * 0.5);
+                y = height * 0.5 - y;
                 break;
             default:
                 x = x - width * 0.5;

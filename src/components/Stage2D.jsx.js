@@ -11,6 +11,26 @@ define(function (require) {
     var Grid2D = require('../tools/Grid2D');
     
 
+    function updateGrid(nextProps, me) {
+        if (
+            nextProps.axis.join('') !== me.props.axis.join('')
+            || nextProps.cameraRadius !== me.props.cameraRadius
+            || nextProps.cameraLookAt !== me.props.cameraLookAt
+            || nextProps.cameraAngleA !== me.props.cameraAngleA
+            || nextProps.cameraAngleB !== me.props.cameraAngleB
+            || nextProps.gridColor !== me.props.gridColor
+        ) {
+            me.grid2D.axis = nextProps.axis;
+            me.grid2D.cameraRadius = nextProps.cameraRadius;
+            me.grid2D.cameraLookAt = nextProps.cameraLookAt;
+            me.grid2D.cameraAngleA = nextProps.cameraAngleA;
+            me.grid2D.cameraAngleB = nextProps.cameraAngleB;
+            me.grid2D.lineColor = nextProps.gridColor;
+            me.grid2D.render();
+        }
+    }
+
+
     return React.createClass({
 
         contextTypes: {
@@ -35,12 +55,13 @@ define(function (require) {
                 cameraAngleB: this.props.cameraAngleB,
                 container: this.refs.container,
                 canvas: this.refs.grid,
-                lineColor: this.props.colorGrid
+                lineColor: this.props.gridColor
             });
             this.grid2D.render();
         },
 
         componentWillReceiveProps: function (nextProps) {
+            updateGrid(nextProps, this);
         },
 
         componentWillUnmount: function () {

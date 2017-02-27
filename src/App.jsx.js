@@ -38,7 +38,7 @@ define(function (require) {
                 cameraAngleA: cameraConfig.cameraAngleA,
                 cameraAngleB: cameraConfig.cameraAngleB,
                 cameraLookAt: cameraConfig.lookAt,
-                colorGrid: this.props.stage.colorGrid[0]
+                gridColor: this.props.stage.colorGrid[0]
             };
             var stage3dProps = {
                 style: style,

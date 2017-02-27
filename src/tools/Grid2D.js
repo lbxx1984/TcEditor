@@ -7,16 +7,16 @@ define(function (require) {
     var math = require('../core/math');
     var _ = require('underscore');
     var AXIS_COLOR = {
-        x: 'red',
-        y: 'green',
-        z: 'blue'
+        x: '#FF1600',
+        y: '#10FF00',
+        z: '#0013FF'
     };
 
 
     // 封装math闭包，也就是高阶函数
-    function mathFactory(handler, width, height, trans, scale, rotate, axis) {
+    function mathFactory(handler, width, height, trans, scale, rotate, stageInfo) {
         return function (x, y) {
-            return math[handler](x, y, width, height, trans, scale, rotate, axis);
+            return math[handler](x, y, width, height, trans, scale, rotate, stageInfo);
         };
     }
 
@@ -32,26 +32,14 @@ define(function (require) {
     }
 
 
-    // 将3D摄像机的观察点转换成2D空间的坐标轴偏移
-    // function getAxisTrans(lookAt, view, angleA) {
-    //     switch (view) {
-    //         case 'xz':
-    //             return [0, 0];
-    //             // return [lookAt.z, (angleA >= 0 ? 1 : -1) * lookAt.x];
-    //         default:
-    //             return [0, 0];
-    //     }
-    // }
-
-
-    // // 将3D摄像机观察角度转换成2D空间的坐标轴旋转
+    // 将3D摄像机观察角度转换成2D空间的坐标轴旋转
     function getAxisRotate(view, angleA, angleB) {
+        angleB = (angleB % 360 + 360) % 360;
         switch (view) {
             case 'xoz':
-                return 90 - angleB;
-                // return angleA >= 0 ? (180 + angleB) : 0;
+                return angleB - 90;
             default:
-                return [0, 0];
+                return 0;
         }
     }
 
@@ -80,10 +68,15 @@ define(function (require) {
         var ctx = this.canvas.getContext('2d');
         var scale = this.cameraRadius / 1000;
         var trans = [0, 0];
+        var stageInfo = {
+            v: this.axis.join('o'),
+            a: this.cameraAngleA,
+            b: this.cameraAngleB
+        };
         // var trans = getAxisTrans(this.cameraLookAt, this.axis.join(''), this.cameraAngleA);
         var rotate = getAxisRotate(this.axis.join('o'), this.cameraAngleA, this.cameraAngleB);
-        var screen2axis = mathFactory('screen2axis', width, height, trans, scale, rotate, this.axis.join('o'));
-        var axis2screen = mathFactory('axis2screen', width, height, trans, scale, rotate, this.axis.join('o'));
+        var screen2axis = mathFactory('screen2axis', width, height, trans, scale, rotate, stageInfo);
+        var axis2screen = mathFactory('axis2screen', width, height, trans, scale, rotate, stageInfo);
         // 准备临时数据
         var a, b, c, d, x0, x1, y0, y1, xArr, yArr;
         a = screen2axis(0, 0);
@@ -120,16 +113,10 @@ define(function (require) {
         });
         // 绘制坐标轴
         a = axis2screen(0, 0);
-        b = axis2screen(100, 0);
-        c = axis2screen(0, 100);
+        b = axis2screen(200, 0);
+        c = axis2screen(0, 200);
         draw(ctx, a[0], a[1], b[0], b[1], 2, AXIS_COLOR[this.axis[0]]);
         draw(ctx, a[0], a[1], c[0], c[1], 2, AXIS_COLOR[this.axis[1]]);
-        // 绘制测试点
-        d = axis2screen(100, 200);
-        ctx.beginPath();
-        ctx.strokeStyle = 'yellow';
-        ctx.arc(d[0], d[1], 10, 0, 2 * Math.PI, false);
-        ctx.stroke();
     };
 
 
