@@ -8,19 +8,52 @@ define(function (require) {
 
     var React = require('react');
     var _ = require('underscore');
-    var math = require('../tools/math');
+    var math = require('../core/math');
 
 
-    function updateGrid(me) {
+    var axisColor = {
+        x: 'red',
+        y: 'green',
+        z: 'blue'
+    };
+    var transform = {
+        xoz: function (lookAt, angleA) {
+            return angleA >= 0 ? [lookAt.z, lookAt.x] : [lookAt.z, -lookAt.x];
+        },
+        xoy: function (lookAt, angleA) {
+            return [0, 0];
+        },
+        zoy: function (lookAt, angleA) {
+            return [0, 0];
+        } 
+    };
+    var rotation = {
+        xoz: function (angleA, angleB) {
+            return angleA >= 0 ? (180 - angleB) : (180 + angleB);
+        },
+        xoy: function (angleA, angleB) {
+            return 0;
+        },
+        zoy: function (angleA, angleB) {
+            return 0;
+        } 
+    };
+
+
+
+
+    // 绘制坐标格
+    function renderGrid(me, props) {
         // 基础绘制数据
+        props = props || me.props;
         var container = me.refs.container;
         var grid = me.refs.grid;
         var ctx = grid.getContext('2d');
         var width = container.offsetWidth;
         var height = container.offsetHeight;
-        var trans = [500, 100];
-        var scale = 2;
-        var rotate = 45;
+        var trans = transform[props.axis.join('o')](props.cameraLookAt, props.cameraAngleA);
+        var rotate = rotation[props.axis.join('o')](props.cameraAngleA, props.cameraAngleB);
+        var scale = props.cameraRadius / 1000;
         // 临时绘制数据
         var a, b, c, d, x0, x1, y0, y1, xArr, yArr;
         a = math.screen2axis(0, 0, width, height, trans, scale, rotate);
@@ -49,8 +82,11 @@ define(function (require) {
             draw(a[0], a[1], b[0], b[1], 1, '#858585');
             if (x === 0) {
                 c = math.axis2screen(0, 0, width, height, trans, scale, rotate);
-                d = math.axis2screen(0, yArr[yArr.length - 1], width, height, trans, scale, rotate);
-                draw(c[0], c[1], d[0], d[1], 2, '#F00');
+                d = math.axis2screen(
+                    0, props.cameraAngleA > 0 ? yArr[yArr.length - 1] : yArr[0],
+                    width, height, trans, scale, rotate
+                );
+                draw(c[0], c[1], d[0], d[1], 2, axisColor[props.axis[0]]);
             }
         });
         yArr.map(function (y) {
@@ -60,7 +96,7 @@ define(function (require) {
             if (y === 0) {
                 c = math.axis2screen(0, 0, width, height, trans, scale, rotate);
                 d = math.axis2screen(xArr[xArr.length - 1], 0, width, height, trans, scale, rotate);
-                draw(c[0], c[1], d[0], d[1], 2, 'green');
+                draw(c[0], c[1], d[0], d[1], 2, axisColor[props.axis[1]]);
             }
         });
         function draw(x0, y0, x1, y1, lineWidth, color) {
@@ -90,11 +126,18 @@ define(function (require) {
         },
 
         componentDidMount: function () {
-            updateGrid(this);
+            renderGrid(this);
         },
 
         componentWillReceiveProps: function (nextProps) {
-
+            // 更新摄像机
+            // if (
+            //     nextProps.cameraRotate !== this.props.cameraRotate
+            //     || nextProps.cameraScale !== this.props.cameraScale
+            //     || nextProps.cameraTrans !== this.props.cameraTrans
+            // ) {
+            //     renderGrid(this, nextProps.cameraTrans, nextProps.cameraScale, nextProps.cameraRotate); 
+            // }
         },
 
         componentWillUnmount: function () {

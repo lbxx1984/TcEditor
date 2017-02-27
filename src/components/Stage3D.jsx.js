@@ -15,7 +15,7 @@ define(function (require) {
     var Morpher3D = require('tools/Morpher3D');
     var CameraController = require('./CameraController.jsx');
     var LightHelper = require('../tools/LightHelper');
-    var animation = require('../common/animation');
+    var animation = require('../core/animation');
 
 
     // 渲染器工厂

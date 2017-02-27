@@ -217,14 +217,14 @@ define(function (require) {
         trans = trans instanceof Array && trans.length === 2 ? trans : [0, 0];
         scale = scale || 1;
         rotate = rotate || 0;
-        sin = Math.sin(Math.PI * rotate / 180);
-        cos = Math.cos(Math.PI * rotate / 180);
+        sin = Math.sin(-Math.PI * rotate / 180);
+        cos = Math.cos(-Math.PI * rotate / 180);
         // 映射
         x = x - width * 0.5;
         y = height * 0.5 - y;
         // 旋转
-        x1 = x * sin + y * cos;
-        y1 = x * cos - y * sin;
+        x1 = x * cos + y * sin;
+        y1 = y * cos - x * sin;
         x = x1;
         y = y1;
         // 缩放
@@ -235,6 +235,7 @@ define(function (require) {
         y = y + trans[1];
         return [x, y];
     };
+
 
     return tcMath;
 });

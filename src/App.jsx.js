@@ -30,16 +30,21 @@ define(function (require) {
             var style = {
                 right: this.props.panel.length ? 301 : 0
             };
+            var cameraConfig = this.props.stage.camera3D;
             var stage2dProps = {
                 style: style,
-                view: this.props.view
+                axis: this.props.view.replace('view-', '').split('o'),
+                cameraRadius: cameraConfig.cameraRadius,
+                cameraAngleA: cameraConfig.cameraAngleA,
+                cameraAngleB: cameraConfig.cameraAngleB,
+                cameraLookAt: cameraConfig.lookAt
             };
             var stage3dProps = {
                 style: style,
-                cameraRadius: this.props.stage.camera3D.cameraRadius,
-                cameraAngleA: this.props.stage.camera3D.cameraAngleA,
-                cameraAngleB: this.props.stage.camera3D.cameraAngleB,
-                cameraLookAt: this.props.stage.camera3D.lookAt,
+                cameraRadius: cameraConfig.cameraRadius,
+                cameraAngleA: cameraConfig.cameraAngleA,
+                cameraAngleB: cameraConfig.cameraAngleB,
+                cameraLookAt: cameraConfig.lookAt,
                 gridVisible: this.props.stage.gridVisible,
                 gridSize: this.props.stage.gridSize3D,
                 gridStep: this.props.stage.gridStep3D,

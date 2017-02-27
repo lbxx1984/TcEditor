@@ -64,7 +64,7 @@ define(function (require) {
         'top': [89, null],
         'bottom': [-89, null]
     };
-    var animation = require('../common/animation');
+    var animation = require('../core/animation');
 
 
     return React.createClass({
