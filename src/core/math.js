@@ -173,9 +173,10 @@ define(function (require) {
      * @param {Array} trans 直角坐标系的平移向量，如[100, 100]
      * @param {number} scale 直角坐标系的缩放比例，scale越大，画出的图形越小
      * @param {number} rotate 直角坐标系的顺时针旋转角度(不是弧度)
+     * @param {string} axis 映射到的坐标系，xoz|xoy|zoy
      * @return {Array} [x', y'] 点在屏幕上的坐标
      */
-    tcMath.axis2screen = function (x, y, width, height, trans, scale, rotate) {
+    tcMath.axis2screen = function (x, y, width, height, trans, scale, rotate, axis) {
         var sin, cos, x1, y1;
         trans = trans instanceof Array && trans.length === 2 ? trans : [0, 0];
         scale = scale || 1;
@@ -194,8 +195,16 @@ define(function (require) {
         x = x1;
         y = y1;
         // 映射
-        x = x + width * 0.5;
-        y = height * 0.5 - y;
+        switch (axis) {
+            case 'xoz':
+                x = x + width * 0.5;
+                y = y + height * 0.5;
+                break;
+            default:
+                x = x + width * 0.5;
+                y = height * 0.5 - y;
+                break;
+        }
         return [x, y];
     };
 
@@ -210,9 +219,10 @@ define(function (require) {
      * @param {Array} trans 直角坐标系的平移向量，如[100, 100]
      * @param {number} scale 直角坐标系的缩放比例，scale越大，画出的图形越小
      * @param {number} rotate 直角坐标系的顺时针旋转角度(不是弧度)
+     * @param {string} axis 映射到的坐标系，xoz|xoy|zoy
      * @return {Array} [x', y'] 点在直角坐标系的坐标
      */
-    tcMath.screen2axis = function (x, y, width, height, trans, scale, rotate) {
+    tcMath.screen2axis = function (x, y, width, height, trans, scale, rotate, axis) {
         var sin, cos, x1, y1;
         trans = trans instanceof Array && trans.length === 2 ? trans : [0, 0];
         scale = scale || 1;
@@ -220,8 +230,16 @@ define(function (require) {
         sin = Math.sin(-Math.PI * rotate / 180);
         cos = Math.cos(-Math.PI * rotate / 180);
         // 映射
-        x = x - width * 0.5;
-        y = height * 0.5 - y;
+        switch (axis) {
+            case 'xoz':
+                x = x - width * 0.5;
+                y = y - height * 0.5;
+                break;
+            default:
+                x = x - width * 0.5;
+                y = height * 0.5 - y;
+                break;
+        }
         // 旋转
         x1 = x * cos + y * sin;
         y1 = y * cos - x * sin;

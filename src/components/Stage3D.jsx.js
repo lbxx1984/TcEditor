@@ -225,11 +225,10 @@ define(function (require) {
         var camera = me.camera;
         var scene = me.scene;
         var mshBox = new THREE.Mesh(
-            new THREE.BoxGeometry(100, 100, 200),
+            new THREE.SphereGeometry(20, 20, 20),
             new THREE.MeshPhongMaterial({color: 0x4080ff})
         );
-        mshBox.rotation.x = Math.PI / 5;
-        mshBox.position.set(-100, 0, -100);
+        mshBox.position.set(100, 0, 200);
         scene.add(mshBox);
         // console.log(camera.rotation);
     }
