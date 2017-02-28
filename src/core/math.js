@@ -176,7 +176,7 @@ define(function (require) {
      * @param {object} stageInfo 舞台信息
      * @param {string} stageInfo.v 映射到的坐标系，xoz|xoy|zoy
      * @param {number} stageInfo.a 摄像机与焦点连线与XOZ平面夹角
-     * @param {number} stageInfo.b 摄像机与焦点连线XOZ平面投影，与X轴夹角
+     * @param {number} stageInfo.b 摄像机与焦点连线XOZ平面投影，与X轴夹角[0, 360]
      * @return {Array} [x', y'] 点在屏幕上的坐标
      */
     tcMath.axis2screen = function (x, y, width, height, trans, scale, rotate, stageInfo) {
@@ -186,7 +186,6 @@ define(function (require) {
         rotate = rotate || 0;
         sin = Math.sin(Math.PI * rotate / 180);
         cos = Math.cos(Math.PI * rotate / 180);
-        stageInfo.b = (stageInfo.b % 360 + 360) % 360;
         // 平移
         x = x - trans[0];
         y = y - trans[1];
@@ -244,7 +243,6 @@ define(function (require) {
         rotate = rotate || 0;
         sin = Math.sin(-Math.PI * rotate / 180);
         cos = Math.cos(-Math.PI * rotate / 180);
-        stageInfo.b = (stageInfo.b % 360 + 360) % 360;
         // 映射
         switch (stageInfo.v) {
             case 'xoz':

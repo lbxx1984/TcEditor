@@ -19,7 +19,9 @@ define(function (require) {
             || nextProps.cameraAngleA !== me.props.cameraAngleA
             || nextProps.cameraAngleB !== me.props.cameraAngleB
             || nextProps.gridColor !== me.props.gridColor
+            || nextProps.style.right !== me.props.style.right
         ) {
+            me.refs.container.style.right = nextProps.style.right + 'px';
             me.grid2D.axis = nextProps.axis;
             me.grid2D.cameraRadius = nextProps.cameraRadius;
             me.grid2D.cameraLookAt = nextProps.cameraLookAt;

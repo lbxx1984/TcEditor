@@ -4,8 +4,8 @@
 define(function (require) {
 
 
-    var math = require('../core/math');
     var _ = require('underscore');
+    var math = require('../core/math');
     var AXIS_COLOR = {
         x: '#FF1600',
         y: '#10FF00',
@@ -20,7 +20,6 @@ define(function (require) {
         };
     }
 
-
     // 绘制方法
     function draw(ctx, x0, y0, x1, y1, width, color) {
         ctx.beginPath();
@@ -29,18 +28,6 @@ define(function (require) {
         ctx.moveTo(x0, y0);
         ctx.lineTo(x1, y1);
         ctx.stroke();
-    }
-
-
-    // 将3D摄像机观察角度转换成2D空间的坐标轴旋转
-    function getAxisRotate(view, angleA, angleB) {
-        angleB = (angleB % 360 + 360) % 360;
-        switch (view) {
-            case 'xoz':
-                return angleB - 90;
-            default:
-                return 0;
-        }
     }
 
 
@@ -66,15 +53,17 @@ define(function (require) {
         var width = this.container.offsetWidth;
         var height = this.container.offsetHeight;
         var ctx = this.canvas.getContext('2d');
-        var scale = this.cameraRadius / 1000;
-        var trans = [0, 0];
         var stageInfo = {
             v: this.axis.join('o'),
             a: this.cameraAngleA,
-            b: this.cameraAngleB
+            b: (this.cameraAngleB % 360 + 360) % 360
         };
-        // var trans = getAxisTrans(this.cameraLookAt, this.axis.join(''), this.cameraAngleA);
-        var rotate = getAxisRotate(this.axis.join('o'), this.cameraAngleA, this.cameraAngleB);
+        var trans = [
+            this.cameraLookAt[this.axis[0]],
+            this.cameraLookAt[this.axis[1]]
+        ];
+        var rotate = stageInfo.v === 'xoz' ? (stageInfo.b - 90) : 0;
+        var scale = this.cameraRadius / 1000;
         var screen2axis = mathFactory('screen2axis', width, height, trans, scale, rotate, stageInfo);
         var axis2screen = mathFactory('axis2screen', width, height, trans, scale, rotate, stageInfo);
         // 准备临时数据
