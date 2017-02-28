@@ -44,9 +44,9 @@ define(function (require) {
             }
             var containerProps = {
                 key: key,
-                className: 'command-' + (item.icon ? 'icon' : 'text') + '-button',
+                className: 'command-' + (item.icon ? 'icon' : 'text') + '-button' + (item.disabled ? '-disabled' : ''),
                 title: item.title,
-                onClick: me.onButtonClick
+                onClick: !item.disabled ? me.onButtonClick : null
             };
             var innerProps = {
                 className: item.icon ? 'iconfont ' + item.icon : ''

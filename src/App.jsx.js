@@ -6,6 +6,7 @@
 define(function (require) {
 
 
+    var _ = require('underscore');
     var React = require('react');
     var Menu = require('./components/Menu.jsx');
     var CommandBar = require('./components/CommandBar.jsx');
@@ -38,7 +39,9 @@ define(function (require) {
                 cameraAngleA: cameraConfig.cameraAngleA,
                 cameraAngleB: cameraConfig.cameraAngleB,
                 cameraLookAt: cameraConfig.lookAt,
-                gridColor: this.props.stage.colorGrid[0]
+                gridColor: this.props.stage.colorGrid[0],
+                gridVisible: this.props.stage.gridVisible,
+                tool: this.props.tool
             };
             var stage3dProps = {
                 style: style,
@@ -66,7 +69,7 @@ define(function (require) {
                 style: style
             };
             var commandBarProps = {
-                datasource: this.props.command,
+                datasource: commandsFilter(this),
                 view: this.props.view,
                 tool: this.props.tool,
                 gridVisible: this.props.stage.gridVisible,
@@ -135,4 +138,13 @@ define(function (require) {
         }
     }
 
+    function commandsFilter( me) {
+        return me.props.command.map(filter);
+        function filter(item) {
+            if (typeof item === 'string') return item;
+            var disabled = me.props.view !== 'view-3d' && 'stage-enlargeGride;stage-narrowGrid;'.indexOf(item.value) > -1
+                ? true : false
+            return _.extend({}, item, {disabled: disabled});
+        }
+    }
 });

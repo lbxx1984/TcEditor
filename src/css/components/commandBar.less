@@ -9,7 +9,7 @@
     border-top: 1px solid @border-top-color;
     border-right: 1px solid @border-right-color;
 
-    .command-label, .command-text-button, .command-icon-button {
+    .command-label, .command-text-button, .command-icon-button, .command-icon-button-disabled {
         display: inline-block;
         border-left: 1px solid @border-left-color;
         border-right: 1px solid @border-right-color;
@@ -57,6 +57,20 @@
                 color: @font-color-hover;
             }
         }
+        .iconfont {
+            color: @font-color-main;
+            font-size: 22px;
+        }
+    }
+    .command-icon-button-disabled {
+        opacity: 0.6;
+        display: inline-block;
+        border-left: 1px solid @border-left-color;
+        border-right: 1px solid @border-right-color;
+        height: 40px;
+        width: 40px;
+        text-align: center;
+        cursor: default;
         .iconfont {
             color: @font-color-main;
             font-size: 22px;

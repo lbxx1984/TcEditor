@@ -109,6 +109,25 @@ define(function (require) {
     };
 
 
+    Grid2D.prototype.getMouse3D = function (x, y) {
+        var width = this.container.offsetWidth;
+        var height = this.container.offsetHeight;
+        var stageInfo = {
+            v: this.axis.join('o'),
+            a: this.cameraAngleA,
+            b: (this.cameraAngleB % 360 + 360) % 360
+        };
+        var trans = [
+            this.cameraLookAt[this.axis[0]],
+            this.cameraLookAt[this.axis[1]]
+        ];
+        var rotate = stageInfo.v === 'xoz' ? (stageInfo.b - 90) : 0;
+        var scale = this.cameraRadius / 1000;
+        var screen2axis = mathFactory('screen2axis', width, height, trans, scale, rotate, stageInfo);
+        return screen2axis(x, y);
+    };
+
+
     return Grid2D;
 
 

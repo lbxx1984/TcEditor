@@ -48,6 +48,10 @@ define(function (require) {
                 this.set('selectedVector', null);
                 return;
             }
+            if (tool === 'tool-pickLight' && this.get('selectedLight')) {
+                this.set('selectedLight', null);
+                return;
+            }
         }
     };
 

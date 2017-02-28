@@ -7,10 +7,44 @@ define(function (require) {
 
 
     var _ = require('underscore');
+    var _dragging_temp_data_ = '';
 
 
     return {
         // 平移摄像机
+        'camera-move-2d': function (param, dragging) {
+            if (param === 'mouseup' && window._dragging_temp_data_) {
+                // console.log(window._dragging_temp_data_);
+                // var stage = _.extend({}, this.get('stage'));
+                // stage.camera3D = _.extend({}, stage.camera3D, {lookAt: _dragging_temp_data_});
+                // this.set('stage', stage);
+                // _dragging_temp_data_ = null;
+                return;
+            }
+            if (!dragging) return;
+            var canvas = param.stage2D.refs.grid;
+            canvas.style.left = canvas.offsetLeft + param.mouseDelta2D.x + 'px';
+            canvas.style.top = canvas.offsetTop + param.mouseDelta2D.y + 'px';
+            if (!_dragging_temp_data_) {
+                _dragging_temp_data_ = JSON.stringify(param.stage2D.props.cameraLookAt);
+            }
+            console.log('before:' + _dragging_temp_data_);
+            var lookAt = JSON.parse(_dragging_temp_data_);
+            lookAt.x = lookAt.x - param.mouseDelta3D.x;
+            lookAt.y = lookAt.y - param.mouseDelta3D.y;
+            lookAt.z = lookAt.z - param.mouseDelta3D.z;
+            _dragging_temp_data_ = JSON.stringify(lookAt);
+            console.log('after:' + _dragging_temp_data_);
+            // if (window._dragging_temp_data_) {
+            //     console.log('?');
+            //     window._dragging_temp_data_ = JSON.parse();
+            // }
+            // // console.log(window._dragging_temp_data_);
+            // window._dragging_temp_data_.x = window._dragging_temp_data_.x;
+            // window._dragging_temp_data_.y = window._dragging_temp_data_.y - param.mouseDelta3D.y;
+            // window._dragging_temp_data_.z = window._dragging_temp_data_.z - param.mouseDelta3D.z;
+            // console.log(window._dragging_temp_data_);
+        },
         'camera-move': function (param, dragging) {
             if (this.get('tool') !== 'camera-move') {
                 var selectedMesh = this.get('selectedMesh');
