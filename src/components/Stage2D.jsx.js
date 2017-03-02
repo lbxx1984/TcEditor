@@ -166,7 +166,7 @@ define(function (require) {
             }
             // 普通mouseup
             if (typeof this.props.tool === 'string') {
-                this.context.dispatch(this.props.tool + '-2d', 'mouseup');
+                this.context.dispatch(this.props.tool + '-2d', 'mouseup', this);
             }
         },
 

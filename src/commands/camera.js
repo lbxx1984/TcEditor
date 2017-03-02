@@ -7,43 +7,22 @@ define(function (require) {
 
 
     var _ = require('underscore');
-    var _dragging_temp_data_ = '';
 
 
     return {
         // 平移摄像机
         'camera-move-2d': function (param, dragging) {
-            if (param === 'mouseup' && window._dragging_temp_data_) {
-                // console.log(window._dragging_temp_data_);
-                // var stage = _.extend({}, this.get('stage'));
-                // stage.camera3D = _.extend({}, stage.camera3D, {lookAt: _dragging_temp_data_});
-                // this.set('stage', stage);
-                // _dragging_temp_data_ = null;
-                return;
-            }
-            if (!dragging) return;
-            var canvas = param.stage2D.refs.grid;
-            canvas.style.left = canvas.offsetLeft + param.mouseDelta2D.x + 'px';
-            canvas.style.top = canvas.offsetTop + param.mouseDelta2D.y + 'px';
-            if (!_dragging_temp_data_) {
-                _dragging_temp_data_ = JSON.stringify(param.stage2D.props.cameraLookAt);
-            }
-            console.log('before:' + _dragging_temp_data_);
-            var lookAt = JSON.parse(_dragging_temp_data_);
-            lookAt.x = lookAt.x - param.mouseDelta3D.x;
-            lookAt.y = lookAt.y - param.mouseDelta3D.y;
-            lookAt.z = lookAt.z - param.mouseDelta3D.z;
-            _dragging_temp_data_ = JSON.stringify(lookAt);
-            console.log('after:' + _dragging_temp_data_);
-            // if (window._dragging_temp_data_) {
-            //     console.log('?');
-            //     window._dragging_temp_data_ = JSON.parse();
-            // }
-            // // console.log(window._dragging_temp_data_);
-            // window._dragging_temp_data_.x = window._dragging_temp_data_.x;
-            // window._dragging_temp_data_.y = window._dragging_temp_data_.y - param.mouseDelta3D.y;
-            // window._dragging_temp_data_.z = window._dragging_temp_data_.z - param.mouseDelta3D.z;
-            // console.log(window._dragging_temp_data_);
+            if (!dragging || param === 'mouseup') return;
+            var me = this;
+            var stage = _.extend({}, this.get('stage'));
+            var oldPos = param.stage2D.grid2D.getMouse3D(0, 0);
+            var newPos = param.stage2D.grid2D.getMouse3D(param.mouseDelta2D.x, param.mouseDelta2D.y);
+            var dPos = [newPos[0] - oldPos[0], newPos[1] - oldPos[1]];
+            var lookAt = JSON.parse(JSON.stringify(param.stage2D.props.cameraLookAt));
+            lookAt[param.stage2D.props.axis[0]] -= dPos[0];
+            lookAt[param.stage2D.props.axis[1]] -= dPos[1];
+            stage.camera3D = _.extend({}, stage.camera3D, {lookAt: lookAt});
+            this.set('stage', stage);            
         },
         'camera-move': function (param, dragging) {
             if (this.get('tool') !== 'camera-move') {
