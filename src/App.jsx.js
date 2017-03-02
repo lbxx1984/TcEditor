@@ -31,39 +31,6 @@ define(function (require) {
             var style = {
                 right: this.props.panel.length ? 301 : 0
             };
-            var cameraConfig = this.props.stage.camera3D;
-            var stage2dProps = {
-                style: style,
-                axis: this.props.view.replace('view-', '').split('o'),
-                cameraRadius: cameraConfig.cameraRadius,
-                cameraAngleA: cameraConfig.cameraAngleA,
-                cameraAngleB: cameraConfig.cameraAngleB,
-                cameraLookAt: cameraConfig.lookAt,
-                gridColor: this.props.stage.colorGrid[0],
-                gridVisible: this.props.stage.gridVisible,
-                tool: this.props.tool
-            };
-            var stage3dProps = {
-                style: style,
-                cameraRadius: cameraConfig.cameraRadius,
-                cameraAngleA: cameraConfig.cameraAngleA,
-                cameraAngleB: cameraConfig.cameraAngleB,
-                cameraLookAt: cameraConfig.lookAt,
-                gridVisible: this.props.stage.gridVisible,
-                gridSize: this.props.stage.gridSize3D,
-                gridStep: this.props.stage.gridStep3D,
-                colorStage: this.props.stage.colorStage[1],
-                colorGrid: this.props.stage.colorGrid[1],
-                tool: this.props.tool,
-                mesh3d: this.props.mesh3d,
-                lights: this.props.lights,
-                panelCount: this.props.panel.length,
-                selectedMesh: this.props.selectedMesh,
-                selectedVector: this.props.selectedVector,
-                selectedLight: this.props.selectedLight,
-                transformer3Dinfo: this.props.transformer3Dinfo,
-                morpher3Dinfo: this.props.morpher3Dinfo
-            };
             var informationBarProps = {
                 mouse3d: this.props.mouse3d,
                 style: style
@@ -83,7 +50,7 @@ define(function (require) {
             var toolsBarProps = toolsBarPropsFactory(this.props);
             return (
                 <div className="tc-root-container">
-                    {this.props.view === 'view-3d' ? <Stage3D {...stage3dProps}/> : <Stage2D {...stage2dProps}/>}
+                    {stageFactory(this)}
                     <Menu {...menuProps}/>
                     <CommandBar {...commandBarProps}/>
                     <InformationBar {...informationBarProps}/>
@@ -117,7 +84,6 @@ define(function (require) {
         return <div className="tc-panel-container">{doms}</div>;
     }
 
-
     function toolsBarPropsFactory(props) {
         if (props.tool === 'tool-pickGeometry') {
             return {
@@ -138,7 +104,7 @@ define(function (require) {
         }
     }
 
-    function commandsFilter( me) {
+    function commandsFilter(me) {
         return me.props.command.map(filter);
         function filter(item) {
             if (typeof item === 'string') return item;
@@ -146,5 +112,46 @@ define(function (require) {
                 ? true : false
             return _.extend({}, item, {disabled: disabled});
         }
+    }
+
+    function stageFactory(me) {
+        var cameraConfig = me.props.stage.camera3D;
+        var style = {
+            left: 300,
+            right: me.props.panel.length ? 301 : 0
+        };
+        var stage2dProps = {
+            style: style,
+            axis: me.props.view.replace('view-', '').split('o'),
+            cameraRadius: cameraConfig.cameraRadius,
+            cameraAngleA: cameraConfig.cameraAngleA,
+            cameraAngleB: cameraConfig.cameraAngleB,
+            cameraLookAt: cameraConfig.lookAt,
+            gridColor: me.props.stage.colorGrid[0],
+            gridVisible: me.props.stage.gridVisible,
+            tool: me.props.tool
+        };
+        var stage3dProps = {
+            style: style,
+            cameraRadius: cameraConfig.cameraRadius,
+            cameraAngleA: cameraConfig.cameraAngleA,
+            cameraAngleB: cameraConfig.cameraAngleB,
+            cameraLookAt: cameraConfig.lookAt,
+            gridVisible: me.props.stage.gridVisible,
+            gridSize: me.props.stage.gridSize3D,
+            gridStep: me.props.stage.gridStep3D,
+            colorStage: me.props.stage.colorStage[1],
+            colorGrid: me.props.stage.colorGrid[1],
+            tool: me.props.tool,
+            mesh3d: me.props.mesh3d,
+            lights: me.props.lights,
+            panelCount: me.props.panel.length,
+            selectedMesh: me.props.selectedMesh,
+            selectedVector: me.props.selectedVector,
+            selectedLight: me.props.selectedLight,
+            transformer3Dinfo: me.props.transformer3Dinfo,
+            morpher3Dinfo: me.props.morpher3Dinfo
+        };
+        return me.props.view === 'view-3d' ? <Stage3D {...stage3dProps}/> : <Stage2D {...stage2dProps}/>
     }
 });
