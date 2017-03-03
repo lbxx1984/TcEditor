@@ -21,6 +21,9 @@ define(function (require) {
         },
         'view-3d': function () {
             this.set('view', 'view-3d');
+        },
+        'view-all': function () {
+            this.set('view', 'view-all');
         }
     };
 

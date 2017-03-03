@@ -70,6 +70,9 @@ define(function (require) {
             {
                 label: 'ZOY', value: 'view-zoy', title: 'ZOY view (4)'
             },
+            {
+                icon: 'icon-siping', value: 'view-all', title: 'ALL view (5)'
+            },
             'TOOLS',
             {
                 icon: 'icon-yidong', value: 'tool-pickGeometry', title: 'pick up geometry (D)'

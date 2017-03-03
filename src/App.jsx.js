@@ -116,13 +116,10 @@ define(function (require) {
 
     function stageFactory(me) {
         var cameraConfig = me.props.stage.camera3D;
-        var style = {
-            left: 300,
-            right: me.props.panel.length ? 301 : 0
-        };
+        var right = me.props.panel.length ? 301 : 0;
+        var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - right;
+        var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 110;
         var stage2dProps = {
-            style: style,
-            axis: me.props.view.replace('view-', '').split('o'),
             cameraRadius: cameraConfig.cameraRadius,
             cameraAngleA: cameraConfig.cameraAngleA,
             cameraAngleB: cameraConfig.cameraAngleB,
@@ -132,7 +129,6 @@ define(function (require) {
             tool: me.props.tool
         };
         var stage3dProps = {
-            style: style,
             cameraRadius: cameraConfig.cameraRadius,
             cameraAngleA: cameraConfig.cameraAngleA,
             cameraAngleB: cameraConfig.cameraAngleB,
@@ -152,6 +148,19 @@ define(function (require) {
             transformer3Dinfo: me.props.transformer3Dinfo,
             morpher3Dinfo: me.props.morpher3Dinfo
         };
-        return me.props.view === 'view-3d' ? <Stage3D {...stage3dProps}/> : <Stage2D {...stage2dProps}/>
+        if (me.props.view === 'view-3d') {
+            return (<Stage3D {...stage3dProps} style={{right: right}}/>);
+        }
+        else if (me.props.view === 'view-all') {
+            var doms = [];
+            doms.push(<Stage3D {...stage3dProps} style={{right: right, left: width * 0.5, top: height * 0.5 + 82}}/>);
+            doms.push(<Stage2D {...stage2dProps} style={{right: right, left: width * 0.5, bottom: height * 0.5 + 28}} axis={['x', 'y']}/>);
+            doms.push(<Stage2D {...stage2dProps} style={{right: right + width * 0.5, bottom: height * 0.5 + 28}} axis={['x', 'z']}/>);
+            doms.push(<Stage2D {...stage2dProps} style={{right: right + width * 0.5, top: height * 0.5 + 82}} axis={['z', 'y']}/>);
+            return doms;
+        }
+        else {
+            return (<Stage2D {...stage2dProps} style={{right: right}} axis={me.props.view.replace('view-', '').split('o')}/>);
+        }
     }
 });
