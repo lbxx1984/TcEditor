@@ -68,7 +68,7 @@ define(function (require) {
         // 当前鼠标的3D位置
         mouse3d: {x: 0, y: 0, z: 0},
         // 编辑器当前显示模式
-        view: 'view-3d',
+        view: 'view-all',
         // 编辑器当前处于响应拖拽事件的命令
         tool: 'camera-move',
         // 变形工具工作状态
@@ -81,7 +81,9 @@ define(function (require) {
         morpher3Dinfo: {
             anchorColor: 0x00CD00,
             anchorSize: 1000
-        }
+        },
+        // 系统稳定态时间戳
+        timer: 0
     });
     model.onChange = function (store) {
         render(store);

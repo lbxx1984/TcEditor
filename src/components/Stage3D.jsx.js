@@ -336,7 +336,13 @@ define(function (require) {
             this.transformer.addEventListener('objectChange', objectChangeHandler);
             this.morpher.controller.addEventListener('objectChange', objectChangeHandler);
             this.lightHelper.controller.addEventListener('objectChange', objectChangeHandler);
-            function objectChangeHandler() {me.isDragging = true;}
+            function objectChangeHandler(e) {
+                me.isDragging = true;
+                if (me.props.selectedMesh && me.props.selectedMesh.tc) {
+                    me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 0;
+                    me.context.dispatch('updateTimer');
+                }
+            }
             // 开启渲染引擎
             animation.add('stage3d', animaterFactory(this));  
             // 加载自定义对象

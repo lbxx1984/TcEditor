@@ -120,13 +120,16 @@ define(function (require) {
         var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - right;
         var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 110;
         var stage2dProps = {
+            timer: me.props.timer,
             cameraRadius: cameraConfig.cameraRadius,
             cameraAngleA: cameraConfig.cameraAngleA,
             cameraAngleB: cameraConfig.cameraAngleB,
             cameraLookAt: cameraConfig.lookAt,
             gridColor: me.props.stage.colorGrid[0],
             gridVisible: me.props.stage.gridVisible,
-            tool: me.props.tool
+            tool: me.props.tool,
+            mesh3d: me.props.mesh3d,
+            selectedMesh: me.props.selectedMesh
         };
         var stage3dProps = {
             cameraRadius: cameraConfig.cameraRadius,
@@ -138,6 +141,7 @@ define(function (require) {
             gridStep: me.props.stage.gridStep3D,
             colorStage: me.props.stage.colorStage[1],
             colorGrid: me.props.stage.colorGrid[1],
+            view: me.props.view,
             tool: me.props.tool,
             mesh3d: me.props.mesh3d,
             lights: me.props.lights,

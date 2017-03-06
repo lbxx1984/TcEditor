@@ -10,6 +10,10 @@ define(function (require) {
 
 
     return {
+        // update timer
+        updateTimer: function () {
+            this.set('timer', new Date().getTime());
+        },
         // 修改3D摄像机
         changeCamera3D: function (param) {
             var stage = _.extend({}, this.get('stage'));
@@ -26,7 +30,8 @@ define(function (require) {
             if (selectedMesh) {
                 selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
             }
-            var view = value.indexOf('geometry-') === 0 ? 'view-3d' : this.get('view');
+            var view = value.indexOf('geometry-') === 0 && this.get('view') !== 'view-all'
+                ? 'view-3d' : this.get('view');
             var stage = _.extend({}, this.get('stage'));
             stage.camera3D = _.extend({}, stage.camera3D);
             stage.camera3D.cameraAngleA = value.indexOf('geometry-') === 0 && Math.abs(stage.camera3D.cameraAngleA) < 2

@@ -6,29 +6,55 @@
 define(function (require) {
 
 
-    var React = require('react');
     var _ = require('underscore');
+    var React = require('react');
     var Grid2D = require('../tools/Grid2D');
-    
+    var Renderer2D = require('../tools/Renderer2D');    
 
-    function updateGrid(nextProps, me) {
+
+    function updateGridAndRenderer(nextProps, me) {
         if (
             nextProps.axis.join('') !== me.props.axis.join('')
             || nextProps.cameraRadius !== me.props.cameraRadius
             || nextProps.cameraLookAt !== me.props.cameraLookAt
             || nextProps.cameraAngleA !== me.props.cameraAngleA
             || nextProps.cameraAngleB !== me.props.cameraAngleB
-            || nextProps.gridColor !== me.props.gridColor
             || nextProps.style.right !== me.props.style.right
         ) {
             me.refs.container.style.right = nextProps.style.right + 'px';
-            me.grid2D.axis = nextProps.axis;
-            me.grid2D.cameraRadius = nextProps.cameraRadius;
-            me.grid2D.cameraLookAt = nextProps.cameraLookAt;
-            me.grid2D.cameraAngleA = nextProps.cameraAngleA;
-            me.grid2D.cameraAngleB = nextProps.cameraAngleB;
-            me.grid2D.lineColor = nextProps.gridColor;
+            me.renderer2D.axis = me.grid2D.axis = nextProps.axis;
+            me.renderer2D.cameraRadius = me.grid2D.cameraRadius = nextProps.cameraRadius;
+            me.renderer2D.cameraLookAt = me.grid2D.cameraLookAt = nextProps.cameraLookAt;
+            me.renderer2D.cameraAngleA = me.grid2D.cameraAngleA = nextProps.cameraAngleA;
+            me.renderer2D.cameraAngleB = me.grid2D.cameraAngleB = nextProps.cameraAngleB;
             me.grid2D.render();
+            me.renderer2D.render();
+        }
+    }
+
+
+    function updateMesh(nextProps, me) {
+        var needRenderer = false;
+        if (_.keys(nextProps.mesh3d).join(';') !== _.keys(me.props.mesh3d).join(';')) {
+            me.renderer2D.mesh3d = nextProps.mesh3d;
+            needRenderer = true;
+        }
+        if (
+            nextProps.timer !== me.props.timer
+            && nextProps.selectedMesh
+            && nextProps.selectedMesh.tc
+            && nextProps.selectedMesh.tc.needUpdate
+            && me.renderer2D.mesh2d[nextProps.selectedMesh.uuid]
+        ) {
+            nextProps.selectedMesh.tc.needUpdate--;
+            me.renderer2D.mesh2d[nextProps.selectedMesh.uuid].update();
+            needRenderer = true;
+        }
+        if (nextProps.selectedMesh !== me.props.selectedMesh) {
+            needRenderer = true;
+        }
+        if (needRenderer) {
+            me.renderer2D.render();
         }
     }
 
@@ -68,14 +94,27 @@ define(function (require) {
                 canvas: this.refs.grid,
                 lineColor: this.props.gridColor
             });
+            this.renderer2D = new Renderer2D({
+                axis: this.props.axis,
+                cameraRadius: this.props.cameraRadius,
+                cameraLookAt: this.props.cameraLookAt,
+                cameraAngleA: this.props.cameraAngleA,
+                cameraAngleB: this.props.cameraAngleB,
+                container: this.refs.container,
+                canvas: this.refs.renderer,
+                mesh3d: this.props.mesh3d
+            });
+            // 初始化舞台
             this.grid2D.render();
+            this.renderer2D.render();
             // 绑定事件
             this.refs.container.addEventListener('mousewheel', this.onMouseWheel);
             window.addEventListener('resize', this.onResize);
         },
 
         componentWillReceiveProps: function (nextProps) {
-            updateGrid(nextProps, this);
+            updateGridAndRenderer(nextProps, this);
+            updateMesh(nextProps, this);
         },
 
         componentWillUnmount: function () {
@@ -187,9 +226,14 @@ define(function (require) {
                     display: 'none'
                 }
             };
+            var rendererCanvasProps = {
+                ref: 'renderer',
+                className: 'fixed-canvas'
+            };
             return (
                 <div {...containerProps}>
                     <canvas {...gridCanvasProps}/>
+                    <canvas {...rendererCanvasProps}/>
                 </div>
             );
         }
