@@ -10,12 +10,13 @@ define(function (require) {
     var React = require('react');
     var Grid2D = require('../tools/Grid2D');
     var Renderer2D = require('../tools/Renderer2D');
+    var Transformer2D = require('../tools/Transformer2D');
 
 
     var CAMERA_RADIUS_FOR_2D_SCALE = 0.5;
 
 
-    function updateGridAndRenderer(nextProps, me) {
+    function updateCamera(nextProps, me) {
         if (
             nextProps.axis.join('') !== me.props.axis.join('')
             || nextProps.cameraRadius !== me.props.cameraRadius
@@ -25,13 +26,20 @@ define(function (require) {
             || nextProps.style.right !== me.props.style.right
         ) {
             me.refs.container.style.right = nextProps.style.right + 'px';
-            me.renderer2D.axis = me.grid2D.axis = nextProps.axis;
-            me.renderer2D.cameraRadius = me.grid2D.cameraRadius = nextProps.cameraRadius / CAMERA_RADIUS_FOR_2D_SCALE;
-            me.renderer2D.cameraLookAt = me.grid2D.cameraLookAt = nextProps.cameraLookAt;
-            me.renderer2D.cameraAngleA = me.grid2D.cameraAngleA = nextProps.cameraAngleA;
-            me.renderer2D.cameraAngleB = me.grid2D.cameraAngleB = nextProps.cameraAngleB;
+            updateTools(me.renderer2D);
+            updateTools(me.grid2D);
+            updateTools(me.transformer2D);
             me.grid2D.render();
             me.renderer2D.render();
+            me.transformer2D.updateSize();
+            me.transformer2D.attach(me.transformer2D.mesh);
+        }
+        function updateTools(tool) {
+            tool.axis = nextProps.axis;
+            tool.cameraRadius = nextProps.cameraRadius / CAMERA_RADIUS_FOR_2D_SCALE;
+            tool.cameraLookAt = me.grid2D.cameraLookAt = nextProps.cameraLookAt;
+            tool.cameraAngleA = nextProps.cameraAngleA;
+            tool.cameraAngleB = nextProps.cameraAngleB;
         }
     }
 
@@ -58,6 +66,28 @@ define(function (require) {
         }
         if (needRenderer) {
             me.renderer2D.render();
+        }
+    }
+
+
+    function updateTransformer(nextProps, me) {
+        // transformer3Dinfo
+        if (nextProps.tool !== 'tool-pickGeometry' && me.props.tool === 'tool-pickGeometry') {
+            me.transformer2D.detach();
+        }
+        if (nextProps.tool === 'tool-pickGeometry' && nextProps.selectedMesh !== me.props.selectedMesh) {
+            me.transformer2D.attach(nextProps.selectedMesh);
+        }
+        if (nextProps.tool === 'tool-pickGeometry' && nextProps.timer !== me.props.timer && me.transformer2D.mesh) {
+            me.transformer2D.attach(me.transformer2D.mesh);
+        }
+        if (nextProps.transformer3Dinfo !== me.props.transformer3Dinfo) {
+            me.transformer2D.size = nextProps.transformer3Dinfo.size;
+            me.transformer2D.mode = nextProps.transformer3Dinfo.mode;
+            me.transformer2D.space = nextProps.transformer3Dinfo.space;
+            if (me.transformer2D.mesh) {
+                me.transformer2D.attach(me.transformer2D.mesh);
+            }
         }
     }
 
@@ -107,17 +137,33 @@ define(function (require) {
                 canvas: this.refs.renderer,
                 mesh3d: this.props.mesh3d
             });
+            this.transformer2D = new Transformer2D({
+                axis: this.props.axis,
+                cameraRadius: this.props.cameraRadius / CAMERA_RADIUS_FOR_2D_SCALE,
+                cameraLookAt: this.props.cameraLookAt,
+                cameraAngleA: this.props.cameraAngleA,
+                cameraAngleB: this.props.cameraAngleB,
+                canvas: this.refs.transformer,
+                container: this.refs.container,
+                mode: this.props.transformer3Dinfo.mode,
+                size: this.props.transformer3Dinfo.size,
+                space: this.props.transformer3Dinfo.space
+            });
             // 初始化舞台
             this.grid2D.render();
             this.renderer2D.render();
+            if (this.props.tool === 'tool-pickGeometry' && this.props.selectedMesh) {
+                this.transformer2D.attach(this.props.selectedMesh);
+            }
             // 绑定事件
             this.refs.container.addEventListener('mousewheel', this.onMouseWheel);
             window.addEventListener('resize', this.onResize);
         },
 
         componentWillReceiveProps: function (nextProps) {
-            updateGridAndRenderer(nextProps, this);
+            updateCamera(nextProps, this);
             updateMesh(nextProps, this);
+            updateTransformer(nextProps, this);
         },
 
         componentWillUnmount: function () {
@@ -137,6 +183,8 @@ define(function (require) {
 
         onResize: function () {
             this.grid2D.render();
+            this.renderer2D.render();
+            this.transformer2D.updateSize();
         },
 
         onMouseMove: function (e) {
@@ -212,6 +260,12 @@ define(function (require) {
             }
         },
 
+        onContextMenu: function (e) {
+            this.context.dispatch('stage3d-context-menu');
+            e.stopPropagation();
+            e.preventDefault();
+        },
+
         render: function () {
             var containerProps = {
                 className: 'tc-stage',
@@ -233,10 +287,15 @@ define(function (require) {
                 ref: 'renderer',
                 className: 'fixed-canvas'
             };
+            var transformerProps = {
+                ref: 'transformer',
+                className: 'fixed-canvas'
+            };
             return (
                 <div {...containerProps}>
                     <canvas {...gridCanvasProps}/>
                     <canvas {...rendererCanvasProps}/>
+                    <div {...transformerProps}></div>
                 </div>
             );
         }

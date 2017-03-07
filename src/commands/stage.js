@@ -31,7 +31,7 @@ define(function (require) {
             this.set('stage', stage);
         },
         // 点击了3D舞台右键菜单
-        'stage3d-context-menu': function (stage3d) {
+        'stage3d-context-menu': function () {
             var tool = this.get('tool');
             var selectedMesh = this.get('selectedMesh');
             var selectedVector = this.get('selectedVector');

@@ -15,8 +15,8 @@ define(function (require) {
         var sina = (x1 - x0) / d;
         var cosa = (y1 - y0) / d;
         ctx.moveTo(x0 + r * cosa, y0 - r * sina);
-        ctx.lineTo(x0 + r * cosa + x1 - x0, y0 - r * sina + y1 - y0);
-        ctx.lineTo(x0 - r * cosa + x1 - x0, y0 + r * sina + y1 - y0);
+        ctx.lineTo(x1 + r * cosa, y1 - r * sina);
+        ctx.lineTo(x1 - r * cosa, y1 + r * sina);
         ctx.lineTo(x0 - r * cosa, y0 + r * sina);
         ctx.lineTo(x0 + r * cosa, y0 - r * sina);
     }

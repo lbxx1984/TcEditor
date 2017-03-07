@@ -25,8 +25,7 @@ define(function (require) {
      */
     function Mesh2D(param) {
         _.extend(this, param);
-        this.center = {x: 0, y: 0, z: 0};   // 物体本地坐标原点对应的世界坐标
-        this.vertices = [];                 // 物体所有顶点的世界坐标
+        this.vertices = [];
         this.update();
     }
 
@@ -37,7 +36,6 @@ define(function (require) {
         var mesh3d = this.mesh3d;
         var matrix = math.getRotateMatrix(mesh3d);
         var vertices = this.vertices;
-        this.center = arrayToAxis(math.local2world(0, 0, 0, matrix, mesh3d));
         mesh3d.geometry.vertices.map(function (vector, index) {
             vertices.push(arrayToAxis(math.local2world(vector.x, vector.y, vector.z, matrix, mesh3d)));
         });

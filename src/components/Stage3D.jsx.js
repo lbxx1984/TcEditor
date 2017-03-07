@@ -458,7 +458,7 @@ define(function (require) {
         },
 
         onContextMenu: function (e) {
-            this.context.dispatch('stage3d-context-menu', this);
+            this.context.dispatch('stage3d-context-menu');
             e.stopPropagation();
             e.preventDefault();
         },

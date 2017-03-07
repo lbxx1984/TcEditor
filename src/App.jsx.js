@@ -130,7 +130,8 @@ define(function (require) {
             gridVisible: me.props.stage.gridVisible,
             tool: me.props.tool,
             mesh3d: me.props.mesh3d,
-            selectedMesh: me.props.selectedMesh
+            selectedMesh: me.props.selectedMesh,
+            transformer3Dinfo: me.props.transformer3Dinfo,
         };
         var stage3dProps = {
             cameraRadius: cameraConfig.cameraRadius,
