@@ -60,11 +60,12 @@ define(function (require) {
     }
 
 
-    Renderer2D.prototype.render = function () {
+    Renderer2D.prototype.render = function (mouseX, mouseY) {
         if (_.keys(this.mesh3d).length === 0) return;
         // 装载物体
         this.mesh2d = setupMeshes(this.mesh3d, this.mesh2d);
         // 初始化画板
+        var hoverMesh3D = null;
         var width = this.container.offsetWidth;
         var height = this.container.offsetHeight;
         var axis = this.axis;
@@ -91,7 +92,7 @@ define(function (require) {
             var color = mesh.material.color.getHex().toString(16);
             while (color.length < 6) color = '0' + color;
             ctx.beginPath();
-            ctx.lineStyle = 1;
+            ctx.lineStyle = 2;
             ctx.fillStyle = '#' + color;
             mesh.geometry.faces.map(function (face) {
                 var x = axis[0];
@@ -101,10 +102,20 @@ define(function (require) {
                 var c = axis2screen(vertices[face.c][x], vertices[face.c][y]);
                 line(a[0], a[1], b[0], b[1], ctx);
                 line(b[0], b[1], c[0], c[1], ctx);
-                line(c[0], c[1], a[0], a[1], ctx);
+                line(c[0], c[1], a[0], a[1], ctx); 
             });
+            hoverMesh3D = !isNaN(mouseX) && !isNaN(mouseY) && ctx.isPointInPath(mouseX, mouseY)
+                ? mesh : hoverMesh3D;
             ctx.fill();    
         });
+        return hoverMesh3D;
+    };
+
+
+    Renderer2D.prototype.getObject2dByMouse2D = function (x, y) {
+        x = x - this.container.offsetLeft;
+        y = y - this.container.offsetTop;
+        return this.render(x, y);
     };
 
 

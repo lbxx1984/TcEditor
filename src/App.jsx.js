@@ -108,7 +108,8 @@ define(function (require) {
         return me.props.command.map(filter);
         function filter(item) {
             if (typeof item === 'string') return item;
-            var disabled = me.props.view !== 'view-3d' && 'stage-enlargeGride;stage-narrowGrid;'.indexOf(item.value) > -1
+            var disabled =  me.props.view !== 'view-3d' && me.props.view !== 'view-all'
+                && 'stage-enlargeGride;stage-narrowGrid;'.indexOf(item.value) > -1
                 ? true : false
             return _.extend({}, item, {disabled: disabled});
         }

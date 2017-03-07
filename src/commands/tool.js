@@ -55,6 +55,21 @@ define(function (require) {
         }
     }
 
+    function hoverMeshByMouse2d(param, selectedMesh) {
+        var mouse2d = param.mouseCurrent2D;
+        var obj = param.stage2D.renderer2D.getObject2dByMouse2D(mouse2d.x, mouse2d.y);
+        if (obj) {
+            if (selectedMesh && obj.uuid === selectedMesh.uuid) return;
+            clearIntersectedColor(intersected, selectedMesh);
+            intersected = obj;
+            intersected.material.setValues({color: config.colors.normalMeshHover[0]});
+        }
+        else if(intersected) {
+            clearIntersectedColor(intersected, selectedMesh);
+            intersected = null;
+        }
+    }
+
     function hoverVectorByMouse3d(param, selectedVector, selectedMesh) {
         var obj = getObject3dByMouse3D(
             param.event.nativeEvent.offsetX,
@@ -120,6 +135,18 @@ define(function (require) {
             if (typeof param !== 'object' || dragging) return;
             // hover物体
             hoverMeshByMouse3d(param, selectedMesh);
+        },
+        'tool-pickGeometry-2d': function (param, dragging) {
+            var selectedMesh = this.get('selectedMesh');
+            // 拾取物体
+            if (param === 'mouseup' && intersected) {
+                pickupMesh(selectedMesh, this);
+                return;
+            }
+            // 拖拽容忍
+            if (typeof param !== 'object' || dragging) return;
+            // hover物体
+            hoverMeshByMouse2d(param, selectedMesh);
         },
         'tool-pickJoint': function (param, dragging) {
             var selectedMesh = this.get('selectedMesh');

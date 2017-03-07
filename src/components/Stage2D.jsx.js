@@ -9,7 +9,10 @@ define(function (require) {
     var _ = require('underscore');
     var React = require('react');
     var Grid2D = require('../tools/Grid2D');
-    var Renderer2D = require('../tools/Renderer2D');    
+    var Renderer2D = require('../tools/Renderer2D');
+
+
+    var CAMERA_RADIUS_FOR_2D_SCALE = 0.5;
 
 
     function updateGridAndRenderer(nextProps, me) {
@@ -23,7 +26,7 @@ define(function (require) {
         ) {
             me.refs.container.style.right = nextProps.style.right + 'px';
             me.renderer2D.axis = me.grid2D.axis = nextProps.axis;
-            me.renderer2D.cameraRadius = me.grid2D.cameraRadius = nextProps.cameraRadius;
+            me.renderer2D.cameraRadius = me.grid2D.cameraRadius = nextProps.cameraRadius / CAMERA_RADIUS_FOR_2D_SCALE;
             me.renderer2D.cameraLookAt = me.grid2D.cameraLookAt = nextProps.cameraLookAt;
             me.renderer2D.cameraAngleA = me.grid2D.cameraAngleA = nextProps.cameraAngleA;
             me.renderer2D.cameraAngleB = me.grid2D.cameraAngleB = nextProps.cameraAngleB;
@@ -86,7 +89,7 @@ define(function (require) {
             this.mouseCurrent3D = {x: 0, y: 0, z: 0};
             this.grid2D = new Grid2D({
                 axis: this.props.axis,
-                cameraRadius: this.props.cameraRadius,
+                cameraRadius: this.props.cameraRadius / CAMERA_RADIUS_FOR_2D_SCALE,
                 cameraLookAt: this.props.cameraLookAt,
                 cameraAngleA: this.props.cameraAngleA,
                 cameraAngleB: this.props.cameraAngleB,
@@ -96,7 +99,7 @@ define(function (require) {
             });
             this.renderer2D = new Renderer2D({
                 axis: this.props.axis,
-                cameraRadius: this.props.cameraRadius,
+                cameraRadius: this.props.cameraRadius / CAMERA_RADIUS_FOR_2D_SCALE,
                 cameraLookAt: this.props.cameraLookAt,
                 cameraAngleA: this.props.cameraAngleA,
                 cameraAngleB: this.props.cameraAngleB,
