@@ -6,19 +6,8 @@ define(function (require) {
 
     var _ = require('underscore');
     var math = require('../core/math');
-    var AXIS_COLOR = {
-        x: '#FF1600',
-        y: '#10FF00',
-        z: '#0013FF'
-    };
+    var handlerFactory = require('./common/handlerFactories');
 
-
-    // 封装math闭包，也就是高阶函数
-    function mathFactory(handler, width, height, trans, scale, rotate, stageInfo) {
-        return function (x, y) {
-            return math[handler](x, y, width, height, trans, scale, rotate, stageInfo);
-        };
-    }
 
     // 绘制方法
     function draw(ctx, x0, y0, x1, y1, width, color) {
@@ -48,24 +37,18 @@ define(function (require) {
 
 
     Grid2D.prototype.render = function () {
+        var AXIS_COLOR = {
+            x: '#FF1600',
+            y: '#10FF00',
+            z: '#0013FF'
+        };
         // 准备绘制数据
         var color = this.lineColor;
         var width = this.container.offsetWidth;
         var height = this.container.offsetHeight;
         var ctx = this.canvas.getContext('2d');
-        var stageInfo = {
-            v: this.axis.join('o'),
-            a: this.cameraAngleA,
-            b: (this.cameraAngleB % 360 + 360) % 360
-        };
-        var trans = [
-            this.cameraLookAt[this.axis[0]],
-            this.cameraLookAt[this.axis[1]]
-        ];
-        var rotate = stageInfo.v === 'xoz' ? (stageInfo.b - 90) : 0;
-        var scale = this.cameraRadius / 1000;
-        var screen2axis = mathFactory('screen2axis', width, height, trans, scale, rotate, stageInfo);
-        var axis2screen = mathFactory('axis2screen', width, height, trans, scale, rotate, stageInfo);
+        var screen2axis = handlerFactory.math('screen2axis', this);
+        var axis2screen = handlerFactory.math('axis2screen', this);
         // 准备临时数据
         var a, b, c, d, x0, x1, y0, y1, xArr, yArr;
         a = screen2axis(0, 0);
@@ -110,21 +93,7 @@ define(function (require) {
 
 
     Grid2D.prototype.getMouse3D = function (x, y) {
-        var width = this.container.offsetWidth;
-        var height = this.container.offsetHeight;
-        var stageInfo = {
-            v: this.axis.join('o'),
-            a: this.cameraAngleA,
-            b: (this.cameraAngleB % 360 + 360) % 360
-        };
-        var trans = [
-            this.cameraLookAt[this.axis[0]],
-            this.cameraLookAt[this.axis[1]]
-        ];
-        var rotate = stageInfo.v === 'xoz' ? (stageInfo.b - 90) : 0;
-        var scale = this.cameraRadius / 1000;
-        var screen2axis = mathFactory('screen2axis', width, height, trans, scale, rotate, stageInfo);
-        return screen2axis(x, y);
+        return handlerFactory.math('screen2axis', this)(x, y);
     };
 
 
