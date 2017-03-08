@@ -128,6 +128,7 @@ define(function (require) {
             cameraLookAt: cameraConfig.lookAt,
             gridColor: me.props.stage.colorGrid[0],
             gridVisible: me.props.stage.gridVisible,
+            view: me.props.view,
             tool: me.props.tool,
             mesh3d: me.props.mesh3d,
             selectedMesh: me.props.selectedMesh,
