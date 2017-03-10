@@ -150,7 +150,7 @@ define(function (require) {
                 space: this.props.transformer3Dinfo.space,
                 onChange: function () {
                     if (me.props.selectedMesh && me.props.selectedMesh.tc) {
-                        me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 0;
+                        me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
                         me.context.dispatch('updateTimer');
                     }
                 }
