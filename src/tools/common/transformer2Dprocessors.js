@@ -25,7 +25,7 @@ define(function (require) {
                 typeof me.onChange === 'function' && me.onChange();
             },
             local: function (dx, dy, me) {
-                                var mesh = me.mesh;
+                var mesh = me.mesh;
                 var info = me.helpInfo;
                 var hash = {a: 'x', b: 'y', c: 'z'};
                 var d = Math.sqrt(dx * dx + dy * dy) * me.cameraRadius / 1000;
@@ -38,6 +38,7 @@ define(function (require) {
                 d2 = me.command === b ? d2 : 0;
                 d1 = d1 === 0 ? 0 : (d1 / Math.abs(d1) * d);
                 d2 = d2 === 0 ? 0: (d1 / Math.abs(d2) * d);
+                if (isNaN(d1) || isNaN(d2)) return;
                 // 移动物体
                 var center = info.local2world(0, 0, 0);
                 var target = {a: 0, b: 0, c: 0};

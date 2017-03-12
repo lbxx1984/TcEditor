@@ -13,20 +13,16 @@ define(function (require) {
     var handlerFactory = require('./handlerFactories');
 
 
-    return {
+    var exports = {
         translate: {
             world: function (me) {
                 var axis = me.axis;
                 var axis2screen = handlerFactory.math('axis2screen', me);
                 var local2world = handlerFactory.local2world(me);
                 var o = local2world(0, 0, 0);
-                var a = {x: o.x, y: o.y, z: o.z};
-                var b = {x: o.x, y: o.y, z: o.z};
-                a[axis[0]] += 100;
-                b[axis[1]] += 100;
+                var a = {x: o.x, y: o.y, z: o.z}; a[axis[0]] += 100; a = axis2screen(a[axis[0]], a[axis[1]]);
+                var b = {x: o.x, y: o.y, z: o.z}; b[axis[1]] += 100; b = axis2screen(b[axis[0]], b[axis[1]]); 
                 o = axis2screen(o[axis[0]], o[axis[1]]);
-                a = axis2screen(a[axis[0]], a[axis[1]]);
-                b = axis2screen(b[axis[0]], b[axis[1]]);
                 var d1 = Math.sqrt((o[0] - a[0]) * (o[0] - a[0]) + (o[1] - a[1]) * (o[1] - a[1]));
                 var d2 = Math.sqrt((o[0] - b[0]) * (o[0] - b[0]) + (o[1] - b[1]) * (o[1] - b[1]));
                 me.helpInfo = {
@@ -47,14 +43,10 @@ define(function (require) {
                 var axis = me.axis;
                 var axis2screen = handlerFactory.math('axis2screen', me);
                 var local2world = handlerFactory.local2world(me);
-                var o = local2world(0, 0, 0);
-                var a = local2world(100, 0, 0);
-                var b = local2world(0, 100, 0);
-                var c = local2world(0, 0, 100);
-                o = axis2screen(o[axis[0]], o[axis[1]]);
-                a = axis2screen(a[axis[0]], a[axis[1]]);
-                b = axis2screen(b[axis[0]], b[axis[1]]);
-                c = axis2screen(c[axis[0]], c[axis[1]]);
+                var o = local2world(0, 0, 0); o = axis2screen(o[axis[0]], o[axis[1]]);
+                var a = local2world(100, 0, 0); a = axis2screen(a[axis[0]], a[axis[1]]);
+                var b = local2world(0, 100, 0); b = axis2screen(b[axis[0]], b[axis[1]]);
+                var c = local2world(0, 0, 100); c = axis2screen(c[axis[0]], c[axis[1]]); 
                 var d1 = Math.sqrt((o[0] - a[0]) * (o[0] - a[0]) + (o[1] - a[1]) * (o[1] - a[1]));
                 var d2 = Math.sqrt((o[0] - b[0]) * (o[0] - b[0]) + (o[1] - b[1]) * (o[1] - b[1]));
                 var d3 = Math.sqrt((o[0] - c[0]) * (o[0] - c[0]) + (o[1] - c[1]) * (o[1] - c[1]));
@@ -75,8 +67,45 @@ define(function (require) {
                 };
                 me.helpers = drawTranslatorLocal(me.helpInfo, me); 
             }
+        },
+        rotate: {
+            local: function (me) {
+                var axis = me.axis;
+                var axis2screen = handlerFactory.math('axis2screen', me);
+                var local2world = handlerFactory.local2world(me);
+                var o = local2world(0, 0, 0); o = axis2screen(o[axis[0]], o[axis[1]]);
+                var x1 = local2world(100, 0, 0); x1 = axis2screen(x1[axis[0]], x1[axis[1]]);
+                var x2 = local2world(-100, 0, 0); x2 = axis2screen(x2[axis[0]], x2[axis[1]]);
+                var y1 = local2world(0, 100, 0); y1 = axis2screen(y1[axis[0]], y1[axis[1]]);
+                var y2 = local2world(0, -100, 0); y2 = axis2screen(y2[axis[0]], y2[axis[1]]);
+                var z1 = local2world(0, 0, 100); z1 = axis2screen(z1[axis[0]], z1[axis[1]]);
+                var z2 = local2world(0, 0, -100); z2 = axis2screen(z2[axis[0]], z2[axis[1]]);
+                me.helpInfo = {
+                    o: o,
+                    x1: x1,
+                    x2: x2,
+                    y1: y1,
+                    y2: y2,
+                    z1: z1,
+                    z2: z2,
+                    axis2screen: axis2screen,
+                    local2world: local2world,
+                    screen2axis: handlerFactory.math('screen2axis', me)
+                };
+                me.helpers = drawRotatorLocal(me.helpInfo, me); 
+            }
         }
     };
+    exports.rotate.world = exports.rotate.local;
+
+
+    return exports;
+
+
+    // 绘制rotater local
+    function drawRotatorLocal(info, me) {
+        return [];
+    }
 
 
     // 绘制translator local
