@@ -1,7 +1,6 @@
 define(function (require) {
 
-
-    return {
+    var result = {
         translate: {
             world: function (dx, dy, me) {
                 var mesh = me.mesh;
@@ -57,8 +56,20 @@ define(function (require) {
                     return y;
                 };
             }
+        },
+        rotate: {
+            local: function (dx, dy, me) {
+                var mesh = me.mesh;
+                var d = Math.sqrt(dx * dx + dy * dy);
+                var r = Math.abs(dx / dy) > 1 ? dx : dy;
+                mesh['rotate' + me.command.toUpperCase()]((r > 0 ? 1 : -1) * d * 0.01744);
+                typeof me.onChange === 'function' && me.onChange();
+            }
         }
     };
 
+    result.rotate.world = result.rotate.local;
+
+    return result;
 
 });

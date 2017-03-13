@@ -8,7 +8,10 @@ define(function (require) {
         z: '#0013FF',
         xz: 'rgba(255,0,0,0.3)',
         xy: 'rgba(255,255,0,0.3)',
-        zy: 'rgba(0,255,0,0.3)'
+        zy: 'rgba(0,255,0,0.3)',
+        xoz: 'rgba(0,255,0,0.8)',
+        xoy: 'rgba(0,0,255,0.8)',
+        yoz: 'rgba(255,0,0,0.8)',
     };
     var handlerFactory = require('./handlerFactories');
 
@@ -38,6 +41,7 @@ define(function (require) {
                     screen2axis: handlerFactory.math('screen2axis', me)
                 };
                 me.helpers = drawTranslatorWorld(me.helpInfo, me); 
+                attachMouseHandlers(me.helpers);
             },
             local: function (me) {
                 var axis = me.axis;
@@ -65,7 +69,8 @@ define(function (require) {
                     local2world: local2world,
                     screen2axis: handlerFactory.math('screen2axis', me)
                 };
-                me.helpers = drawTranslatorLocal(me.helpInfo, me); 
+                me.helpers = drawTranslatorLocal(me.helpInfo, me);
+                attachMouseHandlers(me.helpers);
             }
         },
         rotate: {
@@ -73,38 +78,44 @@ define(function (require) {
                 var axis = me.axis;
                 var axis2screen = handlerFactory.math('axis2screen', me);
                 var local2world = handlerFactory.local2world(me);
-                var o = local2world(0, 0, 0); o = axis2screen(o[axis[0]], o[axis[1]]);
-                var x1 = local2world(100, 0, 0); x1 = axis2screen(x1[axis[0]], x1[axis[1]]);
-                var x2 = local2world(-100, 0, 0); x2 = axis2screen(x2[axis[0]], x2[axis[1]]);
-                var y1 = local2world(0, 100, 0); y1 = axis2screen(y1[axis[0]], y1[axis[1]]);
-                var y2 = local2world(0, -100, 0); y2 = axis2screen(y2[axis[0]], y2[axis[1]]);
-                var z1 = local2world(0, 0, 100); z1 = axis2screen(z1[axis[0]], z1[axis[1]]);
-                var z2 = local2world(0, 0, -100); z2 = axis2screen(z2[axis[0]], z2[axis[1]]);
+                var xoz = [], xoy = [], yoz = [], p, i, r = 100 * me.cameraRadius / 1000;
+                for (i = 0; i < 360; i += 10) {
+                    p = local2world(r * Math.cos(i * 0.01744), r * Math.sin(i * 0.01744), 0);
+                    xoy.push(axis2screen(p[axis[0]], p[axis[1]]));
+                    p = local2world(r * Math.cos(i * 0.01744), 0, r * Math.sin(i * 0.01744));
+                    xoz.push(axis2screen(p[axis[0]], p[axis[1]]));
+                    p = local2world(0, r * Math.cos(i * 0.01744), r * Math.sin(i * 0.01744));
+                    yoz.push(axis2screen(p[axis[0]], p[axis[1]]));
+                }
                 me.helpInfo = {
-                    o: o,
-                    x1: x1,
-                    x2: x2,
-                    y1: y1,
-                    y2: y2,
-                    z1: z1,
-                    z2: z2,
+                    xoz: xoz,
+                    xoy: xoy,
+                    yoz: yoz,
                     axis2screen: axis2screen,
                     local2world: local2world,
                     screen2axis: handlerFactory.math('screen2axis', me)
                 };
-                me.helpers = drawRotatorLocal(me.helpInfo, me); 
+                me.helpers = drawCircle(me.helpInfo, me);
+                attachMouseHandlers(me.helpers);
             }
         }
     };
+
+
     exports.rotate.world = exports.rotate.local;
 
 
     return exports;
 
 
-    // 绘制rotater local
-    function drawRotatorLocal(info, me) {
-        return [];
+    // 绘制rotater 操作圆
+    function drawCircle(info, me) {
+        var style = {'stroke-width': 3};
+        return [
+            me.svg.path(circle(info.xoz)).attr(style).attr({stroke: AXIS_COLOR.xoz}).mousedown(mousedownFactory('y', me)),
+            me.svg.path(circle(info.yoz)).attr(style).attr({stroke: AXIS_COLOR.yoz}).mousedown(mousedownFactory('x', me)),
+            me.svg.path(circle(info.xoy)).attr(style).attr({stroke: AXIS_COLOR.xoy}).mousedown(mousedownFactory('z', me))
+        ];
     }
 
 
@@ -115,13 +126,13 @@ define(function (require) {
         var c = arrow('c', info, me.size);
         var arr = [];
         if (available(a)) {
-            arr.push(me.svg.path(a).attr(arrowAttrFactory('x')).mousedown(mousedownFactory('a', me)));
+            arr.push(me.svg.path(a).attr({fill: AXIS_COLOR.x}).mousedown(mousedownFactory('a', me)));
         }
         if (available(b)) {
-            arr.push(me.svg.path(b).attr(arrowAttrFactory('y')).mousedown(mousedownFactory('b', me)));
+            arr.push(me.svg.path(b).attr({fill: AXIS_COLOR.y}).mousedown(mousedownFactory('b', me)));
         }
         if (available(c)) {
-            arr.push(me.svg.path(c).attr(arrowAttrFactory('z')).mousedown(mousedownFactory('c', me)));
+            arr.push(me.svg.path(c).attr({fill: AXIS_COLOR.z}).mousedown(mousedownFactory('c', me)));
         }
         return arr;
         function available(data) {
@@ -135,9 +146,9 @@ define(function (require) {
     function drawTranslatorWorld(info, me) {
         var axis = me.axis;
         return [
-            me.svg.path(face(info, me.size)).attr(faceAttrFactory(axis.join(''))).mousedown(mousedownFactory('o', me)),
-            me.svg.path(arrow('a', info, me.size)).attr(arrowAttrFactory(axis[0])).mousedown(mousedownFactory(axis[0], me)),
-            me.svg.path(arrow('b', info, me.size)).attr(arrowAttrFactory(axis[1])).mousedown(mousedownFactory(axis[1], me))
+            me.svg.path(face(info, me.size)).attr({fill: AXIS_COLOR[axis.join('')]}).mousedown(mousedownFactory('o', me)),
+            me.svg.path(arrow('a', info, me.size)).attr({fill: AXIS_COLOR[axis[0]]}).mousedown(mousedownFactory(axis[0], me)),
+            me.svg.path(arrow('b', info, me.size)).attr({fill: AXIS_COLOR[axis[1]]}).mousedown(mousedownFactory(axis[1], me))
         ];
     }
 
@@ -166,6 +177,7 @@ define(function (require) {
             ['M', x0 + r * cos, y0 - r * sin]
         ];
     }
+
 
     // 操作面
     function face(info, size, ruleA, ruleB) {
@@ -201,6 +213,17 @@ define(function (require) {
     }
 
 
+    // 圆环
+    function circle(points) {
+        var arr = [].concat(points, [points[0]]);
+        var result = [];
+        arr.map(function (p, i) {
+            result.push([i === 0 ? 'M' : 'L', p[0], p[1]]);
+        });
+        return result;
+    }
+
+
     function mousedownFactory(cmd, me) {
         return function () {
             me.command = cmd;
@@ -208,20 +231,15 @@ define(function (require) {
     }
 
 
-    function arrowAttrFactory(axis) {
-        return {
-            fill: AXIS_COLOR[axis],
-            cursor: 'pointer'
-        };
-    }
-
-
-    function faceAttrFactory(axis) {
-        return {
-            stroke: AXIS_COLOR[axis],
-            fill: AXIS_COLOR[axis],
-            cursor: 'pointer'
-        };
+    function attachMouseHandlers(arr) {
+        arr.map(function (item) {
+            item.attr({cursor: 'pointer'}).mouseover(function() {
+                this.___stroke___ = this.attr('stroke');
+                this.attr({stroke: '#FFFF00'})
+            }).mouseout(function() {
+                this.attr({stroke: this.___stroke___});
+            });
+        });
     }
 
 
