@@ -136,7 +136,9 @@ define(function (require) {
             me.transformer.detach();
         }
         if (nextProps.transformer3Dinfo !== me.props.transformer3Dinfo) {
-            me.transformer.setSpace(nextProps.transformer3Dinfo.space);
+            me.transformer.setSpace(
+                nextProps.transformer3Dinfo.mode === 'rotate' ? 'local' : nextProps.transformer3Dinfo.space
+            );
             me.transformer.setMode(nextProps.transformer3Dinfo.mode);
             me.transformer.setSize(nextProps.transformer3Dinfo.size);
         }

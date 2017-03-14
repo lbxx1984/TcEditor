@@ -3,9 +3,9 @@ define(function (require) {
 
 
     var AXIS_COLOR = {
-        x: '#FF1600',
-        y: '#10FF00',
-        z: '#0013FF',
+        x: '#FF0000',
+        y: '#00FF00',
+        z: '#0000FF',
         xz: 'rgba(255,0,0,0.3)',
         xy: 'rgba(255,255,0,0.3)',
         zy: 'rgba(0,255,0,0.3)',
@@ -78,7 +78,7 @@ define(function (require) {
                 var axis = me.axis;
                 var axis2screen = handlerFactory.math('axis2screen', me);
                 var local2world = handlerFactory.local2world(me);
-                var xoz = [], xoy = [], yoz = [], p, i, r = 100 * me.cameraRadius / 1000;
+                var xoz = [], xoy = [], yoz = [], p, i, r = 100 * me.size * me.cameraRadius / 1000;
                 for (i = 0; i < 360; i += 10) {
                     p = local2world(r * Math.cos(i * 0.01744), r * Math.sin(i * 0.01744), 0);
                     xoy.push(axis2screen(p[axis[0]], p[axis[1]]));
@@ -88,15 +88,17 @@ define(function (require) {
                     yoz.push(axis2screen(p[axis[0]], p[axis[1]]));
                 }
                 me.helpInfo = {
-                    xoz: xoz,
-                    xoy: xoy,
-                    yoz: yoz,
+                    faces: [
+                        [xoz, AXIS_COLOR.xoz, 'y'],
+                        [xoy, AXIS_COLOR.xoy, 'z'],
+                        [yoz, AXIS_COLOR.yoz, 'x']
+                    ],
                     axis2screen: axis2screen,
                     local2world: local2world,
                     screen2axis: handlerFactory.math('screen2axis', me)
                 };
                 me.helpers = drawCircle(me.helpInfo, me);
-                attachMouseHandlers(me.helpers);
+                attachMouseHandlers(me.helpers, 'e-resize');
             }
         }
     };
@@ -111,11 +113,12 @@ define(function (require) {
     // 绘制rotater 操作圆
     function drawCircle(info, me) {
         var style = {'stroke-width': 3};
-        return [
-            me.svg.path(circle(info.xoz)).attr(style).attr({stroke: AXIS_COLOR.xoz}).mousedown(mousedownFactory('y', me)),
-            me.svg.path(circle(info.yoz)).attr(style).attr({stroke: AXIS_COLOR.yoz}).mousedown(mousedownFactory('x', me)),
-            me.svg.path(circle(info.xoy)).attr(style).attr({stroke: AXIS_COLOR.xoy}).mousedown(mousedownFactory('z', me))
-        ];
+        var result = [];
+        info.faces.map(function (item, index) {
+            result[index] = me.svg.path(circle(item[0])).attr(style).attr({stroke: item[1]})
+                .mousedown(mousedownFactory(item[2], me));
+        });
+        return result;
     }
 
 
@@ -231,9 +234,9 @@ define(function (require) {
     }
 
 
-    function attachMouseHandlers(arr) {
+    function attachMouseHandlers(arr, cursor) {
         arr.map(function (item) {
-            item.attr({cursor: 'pointer'}).mouseover(function() {
+            item.attr({cursor: cursor ? cursor : 'pointer'}).mouseover(function() {
                 this.___stroke___ = this.attr('stroke');
                 this.attr({stroke: '#FFFF00'})
             }).mouseout(function() {

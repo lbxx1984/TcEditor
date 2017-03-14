@@ -86,9 +86,13 @@ define(function (require) {
 
     function toolsBarPropsFactory(props) {
         if (props.tool === 'tool-pickGeometry') {
+            var datasource = JSON.parse(JSON.stringify(props.transformer3DTools));
+            if (props.transformer3Dinfo.mode === 'rotate') {
+                datasource.pop();
+            }
             return {
                 tool: props.tool,
-                datasource: props.transformer3DTools,
+                datasource: datasource,
                 controls: props.transformer3Dinfo
             };
         }
