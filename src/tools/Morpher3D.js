@@ -21,13 +21,14 @@ define(function (require) {
         if (!this.vector || !this.mesh) return;
         var vector = this.vector;
         var mesh = this.mesh;
+        var width = this.renderer.domElement.offsetWidth;
         var pos = math.world2local(vector.position.x, vector.position.y, vector.position.z, mesh);
         mesh.geometry.vertices[vector.index].x = pos[0];
         mesh.geometry.vertices[vector.index].y = pos[1];
         mesh.geometry.vertices[vector.index].z = pos[2];
         mesh.geometry.verticesNeedUpdate = true;
         vector.scale.x = vector.scale.y = vector.scale.z
-            = this.camera.position.distanceTo(vector.position) / this.anchorSize;
+            = 1500 * this.camera.position.distanceTo(vector.position) / this.anchorSize / width;
     }
 
 
@@ -79,6 +80,7 @@ define(function (require) {
         var scene = this.scene;
         var anchorSize = this.anchorSize;
         var anchorColor = this.anchorColor;
+        var container = this.renderer.domElement;
         vertices.map(function (ver, index) {
             var pos = math.local2world(ver.x, ver.y, ver.z, matrix, mesh);
             var meshpos = new THREE.Vector3(pos[0], pos[1], pos[2]);
@@ -101,7 +103,8 @@ define(function (require) {
             np.position.x = pos[0];
             np.position.y = pos[1];
             np.position.z = pos[2];
-            np.scale.x = np.scale.y = np.scale.z = meshpos.distanceTo(camerapos) / anchorSize;
+            np.scale.x = np.scale.y = np.scale.z =
+                1500 * meshpos.distanceTo(camerapos) / anchorSize / container.offsetWidth;
             np.added = true;
             scene.add(np);
         });
@@ -143,9 +146,11 @@ define(function (require) {
     Morpher3D.prototype.updateAnchors = function () {
         var camerapos = this.camera.position;
         var anchorSize = this.anchorSize;
+        var width = this.renderer.domElement.offsetWidth;
         this.anchors.map(function (anchor, index) {
             if (!anchor.added) return;
-            anchor.scale.x = anchor.scale.y = anchor.scale.z = camerapos.distanceTo(anchor.position) / anchorSize; 
+            anchor.scale.x = anchor.scale.y = anchor.scale.z =
+                1500 * camerapos.distanceTo(anchor.position) / anchorSize / width; 
         });
     };
 

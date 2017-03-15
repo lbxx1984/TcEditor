@@ -11,12 +11,19 @@ define(function (require) {
     var Grid2D = require('../tools/Grid2D');
     var Renderer2D = require('../tools/Renderer2D');
     var Transformer2D = require('../tools/Transformer2D');
+    var Morpher2D = require('../tools/Morpher2D');
+    var raphael = require('raphael');
 
 
     var CAMERA_RADIUS_FOR_2D_SCALE = 0.5;
 
 
     function updateCamera(nextProps, me) {
+        if (JSON.stringify(nextProps.style) !== JSON.stringify(me.props.style)) {
+            setTimeout(function () {
+                me.svgRenderer.setSize(me.refs.container.offsetWidth, me.refs.container.offsetHeight); 
+            }, 10);
+        }
         if (
             nextProps.axis.join('') !== me.props.axis.join('')
             || nextProps.cameraRadius !== me.props.cameraRadius
@@ -29,10 +36,11 @@ define(function (require) {
             updateTools(me.renderer2D);
             updateTools(me.grid2D);
             updateTools(me.transformer2D);
+            updateTools(me.morpher2D);
             me.grid2D.render();
             me.renderer2D.render();
-            me.transformer2D.updateSize();
             me.transformer2D.attach(me.transformer2D.mesh);
+            me.morpher2D.attach(me.morpher2D.mesh);
         }
         function updateTools(tool) {
             tool.axis = nextProps.axis;
@@ -71,9 +79,11 @@ define(function (require) {
 
 
     function updateTransformer(nextProps, me) {
-        // transformer3Dinfo
         if (nextProps.tool !== 'tool-pickGeometry' && me.props.tool === 'tool-pickGeometry') {
             me.transformer2D.detach();
+        }
+        if (nextProps.tool === 'tool-pickGeometry' && me.props.tool !== 'tool-pickGeometry' && nextProps.selectedMesh) {
+            me.transformer2D.attach(nextProps.selectedMesh);
         }
         if (nextProps.tool === 'tool-pickGeometry' && nextProps.selectedMesh !== me.props.selectedMesh) {
             me.transformer2D.attach(nextProps.selectedMesh);
@@ -88,6 +98,22 @@ define(function (require) {
             if (me.transformer2D.mesh) {
                 me.transformer2D.attach(me.transformer2D.mesh);
             }
+        }
+    }
+
+
+    function updateMorpher(nextProps, me) {
+        if (nextProps.tool !== 'tool-pickJoint' && me.props.tool === 'tool-pickJoint') {
+            me.morpher2D.detach();
+        }
+        if (nextProps.tool === 'tool-pickJoint' && me.props.tool !== 'tool-pickJoint' && nextProps.selectedMesh) {
+            me.morpher2D.attach(nextProps.selectedMesh);
+        }
+        if (nextProps.tool === 'tool-pickJoint' && nextProps.selectedMesh !== me.props.selectedMesh) {
+            me.morpher2D.attach(nextProps.selectedMesh);
+        }
+        if (nextProps.tool === 'tool-pickJoint' && nextProps.timer !== me.props.timer && me.morpher2D.mesh) {
+            me.morpher2D.attach(me.morpher2D.mesh);
         }
     }
 
@@ -117,6 +143,7 @@ define(function (require) {
             this.mousedown = false;
             this.mouseCurrent2D = {x: 0, y: 0};
             this.mouseCurrent3D = {x: 0, y: 0, z: 0};
+            this.svgRenderer = raphael(this.refs.svg, this.refs.container.offsetWidth, this.refs.container.offsetHeight);
             this.grid2D = new Grid2D({
                 axis: this.props.axis,
                 cameraRadius: this.props.cameraRadius / CAMERA_RADIUS_FOR_2D_SCALE,
@@ -137,13 +164,23 @@ define(function (require) {
                 canvas: this.refs.renderer,
                 mesh3d: this.props.mesh3d
             });
+            this.morpher2D = new Morpher2D({
+                axis: this.props.axis,
+                cameraRadius: this.props.cameraRadius / CAMERA_RADIUS_FOR_2D_SCALE,
+                cameraLookAt: this.props.cameraLookAt,
+                cameraAngleA: this.props.cameraAngleA,
+                cameraAngleB: this.props.cameraAngleB,
+                svg: this.svgRenderer,
+                container: this.refs.container,
+                size: this.props.morpher3Dinfo.anchorSize
+            });
             this.transformer2D = new Transformer2D({
                 axis: this.props.axis,
                 cameraRadius: this.props.cameraRadius / CAMERA_RADIUS_FOR_2D_SCALE,
                 cameraLookAt: this.props.cameraLookAt,
                 cameraAngleA: this.props.cameraAngleA,
                 cameraAngleB: this.props.cameraAngleB,
-                canvas: this.refs.transformer,
+                svg: this.svgRenderer,
                 container: this.refs.container,
                 mode: this.props.transformer3Dinfo.mode,
                 size: this.props.transformer3Dinfo.size,
@@ -170,6 +207,7 @@ define(function (require) {
             updateCamera(nextProps, this);
             updateMesh(nextProps, this);
             updateTransformer(nextProps, this);
+            updateMorpher(nextProps, this);
         },
 
         componentWillUnmount: function () {
@@ -190,7 +228,7 @@ define(function (require) {
         onResize: function () {
             this.grid2D.render();
             this.renderer2D.render();
-            this.transformer2D.updateSize();
+            this.svgRenderer.setSize(this.refs.container.offsetWidth, this.refs.container.offsetHeight);
         },
 
         onMouseMove: function (e) {
@@ -293,15 +331,15 @@ define(function (require) {
                 ref: 'renderer',
                 className: 'fixed-canvas'
             };
-            var transformerProps = {
-                ref: 'transformer',
+            var svgProps = {
+                ref: 'svg',
                 className: 'fixed-canvas'
             };
             return (
                 <div {...containerProps}>
                     <canvas {...gridCanvasProps}/>
                     <canvas {...rendererCanvasProps}/>
-                    <div {...transformerProps}></div>
+                    <div {...svgProps}></div>
                 </div>
             );
         }

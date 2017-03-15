@@ -137,6 +137,7 @@ define(function (require) {
             mesh3d: me.props.mesh3d,
             selectedMesh: me.props.selectedMesh,
             transformer3Dinfo: me.props.transformer3Dinfo,
+            morpher3Dinfo: me.props.morpher3Dinfo
         };
         var stage3dProps = {
             cameraRadius: cameraConfig.cameraRadius,
