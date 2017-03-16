@@ -41,6 +41,7 @@ define(function (require) {
             me.renderer2D.render();
             me.transformer2D.attach(me.transformer2D.mesh);
             me.morpher2D.attach(me.morpher2D.mesh);
+            me.morpher2D.attachAnchor(me.morpher2D.index);
         }
         function updateTools(tool) {
             tool.axis = nextProps.axis;
@@ -114,6 +115,19 @@ define(function (require) {
         }
         if (nextProps.tool === 'tool-pickJoint' && nextProps.timer !== me.props.timer && me.morpher2D.mesh) {
             me.morpher2D.attach(me.morpher2D.mesh);
+            if (me.morpher2D.index) {
+                me.morpher2D.attachAnchor(me.morpher2D.index);
+            }
+        }
+        if (nextProps.tool === 'tool-pickJoint' && nextProps.selectedVectorIndex !== me.props.selectedVectorIndex) {
+            me.morpher2D.attachAnchor(nextProps.selectedVectorIndex);
+        }
+        if (nextProps.morpher3Dinfo !== me.props.morpher3Dinfo) {
+            me.morpher2D.color = nextProps.morpher3Dinfo.anchorColor;
+            me.morpher2D.size = nextProps.morpher3Dinfo.anchorSize;
+            if (me.morpher2D.mesh) {
+                me.morpher2D.attach(me.morpher2D.mesh);
+            }
         }
     }
 
@@ -172,7 +186,9 @@ define(function (require) {
                 cameraAngleB: this.props.cameraAngleB,
                 svg: this.svgRenderer,
                 container: this.refs.container,
-                size: this.props.morpher3Dinfo.anchorSize
+                size: this.props.morpher3Dinfo.anchorSize,
+                color: this.props.morpher3Dinfo.anchorColor,
+                onAnchorClick: function (i) {me.context.dispatch('morpher-2d-pick-anchor', i);}
             });
             this.transformer2D = new Transformer2D({
                 axis: this.props.axis,
@@ -197,6 +213,10 @@ define(function (require) {
             this.renderer2D.render();
             if (this.props.tool === 'tool-pickGeometry' && this.props.selectedMesh) {
                 this.transformer2D.attach(this.props.selectedMesh);
+            }
+            if (this.props.tool === 'tool-pickJoint' && this.props.selectedMesh) {
+                this.morpher2D.attach(this.props.selectedMesh);
+                this.morpher2D.attachAnchor(this.props.selectedVectorIndex);
             }
             // 绑定事件
             this.refs.container.addEventListener('mousewheel', this.onMouseWheel);

@@ -160,6 +160,19 @@ define(function (require) {
             me.morpher.detach();
             me.morpher.detachAnchor();
         }
+        if (
+            nextProps.tool === 'tool-pickJoint'
+            && nextProps.selectedVectorIndex !== me.props.selectedVectorIndex
+            && me.morpher.mesh
+            && me.morpher.anchors[nextProps.selectedVectorIndex]
+            && me.morpher.anchors[nextProps.selectedVectorIndex].added
+            && (
+                !nextProps.selectedVector
+                || (nextProps.selectedVector && nextProps.selectedVector.tc.index !== nextProps.selectedVectorIndex)
+            )
+        ) {
+            me.context.dispatch('morpher-3d-pick-anchor', me.morpher.anchors[nextProps.selectedVectorIndex]);
+        }
         if (nextProps.morpher3Dinfo !== me.props.morpher3Dinfo) {
             me.morpher.setAnchorColor(nextProps.morpher3Dinfo.anchorColor);
             me.morpher.setAnchorSize(nextProps.morpher3Dinfo.anchorSize);

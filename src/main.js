@@ -31,6 +31,8 @@ define(function (require) {
         selectedMesh: null,
         // 当前选中的物体的关节
         selectedVector: null,
+        // 当前选中的物体关节的索引号
+        selectedVectorIndex: -1,
         // 当前选中的灯光
         selectedLight: null,
         // 右侧处于显示状态的工作卡片

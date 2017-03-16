@@ -42,6 +42,15 @@ define(function (require) {
             info.anchorSize = info.anchorSize * 1.1;
             info.anchorSize = Math.min(info.anchorSize, 1000);
             this.set('morpher3Dinfo', info);
+        },
+        'morpher-3d-pick-anchor': function (anchor) {
+            this.fill({
+                selectedVectorIndex: anchor.tc.index,
+                selectedVector: anchor
+            });
+        },
+        'morpher-2d-pick-anchor': function (i) {
+            this.set('selectedVectorIndex', i);
         }
     };
 

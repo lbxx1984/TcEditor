@@ -107,7 +107,10 @@ define(function (require) {
         if (selectedVector && selectedVector.uuid === intersectedVector.uuid) return;
         clearObject3dColor(selectedVector);
         intersectedVector.material.setValues({color: config.colors.selectedMesh[0]});
-        me.set('selectedVector', intersectedVector);
+        me.fill({
+            selectedVector: intersectedVector,
+            selectedVectorIndex: intersectedVector.tc.index
+        });
     }
 
     function pickupLight(selectedLight, me) {

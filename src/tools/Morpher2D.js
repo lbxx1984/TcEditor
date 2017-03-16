@@ -3,8 +3,20 @@ define(function (require) {
 
     var _ = require('underscore');
     var handlerFactories = require('./common/handlerFactories');
+    var AXIS_COLOR = {
+        x: '#FF0000',
+        y: '#00FF00',
+        z: '#0000FF',
+        xz: 'rgba(255,0,0,0.3)',
+        xy: 'rgba(255,255,0,0.3)',
+        zy: 'rgba(0,255,0,0.3)',
+        xoz: 'rgba(0,255,0,0.8)',
+        xoy: 'rgba(0,0,255,0.8)',
+        yoz: 'rgba(255,0,0,0.8)',
+    };
 
 
+    // 获取摄像机位置
     function getCameraPosition(me) {
         var cameraAngleA = me.cameraAngleA;
         var cameraAngleB = me.cameraAngleB;
@@ -21,13 +33,74 @@ define(function (require) {
     }
 
 
+    // 绘制箭头
+    function arrow(axis, info, size) {
+        var x0 = info.o[0];
+        var y0 = info.o[1];
+        var x1 = info[axis][0];
+        var y1 = info[axis][1];
+        var sin = info['sin' + axis];
+        var cos = info['cos' + axis];
+        var r = 2;
+        d = 100 * size;
+        x1 = d * sin + x0;
+        y1 = d * cos + y0;
+        return [
+            ['M', x0 + r * cos, y0 - r * sin],
+            ['L', x1 + r * cos, y1 - r * sin],
+            ['L', x1 + 3 * r * cos, y1 - 3 * r * sin],
+            ['L', (3 * r + d) * sin + x0, (3 * r + d) * cos + y0],
+            ['L', x1 - 3 * r * cos, y1 + 3 * r * sin],
+            ['L', x1 - r * cos, y1 + r * sin],
+            ['L', x0 - r * cos, y0 + r * sin],
+            ['L', x0 + r * cos, y0 - r * sin],
+            ['M', x0 + r * cos, y0 - r * sin]
+        ];
+    }
+
+
+    // 绘制操作面
+    function face(info, size, ruleA, ruleB) {
+        ruleA = ruleA || 'a';
+        ruleB = ruleB || 'b';
+        var x0 = info.o[0];
+        var y0 = info.o[1];
+        var x1 = info[ruleA][0];
+        var y1 = info[ruleA][1];
+        var x2 = info[ruleB][0];
+        var y2 = info[ruleB][1];
+        var x3 = 0;
+        var y3 = 0;
+        var sina = info['sin' + ruleA];
+        var cosa = info['cos' + ruleA];
+        var sinb = info['sin' + ruleB];
+        var cosb = info['cos' + ruleB];
+        d1 = 50 * size;
+        d2 = 50 * size;
+        x1 = d1 * sina + x0;
+        y1 = d1 * cosa + y0;
+        x2 = d2 * sinb + x0;
+        y2 = d2 * cosb + y0;
+        x3 = d1 * sina + d2 * sinb + x0;
+        y3 = d1 * cosa + d2 * cosb + y0;
+        return [
+            ['M', x0, y0],
+            ['L', x1, y1],
+            ['L', x3, y3],
+            ['L', x2, y2],
+            ['M', x0, y0]
+        ];
+    }
+
+
     /**
      * 构造函数
      */
     function Morpher2D(param) {
         _.extend(this, param);
         this.mesh = null;
-        this.joint = null;
+        this.index = null;
+        this.points = [];
         this.helpers = [];
         this.anchors = [];
         this.___containerMouseDownHandler___ = this.___containerMouseDownHandler___.bind(this);
@@ -51,7 +124,16 @@ define(function (require) {
         while (this.helpers.length) this.helpers.pop().remove();
         while (this.anchors.length) this.anchors.pop().remove();
         this.mesh = null;
-        this.joint = null;
+        this.index = null;
+    };
+
+
+    Morpher2D.prototype.attachAnchor = function (index) {
+        if (!this.points[index]) {
+            return;
+        }
+        this.index = index;
+        this.updateSelectedAnchor();
     };
 
 
@@ -59,25 +141,60 @@ define(function (require) {
         while (this.anchors.length) this.anchors.pop().remove();
         var me = this;
         var anchors = [];
-        var points3D = [];
+        var points = [];
         var axis = this.axis;
         var vertices = this.mesh.geometry.vertices;
         var local2world = handlerFactories.local2world(me);
         var axis2screen = handlerFactories.math('axis2screen', me);
         var cameraPos = getCameraPosition(me);
+        var color = this.color.toString(16); while(color.length < 6) color = '0' + color; color = '#' + color;
+        var size = 5 * 1000 / this.size;
         vertices.map(function (v, i) {
-            points3D[i] = local2world(v.x, v.y, v.z);
-            points3D[i].d = v.distanceTo(cameraPos);
-            points3D[i].i = i;
-            points3D[i].o = axis2screen(points3D[i][axis[0]], points3D[i][axis[1]]);
+            points[i] = local2world(v.x, v.y, v.z);
+            points[i].d = v.distanceTo(cameraPos);
+            points[i].i = i;
+            points[i].o = axis2screen(points[i][axis[0]], points[i][axis[1]]);
         });
-        points3D.sort(function (a, b) {
+        points.sort(function (a, b) {
             return a.d - b.d;
         });
-        points3D.map(function (p, i) {
-            anchors[i] = me.svg.circle(p.o[0], p.o[1], 5);
+        points.map(function (p, i) {
+            anchors[i] = me.svg.circle(p.o[0], p.o[1], size)
+                .attr({fill: color, cursor: 'pointer'})
+                .mouseover(function () {this.attr('fill', '#FFFF00')})
+                .mouseout(function() {this.attr('fill', color)})
+                .click(function () {typeof me.onAnchorClick === 'function' && me.onAnchorClick(p.i);});
         });
         this.anchors = anchors;
+        this.points = points;
+    };
+
+
+    Morpher2D.prototype.updateSelectedAnchor = function () {
+        while (this.helpers.length) this.helpers.pop().remove();
+        var me = this;
+        var anchor = null; this.points.map(function (p) {anchor = p.i === me.index ? p : anchor;});
+        var axis = this.axis;
+        var axis2screen = handlerFactories.math('axis2screen', me);
+        var o = {x: anchor.x, y: anchor.y, z: anchor.z};
+        var a = {x: o.x, y: o.y, z: o.z}; a[axis[0]] += 100; a = axis2screen(a[axis[0]], a[axis[1]]);
+        var b = {x: o.x, y: o.y, z: o.z}; b[axis[1]] += 100; b = axis2screen(b[axis[0]], b[axis[1]]); 
+        o = axis2screen(o[axis[0]], o[axis[1]]);
+        var d1 = Math.sqrt((o[0] - a[0]) * (o[0] - a[0]) + (o[1] - a[1]) * (o[1] - a[1]));
+        var d2 = Math.sqrt((o[0] - b[0]) * (o[0] - b[0]) + (o[1] - b[1]) * (o[1] - b[1]));
+        var info = {
+            o: o,
+            a: a,
+            b: b,
+            sina: (a[0] - o[0]) / d1,
+            cosa: (a[1] - o[1]) / d1,
+            sinb: (b[0] - o[0]) / d2,
+            cosb: (b[1] - o[1]) / d2
+        };
+        var size = 1000 / me.size;
+        this.helpers[0] = me.svg.path(face(info, size)).attr({fill: AXIS_COLOR[axis.join('')]});
+        this.helpers[1] = me.svg.path(arrow('a', info, size)).attr({fill: AXIS_COLOR[axis[0]]});
+        this.helpers[2] = me.svg.path(arrow('b', info, size)).attr({fill: AXIS_COLOR[axis[1]]});
     };
 
 
