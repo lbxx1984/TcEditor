@@ -41,7 +41,7 @@ define(function (require) {
                     screen2axis: handlerFactory.math('screen2axis', me)
                 };
                 me.helpers = drawTranslatorWorld(me.helpInfo, me); 
-                attachMouseHandlers(me.helpers);
+                attachMouseHandlers(me.helpers, 'pointer', 'fill');
             },
             local: function (me) {
                 var axis = me.axis;
@@ -70,7 +70,7 @@ define(function (require) {
                     screen2axis: handlerFactory.math('screen2axis', me)
                 };
                 me.helpers = drawTranslatorLocal(me.helpInfo, me);
-                attachMouseHandlers(me.helpers);
+                attachMouseHandlers(me.helpers, 'pointer', 'fill');
             }
         },
         rotate: {
@@ -98,7 +98,7 @@ define(function (require) {
                     screen2axis: handlerFactory.math('screen2axis', me)
                 };
                 me.helpers = drawCircle(me.helpInfo, me);
-                attachMouseHandlers(me.helpers, 'e-resize');
+                attachMouseHandlers(me.helpers, 'e-resize', 'stroke');
             }
         }
     };
@@ -234,13 +234,13 @@ define(function (require) {
     }
 
 
-    function attachMouseHandlers(arr, cursor) {
+    function attachMouseHandlers(arr, cursor, type) {
         arr.map(function (item) {
-            item.attr({cursor: cursor ? cursor : 'pointer'}).mouseover(function() {
-                this.___stroke___ = this.attr('stroke');
-                this.attr({stroke: '#FFFF00'})
+            item.attr('cursor', cursor).mouseover(function() {
+                this['___' + type + '___'] = this.attr(type);
+                this.attr(type, '#FFFF00');
             }).mouseout(function() {
-                this.attr({stroke: this.___stroke___});
+                this.attr(type, this['___' + type + '___']);
             });
         });
     }

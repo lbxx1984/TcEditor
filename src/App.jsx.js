@@ -136,6 +136,7 @@ define(function (require) {
             tool: me.props.tool,
             mesh3d: me.props.mesh3d,
             selectedMesh: me.props.selectedMesh,
+            selectedVector: me.props.selectedVector,
             selectedVectorIndex: me.props.selectedVectorIndex,
             transformer3Dinfo: me.props.transformer3Dinfo,
             morpher3Dinfo: me.props.morpher3Dinfo

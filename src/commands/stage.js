@@ -45,7 +45,10 @@ define(function (require) {
             }
             if (tool === 'tool-pickJoint' && selectedVector) {
                 selectedVector.material.setValues({color: selectedVector.tc.materialColor});
-                this.set('selectedVector', null);
+                this.fill({
+                    selectedVector: null,
+                    selectedVectorIndex: -1
+                });
                 return;
             }
             if (tool === 'tool-pickLight' && this.get('selectedLight')) {

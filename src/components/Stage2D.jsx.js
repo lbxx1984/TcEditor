@@ -104,6 +104,7 @@ define(function (require) {
 
 
     function updateMorpher(nextProps, me) {
+        me.morpher2D.selectedVector = nextProps.selectedVector;
         if (nextProps.tool !== 'tool-pickJoint' && me.props.tool === 'tool-pickJoint') {
             me.morpher2D.detach();
         }
@@ -112,15 +113,16 @@ define(function (require) {
         }
         if (nextProps.tool === 'tool-pickJoint' && nextProps.selectedMesh !== me.props.selectedMesh) {
             me.morpher2D.attach(nextProps.selectedMesh);
+            me.morpher2D.attachAnchor(null);
+        }
+        if (nextProps.tool === 'tool-pickJoint' && nextProps.selectedVectorIndex !== me.props.selectedVectorIndex) {
+            me.morpher2D.attachAnchor(nextProps.selectedVectorIndex);
         }
         if (nextProps.tool === 'tool-pickJoint' && nextProps.timer !== me.props.timer && me.morpher2D.mesh) {
             me.morpher2D.attach(me.morpher2D.mesh);
             if (me.morpher2D.index) {
                 me.morpher2D.attachAnchor(me.morpher2D.index);
             }
-        }
-        if (nextProps.tool === 'tool-pickJoint' && nextProps.selectedVectorIndex !== me.props.selectedVectorIndex) {
-            me.morpher2D.attachAnchor(nextProps.selectedVectorIndex);
         }
         if (nextProps.morpher3Dinfo !== me.props.morpher3Dinfo) {
             me.morpher2D.color = nextProps.morpher3Dinfo.anchorColor;
@@ -188,6 +190,7 @@ define(function (require) {
                 container: this.refs.container,
                 size: this.props.morpher3Dinfo.anchorSize,
                 color: this.props.morpher3Dinfo.anchorColor,
+                selectedVector: me.props.selectedVector,
                 onAnchorClick: function (i) {me.context.dispatch('morpher-2d-pick-anchor', i);}
             });
             this.transformer2D = new Transformer2D({

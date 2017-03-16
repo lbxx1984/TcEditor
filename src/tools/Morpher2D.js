@@ -93,6 +93,25 @@ define(function (require) {
     }
 
 
+    function anchorMouseHandler(arr) {
+        arr.map(function (item) {
+            item.attr('cursor', 'pointer').mouseover(function() {
+                this.___fill___ = this.attr('fill');
+                this.attr('fill', '#FFFF00');
+            }).mouseout(function() {
+                this.attr('fill', this.___fill___);
+            });
+        });
+    }
+
+
+    function mousedownHandler(me, cmd) {
+        return function () {
+            me.command = cmd;
+        };
+    }
+
+
     /**
      * 构造函数
      */
@@ -129,10 +148,10 @@ define(function (require) {
 
 
     Morpher2D.prototype.attachAnchor = function (index) {
-        if (!this.points[index]) {
-            return;
-        }
+        var me = this;
         this.index = index;
+        this.anchor = null;
+        this.points.map(function (p) {me.anchor = p.i === index ? p : me.anchor;});
         this.updateSelectedAnchor();
     };
 
@@ -159,21 +178,22 @@ define(function (require) {
             return a.d - b.d;
         });
         points.map(function (p, i) {
-            anchors[i] = me.svg.circle(p.o[0], p.o[1], size)
-                .attr({fill: color, cursor: 'pointer'})
-                .mouseover(function () {this.attr('fill', '#FFFF00')})
-                .mouseout(function() {this.attr('fill', color)})
+            anchors[i] = me.svg
+                .circle(p.o[0], p.o[1], size)
+                .attr('fill', color)
                 .click(function () {typeof me.onAnchorClick === 'function' && me.onAnchorClick(p.i);});
         });
         this.anchors = anchors;
         this.points = points;
+        anchorMouseHandler(this.anchors);
     };
 
 
     Morpher2D.prototype.updateSelectedAnchor = function () {
         while (this.helpers.length) this.helpers.pop().remove();
+        if (!this.anchor) return;
         var me = this;
-        var anchor = null; this.points.map(function (p) {anchor = p.i === me.index ? p : anchor;});
+        var anchor = this.anchor;
         var axis = this.axis;
         var axis2screen = handlerFactories.math('axis2screen', me);
         var o = {x: anchor.x, y: anchor.y, z: anchor.z};
@@ -183,33 +203,47 @@ define(function (require) {
         var d1 = Math.sqrt((o[0] - a[0]) * (o[0] - a[0]) + (o[1] - a[1]) * (o[1] - a[1]));
         var d2 = Math.sqrt((o[0] - b[0]) * (o[0] - b[0]) + (o[1] - b[1]) * (o[1] - b[1]));
         var info = {
-            o: o,
-            a: a,
-            b: b,
+            o: o, a: a, b: b,
             sina: (a[0] - o[0]) / d1,
             cosa: (a[1] - o[1]) / d1,
             sinb: (b[0] - o[0]) / d2,
             cosb: (b[1] - o[1]) / d2
         };
         var size = 1000 / me.size;
-        this.helpers[0] = me.svg.path(face(info, size)).attr({fill: AXIS_COLOR[axis.join('')]});
-        this.helpers[1] = me.svg.path(arrow('a', info, size)).attr({fill: AXIS_COLOR[axis[0]]});
-        this.helpers[2] = me.svg.path(arrow('b', info, size)).attr({fill: AXIS_COLOR[axis[1]]});
+        this.helpers[0] = me.svg.path(face(info, size)).attr('fill', AXIS_COLOR[axis.join('')])
+            .mousedown(mousedownHandler(me, 'o'));
+        this.helpers[1] = me.svg.path(arrow('a', info, size)).attr('fill', AXIS_COLOR[axis[0]])
+            .mousedown(mousedownHandler(me, axis[0]));
+        this.helpers[2] = me.svg.path(arrow('b', info, size)).attr('fill', AXIS_COLOR[axis[1]])
+            .mousedown(mousedownHandler(me, axis[1]));
+        anchorMouseHandler(this.helpers);
     };
 
 
     Morpher2D.prototype.___containerMouseDownHandler___ = function (evt) {
-
+        if (!this.mesh || !this.command) return;
+        this.container.addEventListener('mouseup', this.___containerMouseUpHandler___);
+        this.container.addEventListener('mousemove', this.___containerMouseMoveHandler___);
+        this.mouseX = evt.clientX;
+        this.mouseY = evt.clientY;
     };
 
 
     Morpher2D.prototype.___containerMouseMoveHandler___ = function (evt) {
-
+        if (!this.mesh || !this.command || !this.anchor) return;
+        var dx = evt.clientX - this.mouseX;
+        var dy = evt.clientY - this.mouseY;
+        this.mouseX = evt.clientX;
+        this.mouseY = evt.clientY;
+        console.log(this.command, dx, dy);
+        console.log(this.selectedVector);
     };
 
 
     Morpher2D.prototype.___containerMouseUpHandler___ = function (evt) {
-
+        this.command = '';
+        this.container.removeEventListener('mouseup', this.___containerMouseUpHandler___);
+        this.container.removeEventListener('mousemove', this.___containerMouseMoveHandler___);
     };
 
 
