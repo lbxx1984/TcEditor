@@ -2,9 +2,10 @@
     "name": "TcEditor5",
     "version": "0.0.1",
     "description": "TcEditor5",
-    "main": "index",
     "dependencies": {
-        "edp": ">=0.0.0"
+        "edp": ">=0.0.0",
+        "edp-webserver": "1.2.3",
+        "edp-build": "1.1.1"
     },
     "author": "lbxxlht@163.com",
     "license": "MIT",
