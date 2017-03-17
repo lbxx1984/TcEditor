@@ -35,16 +35,17 @@ define(function (require) {
             var tool = this.get('tool');
             var selectedMesh = this.get('selectedMesh');
             var selectedVector = this.get('selectedVector');
+            var selectedVectorIndex = this.get('selectedVectorIndex');
             if (
                 tool === 'tool-pickGeometry' && selectedMesh
-                || (tool === 'tool-pickJoint' && selectedMesh && !selectedVector)
+                || (tool === 'tool-pickJoint' && selectedMesh && !selectedVector && selectedVectorIndex < 0)
             ) {
                 selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
                 this.set('selectedMesh', null);
                 return;
             }
-            if (tool === 'tool-pickJoint' && selectedVector) {
-                selectedVector.material.setValues({color: selectedVector.tc.materialColor});
+            if (tool === 'tool-pickJoint' && (selectedVector || selectedVectorIndex > -1)) {
+                selectedVector && selectedVector.material.setValues({color: selectedVector.tc.materialColor});
                 this.fill({
                     selectedVector: null,
                     selectedVectorIndex: -1

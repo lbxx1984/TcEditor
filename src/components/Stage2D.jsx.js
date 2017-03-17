@@ -191,7 +191,13 @@ define(function (require) {
                 size: this.props.morpher3Dinfo.anchorSize,
                 color: this.props.morpher3Dinfo.anchorColor,
                 selectedVector: me.props.selectedVector,
-                onAnchorClick: function (i) {me.context.dispatch('morpher-2d-pick-anchor', i);}
+                onAnchorClick: function (i) {me.context.dispatch('morpher-2d-pick-anchor', i);},
+                onObjectChange: function () {
+                    if (me.props.selectedMesh && me.props.selectedMesh.tc) {
+                        me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
+                        me.context.dispatch('updateTimer');
+                    }
+                }
             });
             this.transformer2D = new Transformer2D({
                 axis: this.props.axis,

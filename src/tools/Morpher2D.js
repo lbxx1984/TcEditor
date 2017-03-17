@@ -2,6 +2,7 @@ define(function (require) {
 
 
     var _ = require('underscore');
+    var math = require('../core/math');
     var handlerFactories = require('./common/handlerFactories');
     var AXIS_COLOR = {
         x: '#FF0000',
@@ -207,7 +208,8 @@ define(function (require) {
             sina: (a[0] - o[0]) / d1,
             cosa: (a[1] - o[1]) / d1,
             sinb: (b[0] - o[0]) / d2,
-            cosb: (b[1] - o[1]) / d2
+            cosb: (b[1] - o[1]) / d2,
+            screen2axis: handlerFactories.math('screen2axis', me)
         };
         var size = 1000 / me.size;
         this.helpers[0] = me.svg.path(face(info, size)).attr('fill', AXIS_COLOR[axis.join('')])
@@ -216,6 +218,7 @@ define(function (require) {
             .mousedown(mousedownHandler(me, axis[0]));
         this.helpers[2] = me.svg.path(arrow('b', info, size)).attr('fill', AXIS_COLOR[axis[1]])
             .mousedown(mousedownHandler(me, axis[1]));
+        this.helpInfo = info;
         anchorMouseHandler(this.helpers);
     };
 
@@ -235,8 +238,29 @@ define(function (require) {
         var dy = evt.clientY - this.mouseY;
         this.mouseX = evt.clientX;
         this.mouseY = evt.clientY;
-        console.log(this.command, dx, dy);
-        console.log(this.selectedVector);
+        var info = this.helpInfo;
+        var p = this.anchor;
+        var d1 = (info.cosb * dx - info.sinb * dy) / (info.sina * info.cosb - info.sinb * info.cosa);
+        var d2 = (info.cosa * dx - info.sina * dy) / (info.cosa * info.sinb - info.cosb * info.sina);
+        d1 = this.command === this.axis[1] ? 0 : d1;
+        d2 = this.command === this.axis[0] ? 0 : d2;
+        dx = d1 * info.sina + d2 * info.sinb;
+        dy = d1 * info.cosa + d2 * info.cosb;
+        var center = info.screen2axis(info.o[0], info.o[1]);
+        var to = info.screen2axis(info.o[0] + dx, info.o[1] + dy);
+        var d3 = {x: 0, y: 0, z: 0};
+        d3[this.axis[0]] = to[0] - center[0];
+        d3[this.axis[1]] = to[1] - center[1];
+        var local = math.world2local(p.x + d3.x, p.y + d3.y, p.z + d3.z, this.mesh);
+        this.mesh.geometry.vertices[this.anchor.i].x = local[0];
+        this.mesh.geometry.vertices[this.anchor.i].y = local[1];
+        this.mesh.geometry.vertices[this.anchor.i].z = local[2];
+        this.mesh.geometry.verticesNeedUpdate = true;
+        if (this.selectedVector) {
+            p = this.selectedVector.position;
+            this.selectedVector.position.set(p.x + d3.x, p.y + d3.y, p.z + d3.z);
+        }
+        typeof this.onObjectChange === 'function' && this.onObjectChange();
     };
 
 

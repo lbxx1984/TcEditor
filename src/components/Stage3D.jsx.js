@@ -219,6 +219,13 @@ define(function (require) {
             if (me.props.selectedMesh && me.props.selectedVector) {
                 me.morpher.attachAnchor(me.morpher.anchors[me.props.selectedVector.tc.index]);
             }
+            else if (
+                me.props.selectedMesh && me.props.selectedVectorIndex > -1
+                && me.morpher.anchors[me.props.selectedVectorIndex]
+                && me.morpher.anchors[me.props.selectedVectorIndex].added
+            ) {
+                me.context.dispatch('morpher-3d-pick-anchor', me.morpher.anchors[me.props.selectedVectorIndex]);
+            }
             else {
                 me.morpher.detachAnchor();
             }

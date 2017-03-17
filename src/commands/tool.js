@@ -99,7 +99,8 @@ define(function (require) {
             morpher3Dinfo: _.extend({}, me.get('morpher3Dinfo'), {
                 anchorColor: intersected.tc.anchorColor
             }),
-            selectedVector: null
+            selectedVector: null,
+            selectedVectorIndex: -1
         });
     }
 
@@ -126,7 +127,11 @@ define(function (require) {
             var selectedMesh = this.get('selectedMesh');
             // 初始化工具
             if (this.get('tool') !== 'tool-pickGeometry') {
-                this.fill({tool: 'tool-pickGeometry'});
+                this.fill({
+                    tool: 'tool-pickGeometry',
+                    selectedVector: null,
+                    selectedVectorIndex: -1
+                });
                 return;
             }
             // 拾取物体
@@ -158,7 +163,8 @@ define(function (require) {
             if (this.get('tool') !== 'tool-pickJoint') {
                 this.fill({
                     tool: 'tool-pickJoint',
-                    selectedVector: null
+                    selectedVector: null,
+                    selectedVectorIndex: -1
                 });
                 return;
             }
@@ -187,6 +193,18 @@ define(function (require) {
                 return;
             }
         },
+        'tool-pickJoint-2d': function (param, dragging) {
+            var selectedMesh = this.get('selectedMesh');
+            // 拾取物体
+            if (param === 'mouseup' && intersected) {
+                pickupMesh(selectedMesh, this);
+                return;
+            }
+            // 拖拽容忍
+            if (typeof param !== 'object' || dragging) return;
+            // hover物体
+            hoverMeshByMouse2d(param, selectedMesh);
+        },
         'tool-pickLight': function (param, dragging) {
             var selectedLight = this.get('selectedLight');
             // 初始化工具
@@ -197,6 +215,7 @@ define(function (require) {
                     tool: 'tool-pickLight',
                     selectedMesh: null,
                     selectedVector: null,
+                    selectedVectorIndex: -1,
                     selectedLight: null
                 });
                 return;
