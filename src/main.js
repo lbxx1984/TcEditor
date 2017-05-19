@@ -14,7 +14,7 @@ define(function (require) {
 
     var config = require ('./config');
     var App = require('./App.jsx');
-    var dispatcher = require('./core/dispatcher');
+    var dispatcher = require('./dispatcher/index');
     var model = require('./core/model');
     var defaultLight = new THREE.PointLight(0xffffff);
 
