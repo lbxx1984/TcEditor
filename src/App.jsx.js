@@ -69,8 +69,8 @@ define(function (require) {
                 case 'meshPanel':
                     var meshListProps = {
                         key: item.type,
-                        item: item,
-                        index: index,
+                        type: item.type,
+                        expend: item.expend,
                         mesh: me.props.mesh3d,
                         group: me.props.group,
                         selectedMesh: me.props.selectedMesh

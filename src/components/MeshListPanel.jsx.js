@@ -12,6 +12,9 @@ define(function (require) {
 
 
     return React.createClass({
+        contextTypes: {
+            dispatch: React.PropTypes.func
+        },
         // @override
         getDefaultProps: function () {
             return {};
@@ -20,30 +23,28 @@ define(function (require) {
         getInitialState: function () {
             return {};
         },
-        // @override
-        shouldComponentUpdate: function(nextProps, nextState) {
-            if (
-                nextProps.mesh === this.props.mesh
-                && nextProps.group === this.props.group
-                && nextProps.selectedMesh === this.props.selectedMesh
-            ) {
-                return false;
-            }
-            return true;
+        onPanelClose: function () {
+            this.context.dispatch('view-close-panel', this.props.type);
+        },
+        onPanelToggle: function () {
+            this.context.dispatch('view-toggle-panel', this.props.type);
+        },
+        onPanelAdd: function () {
+            this.context.dispatch('view-add-group', this.props.type);
         },
         render: function () {
-            var expendBtnIcon = this.props.item.expend ? 'icon-xiashixinjiantou' : 'icon-youshixinjiantou';
+            var expendBtnIcon = this.props.expend ? 'icon-xiashixinjiantou' : 'icon-youshixinjiantou';
             var meshData = getMeshGroupData(this.props.group, this.props.mesh);
             return (
                 <div className="tc-meshlist">
                     <div className="tc-panel-title-bar">
-                        <span className="iconfont icon-guanbi1"></span>
-                        <span className="iconfont icon-xinjianwenjianjia"></span>
-                        <span className={'iconfont ' + expendBtnIcon}></span>
+                        <span className="iconfont icon-guanbi1" onClick={this.onPanelClose}></span>
+                        <span className="iconfont icon-xinjianwenjianjia" onClick={this.onPanelAdd}></span>
+                        <span className={'iconfont ' + expendBtnIcon} onClick={this.onPanelToggle}></span>
                         Mesh
                     </div>
                     <div className="tc-panel-content-container">
-                        {listFactory(meshData, this)}
+                        {this.props.expend ? listFactory(meshData, this) : null}
                     </div>
                 </div>
             );

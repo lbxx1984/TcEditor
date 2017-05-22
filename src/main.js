@@ -26,7 +26,9 @@ define(function (require) {
         // 舞台中的物体hash
         mesh3d: {},
         // 舞台中的灯光hash
-        lights: {defaultLight: defaultLight},
+        lights: {
+            defaultLight: defaultLight
+        },
         // 当前选中的物体
         selectedMesh: null,
         // 当前选中的物体的关节
@@ -37,7 +39,7 @@ define(function (require) {
         selectedLight: null,
         // 右侧处于显示状态的工作卡片
         panel: [
-            // {type: 'meshPanel', expend: true}
+            {type: 'meshPanel', expend: true}
         ],
         // 物体分组信息
         group: [
