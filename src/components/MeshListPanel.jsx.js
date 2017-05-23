@@ -11,9 +11,21 @@ define(function (require) {
     var uiUtil = require('fcui2/core/util');
 
 
+    function getLabelDom(target) {
+        while(!target.dataset.dragLevel && target.parentNode) target = target.parentNode;
+        return target.dataset.dragLevel ? target : null;
+    }
+
+
     return React.createClass({
+        // @override
         contextTypes: {
             dispatch: React.PropTypes.func
+        },
+        // @override
+        componentDidMount: function () {
+            this.dragingTarget = null;
+            this.dragingOver = null;
         },
         // @override
         getDefaultProps: function () {
@@ -32,11 +44,44 @@ define(function (require) {
         onPanelAdd: function () {
             this.context.dispatch('view-add-group', this.props.type);
         },
+        onDragIconEnter: function (e) {
+            e.target.parentNode.draggable = true;
+        },
+        onDragIconLeave: function (e) {
+            e.target.parentNode.draggable = false;
+        },
+        onDragStart: function (event) {
+            if (event.dataTransfer && event.dataTransfer.setData) {
+                event.dataTransfer.setData('text', '');
+            }
+            event.stopPropagation();
+            var target = getLabelDom(event.target);
+            if (!target) return;
+            this.dragingTarget = {
+                isMesh: target.dataset.dragLevel === 'mesh',
+                id: target.dataset.dragId
+            };
+        },
+        onDragOver: function (event) {
+            event.stopPropagation();
+            var target = getLabelDom(event.target);
+            if (!target) return;
+            this.dragingOver = {
+                isMesh: target.dataset.dragLevel === 'mesh',
+                id: target.dataset.dragId
+            };
+        },
+        onDragEnd: function () {
+            console.log(JSON.stringify(this.dragingTarget));
+            console.log(JSON.stringify(this.dragingOver));
+            this.dragingTarget = null;
+            this.dragingOver = null;
+        },
         render: function () {
             var expendBtnIcon = this.props.expend ? 'icon-xiashixinjiantou' : 'icon-youshixinjiantou';
             var meshData = getMeshGroupData(this.props.group, this.props.mesh);
             return (
-                <div className="tc-meshlist">
+                <div className="tc-meshlist" onDragEnd={this.onDragEnd}>
                     <div className="tc-panel-title-bar">
                         <span className="iconfont icon-guanbi1" onClick={this.onPanelClose}></span>
                         <span className="iconfont icon-xinjianwenjianjia" onClick={this.onPanelAdd}></span>
@@ -91,12 +136,26 @@ define(function (require) {
             var folderIcon = group.expend ? 'icon-iconfont90' : 'icon-wenjianjia';
             var visibleIcon = group.visible ? 'icon-kejian' : 'icon-bukejian';
             var lockedIcon = group.locked ? 'icon-suo1' : 'icon-suo';
+            var dragIconProps = {
+                onMouseEnter: me.onDragIconEnter,
+                onMouseLeave: me.onDragIconLeave,
+                className: 'iconfont icon-drag'
+            };
+            var groupContainerProps = {
+                key: 'group-contianer-' + group.label,
+                'data-drag-id': group.label,
+                'data-drag-level': 'group',
+                className: 'folder-container',
+                onDragStart: me.onDragStart,
+                onDragOver: me.onDragOver
+            };
             doms.push(
-                <div className="folder-container" key={'group-contianer-' + group.label}>
-                    <span className={'del-icon iconfont icon-shanchu' + delIcon}></span>
+                <div {...groupContainerProps}>
+                    <span className={'iconfont icon-shanchu' + delIcon}></span>
+                    <span {...dragIconProps}></span>
                     <span className={'folder-icon iconfont ' + folderIcon}></span>
                     <span className={'visible-icon iconfont ' + visibleIcon}></span>
-                    <span className={'lock-icon iconfont ' + lockedIcon}></span>
+                    <span className={'iconfont ' + lockedIcon}></span>
                     <div className="main-label">{group.label}</div>
                 </div>
             );
@@ -105,18 +164,31 @@ define(function (require) {
         return doms;
         function meshFactory(mesh) {
             var tc = mesh.tc || {};
+            tc.birth = tc.birth || new Date();
             var visibleIcon = mesh.visible ? 'icon-kejian' : 'icon-bukejian';
             var lockedIcon = tc.locked ? 'icon-suo1' : 'icon-suo';
-            tc.birth = tc.birth || new Date();
             var name = tc.name || mesh.geometry.type.replace('Geometry', ' ')
                 + uiUtil.dateFormat(tc.birth, 'DD/MM hh:mm:ss');
-            var containerClass = 'mesh-container'
-                + (me.props.selectedMesh && me.props.selectedMesh.uuid === mesh.uuid ? ' mesh-selected' : '')
+            var dragIconProps = {
+                onMouseEnter: me.onDragIconEnter,
+                onMouseLeave: me.onDragIconLeave,
+                className: 'iconfont icon-drag'
+            };
+            var containerProps = {
+                key: mesh.uuid,
+                className: 'mesh-container'
+                    + (me.props.selectedMesh && me.props.selectedMesh.uuid === mesh.uuid ? ' mesh-selected' : ''),
+                'data-drag-id': mesh.uuid,
+                'data-drag-level': 'mesh',
+                onDragStart: me.onDragStart,
+                onDragOver: me.onDragOver
+            };
             doms.push(
-                <div className={containerClass} key={mesh.uuid}>
-                    <span className={'del-icon iconfont icon-shanchu'}></span>
+                <div {...containerProps}>
+                    <span className={'iconfont icon-shanchu'}></span>
+                    <span {...dragIconProps}></span>
                     <span className={'visible-icon iconfont ' + visibleIcon}></span>
-                    <span className={'lock-icon iconfont ' + lockedIcon}></span>
+                    <span className={'iconfont ' + lockedIcon}></span>
                     <div className="main-label">{name}</div>
                 </div>
             );

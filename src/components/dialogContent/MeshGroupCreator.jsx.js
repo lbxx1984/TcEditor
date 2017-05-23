@@ -47,7 +47,7 @@ define(function (require) {
             var enterBtnProps = {
                 skin: 'black',
                 width: 70,
-                enabled: this.state.value && this.state.isVaild,
+                disabled: !this.state.value || !this.state.isVaild,
                 style: {marginLeft: 10},
                 label: 'OK',
                 onClick: this.onEnterClick
