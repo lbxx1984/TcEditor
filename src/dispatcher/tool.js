@@ -44,6 +44,7 @@ define(function (require) {
             targetMeshes ? targetMeshes : param.stage3D.meshArray
         );
         if (obj) {
+            if (obj.tc.locked) return;
             if (selectedMesh && obj.uuid === selectedMesh.uuid) return;
             clearIntersectedColor(intersected, selectedMesh);
             intersected = obj;
@@ -59,6 +60,7 @@ define(function (require) {
         var mouse2d = param.mouseCurrent2D;
         var obj = param.stage2D.renderer2D.getObject2dByMouse2D(mouse2d.x, mouse2d.y);
         if (obj) {
+            if (obj.tc.locked) return;
             if (selectedMesh && obj.uuid === selectedMesh.uuid) return;
             clearIntersectedColor(intersected, selectedMesh);
             intersected = obj;

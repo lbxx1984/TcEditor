@@ -164,7 +164,7 @@ define(function (require) {
             var delIcon = group.label === 'default group' ? ' icon-disabled' : '';
             var folderIcon = group.expend ? 'icon-iconfont90' : 'icon-wenjianjia';
             var visibleIcon = group.visible ? 'icon-kejian' : 'icon-bukejian';
-            var lockedIcon = group.locked ? 'icon-suo1' : 'icon-suo';
+            var lockedIcon = group.locked ? 'icon-unlock' : 'icon-lock';
             var dragIconProps = {
                 onMouseEnter: me.onDragIconEnter,
                 onMouseLeave: me.onDragIconLeave,
@@ -206,7 +206,7 @@ define(function (require) {
                 onClick: me.onDelIconClick
             };
             var lockedIconProps = {
-                className: 'iconfont ' + (tc.locked ? 'icon-suo1' : 'icon-suo'),
+                className: 'iconfont ' + (tc.locked ? 'icon-unlock' : 'icon-lock'),
                 onClick: me.onLockIconClick
             };
             var containerProps = {

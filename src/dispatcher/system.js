@@ -8,6 +8,10 @@ define(function (require) {
 
     var _ = require('underscore');
 
+    function clearObject3dColor(mesh) {
+        if (!mesh) return;
+        mesh.material.setValues({color: mesh.tc.materialColor});
+    }
 
     return {
         // update timer
@@ -67,11 +71,37 @@ define(function (require) {
             mesh.tc.group = group;
             this.set('timer', +new Date());
         },
+        // 锁定物体
+        lockMesh: function (uuid) {
+            var dataset = {
+                timer: +new Date()
+            };
+            var mesh = this.get('mesh3d')[uuid];
+            if (!mesh) return;
+            mesh.tc.locked = !mesh.tc.locked;
+            var selectedMesh = this.get('selectedMesh');
+            if (selectedMesh && selectedMesh.uuid === uuid) {
+                clearObject3dColor(selectedMesh);
+                dataset.selectedMesh = null;
+                dataset.selectedVector = null;
+                dataset.selectedVectorIndex = -1;
+            }
+            this.fill(dataset);
+        },
         // 删除物体
         deleteMesh: function (uuid) {
             var mesh3d = _.extend({}, this.get('mesh3d'));
+            var selectedMesh = this.get('selectedMesh');
+            var dataset = {
+                mesh3d: mesh3d
+            };
             delete mesh3d[uuid];
-            this.set('mesh3d', mesh3d);
+            if (selectedMesh && selectedMesh.uuid === uuid) {
+                dataset.selectedMesh = null;
+                dataset.selectedVector = null;
+                dataset.selectedVectorIndex = -1;
+            }
+            this.fill(dataset);
         },
         // 添加物体
         addMesh: function (obj3D) {
