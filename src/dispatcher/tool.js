@@ -125,6 +125,20 @@ define(function (require) {
     }
 
     return {
+        'tool-select-mesh-by-uuid': function (uuid) {
+            var selectedMesh = this.get('selectedMesh');
+            var mesh = this.get('mesh3d')[uuid];
+            if (!mesh || mesh.tc.locked) return;
+            if (selectedMesh && selectedMesh.uuid === uuid) return;
+            clearObject3dColor(selectedMesh);
+            clearObject3dColor(this.get('selectedVector'));
+            mesh.material.setValues({color: config.colors.selectedMesh[0]});
+            this.fill({
+                selectedMesh: mesh,
+                selectedVector: null,
+                selectedVectorIndex: -1
+            });
+        },
         'tool-pickGeometry': function (param, dragging) {
             var selectedMesh = this.get('selectedMesh');
             // 初始化工具

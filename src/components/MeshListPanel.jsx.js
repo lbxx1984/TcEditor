@@ -48,6 +48,12 @@ define(function (require) {
                 this.context.dispatch('lockMesh', dom.dataset.id);
             }
         },
+        onLabelClick: function (e) {
+            var dom = getLabelDom(e.target);
+            if (dom.dataset.level === 'mesh') {
+                this.context.dispatch('tool-select-mesh-by-uuid', dom.dataset.id);
+            }
+        },
         onDragIconEnter: function (e) {
             e.target.parentNode.draggable = true;
         },
@@ -209,6 +215,10 @@ define(function (require) {
                 className: 'iconfont ' + (tc.locked ? 'icon-unlock' : 'icon-lock'),
                 onClick: me.onLockIconClick
             };
+            var labelProps = {
+                className: 'main-label',
+                onClick: me.onLabelClick
+            };
             var containerProps = {
                 key: mesh.uuid,
                 className: 'mesh-container'
@@ -224,7 +234,7 @@ define(function (require) {
                     <span {...dragIconProps}></span>
                     <span className={'visible-icon iconfont ' + visibleIcon}></span>
                     <span {...lockedIconProps}></span>
-                    <div className="main-label">{name}</div>
+                    <div {...labelProps}>{name}</div>
                 </div>
             );
         }
