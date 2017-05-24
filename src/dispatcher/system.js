@@ -60,6 +60,19 @@ define(function (require) {
             }
             this.set('panel', arr);
         },
+        // 修改物体的分组
+        changeMeshGroup: function (uuid, group) {
+            var mesh = this.get('mesh3d')[uuid];
+            if (!mesh) return;
+            mesh.tc.group = group;
+            this.set('timer', +new Date());
+        },
+        // 删除物体
+        deleteMesh: function (uuid) {
+            var mesh3d = _.extend({}, this.get('mesh3d'));
+            delete mesh3d[uuid];
+            this.set('mesh3d', mesh3d);
+        },
         // 添加物体
         addMesh: function (obj3D) {
             var hash = _.extend({}, this.get('mesh3d'));

@@ -12,8 +12,8 @@ define(function (require) {
 
 
     function getLabelDom(target) {
-        while(!target.dataset.dragLevel && target.parentNode) target = target.parentNode;
-        return target.dataset.dragLevel ? target : null;
+        while(!target.dataset.level && target.parentNode) target = target.parentNode;
+        return target.dataset.level ? target : null;
     }
 
 
@@ -27,14 +27,6 @@ define(function (require) {
             this.dragingTarget = null;
             this.dragingOver = null;
         },
-        // @override
-        getDefaultProps: function () {
-            return {};
-        },
-        // @override
-        getInitialState: function () {
-            return {};
-        },
         onPanelClose: function () {
             this.context.dispatch('view-close-panel', this.props.type);
         },
@@ -43,6 +35,18 @@ define(function (require) {
         },
         onPanelAdd: function () {
             this.context.dispatch('view-add-group', this.props.type);
+        },
+        onDelIconClick: function (e) {
+            var dom = getLabelDom(e.target);
+            if (dom.dataset.level === 'mesh') {
+                this.context.dispatch('deleteMesh', dom.dataset.id);
+            }
+        },
+        onLockIconClick: function (e) {
+            var dom = getLabelDom(e.target);
+            if (dom.dataset.level === 'mesh') {
+                this.context.dispatch('lockMesh', dom.dataset.id);
+            }
         },
         onDragIconEnter: function (e) {
             e.target.parentNode.draggable = true;
@@ -58,8 +62,8 @@ define(function (require) {
             var target = getLabelDom(event.target);
             if (!target) return;
             this.dragingTarget = {
-                isMesh: target.dataset.dragLevel === 'mesh',
-                id: target.dataset.dragId
+                isMesh: target.dataset.level === 'mesh',
+                id: target.dataset.id
             };
         },
         onDragOver: function (event) {
@@ -67,15 +71,41 @@ define(function (require) {
             var target = getLabelDom(event.target);
             if (!target) return;
             this.dragingOver = {
-                isMesh: target.dataset.dragLevel === 'mesh',
-                id: target.dataset.dragId
+                isMesh: target.dataset.level === 'mesh',
+                id: target.dataset.id
             };
         },
         onDragEnd: function () {
-            console.log(JSON.stringify(this.dragingTarget));
-            console.log(JSON.stringify(this.dragingOver));
+            if (!this.dragingTarget || !this.dragingOver) return;
+            if (this.dragingTarget.id === this.dragingOver.id) return;
+            var type = (this.dragingTarget.isMesh ? '1' : '0') + (this.dragingOver.isMesh ? '1' : '0');
+            var id1 = this.dragingTarget.id;
+            var id2 = this.dragingOver.id;
             this.dragingTarget = null;
             this.dragingOver = null;
+            switch (type) {
+                case '00':
+                    this.context.dispatch('view-move-group', id1, id2);
+                    break;
+                case '01':
+                    var mesh = this.props.mesh[id2];
+                    id2 = mesh.tc.group ? mesh.tc.group : 'default group';
+                    if (id1 === id2) return;
+                    this.context.dispatch('view-move-group', id1, id2);
+                    break;
+                case '10':
+                    this.context.dispatch('changeMeshGroup', id1, id2);
+                    break;
+                case '11':
+                    var mesh1 = this.props.mesh[id1];
+                    var mesh2 = this.props.mesh[id2];
+                    id2 = mesh2.tc.group ? mesh2.tc.group : 'default group';
+                    if (mesh1.tc.group === id2) return;
+                    this.context.dispatch('changeMeshGroup', id1, id2);
+                    break;
+                default:
+                    break;
+            }
         },
         render: function () {
             var expendBtnIcon = this.props.expend ? 'icon-xiashixinjiantou' : 'icon-youshixinjiantou';
@@ -112,7 +142,6 @@ define(function (require) {
         for (var key in mesh) {
             if (!mesh.hasOwnProperty(key)) continue;
             var item = mesh[key];
-            item.tc = item.tc || {};
             var groupId = hash[item.tc.group] ? item.tc.group : 'default group';
             var groupItem = hash[groupId];
             groupItem.children.push(item);
@@ -143,8 +172,8 @@ define(function (require) {
             };
             var groupContainerProps = {
                 key: 'group-contianer-' + group.label,
-                'data-drag-id': group.label,
-                'data-drag-level': 'group',
+                'data-id': group.label,
+                'data-level': 'group',
                 className: 'folder-container',
                 onDragStart: me.onDragStart,
                 onDragOver: me.onDragOver
@@ -163,10 +192,8 @@ define(function (require) {
         });
         return doms;
         function meshFactory(mesh) {
-            var tc = mesh.tc || {};
-            tc.birth = tc.birth || new Date();
+            var tc = mesh.tc;
             var visibleIcon = mesh.visible ? 'icon-kejian' : 'icon-bukejian';
-            var lockedIcon = tc.locked ? 'icon-suo1' : 'icon-suo';
             var name = tc.name || mesh.geometry.type.replace('Geometry', ' ')
                 + uiUtil.dateFormat(tc.birth, 'DD/MM hh:mm:ss');
             var dragIconProps = {
@@ -174,21 +201,29 @@ define(function (require) {
                 onMouseLeave: me.onDragIconLeave,
                 className: 'iconfont icon-drag'
             };
+            var delIconProps = {
+                className: 'iconfont icon-shanchu',
+                onClick: me.onDelIconClick
+            };
+            var lockedIconProps = {
+                className: 'iconfont ' + (tc.locked ? 'icon-suo1' : 'icon-suo'),
+                onClick: me.onLockIconClick
+            };
             var containerProps = {
                 key: mesh.uuid,
                 className: 'mesh-container'
                     + (me.props.selectedMesh && me.props.selectedMesh.uuid === mesh.uuid ? ' mesh-selected' : ''),
-                'data-drag-id': mesh.uuid,
-                'data-drag-level': 'mesh',
+                'data-id': mesh.uuid,
+                'data-level': 'mesh',
                 onDragStart: me.onDragStart,
                 onDragOver: me.onDragOver
             };
             doms.push(
                 <div {...containerProps}>
-                    <span className={'iconfont icon-shanchu'}></span>
+                    <span {...delIconProps}></span>
                     <span {...dragIconProps}></span>
                     <span className={'visible-icon iconfont ' + visibleIcon}></span>
-                    <span className={'iconfont ' + lockedIcon}></span>
+                    <span {...lockedIconProps}></span>
                     <div className="main-label">{name}</div>
                 </div>
             );

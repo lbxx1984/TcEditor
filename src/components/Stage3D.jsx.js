@@ -112,16 +112,21 @@ define(function (require) {
 
     // 更新物体列表
     function updateMeshList(nextProps, me) {
+        if (nextProps.mesh3d === me.props.mesh3d) return;
+        var oldMeshHash = _.extend({}, me.props.mesh3d);
         me.meshArray = [];
         for (var key in nextProps.mesh3d) {
             if (!nextProps.mesh3d.hasOwnProperty(key)) continue;
             var mesh = nextProps.mesh3d[key];
-            mesh.tc = mesh.tc || {};
             me.meshArray.push(mesh);
+            delete oldMeshHash[mesh.uuid];
             if (mesh.tc.add) continue;
             mesh.tc.add = true;
             me.scene.add(mesh);
         }
+        _.each(oldMeshHash, function (mesh) {
+            me.scene.remove(mesh);
+        });
     }
 
     // 更新变形工具

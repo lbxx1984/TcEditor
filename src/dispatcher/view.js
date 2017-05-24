@@ -58,6 +58,31 @@ define(function (require) {
                 content: MeshGroupCreator,
                 title: 'Create New Mesh Group'
             });
+        },
+        'view-move-group': function (id1, id2) {
+            var group = [];
+            var result = [];
+            var moving = null;
+            this.get('group').map(function (item) {
+                if (item.label === id1) {
+                    moving = item;
+                    return;
+                }
+                group.push(item);
+            });
+            if (!moving) return;
+            group.map(function (item) {
+                if (item.label === id2) {
+                    result.push(item);
+                    result.push(moving);
+                    moving = null;
+                }
+                else {
+                    result.push(item);
+                }
+            });
+            if (moving) return;
+            this.set('group', result);
         }
     };
 

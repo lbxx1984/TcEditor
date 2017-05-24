@@ -61,9 +61,6 @@ define(function (require) {
 
 
     Renderer2D.prototype.render = function (mouseX, mouseY) {
-        if (_.keys(this.mesh3d).length === 0) return;
-        // 装载物体
-        this.mesh2d = setupMeshes(this.mesh3d, this.mesh2d);
         // 初始化画板
         var hoverMesh3D = null;
         var width = this.container.offsetWidth;
@@ -85,6 +82,9 @@ define(function (require) {
         this.canvas.width = width;
         this.canvas.height = height;
         ctx.clearRect(0, 0, width, height);
+        if (_.keys(this.mesh3d).length === 0) return;
+        // 装载物体
+        this.mesh2d = setupMeshes(this.mesh3d, this.mesh2d);
         // 绘制物体
         _.each(this.mesh2d, function (item, key) {
             var mesh = item.mesh3d;
