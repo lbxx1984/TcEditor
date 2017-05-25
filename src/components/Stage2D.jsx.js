@@ -59,9 +59,11 @@ define(function (require) {
             me.renderer2D.mesh3d = nextProps.mesh3d;
             needRenderer = true;
         }
+        if (nextProps.timer !== me.props.timer) {
+            needRenderer = true;
+        }
         if (
-            nextProps.timer !== me.props.timer
-            && nextProps.selectedMesh
+            nextProps.selectedMesh
             && nextProps.selectedMesh.tc
             && nextProps.selectedMesh.tc.needUpdate
             && me.renderer2D.mesh2d[nextProps.selectedMesh.uuid]

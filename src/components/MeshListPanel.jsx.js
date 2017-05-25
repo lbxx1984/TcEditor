@@ -54,6 +54,12 @@ define(function (require) {
                 this.context.dispatch('tool-select-mesh-by-uuid', dom.dataset.id);
             }
         },
+        onVisibleIconClick: function (e) {
+            var dom = getLabelDom(e.target);
+            if (dom.dataset.level === 'mesh') {
+                this.context.dispatch('visibleMesh', dom.dataset.id);
+            }
+        },
         onDragIconEnter: function (e) {
             e.target.parentNode.draggable = true;
         },
@@ -199,9 +205,21 @@ define(function (require) {
         return doms;
         function meshFactory(mesh) {
             var tc = mesh.tc;
-            var visibleIcon = mesh.visible ? 'icon-kejian' : 'icon-bukejian';
             var name = tc.name || mesh.geometry.type.replace('Geometry', ' ')
                 + uiUtil.dateFormat(tc.birth, 'DD/MM hh:mm:ss');
+            var containerProps = {
+                key: mesh.uuid,
+                className: 'mesh-container'
+                    + (me.props.selectedMesh && me.props.selectedMesh.uuid === mesh.uuid ? ' mesh-selected' : ''),
+                'data-id': mesh.uuid,
+                'data-level': 'mesh',
+                onDragStart: me.onDragStart,
+                onDragOver: me.onDragOver
+            };
+            var visibleIconProps = {
+                className: 'visible-icon iconfont ' + (mesh.visible ? 'icon-kejian' : 'icon-bukejian'),
+                onClick: me.onVisibleIconClick
+            };
             var dragIconProps = {
                 onMouseEnter: me.onDragIconEnter,
                 onMouseLeave: me.onDragIconLeave,
@@ -219,20 +237,11 @@ define(function (require) {
                 className: 'main-label',
                 onClick: me.onLabelClick
             };
-            var containerProps = {
-                key: mesh.uuid,
-                className: 'mesh-container'
-                    + (me.props.selectedMesh && me.props.selectedMesh.uuid === mesh.uuid ? ' mesh-selected' : ''),
-                'data-id': mesh.uuid,
-                'data-level': 'mesh',
-                onDragStart: me.onDragStart,
-                onDragOver: me.onDragOver
-            };
             doms.push(
                 <div {...containerProps}>
                     <span {...delIconProps}></span>
                     <span {...dragIconProps}></span>
-                    <span className={'visible-icon iconfont ' + visibleIcon}></span>
+                    <span {...visibleIconProps}></span>
                     <span {...lockedIconProps}></span>
                     <div {...labelProps}>{name}</div>
                 </div>

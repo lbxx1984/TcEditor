@@ -88,6 +88,7 @@ define(function (require) {
         // 绘制物体
         _.each(this.mesh2d, function (item, key) {
             var mesh = item.mesh3d;
+            if (!mesh.visible) return;
             var vertices = item.vertices;
             var color = mesh.material.color.getHex().toString(16);
             while (color.length < 6) color = '0' + color;

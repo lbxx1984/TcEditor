@@ -71,6 +71,23 @@ define(function (require) {
             mesh.tc.group = group;
             this.set('timer', +new Date());
         },
+        // 显示物体
+        visibleMesh: function (uuid) {
+            var dataset = {
+                timer: +new Date()
+            };
+            var mesh = this.get('mesh3d')[uuid];
+            if (!mesh) return;
+            mesh.visible = !mesh.visible;
+            var selectedMesh = this.get('selectedMesh');
+            if (selectedMesh && selectedMesh.uuid === uuid) {
+                clearObject3dColor(selectedMesh);
+                dataset.selectedMesh = null;
+                dataset.selectedVector = null;
+                dataset.selectedVectorIndex = -1;
+            }
+            this.fill(dataset);
+        },
         // 锁定物体
         lockMesh: function (uuid) {
             var dataset = {

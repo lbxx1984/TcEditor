@@ -128,7 +128,7 @@ define(function (require) {
         'tool-select-mesh-by-uuid': function (uuid) {
             var selectedMesh = this.get('selectedMesh');
             var mesh = this.get('mesh3d')[uuid];
-            if (!mesh || mesh.tc.locked) return;
+            if (!mesh || mesh.tc.locked || !mesh.visible) return;
             if (selectedMesh && selectedMesh.uuid === uuid) return;
             clearObject3dColor(selectedMesh);
             clearObject3dColor(this.get('selectedVector'));

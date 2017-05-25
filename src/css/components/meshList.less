@@ -24,9 +24,9 @@
             overflow: hidden;
             text-overflow: ellipsis;
             word-break: all;
-        }
-        &:hover {
-            background-color: @background-color-hover;
+            &:hover {
+                color: @font-color-hover;
+            }
         }
     }
     .folder-container {
@@ -41,6 +41,7 @@
         }
     }
     .mesh-container {
+        background-color: @background-color-hover;
         .visible-icon {
             margin-left: 25px;
         }
@@ -53,5 +54,8 @@
     }
     .mesh-selected {
         background-color: @background-color-checked;
+        .iconfont:hover, .main-label:hover {
+            color: @background-color-hover;
+        }
     }
 }
