@@ -128,7 +128,9 @@ define(function (require) {
                 clearInterval(this.___workerTimer___);
                 return;
             }
+
             var pos = util.getDOMPosition(this.props.anchor);
+
             pos = pos.x + ';' + pos.y + ';' + pos.left + ';' + pos.top;
             if (this.___anchorPosition___ !== pos) {
                 this.fixedPosition(this.props);
@@ -238,6 +240,9 @@ define(function (require) {
                 + (arr[7] != null ? ';bottom:' + arr[7] + 'px' : '');
         },
         fixedPosition: function (props) {
+            if (!util.isDOMVisible(props.anchor)) {
+                return;
+            }
             this.fixedSize(props);
             var layer = this.___layerContainer___;
             var anchorPos = util.getDOMPosition(props.anchor);
