@@ -9,6 +9,9 @@ define(function (require) {
     var React = require('react');   
     var _ = require('underscore');
     var uiUtil = require('fcui2/core/util');
+    var MeshGroupCreator = require('../components/dialogContent/MeshGroupCreator.jsx');
+    var Dialog = require('fcui2/Dialog.jsx');
+    var dialog = new Dialog();
 
 
     function getLabelDom(target) {
@@ -27,19 +30,81 @@ define(function (require) {
             this.dragingTarget = null;
             this.dragingOver = null;
         },
-        onPanelClose: function () {
+        onPanelCloseIconClick: function () {
             this.context.dispatch('view-close-panel', this.props.type);
         },
-        onPanelToggle: function () {
+        onPanelToggleIconClick: function () {
             this.context.dispatch('view-toggle-panel', this.props.type);
         },
-        onPanelAdd: function () {
-            this.context.dispatch('view-add-group', this.props.type);
+        onAddGroupIconClick: function () {
+            var me = this;
+            dialog.pop({
+                contentProps: {
+                    group: me.props.group,
+                    initialName: '',
+                    onEnter: function (groupname) {
+                        me.context.dispatch('addGroup', groupname);
+                    }
+                },
+                content: MeshGroupCreator,
+                title: 'Create New Mesh Group'
+            });
+        },
+        onFolderIconClick: function (e) {
+            var dom = getLabelDom(e.target);
+            this.context.dispatch('view-toggle-group', dom.dataset.id);
+        },
+        onEditIconClick: function (e) {
+            var dom = getLabelDom(e.target);
+            var me = this;
+            dialog.pop({
+                contentProps: {
+                    group: me.props.group,
+                    initialName: dom.dataset.id,
+                    onEnter: function (groupname) {
+                        me.context.dispatch('renameGroup', dom.dataset.id, groupname);
+                    }
+                },
+                content: MeshGroupCreator,
+                title: 'Rename Mesh Group'
+            });
         },
         onDelIconClick: function (e) {
             var dom = getLabelDom(e.target);
+            var dispatch = this.context.dispatch;
             if (dom.dataset.level === 'mesh') {
-                this.context.dispatch('deleteMesh', dom.dataset.id);
+                dialog.confirm({
+                    title: 'Please Confirm',
+                    message: '<h4>Are you sure to remove this mesh?</h4>',
+                    appSkin: 'oneux3',
+                    labels: {
+                        enter: 'Yes',
+                        cancel: 'No'
+                    },
+                    onEnter: function () {
+                        dispatch('deleteMesh', dom.dataset.id);
+                    }
+                });
+            }
+            else {
+                dialog.confirm({
+                    title: 'Please Confirm',
+                    message: '<h4>Are you sure to remove the group\'s meshes after droping it?</h4>'
+                        + 'If you press \'Yes\', the locked meshes will be moved to default group.<br>'
+                        + 'If you press \'No\', all meshes will be moved to default group.<br>'
+                        + 'Press close button to cancel.',
+                    appSkin: 'oneux3',
+                    labels: {
+                        enter: 'Yes',
+                        cancel: 'No'
+                    },
+                    onEnter: function () {
+                        dispatch('deleteGroup', dom.dataset.id, true);
+                    },
+                    onCancel: function () {
+                        dispatch('deleteGroup', dom.dataset.id, false);
+                    }
+                });
             }
         },
         onLockIconClick: function (e) {
@@ -47,17 +112,26 @@ define(function (require) {
             if (dom.dataset.level === 'mesh') {
                 this.context.dispatch('lockMesh', dom.dataset.id);
             }
+            else {
+                this.context.dispatch('lockGroup', dom.dataset.id, e.target.className.indexOf('icon-lock') > -1);
+            }
         },
         onLabelClick: function (e) {
             var dom = getLabelDom(e.target);
             if (dom.dataset.level === 'mesh') {
                 this.context.dispatch('tool-select-mesh-by-uuid', dom.dataset.id);
             }
+            else {
+                this.context.dispatch('changeActiveGroup', dom.dataset.id);
+            }
         },
         onVisibleIconClick: function (e) {
             var dom = getLabelDom(e.target);
             if (dom.dataset.level === 'mesh') {
                 this.context.dispatch('visibleMesh', dom.dataset.id);
+            }
+            else {
+                this.context.dispatch('visibleGroup', dom.dataset.id, e.target.className.indexOf('icon-bukejian') > -1);
             }
         },
         onDragIconEnter: function (e) {
@@ -125,9 +199,9 @@ define(function (require) {
             return (
                 <div className="tc-meshlist" onDragEnd={this.onDragEnd}>
                     <div className="tc-panel-title-bar">
-                        <span className="iconfont icon-guanbi1" onClick={this.onPanelClose}></span>
-                        <span className="iconfont icon-xinjianwenjianjia" onClick={this.onPanelAdd}></span>
-                        <span className={'iconfont ' + expendBtnIcon} onClick={this.onPanelToggle}></span>
+                        <span className="iconfont icon-guanbi1" onClick={this.onPanelCloseIconClick}></span>
+                        <span className="iconfont icon-xinjianwenjianjia" onClick={this.onAddGroupIconClick}></span>
+                        <span className={'iconfont ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
                         Mesh
                     </div>
                     <div className="tc-panel-content-container">
@@ -173,31 +247,53 @@ define(function (require) {
     function listFactory(data, me) {
         var doms = [];
         data.map(function (group) {
-            var delIcon = group.label === 'default group' ? ' icon-disabled' : '';
-            var folderIcon = group.expend ? 'icon-iconfont90' : 'icon-wenjianjia';
-            var visibleIcon = group.visible ? 'icon-kejian' : 'icon-bukejian';
-            var lockedIcon = group.locked ? 'icon-unlock' : 'icon-lock';
+            var delIcon = group.label === 'default group' || group.locked ? ' icon-disabled' : '';
+            var groupContainerProps = {
+                key: 'group-contianer-' + group.label,
+                'data-id': group.label,
+                'data-level': 'group',
+                className: 'folder-container' + (group.label === me.props.activeGroup ? ' active' : ''),
+                onDragStart: me.onDragStart,
+                onDragOver: me.onDragOver
+            };
+            var folderIconProps = {
+                className: 'folder-icon iconfont ' + (group.expend ? 'icon-iconfont90' : 'icon-wenjianjia'),
+                onClick: me.onFolderIconClick
+            };
+            var visibleIconProps = {
+                className: 'visible-icon iconfont ' + (group.visible ? 'icon-kejian' : 'icon-bukejian'),
+                onClick: me.onVisibleIconClick
+            };
+            var lockIconProps = {
+                className: 'iconfont ' + (group.locked ? 'icon-unlock' : 'icon-lock'),
+                onClick: me.onLockIconClick
+            };
             var dragIconProps = {
                 onMouseEnter: me.onDragIconEnter,
                 onMouseLeave: me.onDragIconLeave,
                 className: 'iconfont icon-drag'
             };
-            var groupContainerProps = {
-                key: 'group-contianer-' + group.label,
-                'data-id': group.label,
-                'data-level': 'group',
-                className: 'folder-container',
-                onDragStart: me.onDragStart,
-                onDragOver: me.onDragOver
+            var editIconProps = {
+                className: 'iconfont icon-edit' + delIcon,
+                onClick: delIcon ? undefined : me.onEditIconClick
+            };
+            var delIconProps = {
+                className: 'iconfont icon-shanchu' + delIcon,
+                onClick: delIcon ? undefined : me.onDelIconClick
+            };
+            var labelProps = {
+                className: 'main-label',
+                onClick: me.onLabelClick
             };
             doms.push(
                 <div {...groupContainerProps}>
-                    <span className={'iconfont icon-shanchu' + delIcon}></span>
+                    <span {...delIconProps}></span>
                     <span {...dragIconProps}></span>
-                    <span className={'folder-icon iconfont ' + folderIcon}></span>
-                    <span className={'visible-icon iconfont ' + visibleIcon}></span>
-                    <span className={'iconfont ' + lockedIcon}></span>
-                    <div className="main-label">{group.label}</div>
+                    <span {...editIconProps}></span>
+                    <span {...folderIconProps}></span>
+                    <span {...visibleIconProps}></span>
+                    <span {...lockIconProps}></span>
+                    <div {...labelProps}>{group.label}</div>
                 </div>
             );
             group.expend && group.children.map(meshFactory);

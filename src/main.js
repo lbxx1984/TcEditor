@@ -37,6 +37,8 @@ define(function (require) {
         selectedVectorIndex: -1,
         // 当前选中的灯光
         selectedLight: null,
+        // 当前激活的分组，物体默认会被添加到这个分组里
+        activeGroup: 'default group',
         // 右侧处于显示状态的工作卡片
         panel: [
             {type: 'meshPanel', expend: true}

@@ -22,7 +22,7 @@ define(function (require) {
         // @override
         getInitialState: function () {
             return {
-                value: '',
+                value: this.props.initialName,
                 isVaild: true
             };
         },
@@ -47,7 +47,7 @@ define(function (require) {
             var enterBtnProps = {
                 skin: 'black',
                 width: 70,
-                disabled: !this.state.value || !this.state.isVaild,
+                disabled: !this.state.value || !this.state.isVaild || this.state.value === this.props.initialName,
                 style: {marginLeft: 10},
                 label: 'OK',
                 onClick: this.onEnterClick

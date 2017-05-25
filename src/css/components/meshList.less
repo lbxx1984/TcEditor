@@ -18,6 +18,9 @@
         .icon-drag {
             float: right;
         }
+        .icon-edit {
+            float: right;
+        }
         .main-label {
             position: absolute;
             white-space: nowrap;
@@ -41,7 +44,7 @@
         }
     }
     .mesh-container {
-        background-color: @background-color-hover;
+        background-color: rgba(255,255,255,0.1);
         .visible-icon {
             margin-left: 25px;
         }
@@ -54,8 +57,12 @@
     }
     .mesh-selected {
         background-color: @background-color-checked;
+        border: 1px solid @background-color-checked !important;
         .iconfont:hover, .main-label:hover {
             color: @background-color-hover;
         }
+    }
+    .active {
+        border: 1px solid @background-color-checked !important;
     }
 }

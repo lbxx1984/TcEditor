@@ -73,6 +73,7 @@ define(function (require) {
                         expend: item.expend,
                         mesh: me.props.mesh3d,
                         group: me.props.group,
+                        activeGroup: me.props.activeGroup,
                         selectedMesh: me.props.selectedMesh
                     };
                     doms.push(<MeshListPanel {...meshListProps}/>);

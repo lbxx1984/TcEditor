@@ -7,9 +7,6 @@ define(function (require) {
 
 
     var _ = require('underscore');
-    var Dialog = require('fcui2/Dialog.jsx');
-    var MeshGroupCreator = require('../components/dialogContent/MeshGroupCreator.jsx');
-    var dialog = new Dialog();
 
 
     return {
@@ -44,21 +41,6 @@ define(function (require) {
             });
             this.set('panel', panel);
         },
-        'view-add-group': function () {
-            var me = this;
-            dialog.pop({
-                contentProps: {
-                    group: me.get('group'),
-                    onEnter: function (groupname) {
-                        me.set('group', [].concat(me.get('group'), [
-                            {label: groupname, expend: true}
-                        ]));
-                    }
-                },
-                content: MeshGroupCreator,
-                title: 'Create New Mesh Group'
-            });
-        },
         'view-move-group': function (id1, id2) {
             var group = [];
             var result = [];
@@ -83,6 +65,14 @@ define(function (require) {
             });
             if (moving) return;
             this.set('group', result);
+        },
+        'view-toggle-group': function (id) {
+            var group = JSON.parse(JSON.stringify(this.get('group')));
+            group.map(function (item) {
+                if (item.label !== id) return;
+                item.expend = !item.expend;
+            });
+            this.set('group', group);
         }
     };
 

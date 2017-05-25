@@ -8,10 +8,12 @@ define(function (require) {
 
     var _ = require('underscore');
 
+
     function clearObject3dColor(mesh) {
         if (!mesh) return;
         mesh.material.setValues({color: mesh.tc.materialColor});
     }
+
 
     return {
         // update timer
@@ -71,6 +73,10 @@ define(function (require) {
             mesh.tc.group = group;
             this.set('timer', +new Date());
         },
+        // 修改激活分组
+        changeActiveGroup: function (group) {
+            this.set('activeGroup', group);
+        },
         // 显示物体
         visibleMesh: function (uuid) {
             var dataset = {
@@ -86,6 +92,24 @@ define(function (require) {
                 dataset.selectedVector = null;
                 dataset.selectedVectorIndex = -1;
             }
+            this.fill(dataset);
+        },
+        // 显示分组
+        visibleGroup: function (groupId, visible) {
+            var dataset = {
+                timer: +new Date()
+            };
+            var selectedMesh = this.get('selectedMesh');
+            _.each(this.get('mesh3d'), function (mesh) {
+                if (mesh.tc.group !== groupId) return;
+                mesh.visible = visible;
+                if (selectedMesh && selectedMesh.uuid === mesh.uuid) {
+                    clearObject3dColor(selectedMesh);
+                    dataset.selectedMesh = null;
+                    dataset.selectedVector = null;
+                    dataset.selectedVectorIndex = -1;
+                }
+            });
             this.fill(dataset);
         },
         // 锁定物体
@@ -105,6 +129,24 @@ define(function (require) {
             }
             this.fill(dataset);
         },
+        // 锁定分组
+        lockGroup: function (groupId, locked) {
+            var dataset = {
+                timer: +new Date()
+            };
+            var selectedMesh = this.get('selectedMesh');
+            _.each(this.get('mesh3d'), function (mesh) {
+                if (mesh.tc.group !== groupId) return;
+                mesh.tc.locked = locked;
+                if (selectedMesh && selectedMesh.uuid === mesh.uuid) {
+                    clearObject3dColor(selectedMesh);
+                    dataset.selectedMesh = null;
+                    dataset.selectedVector = null;
+                    dataset.selectedVectorIndex = -1;
+                }
+            });
+            this.fill(dataset);
+        },
         // 删除物体
         deleteMesh: function (uuid) {
             var mesh3d = _.extend({}, this.get('mesh3d'));
@@ -120,18 +162,72 @@ define(function (require) {
             }
             this.fill(dataset);
         },
+        // 删除分组
+        deleteGroup: function (groupId, removeMesh) {
+            var group = [];
+            var meshes = _.extend({}, this.get('mesh3d'));
+            var selectedMesh = this.get('selectedMesh');
+            var dataset = {
+                group: group,
+                mesh3d: meshes,
+                activeGroup: 'default group',
+                timer: +new Date()
+            };
+            this.get('group').map(function (item) {
+                if (item.label === groupId) return;
+                group.push(item);
+            });
+            _.each(meshes, function (mesh, key) {
+                if (mesh.tc.group !== groupId) return;
+                if (!removeMesh || mesh.tc.locked) {
+                    mesh.tc.group = 'default group';
+                    return;
+                }
+                delete meshes[key];
+                if (selectedMesh && selectedMesh.uuid === key) {
+                    dataset.selectedMesh = null;
+                    dataset.selectedVector = null;
+                    dataset.selectedVectorIndex = -1;
+                }
+            });
+            this.fill(dataset);
+        },
         // 添加物体
         addMesh: function (obj3D) {
             var hash = _.extend({}, this.get('mesh3d'));
             obj3D.tc = {
                 birth: new Date(),
                 add: true,
+                group: this.get('activeGroup'),
                 anchorColor: 0x00CD00,
                 materialColor: obj3D.material.color.getHex(),
                 materialEmissive: obj3D.material.emissive.getHex()
             };
             hash[obj3D.uuid] = obj3D;
             this.set('mesh3d', hash);
+        },
+        // 创建分组
+        addGroup: function (groupname) {
+            this.fill({
+                group: [].concat(this.get('group'), [
+                    {label: groupname, expend: true}
+                ]),
+                activeGroup: groupname
+            });
+        },
+        // 重命名分组
+        renameGroup: function (groupId, newId) {
+            var group = JSON.parse(JSON.stringify(this.get('group')));
+            _.each(this.get('mesh3d'), function (mesh) {
+                mesh.tc.group = mesh.tc.group === groupId ? newId : mesh.tc.group;
+            });
+            group.map(function (item) {
+                item.label = item.label === groupId ? newId : item.label;
+            });
+            this.fill({
+                group: group,
+                activeGroup: newId
+            });
         }
     };
 

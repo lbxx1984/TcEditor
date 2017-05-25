@@ -9,7 +9,6 @@ define(function (require) {
     var _ = require('underscore');
     var Dialog = require('fcui2/Dialog.jsx');
     var ColorSetter = require('../components/dialogContent/ColorSetter.jsx');
-
     var dialog = new Dialog();
 
 
