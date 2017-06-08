@@ -8,10 +8,10 @@ npm install
 
 ## Startup
 ```bash
-npm run dev
+npm start
 ```
 
-## Access:
+## Visit:
 [http://localhost:8088/](http://localhost:8088/)
 
 ## Build
@@ -21,18 +21,14 @@ npm run build
 
 ## Install
 ```bash
+npm install edp -g
 npm install
 ```
 
 ## Startup
 ```bash
-npm start
+edp webserver
 ```
 
-## Access
+## Visit
 [http://localhost:8089/](http://localhost:8089/)
-
-## Build
-```bash
-todo
-```

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate, pre-check=0, post-check=0" />
+<meta http-equiv="expires" content="0" />
+<title>TcEditor5</title>
+<style>
+    body {
+        background-color: #1F1F1F;
+        color: #FFF;
+    }
+    div {
+        width: 400px;
+        background-color: green;
+        text-align: center;
+        line-height: 30px;
+        margin-top: 10px;
+        border-radius: 5px;
+        font-weight: 700;
+    }
+</style>
+</head>
+<body>
+    <h1>TcEditor5 is not supported by your browser.</h1>
+    <h2>TcEditor5 requires the following techniques:</h2>
+    <div id="webgl">HTML5 WebGL</div>
+    <div id="filereader">HTML5 FileReader</div>
+    <div id="filesystem">HTML5 requestFileSystem</div>
+    <h2>We strongly recommend you Chrome 40+.</h2>
+</body>
+<script type="text/javascript">
+    function getQueryString(name){
+        var reg = new RegExp('(^|&)'+ name +'=([^&]*)(&|$)');
+        var r = window.location.search.substr(1).match(reg);
+        return r != null ? unescape(r[2]) : null;
+    }
+    function setAlertColor(id) {
+        document.getElementById(id).style.backgroundColor = 'red';
+    }
+    var support = parseInt(getQueryString('code'), 10);
+    if (!isNaN(support)) {
+        if (support > 99) {
+            setAlertColor('filesystem');
+            support -= 100;
+        }
+        if (support > 9) {
+            setAlertColor('filereader');
+            support -= 10;
+        }
+        if (support > 0) {
+            setAlertColor('webgl');
+        }
+    }
+</script>
+</html>

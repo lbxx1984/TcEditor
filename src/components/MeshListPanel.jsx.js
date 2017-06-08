@@ -202,7 +202,7 @@ define(function (require) {
                         <span className="iconfont icon-guanbi1" onClick={this.onPanelCloseIconClick}></span>
                         <span className="iconfont icon-xinjianwenjianjia" onClick={this.onAddGroupIconClick}></span>
                         <span className={'iconfont ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
-                        Mesh
+                        Mesh List
                     </div>
                     <div className="tc-panel-content-container">
                         {this.props.expend ? listFactory(meshData, this) : null}
