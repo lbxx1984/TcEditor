@@ -20,8 +20,11 @@ define(function (require) {
 
 
     defaultLight.position.set(0, 1000, 0);
+    defaultLight.tc = {
+        birth: new Date(),
+        add: true
+    };
     model.fill(config);
-
     // 这些数据需要从localStorage里读出来，或者从文件里读出来
     model.fill({
         // 舞台中的物体hash
@@ -93,11 +96,9 @@ define(function (require) {
         // 系统稳定态时间戳
         timer: 0
     });
-
     model.onChange = function (store) {
         render(store);
     };
-
     render(model.store);
 
 

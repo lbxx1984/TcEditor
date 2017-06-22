@@ -83,7 +83,8 @@ define(function (require) {
                     var lightListProps = {
                         key: item.type,
                         type: item.type,
-                        expend: item.expend
+                        expend: item.expend,
+                        lights: me.props.lights
                     };
                     doms.push(<LightListPanel {...lightListProps}/>);
                     break;
