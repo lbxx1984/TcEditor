@@ -14,6 +14,7 @@ define(function (require) {
     var Stage3D = require('./components/Stage3D.jsx');
     var Stage2D = require('./components/Stage2D.jsx');
     var MeshListPanel = require('./components/MeshListPanel.jsx');
+    var LightListPanel = require('./components/LightListPanel.jsx');
     var ToolsBar = require('./components/ToolsBar.jsx');
 
 
@@ -78,12 +79,21 @@ define(function (require) {
                     };
                     doms.push(<MeshListPanel {...meshListProps}/>);
                     break;
+                case 'lightPanel':
+                    var lightListProps = {
+                        key: item.type,
+                        type: item.type,
+                        expend: item.expend
+                    };
+                    doms.push(<LightListPanel {...lightListProps}/>);
+                    break;
                 default:
                     break;
             }
         });
         return <div className="tc-panel-container">{doms}</div>;
     }
+
 
     function toolsBarPropsFactory(props) {
         if (props.tool === 'tool-pickGeometry') {
@@ -109,6 +119,7 @@ define(function (require) {
         }
     }
 
+
     function commandsFilter(me) {
         return me.props.command.map(filter);
         function filter(item) {
@@ -119,6 +130,7 @@ define(function (require) {
             return _.extend({}, item, {disabled: disabled});
         }
     }
+
 
     function stageFactory(me) {
         var cameraConfig = me.props.stage.camera3D;
@@ -179,4 +191,6 @@ define(function (require) {
             return (<Stage2D {...stage2dProps} style={{right: right}} axis={me.props.view.replace('view-', '').split('o')}/>);
         }
     }
+
+
 });
