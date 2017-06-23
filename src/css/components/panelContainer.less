@@ -37,11 +37,21 @@
         border-bottom-color: @border-top-color;
         border-top-color: @border-bottom-color;
         margin: 0 10px;
+        max-height: 300px;
+        overflow-y: auto;
         >div:first-child {
             border-top: 1px solid @border-top-color;
         }
         >div:last-child {
             border-bottom: 1px solid @border-bottom-color;
+        }
+        &::-webkit-scrollbar {
+            width: 10px;
+            background-color: @background-color-main;
+        }
+        &::-webkit-scrollbar-thumb {
+            border-radius: 3px;
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNui8sowAAAAWdEVYdENyZWF0aW9uIFRpbWUAMTIvMTUvMTa/LrshAAAAKUlEQVQYlWP8//8/AwMDA8Pdu3chDDSgrKzMyMDAwMCETRIbGFVIHYUACYsHEco9/38AAAAASUVORK5CYII=);
         }
     }
 }

@@ -43,6 +43,12 @@ define(function (require) {
                     },
                     {
                         label: 'Light List', value: 'view-lightPanel', key: 'lightPanel'
+                    },
+                    {
+                        label: 'Geometry Editor', value: 'view-geoEditor', key: 'geoEditor'
+                    },
+                    {
+                        label: 'Material Editor', value: 'view-mtlEditor', key: 'mtlEditor'
                     }
                 ]
             },
