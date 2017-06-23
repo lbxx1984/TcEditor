@@ -495,7 +495,7 @@ define(function (require) {
         },
 
         onMouseDown: function (e) {
-            this.mousedown = true;
+            this.mousedown = e.nativeEvent.button === 0;
             this.mouseDown2D = {x: e.clientX, y: e.clientY};
             this.mouseDown3D = getMouse3D(e.nativeEvent.offsetX, e.nativeEvent.offsetY, this, this.coordinate);
             this.mouseCurrent2D = {x: e.clientX, y: e.clientY};
