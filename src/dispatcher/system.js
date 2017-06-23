@@ -14,6 +14,16 @@ define(function (require) {
         mesh.material.setValues({color: mesh.tc.materialColor});
     }
 
+    function isOperatingSelectedLight(key, me) {
+        var selectedLight = me.get('selectedLight');
+        if (typeof selectedLight === 'string' && selectedLight === key) {
+            return true;
+        }
+        if (selectedLight && selectedLight.tc && selectedLight.tc.lightKey === key) {
+            return true;
+        }
+        return false;
+    }
 
     return {
         // update timer
@@ -112,6 +122,19 @@ define(function (require) {
             });
             this.fill(dataset);
         },
+        // 显示灯光
+        visibleLight: function (key) {
+            var dataset = {
+                timer: +new Date()
+            };
+            var light = this.get('lights')[key];
+            if (!light) return;
+            light.visible = !light.visible;
+            if (isOperatingSelectedLight(key, this)) {
+                dataset.selectedLight = null;
+            }
+            this.fill(dataset);
+        },
         // 锁定物体
         lockMesh: function (uuid) {
             var dataset = {
@@ -145,6 +168,19 @@ define(function (require) {
                     dataset.selectedVectorIndex = -1;
                 }
             });
+            this.fill(dataset);
+        },
+        // 锁定灯光
+        lockLight: function (key) {
+            var dataset = {
+                timer: +new Date()
+            };
+            var light = this.get('lights')[key];
+            if (!light) return;
+            light.tc.locked = !light.tc.locked;
+            if (isOperatingSelectedLight(key, this)) {
+                dataset.selectedLight = null;
+            }
             this.fill(dataset);
         },
         // 删除物体
@@ -190,6 +226,20 @@ define(function (require) {
                     dataset.selectedVectorIndex = -1;
                 }
             });
+            this.fill(dataset);
+        },
+        // 删除灯光
+        deleteLight: function (key) {
+            var light = this.get('lights')[key];
+            if (!light) return;
+            var lights = _.extend({}, this.get('lights'));
+            var dataset = {
+                lights: lights
+            };
+            delete lights[key];
+            if (isOperatingSelectedLight(key, this)) {
+                dataset.selectedLight = null;
+            }
             this.fill(dataset);
         },
         // 添加物体

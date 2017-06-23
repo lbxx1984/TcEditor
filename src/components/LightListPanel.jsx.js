@@ -11,6 +11,12 @@ define(function (require) {
     var uiUtil = require('fcui2/core/util');
 
 
+    function getLabelDom(target) {
+        while(!target.dataset.level && target.parentNode) target = target.parentNode;
+        return target.dataset.level ? target : null;
+    }
+
+
     return React.createClass({
         // @override
         contextTypes: {
@@ -21,6 +27,31 @@ define(function (require) {
         },
         onPanelToggleIconClick: function () {
             this.context.dispatch('view-toggle-panel', this.props.type);
+        },
+        onDelIconClick: function (e) {
+            var dom = getLabelDom(e.target);
+            var dispatch = this.context.dispatch;
+            console.log(dom.dataset.id);
+        },
+        onVisibleIconClick: function (e) {
+            var dom = getLabelDom(e.target);
+            var dispatch = this.context.dispatch;
+            this.context.dispatch('visibleLight', dom.dataset.key);
+        },
+        onLockIconClick: function (e) {
+            var dom = getLabelDom(e.target);
+            var dispatch = this.context.dispatch;
+            this.context.dispatch('lockLight', dom.dataset.key);
+        },
+        onDelIconClick: function (e) {
+            var dom = getLabelDom(e.target);
+            var dispatch = this.context.dispatch;
+            this.context.dispatch('deleteLight', dom.dataset.key);
+        },
+        onLabelClick: function (e) {
+            var dom = getLabelDom(e.target);
+            var dispatch = this.context.dispatch;
+            this.context.dispatch('tool-select-light-by-key', dom.dataset.key);
         },
         render: function () {
             var expendBtnIcon = this.props.expend ? 'icon-xiashixinjiantou' : 'icon-youshixinjiantou';
@@ -42,13 +73,18 @@ define(function (require) {
 
     function listFactory(me) {
         var doms = [];
+        var selectedLight = me.props.selectedLight;
+        if (selectedLight && selectedLight.tc) {
+            selectedLight = selectedLight.tc.lightKey;
+        }
         _.each(me.props.lights, function (light, key) {
             var tc = light.tc;
             var name = tc.name || light.type.replace('Light', ' ') + uiUtil.dateFormat(tc.birth, 'DD/MM hh:mm:ss');
             var containerProps = {
                 key: light.uuid,
-                className: 'mesh-container',
+                className: 'mesh-container' + (key ===  selectedLight ? ' mesh-selected' : ''),
                 'data-id': light.uuid,
+                'data-key': key,
                 'data-level': 'light'
             };
             var labelProps = {

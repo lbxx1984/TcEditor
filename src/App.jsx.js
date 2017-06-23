@@ -84,7 +84,8 @@ define(function (require) {
                         key: item.type,
                         type: item.type,
                         expend: item.expend,
-                        lights: me.props.lights
+                        lights: me.props.lights,
+                        selectedLight: me.props.selectedLight
                     };
                     doms.push(<LightListPanel {...lightListProps}/>);
                     break;

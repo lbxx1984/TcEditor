@@ -129,6 +129,31 @@ define(function (require) {
         });
     }
 
+    // 更新灯光列表
+    function updateLightList(nextProps, me) {
+        if (nextProps.lights === me.props.lights) return;
+        me.lightHelper.lights = nextProps.lights;
+        var oldLightHash = _.extend({}, me.props.lights);
+        me.lightArray = [];
+        for (var key in nextProps.lights) {
+            if (!nextProps.lights.hasOwnProperty(key)) continue;
+            var light = nextProps.lights[key];
+            me.lightArray.push(light);
+            delete oldLightHash[key];
+            if (light.tc.add) continue;
+            light.tc.add = true;
+            me.scene.add(light);
+        }
+        _.each(oldLightHash, function (light, key) {
+            me.scene.remove(light);
+            var anchor = null;
+            me.lightHelper.anchorArray.map(function (item) {
+                if (item.tc.lightKey === key) anchor = item;
+            });
+            anchor && me.scene.remove(anchor);
+        });
+    }
+
     // 更新变形工具
     function updateTransformer(nextProps, me) {
         if (
@@ -189,12 +214,27 @@ define(function (require) {
         if (nextProps.tool === 'tool-pickLight' && me.props.tool !== 'tool-pickLight') {
             me.lightHelper.attach();
         }
+        if (typeof nextProps.selectedLight === 'string') {
+            switchAnchorType();
+            return;
+        }
         if (nextProps.tool !== 'tool-pickLight' && me.props.tool === 'tool-pickLight') {
             me.lightHelper.detach();
             me.lightHelper.controller.detach();
         }
         if (nextProps.selectedLight !== me.props.selectedLight && nextProps.tool === 'tool-pickLight') {
             me.lightHelper.controller[nextProps.selectedLight ? 'attach' : 'detach'](nextProps.selectedLight);
+        }
+        function switchAnchorType() {
+            var anchor = null;
+            me.lightHelper.anchorArray.map(function (item) {
+                if (item.tc.lightKey === nextProps.selectedLight) {
+                    anchor = item;
+                }
+            });
+            if (anchor) {
+                me.context.dispatch('tool-select-light-by-key', null, anchor);
+            }
         }
     }
 
@@ -384,6 +424,7 @@ define(function (require) {
             updateCameraInfo(nextProps, this);
             updateScene(nextProps, this);
             updateMeshList(nextProps, this);
+            updateLightList(nextProps, this);
             updateTransformer(nextProps, this);
             updateMorpher(nextProps, this);
             updateLightHelper(nextProps, this);

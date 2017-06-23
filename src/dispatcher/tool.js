@@ -119,6 +119,12 @@ define(function (require) {
     function pickupLight(selectedLight, me) {
         if (selectedLight && selectedLight.uuid === intersected.uuid) return;
         clearObject3dColor(selectedLight);
+        if (intersected && intersected.tc.lightKey) {
+            var light = me.get('lights')[intersected.tc.lightKey];
+            if (!light || !light.visible || light.tc.locked) {
+                return
+            }
+        }
         me.fill({
             selectedLight: intersected,
         });
@@ -221,18 +227,34 @@ define(function (require) {
             // hover物体
             hoverMeshByMouse2d(param, selectedMesh);
         },
+        'tool-select-light-by-key': function (key, anchor) {
+            var dataset = {
+                selectedLight: null
+            };
+            var light = this.get('lights')[key];
+            if (anchor) {
+                dataset.selectedLight = anchor;
+            }
+            else if (light && light.visible && !light.tc.locked) {
+                dataset.selectedLight = key;
+            }
+            dataset.selectedLight && this.fill(dataset);
+        },
         'tool-pickLight': function (param, dragging) {
             var selectedLight = this.get('selectedLight');
             // 初始化工具
             if (this.get('tool') !== 'tool-pickLight') {
                 clearObject3dColor(this.get('selectedMesh'));
                 clearObject3dColor(this.get('selectedVector'));
+                if (selectedLight && selectedLight.tc) {
+                    selectedLight = selectedLight.tc.lightKey;
+                }
                 this.fill({
                     tool: 'tool-pickLight',
                     selectedMesh: null,
                     selectedVector: null,
                     selectedVectorIndex: -1,
-                    selectedLight: null
+                    selectedLight: typeof selectedLight === 'string' ? selectedLight : null
                 });
                 return;
             }
