@@ -1,5 +1,5 @@
 /**
- * @file 物体列表
+ * @file 灯光列表
  * @author Brian Li
  * @email lbxxlht@163.com
  */

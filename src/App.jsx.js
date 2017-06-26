@@ -13,9 +13,23 @@ define(function (require) {
     var InformationBar = require('./components/InformationBar.jsx');
     var Stage3D = require('./components/Stage3D.jsx');
     var Stage2D = require('./components/Stage2D.jsx');
-    var MeshListPanel = require('./components/MeshListPanel.jsx');
-    var LightListPanel = require('./components/LightListPanel.jsx');
+    var MeshList = require('./components/MeshList.jsx');
+    var LightList = require('./components/LightList.jsx');
+    var GeometryEditor = require('./components/GeometryEditor.jsx');
+    var MaterialEditor = require('./components/MaterialEditor.jsx');
     var ToolsBar = require('./components/ToolsBar.jsx');
+
+
+    function commandsFilter(me) {
+        return me.props.command.map(filter);
+        function filter(item) {
+            if (typeof item === 'string') return item;
+            var disabled =  me.props.view !== 'view-3d' && me.props.view !== 'view-all'
+                && 'stage-enlargeGride;stage-narrowGrid;'.indexOf(item.value) > -1
+                ? true : false
+            return _.extend({}, item, {disabled: disabled});
+        }
+    }
 
 
     return React.createClass({
@@ -77,7 +91,7 @@ define(function (require) {
                         activeGroup: me.props.activeGroup,
                         selectedMesh: me.props.selectedMesh
                     };
-                    doms.push(<MeshListPanel {...meshListProps}/>);
+                    doms.push(<MeshList {...meshListProps}/>);
                     break;
                 case 'lightPanel':
                     var lightListProps = {
@@ -87,7 +101,29 @@ define(function (require) {
                         lights: me.props.lights,
                         selectedLight: me.props.selectedLight
                     };
-                    doms.push(<LightListPanel {...lightListProps}/>);
+                    doms.push(<LightList {...lightListProps}/>);
+                    break;
+                case 'geoEditor':
+                    var geoEditorProps = {
+                        key: item.type,
+                        type: item.type,
+                        expend: item.expend,
+                        mesh: me.props.selectedMesh
+                    };
+                    if (me.props.selectedMesh) {
+                        doms.push(<GeometryEditor {...geoEditorProps}/>);
+                    }
+                    break;
+                case 'mtlEditor':
+                    var mtlEditorProps = {
+                        key: item.type,
+                        type: item.type,
+                        expend: item.expend,
+                        mesh: me.props.selectedMesh
+                    };
+                    if (me.props.selectedMesh) {
+                        doms.push(<MaterialEditor {...mtlEditorProps}/>);
+                    }
                     break;
                 default:
                     break;
@@ -118,18 +154,6 @@ define(function (require) {
                 tool: props.tool,
                 datasource: datasource
             };
-        }
-    }
-
-
-    function commandsFilter(me) {
-        return me.props.command.map(filter);
-        function filter(item) {
-            if (typeof item === 'string') return item;
-            var disabled =  me.props.view !== 'view-3d' && me.props.view !== 'view-all'
-                && 'stage-enlargeGride;stage-narrowGrid;'.indexOf(item.value) > -1
-                ? true : false
-            return _.extend({}, item, {disabled: disabled});
         }
     }
 

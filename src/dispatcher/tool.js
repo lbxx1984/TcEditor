@@ -130,6 +130,7 @@ define(function (require) {
         });
     }
 
+
     return {
         'tool-select-mesh-by-uuid': function (uuid) {
             var selectedMesh = this.get('selectedMesh');
