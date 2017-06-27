@@ -14,9 +14,25 @@
         }
     }
 }
-.fcui2-numberbox {
+.fcui2-numberbox-normal {
+    background-color: transparent;
+    .btn-container {
+        background-color: @background-color-main;
+        .font-icon:hover {
+            background-color: @background-color-checked;
+        }
+    }
     input {
         height: 24px;
+        color: @font-color-main;
+        &:hover,&:focus {
+            border-color: @font-color-hover !important;
+        }
+    }
+}
+.fcui2-numberbox-normal-hover, .fcui2-numberbox-normal:hover {
+    input {
+        border-color: @font-color-hover !important;
     }
 }
 .fcui2-button-black {
@@ -24,5 +40,14 @@
     border-color: @background-color-main;
     input {
         color: @font-color-main;
+    }
+}
+.fcui2-textbox-normal {
+    input {
+        height: 24px;
+        color: @font-color-main;
+        &:hover,&:focus {
+            border-color: @font-color-hover;
+        }
     }
 }

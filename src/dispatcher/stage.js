@@ -36,14 +36,7 @@ define(function (require) {
             var selectedMesh = this.get('selectedMesh');
             var selectedVector = this.get('selectedVector');
             var selectedVectorIndex = this.get('selectedVectorIndex');
-            if (
-                tool === 'tool-pickGeometry' && selectedMesh
-                || (tool === 'tool-pickJoint' && selectedMesh && !selectedVector && selectedVectorIndex < 0)
-            ) {
-                selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
-                this.set('selectedMesh', null);
-                return;
-            }
+            var selectedLight = this.get('selectedLight');
             if (tool === 'tool-pickJoint' && (selectedVector || selectedVectorIndex > -1)) {
                 selectedVector && selectedVector.material.setValues({color: selectedVector.tc.materialColor});
                 this.fill({
@@ -52,9 +45,12 @@ define(function (require) {
                 });
                 return;
             }
-            if (tool === 'tool-pickLight' && this.get('selectedLight')) {
+            if (selectedLight) {
                 this.set('selectedLight', null);
-                return;
+            }
+            if (selectedMesh) {
+                selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
+                this.set('selectedMesh', null);
             }
         }
     };

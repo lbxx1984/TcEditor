@@ -46,9 +46,8 @@ define(function (require) {
         // 右侧处于显示状态的工作卡片
         panel: [
             {type: 'meshPanel', expend: true},
-            {type: 'lightPanel', expend: true},
-            {type: 'geoEditor', expend: true},
-            {type: 'mtlEditor', expend: true}
+            {type: 'geoEditor', expend: true}
+            // {type: 'mtlEditor', expend: true}
         ],
         // 物体分组信息
         group: [
