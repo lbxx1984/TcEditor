@@ -108,7 +108,9 @@ define(function (require) {
                         key: item.type,
                         type: item.type,
                         expend: item.expend,
-                        mesh: me.props.selectedMesh
+                        mesh: me.props.selectedMesh,
+                        view: me.props.view,
+                        timer: me.props.timer
                     };
                     if (me.props.selectedMesh) {
                         doms.push(<GeometryEditor {...geoEditorProps}/>);

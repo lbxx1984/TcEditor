@@ -14,10 +14,54 @@ define(function (require) {
     var uiUtil = require('fcui2/core/util');
 
 
+    function getMeshParam(mesh) {
+        var dataset = {
+            posx: 0,
+            posy: 0,
+            posz: 0
+        };
+        if (!mesh) dataset;
+        dataset.posx = mesh.position.x;
+        dataset.posy = mesh.position.y;
+        dataset.posz = mesh.position.z;
+        return dataset;
+    }
+
+
+    function positionChangeHandlerFactory(me, type) {
+        var mesh = me.props.mesh;
+        return function (e) {
+            var dataset = {};
+            dataset['pos' + type] = e.target.value;
+            me.setState(dataset);
+            if (isNaN(e.target.value) || e.target.value === '') return;
+            var pos = {
+                x: mesh.position.x,
+                y: mesh.position.y,
+                z: mesh.position.z
+            };
+            pos[type] = +e.target.value;
+            mesh.position.set(pos.x, pos.y, pos.z);
+            mesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
+            me.context.dispatch('updateTimer');
+        };
+    }
+
+
     return React.createClass({
         // @override
         contextTypes: {
             dispatch: React.PropTypes.func
+        },
+        getInitialState: function () {
+            return getMeshParam(this.props.mesh);
+        },
+        componentWillReceiveProps: function (nextProps) {
+            if (!nextProps.mesh) return;
+            if (nextProps.timer !== this.props.timer || nextProps.mesh !== this.props.mesh) {
+                this.setState(getMeshParam(nextProps.mesh));
+                return;
+            }
         },
         onPanelCloseIconClick: function () {
             this.context.dispatch('view-close-panel', this.props.type);
@@ -57,7 +101,25 @@ define(function (require) {
             onChange: me.onNameChange
         };
         var positionXProps = {
-            width: 100
+            width: 100,
+            type: 'int',
+            step: 1,
+            value: me.state.posx,
+            onChange: positionChangeHandlerFactory(me, 'x')
+        };
+        var positionYProps = {
+            width: 100,
+            type: 'int',
+            step: 1,
+            value: me.state.posy,
+            onChange: positionChangeHandlerFactory(me, 'y')
+        };
+        var positionZProps = {
+            width: 100,
+            type: 'int',
+            step: 1,
+            value: me.state.posz,
+            onChange: positionChangeHandlerFactory(me, 'z')
         };
         return (
             <table className="tc-geometry-editor">
@@ -73,8 +135,8 @@ define(function (require) {
                     <td>position:</td>
                     <td style={{lineHeight: '30px'}}>
                         <NumberBox {...positionXProps}/>&nbsp;x<br/>
-                        <NumberBox {...positionXProps}/>&nbsp;y<br/>
-                        <NumberBox {...positionXProps}/>&nbsp;z
+                        <NumberBox {...positionYProps}/>&nbsp;y<br/>
+                        <NumberBox {...positionZProps}/>&nbsp;z
                     </td>
                 </tr>
             </table>
