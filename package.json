@@ -3,13 +3,10 @@
     "version": "0.0.1",
     "description": "TcEditor5",
     "scripts": {
-        "start": "webpack-dev-server --config webpack.config.js --content-base build.webpack --hot --port 8088 --host 0.0.0.0",
+        "start": "webpack-dev-server --config webpack.config.js --content-base build --hot --port 8088 --host 0.0.0.0",
         "build": "webpack --config webpack.config.js --progress --colors"
     },
     "dependencies": {
-        "edp": ">=0.0.0",
-        "edp-webserver": "1.2.3",
-        "edp-build": "1.1.1",
         "webpack": ">=0.0.0",
         "webpack-dev-server": ">=0.0.0",
         "less": "^2.5.3",

@@ -290,6 +290,7 @@ define(function (require) {
                     <span {...delIconProps}></span>
                     <span {...dragIconProps}></span>
                     <span {...editIconProps}></span>
+                    <span className="border-left">&nbsp;</span>
                     <span {...folderIconProps}></span>
                     <span {...visibleIconProps}></span>
                     <span {...lockIconProps}></span>

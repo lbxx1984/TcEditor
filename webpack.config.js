@@ -4,10 +4,10 @@ var path = require('path');
 
 module.exports = {
     entry: [
-        './src/main.webpack.js'
+        './src/index.js'
     ],
     output: {
-        path: path.resolve(__dirname, 'build.webpack'),
+        path: path.resolve(__dirname, 'build'),
         filename: 'src/build.js'
     },
     module: {

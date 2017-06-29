@@ -42,6 +42,15 @@
             left: 70px;
             right: 70px;
         }
+        .border-left {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            display: inline-block;
+            width: 2px;
+            line-height: 31px;
+            background-color: transparent;
+        }
     }
     .mesh-container {
         background-color: rgba(255,255,255,0.1);
@@ -65,5 +74,8 @@
     }
     .active {
         border-left: 1px solid @background-color-checked !important;
+        .border-left {
+            background-color: @background-color-checked;
+        }
     }
 }
