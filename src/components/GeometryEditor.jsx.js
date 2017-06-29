@@ -9,7 +9,6 @@ define(function (require) {
     var React = require('react');
     var TextBox = require('fcui2/TextBox.jsx');
     var NumberBox = require('fcui2/NumberBox.jsx');
-
     var _ = require('underscore');
     var uiUtil = require('fcui2/core/util');
 
@@ -18,12 +17,19 @@ define(function (require) {
         var dataset = {
             posx: 0,
             posy: 0,
-            posz: 0
+            posz: 0,
+            rotx: 0,
+            roty: 0,
+            rotz: 0
         };
         if (!mesh) dataset;
         dataset.posx = mesh.position.x;
         dataset.posy = mesh.position.y;
         dataset.posz = mesh.position.z;
+        var rotation = mesh.getWorldRotation()
+        dataset.rotx = rotation.x;
+        dataset.roty = rotation.y;
+        dataset.rotz = rotation.z;
         return dataset;
     }
 
@@ -42,6 +48,20 @@ define(function (require) {
             };
             pos[type] = +e.target.value;
             mesh.position.set(pos.x, pos.y, pos.z);
+            mesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
+            me.context.dispatch('updateTimer');
+        };
+    }
+
+
+    function rotationChangeHandlerFactory(me, type) {
+        var mesh = me.props.mesh;
+        return function (e) {
+            var dataset = {};
+            dataset['rot' + type.toLowerCase()] = e.target.value;
+            me.setState(dataset);
+            if (isNaN(e.target.value) || e.target.value === '') return;
+            mesh['rotate' + type](e.target.value / 57.3);
             mesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
             me.context.dispatch('updateTimer');
         };
@@ -121,6 +141,27 @@ define(function (require) {
             value: me.state.posz,
             onChange: positionChangeHandlerFactory(me, 'z')
         };
+        var rotationXProps = {
+            width: 100,
+            type: 'float',
+            fixed: 4,
+            value: me.state.rotx,
+            onChange: rotationChangeHandlerFactory(me, 'X')
+        };
+        var rotationYProps = {
+            width: 100,
+            type: 'float',
+            fixed: 4,
+            value: me.state.roty,
+            onChange: rotationChangeHandlerFactory(me, 'Y')
+        };
+        var rotationZProps = {
+            width: 100,
+            type: 'float',
+            fixed: 4,
+            value: me.state.rotz,
+            onChange: rotationChangeHandlerFactory(me, 'Z')
+        };
         return (
             <table className="tc-geometry-editor">
                 <tr>
@@ -137,6 +178,14 @@ define(function (require) {
                         <NumberBox {...positionXProps}/>&nbsp;x<br/>
                         <NumberBox {...positionYProps}/>&nbsp;y<br/>
                         <NumberBox {...positionZProps}/>&nbsp;z
+                    </td>
+                </tr>
+                <tr>
+                    <td>rotation:</td>
+                    <td style={{lineHeight: '30px'}}>
+                        <NumberBox {...rotationXProps}/>&nbsp;x<br/>
+                        <NumberBox {...rotationYProps}/>&nbsp;y<br/>
+                        <NumberBox {...rotationZProps}/>&nbsp;z
                     </td>
                 </tr>
             </table>
