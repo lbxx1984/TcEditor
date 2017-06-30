@@ -17,19 +17,12 @@ define(function (require) {
         var dataset = {
             posx: 0,
             posy: 0,
-            posz: 0,
-            rotx: 0,
-            roty: 0,
-            rotz: 0
+            posz: 0
         };
         if (!mesh) dataset;
         dataset.posx = mesh.position.x;
         dataset.posy = mesh.position.y;
         dataset.posz = mesh.position.z;
-        var rotation = mesh.getWorldRotation()
-        dataset.rotx = rotation.x;
-        dataset.roty = rotation.y;
-        dataset.rotz = rotation.z;
         return dataset;
     }
 
@@ -54,27 +47,15 @@ define(function (require) {
     }
 
 
-    function rotationChangeHandlerFactory(me, type) {
-        var mesh = me.props.mesh;
-        return function (e) {
-            var dataset = {};
-            dataset['rot' + type.toLowerCase()] = e.target.value;
-            me.setState(dataset);
-            if (isNaN(e.target.value) || e.target.value === '') return;
-            mesh['rotate' + type](e.target.value / 57.3);
-            mesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
-            me.context.dispatch('updateTimer');
-        };
-    }
-
-
     return React.createClass({
         // @override
         contextTypes: {
             dispatch: React.PropTypes.func
         },
         getInitialState: function () {
-            return getMeshParam(this.props.mesh);
+            return _.extend({
+                step: 1
+            }, getMeshParam(this.props.mesh));
         },
         componentWillReceiveProps: function (nextProps) {
             if (!nextProps.mesh) return;
@@ -92,6 +73,30 @@ define(function (require) {
         onNameChange: function (e) {
             this.props.mesh.tc.name = e.target.value;
             this.context.dispatch('updateTimer');
+        },
+        onStepChange: function (e) {
+            this.setState({step: e.target.value});
+        },
+        onRotationMouseDown: function (e) {
+            var type = e.target.dataset.type;
+            var value = +e.target.dataset.value;
+            var step = this.state.step;
+            var mesh = this.props.mesh;
+            var dispatch = this.context.dispatch;
+            var view = this.props.view;
+            if (!type || !mesh || isNaN(step) || step === '') return;
+            step *= value / 57.3;
+            moving();
+            clearInterval(this.timer);
+            this.timer = setInterval(moving, 100);
+            function moving() {
+                mesh['rotate' + type](step);
+                mesh.tc.needUpdate = view === 'view-all' ? 3 : 1;
+                dispatch('updateTimer');
+            }
+        },
+        onRotationMouseUp: function (e) {
+            clearInterval(this.timer);
         },
         render: function () {
             var expendBtnIcon = this.props.expend ? 'icon-xiashixinjiantou' : 'icon-youshixinjiantou';
@@ -141,26 +146,18 @@ define(function (require) {
             value: me.state.posz,
             onChange: positionChangeHandlerFactory(me, 'z')
         };
-        var rotationXProps = {
+        var stepProps = {
+            className: isNaN(me.state.step) || me.state.step === '' ? 'fcui2-numberbox-reject' : '',
             width: 100,
             type: 'float',
-            fixed: 4,
-            value: me.state.rotx,
-            onChange: rotationChangeHandlerFactory(me, 'X')
+            fixed: 2,
+            value: me.state.step,
+            onChange: me.onStepChange
         };
-        var rotationYProps = {
-            width: 100,
-            type: 'float',
-            fixed: 4,
-            value: me.state.roty,
-            onChange: rotationChangeHandlerFactory(me, 'Y')
-        };
-        var rotationZProps = {
-            width: 100,
-            type: 'float',
-            fixed: 4,
-            value: me.state.rotz,
-            onChange: rotationChangeHandlerFactory(me, 'Z')
+        var rotationContainerProps = {
+            onMouseDown: me.onRotationMouseDown,
+            onMouseUp: me.onRotationMouseUp,
+            onMouseMove: me.onRotationMouseUp
         };
         return (
             <table className="tc-geometry-editor">
@@ -183,9 +180,17 @@ define(function (require) {
                 <tr>
                     <td>rotation:</td>
                     <td style={{lineHeight: '30px'}}>
-                        <NumberBox {...rotationXProps}/>&nbsp;x<br/>
-                        <NumberBox {...rotationYProps}/>&nbsp;y<br/>
-                        <NumberBox {...rotationZProps}/>&nbsp;z
+                        <span style={{float: 'right'}}>
+                            step:&nbsp;<NumberBox {...stepProps}/>&nbsp;
+                        </span>
+                        <div {...rotationContainerProps}>
+                            <span data-type="X" data-value="-1" className="iconfont icon-zuoshixinjiantou"></span>x
+                            <span data-type="X" data-value="1" className="iconfont icon-youshixinjiantou"></span><br/>
+                            <span data-type="Y" data-value="-1" className="iconfont icon-zuoshixinjiantou"></span>y
+                            <span data-type="Y" data-value="1" className="iconfont icon-youshixinjiantou"></span><br/>
+                            <span data-type="Z" data-value="-1" className="iconfont icon-zuoshixinjiantou"></span>z
+                            <span data-type="Z" data-value="1" className="iconfont icon-youshixinjiantou"></span>
+                        </div>
                     </td>
                 </tr>
             </table>
