@@ -13,16 +13,43 @@ define(function (require) {
     var uiUtil = require('fcui2/core/util');
 
 
+    var positionProps = {
+        width: 80,
+        type: 'int',
+        step: 1
+    };
+    var scaleProps = {
+        width: 80,
+        type: 'float',
+        fixed: 2
+    };
+
+
+    function isScaleAvailable(a) {
+        a = a + '';
+        if (isNaN(a) || a === '' || a === '0' || a.charAt(a.length - 1) === '.') return false;
+        a = a * 1;
+        if (a <= 0) return false;
+        return true; 
+    }
+
+
     function getMeshParam(mesh) {
         var dataset = {
             posx: 0,
             posy: 0,
-            posz: 0
+            posz: 0,
+            scalex: 1,
+            scaley: 1,
+            scalez: 1
         };
         if (!mesh) dataset;
         dataset.posx = mesh.position.x;
         dataset.posy = mesh.position.y;
         dataset.posz = mesh.position.z;
+        dataset.scalex = mesh.scale.x;
+        dataset.scaley = mesh.scale.y;
+        dataset.scalez = mesh.scale.z;
         return dataset;
     }
 
@@ -41,6 +68,20 @@ define(function (require) {
             };
             pos[type] = +e.target.value;
             mesh.position.set(pos.x, pos.y, pos.z);
+            mesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
+            me.context.dispatch('updateTimer');
+        };
+    }
+
+
+    function scaleChangeHandlerFactory(me, type) {
+        var mesh = me.props.mesh;
+        return function (e) {
+            var dataset = {};
+            dataset['scale' + type] = e.target.value;
+            me.setState(dataset);
+            if (!isScaleAvailable(e.target.value)) return;
+            mesh.scale[type] = +e.target.value;
             mesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
             me.context.dispatch('updateTimer');
         };
@@ -125,40 +166,46 @@ define(function (require) {
                 : (mesh.geometry.type.replace('Geometry', ' ') + uiUtil.dateFormat(mesh.tc.birth, 'DD/MM hh:mm:ss')),
             onChange: me.onNameChange
         };
-        var positionXProps = {
-            width: 100,
-            type: 'int',
-            step: 1,
+        var positionXProps = _.extend({}, positionProps, {
             value: me.state.posx,
             onChange: positionChangeHandlerFactory(me, 'x')
-        };
-        var positionYProps = {
-            width: 100,
-            type: 'int',
-            step: 1,
+        });
+        var positionYProps = _.extend({}, positionProps, {
             value: me.state.posy,
             onChange: positionChangeHandlerFactory(me, 'y')
-        };
-        var positionZProps = {
-            width: 100,
-            type: 'int',
-            step: 1,
+        });
+        var positionZProps = _.extend({}, positionProps, {
             value: me.state.posz,
             onChange: positionChangeHandlerFactory(me, 'z')
-        };
-        var stepProps = {
-            className: isNaN(me.state.step) || me.state.step === '' ? 'fcui2-numberbox-reject' : '',
-            width: 100,
-            type: 'float',
-            fixed: 2,
-            value: me.state.step,
-            onChange: me.onStepChange
-        };
+        });
         var rotationContainerProps = {
             onMouseDown: me.onRotationMouseDown,
             onMouseUp: me.onRotationMouseUp,
             onMouseMove: me.onRotationMouseUp
         };
+        var stepProps = {
+            className: isNaN(me.state.step) || me.state.step === '' ? 'fcui2-numberbox-reject' : '',
+            width: 65,
+            type: 'float',
+            fixed: 2,
+            value: me.state.step,
+            onChange: me.onStepChange
+        };
+        var scaleXProps = _.extend({}, scaleProps, {
+            className: isScaleAvailable(me.state.scalex) ? '' : 'fcui2-numberbox-reject',
+            value: me.state.scalex,
+            onChange: scaleChangeHandlerFactory(me, 'x')
+        });
+        var scaleYProps = _.extend({}, scaleProps, {
+            className: isScaleAvailable(me.state.scaley) ? '' : 'fcui2-numberbox-reject',
+            value: me.state.scaley,
+            onChange: scaleChangeHandlerFactory(me, 'y')
+        });
+        var scaleZProps = _.extend({}, scaleProps, {
+            className: isScaleAvailable(me.state.scalez) ? '' : 'fcui2-numberbox-reject',
+            value: me.state.scalez,
+            onChange: scaleChangeHandlerFactory(me, 'z')
+        });
         return (
             <table className="tc-geometry-editor">
                 <tr>
@@ -175,6 +222,14 @@ define(function (require) {
                         <NumberBox {...positionXProps}/>&nbsp;x<br/>
                         <NumberBox {...positionYProps}/>&nbsp;y<br/>
                         <NumberBox {...positionZProps}/>&nbsp;z
+                    </td>
+                </tr>
+                <tr>
+                    <td>scale:</td>
+                    <td style={{lineHeight: '30px'}}>
+                        <NumberBox {...scaleXProps}/>&nbsp;x<br/>
+                        <NumberBox {...scaleYProps}/>&nbsp;y<br/>
+                        <NumberBox {...scaleZProps}/>&nbsp;z
                     </td>
                 </tr>
                 <tr>
