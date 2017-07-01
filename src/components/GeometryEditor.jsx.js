@@ -11,6 +11,7 @@ define(function (require) {
     var NumberBox = require('fcui2/NumberBox.jsx');
     var _ = require('underscore');
     var uiUtil = require('fcui2/core/util');
+    var math = require('../core/math.js');
 
 
     var positionProps = {
@@ -34,16 +35,28 @@ define(function (require) {
     }
 
 
-    function getMeshParam(mesh) {
+    function getMeshParam(props) {
+        var mesh = props.mesh;
         var dataset = {
             posx: 0,
             posy: 0,
             posz: 0,
             scalex: 1,
             scaley: 1,
-            scalez: 1
+            scalez: 1,
+            vectorx: 0,
+            vectory: 0,
+            vectorz: 0
         };
         if (!mesh) dataset;
+        if (props.selectedVectorIndex > -1) {
+            var matrix = math.getRotateMatrix(mesh);
+            var vector = mesh.geometry.vertices[props.selectedVectorIndex];
+            var pos = math.local2world(vector.x, vector.y, vector.z, matrix, mesh);
+            dataset.vectorx = parseInt(pos[0], 10);
+            dataset.vectory = parseInt(pos[1], 10);
+            dataset.vectorz = parseInt(pos[2], 10);
+        }
         dataset.posx = mesh.position.x;
         dataset.posy = mesh.position.y;
         dataset.posz = mesh.position.z;
@@ -88,6 +101,31 @@ define(function (require) {
     }
 
 
+    function vectorChangeHandlerFactory(me, type) {
+        var mesh = me.props.mesh;
+        var index = me.props.selectedVectorIndex;
+        return function (e) {
+            var dataset = {};
+            dataset['vector' + type] = e.target.value;
+            me.setState(dataset);
+            if (isNaN(e.target.value) || e.target.value === '') return;
+            var vector = {
+                x: me.state.vectorx,
+                y: me.state.vectory,
+                z: me.state.vectorz
+            };
+            vector[type] = +e.target.value;
+            var pos = math.world2local(vector.x, vector.y, vector.z, mesh);
+            mesh.geometry.vertices[index].x = pos[0];
+            mesh.geometry.vertices[index].y = pos[1];
+            mesh.geometry.vertices[index].z = pos[2];
+            mesh.geometry.verticesNeedUpdate = true;
+            mesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
+            me.context.dispatch('updateTimer');
+        };
+    }
+
+
     return React.createClass({
         // @override
         contextTypes: {
@@ -96,12 +134,15 @@ define(function (require) {
         getInitialState: function () {
             return _.extend({
                 step: 1
-            }, getMeshParam(this.props.mesh));
+            }, getMeshParam(this.props));
         },
         componentWillReceiveProps: function (nextProps) {
             if (!nextProps.mesh) return;
-            if (nextProps.timer !== this.props.timer || nextProps.mesh !== this.props.mesh) {
-                this.setState(getMeshParam(nextProps.mesh));
+            if (
+                nextProps.timer !== this.props.timer || nextProps.mesh !== this.props.mesh
+                || nextProps.selectedVectorIndex !== this.props.selectedVectorIndex
+            ) {
+                this.setState(getMeshParam(nextProps));
                 return;
             }
         },
@@ -248,9 +289,35 @@ define(function (require) {
                         </div>
                     </td>
                 </tr>
+                {me.props.selectedVectorIndex > -1 ? vectorEditorFactory(me) : null}
             </table>
         );
     }
 
+
+    function vectorEditorFactory(me) {
+        var xProps = _.extend({}, positionProps, {
+            value: me.state.vectorx,
+            onChange: vectorChangeHandlerFactory(me, 'x')
+        });
+        var yProps = _.extend({}, positionProps, {
+            value: me.state.vectory,
+            onChange: vectorChangeHandlerFactory(me, 'y')
+        });
+        var zProps = _.extend({}, positionProps, {
+            value: me.state.vectorz,
+            onChange: vectorChangeHandlerFactory(me, 'z')
+        });
+        return (
+            <tr style={{marginTop: 5}}>
+                <td>Vector:</td>
+                <td style={{lineHeight: '30px'}}>
+                    <NumberBox {...xProps}/>&nbsp;x<br/>
+                    <NumberBox {...yProps}/>&nbsp;y<br/>
+                    <NumberBox {...zProps}/>&nbsp;z
+                </td>
+            </tr>
+        );
+    }
 
 });

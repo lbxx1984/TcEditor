@@ -110,6 +110,7 @@ define(function (require) {
                         expend: item.expend,
                         mesh: me.props.selectedMesh,
                         view: me.props.view,
+                        selectedVectorIndex: me.props.selectedVectorIndex,
                         timer: me.props.timer
                     };
                     if (me.props.selectedMesh) {
