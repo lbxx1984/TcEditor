@@ -19,7 +19,7 @@ define(function (require) {
     var defaultLight = new THREE.PointLight(0xffffff);
 
 
-    defaultLight.position.set(0, 1000, 0);
+    defaultLight.position.set(0, 2000, 0);
     defaultLight.tc = {
         birth: new Date(),
         add: true

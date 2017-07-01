@@ -177,6 +177,15 @@ define(function (require) {
     // 更新修改工具
     function updateMorpher(nextProps, me) {
         if (
+            nextProps.tool === 'tool-pickJoint' && me.props.tool === 'tool-pickJoint'
+            && nextProps.selectedMesh && nextProps.selectedMesh === me.props.selectedMesh
+            && nextProps.selectedMesh.tc.needUpdate > 3
+        ) {
+            me.morpher.attach(nextProps.selectedMesh);
+            nextProps.selectedMesh.tc.needUpdate--;
+            nextProps.selectedVector && me.morpher.attachAnchor(nextProps.selectedVector);
+        }
+        if (
             nextProps.tool === 'tool-pickJoint' && me.props.tool !== 'tool-pickJoint'
             || (nextProps.selectedMesh !== me.props.selectedMesh && nextProps.tool === 'tool-pickJoint')
         ) {

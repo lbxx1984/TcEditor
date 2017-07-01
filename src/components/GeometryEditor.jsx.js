@@ -68,7 +68,7 @@ define(function (require) {
             };
             pos[type] = +e.target.value;
             mesh.position.set(pos.x, pos.y, pos.z);
-            mesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
+            mesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
             me.context.dispatch('updateTimer');
         };
     }
@@ -82,7 +82,7 @@ define(function (require) {
             me.setState(dataset);
             if (!isScaleAvailable(e.target.value)) return;
             mesh.scale[type] = +e.target.value;
-            mesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
+            mesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
             me.context.dispatch('updateTimer');
         };
     }
@@ -132,7 +132,7 @@ define(function (require) {
             this.timer = setInterval(moving, 100);
             function moving() {
                 mesh['rotate' + type](step);
-                mesh.tc.needUpdate = view === 'view-all' ? 3 : 1;
+                mesh.tc.needUpdate = view === 'view-all' ? 4 : 1;
                 dispatch('updateTimer');
             }
         },

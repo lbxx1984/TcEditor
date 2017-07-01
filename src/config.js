@@ -84,10 +84,10 @@ define(function (require) {
                 icon: 'icon-yidong', value: 'tool-pickGeometry', title: 'pick up geometry (D)'
             },
             {
-                icon: 'icon-shuxingxuanze', value: 'tool-pickJoint', title: 'pick up joints of geometry (F)'
+                icon: 'icon-shuxingxuanze', value: 'tool-pickJoint', title: 'pick up joint (F)'
             },
             {
-                icon: 'icon-bulb', value: 'tool-pickLight', title: 'pick up light source (L)'
+                icon: 'icon-bulb', value: 'tool-pickLight', title: 'pick up light (L)'
             },
             'CAMERA',
             {
