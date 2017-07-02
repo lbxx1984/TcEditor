@@ -57,7 +57,7 @@ define(function (require) {
                 onChange: this.onColorPickerChange
             };
             return (
-                <div style={{width: 340, height: 260}}>
+                <div style={{width: 340, height: 260}} className="in-layer">
                     <ColorPicker {...colorPickerProps}/>
                     <Button {...enterBtnProps}/>
                     <Button {...cancelBtnProps}/>

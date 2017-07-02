@@ -122,7 +122,8 @@ define(function (require) {
                         key: item.type,
                         type: item.type,
                         expend: item.expend,
-                        mesh: me.props.selectedMesh
+                        mesh: me.props.selectedMesh,
+                        timer: me.props.timer
                     };
                     if (me.props.selectedMesh) {
                         doms.push(<MaterialEditor {...mtlEditorProps}/>);
