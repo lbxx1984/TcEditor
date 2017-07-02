@@ -199,9 +199,9 @@ define(function (require) {
             return (
                 <div className="tc-meshlist" onDragEnd={this.onDragEnd}>
                     <div className="tc-panel-title-bar">
-                        <span className="iconfont icon-guanbi1" onClick={this.onPanelCloseIconClick}></span>
-                        <span className="iconfont icon-xinjianwenjianjia" onClick={this.onAddGroupIconClick}></span>
-                        <span className={'iconfont ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
+                        <span className="tc-icon icon-guanbi1" onClick={this.onPanelCloseIconClick}></span>
+                        <span className="tc-icon icon-xinjianwenjianjia" onClick={this.onAddGroupIconClick}></span>
+                        <span className={'tc-icon ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
                         Mesh List
                     </div>
                     <div className="tc-panel-content-container">
@@ -257,28 +257,28 @@ define(function (require) {
                 onDragOver: me.onDragOver
             };
             var folderIconProps = {
-                className: 'folder-icon iconfont ' + (group.expend ? 'icon-iconfont90' : 'icon-wenjianjia'),
+                className: 'folder-icon tc-icon ' + (group.expend ? 'icon-iconfont90' : 'icon-wenjianjia'),
                 onClick: me.onFolderIconClick
             };
             var visibleIconProps = {
-                className: 'visible-icon iconfont ' + (group.visible ? 'icon-kejian' : 'icon-bukejian'),
+                className: 'visible-icon tc-icon ' + (group.visible ? 'icon-kejian' : 'icon-bukejian'),
                 onClick: me.onVisibleIconClick
             };
             var lockIconProps = {
-                className: 'iconfont ' + (group.locked ? 'icon-unlock' : 'icon-lock'),
+                className: 'tc-icon ' + (group.locked ? 'icon-unlock' : 'icon-lock'),
                 onClick: me.onLockIconClick
             };
             var dragIconProps = {
                 onMouseEnter: me.onDragIconEnter,
                 onMouseLeave: me.onDragIconLeave,
-                className: 'iconfont icon-drag'
+                className: 'tc-icon icon-drag'
             };
             var editIconProps = {
-                className: 'iconfont icon-edit' + delIcon,
+                className: 'tc-icon icon-edit' + delIcon,
                 onClick: delIcon ? undefined : me.onEditIconClick
             };
             var delIconProps = {
-                className: 'iconfont icon-shanchu' + delIcon,
+                className: 'tc-icon icon-shanchu' + delIcon,
                 onClick: delIcon ? undefined : me.onDelIconClick
             };
             var labelProps = {
@@ -314,20 +314,20 @@ define(function (require) {
                 onDragOver: me.onDragOver
             };
             var visibleIconProps = {
-                className: 'visible-icon iconfont ' + (mesh.visible ? 'icon-kejian' : 'icon-bukejian'),
+                className: 'visible-icon tc-icon ' + (mesh.visible ? 'icon-kejian' : 'icon-bukejian'),
                 onClick: me.onVisibleIconClick
             };
             var dragIconProps = {
                 onMouseEnter: me.onDragIconEnter,
                 onMouseLeave: me.onDragIconLeave,
-                className: 'iconfont icon-drag'
+                className: 'tc-icon icon-drag'
             };
             var delIconProps = {
-                className: 'iconfont icon-shanchu',
+                className: 'tc-icon icon-shanchu',
                 onClick: me.onDelIconClick
             };
             var lockedIconProps = {
-                className: 'iconfont ' + (tc.locked ? 'icon-unlock' : 'icon-lock'),
+                className: 'tc-icon ' + (tc.locked ? 'icon-unlock' : 'icon-lock'),
                 onClick: me.onLockIconClick
             };
             var labelProps = {

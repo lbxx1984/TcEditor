@@ -49,7 +49,7 @@ define(function (require) {
                 onClick: !item.disabled ? me.onButtonClick : null
             };
             var innerProps = {
-                className: item.icon ? 'iconfont ' + item.icon : ''
+                className: item.icon ? 'tc-icon ' + item.icon : ''
             };
             containerPropsFilter(containerProps, item, me);
             innerPropsFilter(innerProps, item, me);
@@ -67,7 +67,7 @@ define(function (require) {
 
     function innerPropsFilter(props, item, me) {
         if (item.value === 'stage-helperVisible') {
-            props.className = me.props.gridVisible ? 'iconfont icon-kejian' : 'iconfont icon-bukejian';
+            props.className = me.props.gridVisible ? 'tc-icon icon-kejian' : 'tc-icon icon-bukejian';
         }
     }
 

@@ -56,7 +56,7 @@ define(function (require) {
             var iconProps = {
                 key: 'tools-' + index,
                 'data-ui-cmd': item.value,
-                className: 'iconfont ' + item.icon + (item.checked ? ' selected' : ''),
+                className: 'tc-icon ' + item.icon + (item.checked ? ' selected' : ''),
                 onClick: me.onButtonClick
             };
             if (item.hasOwnProperty('color')) {

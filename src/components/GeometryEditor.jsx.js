@@ -185,8 +185,8 @@ define(function (require) {
             return (
                 <div className="tc-meshlist">
                     <div className="tc-panel-title-bar">
-                        <span className="iconfont icon-guanbi1" onClick={this.onPanelCloseIconClick}></span>
-                        <span className={'iconfont ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
+                        <span className="tc-icon icon-guanbi1" onClick={this.onPanelCloseIconClick}></span>
+                        <span className={'tc-icon ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
                         Geometry Properties
                     </div>
                     <div className="tc-panel-content-container">
@@ -280,12 +280,12 @@ define(function (require) {
                             step:&nbsp;<NumberBox {...stepProps}/>&nbsp;
                         </span>
                         <div {...rotationContainerProps}>
-                            <span data-type="X" data-value="-1" className="iconfont icon-zuoshixinjiantou"></span>x
-                            <span data-type="X" data-value="1" className="iconfont icon-youshixinjiantou"></span><br/>
-                            <span data-type="Y" data-value="-1" className="iconfont icon-zuoshixinjiantou"></span>y
-                            <span data-type="Y" data-value="1" className="iconfont icon-youshixinjiantou"></span><br/>
-                            <span data-type="Z" data-value="-1" className="iconfont icon-zuoshixinjiantou"></span>z
-                            <span data-type="Z" data-value="1" className="iconfont icon-youshixinjiantou"></span>
+                            <span data-type="X" data-value="-1" className="tc-icon icon-zuoshixinjiantou"></span>x
+                            <span data-type="X" data-value="1" className="tc-icon icon-youshixinjiantou"></span><br/>
+                            <span data-type="Y" data-value="-1" className="tc-icon icon-zuoshixinjiantou"></span>y
+                            <span data-type="Y" data-value="1" className="tc-icon icon-youshixinjiantou"></span><br/>
+                            <span data-type="Z" data-value="-1" className="tc-icon icon-zuoshixinjiantou"></span>z
+                            <span data-type="Z" data-value="1" className="tc-icon icon-youshixinjiantou"></span>
                         </div>
                     </td>
                 </tr>

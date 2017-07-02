@@ -58,8 +58,8 @@ define(function (require) {
             return (
                 <div className="tc-meshlist">
                     <div className="tc-panel-title-bar">
-                        <span className="iconfont icon-guanbi1" onClick={this.onPanelCloseIconClick}></span>
-                        <span className={'iconfont ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
+                        <span className="tc-icon icon-guanbi1" onClick={this.onPanelCloseIconClick}></span>
+                        <span className={'tc-icon ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
                         Light List
                     </div>
                     <div className="tc-panel-content-container">
@@ -92,15 +92,15 @@ define(function (require) {
                 onClick: me.onLabelClick
             };
             var delIconProps = {
-                className: 'iconfont icon-shanchu',
+                className: 'tc-icon icon-shanchu',
                 onClick: me.onDelIconClick
             };
             var lockedIconProps = {
-                className: 'iconfont ' + (tc.locked ? 'icon-unlock' : 'icon-lock'),
+                className: 'tc-icon ' + (tc.locked ? 'icon-unlock' : 'icon-lock'),
                 onClick: me.onLockIconClick
             };
             var visibleIconProps = {
-                className: 'visible-icon iconfont ' + (light.visible ? 'icon-kejian' : 'icon-bukejian'),
+                className: 'visible-icon tc-icon ' + (light.visible ? 'icon-kejian' : 'icon-bukejian'),
                 onClick: me.onVisibleIconClick
             };
             doms.push(
