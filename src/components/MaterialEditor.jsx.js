@@ -6,8 +6,11 @@
 define(function (require) {
 
 
+    var THREE = require('three');
     var React = require('react');
     var Dialog = require('fcui2/Dialog.jsx');
+    var NumberBox = require('fcui2/NumberBox.jsx');
+    var Select = require('fcui2/Select.jsx');
     var CheckBox = require('fcui2/CheckBox.jsx');
     var ColorSetter = require('./dialogContent/ColorSetter.jsx');
     var dialog = new Dialog();
@@ -19,10 +22,31 @@ define(function (require) {
     }
 
 
+    function getMtlParam(props) {
+        var mesh = props.mesh;
+        var dataset = {
+            opacity: 1
+        };
+        if (!mesh) dataset;
+        dataset.opacity = parseFloat(mesh.material.opacity).toFixed(2) * 1
+        return dataset;
+    }
+
+
     return React.createClass({
         // @override
         contextTypes: {
             dispatch: React.PropTypes.func
+        },
+        getInitialState: function () {
+            return _.extend({}, getMtlParam(this.props));
+        },
+        componentWillReceiveProps: function (nextProps) {
+            if (!nextProps.mesh) return;
+            if (nextProps.timer !== this.props.timer || nextProps.mesh !== this.props.mesh) {
+                this.setState(getMtlParam(nextProps));
+                return;
+            }
         },
         onPanelCloseIconClick: function () {
             this.context.dispatch('view-close-panel', this.props.type);
@@ -66,6 +90,22 @@ define(function (require) {
             this.props.mesh.material.wireframe = e.target.checked;
             this.context.dispatch('updateTimer');
         },
+        onOpacityChange: function (e) {
+            var value = e.target.value;
+            this.setState({opacity: value});
+            if (isNaN(value) || value === '') return;
+            value = parseFloat(value);
+            this.props.mesh.material.setValues({
+                opacity: parseFloat(value),
+                transparent: value < 1
+            });
+        },
+        onSideChange: function (e) {
+            this.props.mesh.material.setValues({
+                side: ~~e.target.value
+            });
+            this.context.dispatch('updateTimer');
+        },
         render: function () {
             var expendBtnIcon = this.props.expend ? 'icon-xiashixinjiantou' : 'icon-youshixinjiantou';
             return (
@@ -98,6 +138,23 @@ define(function (require) {
             checked: mtl.wireframe,
             onChange: me.onWireframeChange
         };
+        var opacityProps = {
+            width: 100,
+            value: me.state.opacity,
+            type: 'float',
+            fixed: 2,
+            step: 0.1,
+            onChange: me.onOpacityChange
+        };
+        var sideProps = {
+            value: mtl.side,
+            onChange: me.onSideChange,
+            datasource: [
+                {label: 'Front Side', value: THREE.FrontSide},
+                {label: 'Back Side', value: THREE.BackSide},
+                {label: 'Double Side', value: THREE.DoubleSide}
+            ]
+        };
         return (
             <table className="tc-geometry-editor">
                 <tr>
@@ -123,6 +180,14 @@ define(function (require) {
                 <tr>
                     <td>wireframe:</td>
                     <td><CheckBox {...wireframeProps}/></td>
+                </tr>
+                <tr>
+                    <td>opacity:</td>
+                    <td><NumberBox {...opacityProps}/></td>
+                </tr>
+                <tr>
+                    <td>side:</td>
+                    <td><Select {...sideProps}/></td>
                 </tr>
             </table>
         );
