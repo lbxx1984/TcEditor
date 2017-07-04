@@ -15,6 +15,7 @@ define(function (require) {
     var ColorSetter = require('./dialogContent/ColorSetter.jsx');
     var dialog = new Dialog();
     var _ = require('underscore');
+    var io = require('../core/io');
 
 
     function formatRGB(v) {
@@ -106,6 +107,22 @@ define(function (require) {
             });
             this.context.dispatch('updateTimer');
         },
+        onTextureChange: function (e) {
+            e.target.blur();
+            var me = this;
+            var mesh = this.props.mesh;
+            io.uploadFile(e.target, 'image/').then(function (img) {
+                if (mesh.material.map) {
+                    mesh.material.map.image = img;
+                }
+                else {
+                    mesh.material.map = new THREE.Texture(img);
+                }
+                mesh.material.map.needsUpdate = true;
+                mesh.material.needsUpdate = true;
+                me.context.dispatch('updateTimer');
+            });
+        },
         render: function () {
             var expendBtnIcon = this.props.expend ? 'icon-xiashixinjiantou' : 'icon-youshixinjiantou';
             return (
@@ -155,6 +172,12 @@ define(function (require) {
                 {label: 'Double Side', value: THREE.DoubleSide}
             ]
         };
+        var fileSelectorPlaceholderProps = {
+            className: 'file-selector-placeholder',
+            style: {
+                backgroundColor: me.props.mesh.material.map ? '#D97915' : 'transparent'
+            }
+        }
         return (
             <table className="tc-geometry-editor">
                 <tr>
@@ -175,6 +198,13 @@ define(function (require) {
                         <span style={colorContainerStyle} onClick={me.onEmissiveChange}>
                             {'R:' + formatRGB(emissive.r) + ' G:' + formatRGB(emissive.g) + ' B:' + formatRGB(emissive.b)}
                         </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>texture:</td>
+                    <td className="file-selector-container">
+                        <span {...fileSelectorPlaceholderProps}>Browse</span>
+                        <input type="file" value="" className="file-selector" onChange={me.onTextureChange}/>
                     </td>
                 </tr>
                 <tr>
