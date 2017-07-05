@@ -36,6 +36,7 @@ define(function (require) {
                 this.context.dispatch('changePanelConfig', value);
                 return;
             }
+            this.context.dispatch(e.target.value);
         },
         render: function () {
             return (

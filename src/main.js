@@ -83,6 +83,9 @@ define(function (require) {
         view: 'view-all',
         // 编辑器当前处于响应拖拽事件的命令
         tool: 'camera-move',
+        // 本地文件系统的目录
+        rootPrefix: '/__tceditor__',
+        root: '',
         // 变形工具工作状态
         transformer3Dinfo: {
             mode: 'translate',

@@ -15,7 +15,8 @@ define(function (require) {
         require('./tool'),
         require('./transformer'),
         require('./morpher'),
-        require('./view')
+        require('./view'),
+        require('./file')
     );
 
 });

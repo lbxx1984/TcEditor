@@ -111,7 +111,7 @@ define(function (require) {
             e.target.blur();
             var me = this;
             var mesh = this.props.mesh;
-            io.uploadFile(e.target, 'image/').then(function (img) {
+            io.uploadImage(e.target, 'image/').then(function (img) {
                 if (mesh.material.map) {
                     mesh.material.map.image = img;
                 }
