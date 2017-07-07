@@ -60,7 +60,7 @@ define(function (require) {
                 label: menu.label,
                 datasource: menu.children,
                 onClick: me.onClick,
-                itemRenderer: require('./render/MenuListItem.jsx')
+                itemRenderer: require('./renderer/MenuListItem.jsx')
             };
             if (menu.key === 'view') {
                 props.datasource = menu.children.map(function (listItem) {
