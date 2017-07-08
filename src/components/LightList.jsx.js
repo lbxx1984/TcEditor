@@ -54,11 +54,11 @@ define(function (require) {
             this.context.dispatch('tool-select-light-by-key', dom.dataset.key);
         },
         render: function () {
-            var expendBtnIcon = this.props.expend ? 'icon-xiashixinjiantou' : 'icon-youshixinjiantou';
+            var expendBtnIcon = this.props.expend ? 'icon-down' : 'icon-right';
             return (
                 <div className="tc-meshlist">
                     <div className="tc-panel-title-bar">
-                        <span className="tc-icon icon-guanbi1" onClick={this.onPanelCloseIconClick}></span>
+                        <span className="tc-icon icon-close" onClick={this.onPanelCloseIconClick}></span>
                         <span className={'tc-icon ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
                         Light List
                     </div>
@@ -92,15 +92,15 @@ define(function (require) {
                 onClick: me.onLabelClick
             };
             var delIconProps = {
-                className: 'tc-icon icon-shanchu',
+                className: 'tc-icon icon-delete',
                 onClick: me.onDelIconClick
             };
             var lockedIconProps = {
-                className: 'tc-icon ' + (tc.locked ? 'icon-unlock' : 'icon-lock'),
+                className: 'tc-icon ' + (tc.locked ? 'icon-lock' : 'icon-unlock'),
                 onClick: me.onLockIconClick
             };
             var visibleIconProps = {
-                className: 'visible-icon tc-icon ' + (light.visible ? 'icon-kejian' : 'icon-bukejian'),
+                className: 'visible-icon tc-icon ' + (light.visible ? 'icon-visible' : 'icon-invisible'),
                 onClick: me.onVisibleIconClick
             };
             doms.push(

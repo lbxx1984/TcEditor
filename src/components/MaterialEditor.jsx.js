@@ -124,11 +124,11 @@ define(function (require) {
             });
         },
         render: function () {
-            var expendBtnIcon = this.props.expend ? 'icon-xiashixinjiantou' : 'icon-youshixinjiantou';
+            var expendBtnIcon = this.props.expend ? 'icon-down' : 'icon-right';
             return (
                 <div className="tc-meshlist">
                     <div className="tc-panel-title-bar">
-                        <span className="tc-icon icon-guanbi1" onClick={this.onPanelCloseIconClick}></span>
+                        <span className="tc-icon icon-close" onClick={this.onPanelCloseIconClick}></span>
                         <span className={'tc-icon ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
                         Material Properties
                     </div>

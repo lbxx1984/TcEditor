@@ -13,7 +13,7 @@ define(function (require) {
         },
         render: function () {
             var item = this.props.item;
-            var icon = 'tc-icon ' + (item.isDirectory ? 'icon-wenjianjia' : 'icon-wenjian');
+            var icon = 'tc-icon ' + (item.isDirectory ? 'icon-folder' : 'icon-file');
             return (
                 <td className="file-name">
                     <span className={icon}></span>

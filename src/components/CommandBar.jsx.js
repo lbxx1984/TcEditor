@@ -67,7 +67,7 @@ define(function (require) {
 
     function innerPropsFilter(props, item, me) {
         if (item.value === 'stage-helperVisible') {
-            props.className = me.props.gridVisible ? 'tc-icon icon-kejian' : 'tc-icon icon-bukejian';
+            props.className = me.props.gridVisible ? 'tc-icon icon-visible' : 'tc-icon icon-invisible';
         }
     }
 

@@ -12,7 +12,33 @@ define(function (require) {
 
 
     return {
-        // 创建本地文件系统目录
+        // 删除本地文件
+        deleteLocalFile: function (path) {
+            return new Promise(function (resolve, reject) {
+                fs.del(path, function (e) {
+                    if (!e) {
+                        resolve();
+                    }
+                    else {
+                        reject();
+                    }
+                });
+            });
+        },
+        // 删除本地目录
+        deleteLocalDirectory: function (path) {
+            return new Promise(function (resolve, reject) {
+                fs.deltree(path, function (e) {
+                    if (!e) {
+                        resolve();
+                    }
+                    else {
+                        reject();
+                    }
+                });
+            });
+        },
+        // 创建本地目录
         createLocalDirectory: function (path) {
             return new Promise(function (resolve, reject) {
                 fs.md(path, function (e) {
@@ -25,7 +51,7 @@ define(function (require) {
                 });
             });
         },
-        // 获取本地文件系统目录结构
+        // 获取本地目录结构
         getLocalDirectory: function (path) {
             return new Promise(function (resolve, reject) {
                 fs.dir(function (e) {
@@ -38,7 +64,7 @@ define(function (require) {
                 }, path);
             });
         },
-        // 将图片上传到
+        // 将图片上传到内存
         uploadImage: function (inputFile, type) {
             return new Promise(function (resolve, reject) {
                 var file = inputFile.files[0];

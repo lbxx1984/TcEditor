@@ -77,56 +77,56 @@ define(function (require) {
                 label: 'ZOY', value: 'view-zoy', title: 'ZOY view (4)'
             },
             {
-                icon: 'icon-siping', value: 'view-all', title: 'ALL view (5)'
+                icon: 'icon-screen4', value: 'view-all', title: 'ALL view (5)'
             },
             'TOOLS',
             {
-                icon: 'icon-yidong', value: 'tool-pickGeometry', title: 'pick up geometry (D)'
+                icon: 'icon-pickup-mesh', value: 'tool-pickGeometry', title: 'pick up geometry (D)'
             },
             {
-                icon: 'icon-shuxingxuanze', value: 'tool-pickJoint', title: 'pick up joint (F)'
+                icon: 'icon-pickup-joint', value: 'tool-pickJoint', title: 'pick up joint (F)'
             },
             {
-                icon: 'icon-bulb', value: 'tool-pickLight', title: 'pick up light (L)'
+                icon: 'icon-light', value: 'tool-pickLight', title: 'pick up light (L)'
             },
             'CAMERA',
             {
-                icon: 'icon-yidong1', value: 'camera-move', title: 'move camera (M)'
+                icon: 'icon-trans', value: 'camera-move', title: 'move camera (M)'
             },
             {
-                icon: 'icon-fangda', value: 'camera-zoomIn', title: 'zoom in (MOUSE WHEEL UP)'
+                icon: 'icon-zoom-in', value: 'camera-zoomIn', title: 'zoom in (MOUSE WHEEL UP)'
             },
             {
-                icon: 'icon-suoxiao', value: 'camera-zoomOut', title: 'zoom out (MOUSE WHEEL DOWN)'
+                icon: 'icon-zoom-out', value: 'camera-zoomOut', title: 'zoom out (MOUSE WHEEL DOWN)'
             },
             {
                 icon: 'icon-reset', value: 'camera-reset', title: 'reset camera'
             },
             'GRID',
             {
-                icon: 'icon-pingmufangda', value: 'stage-enlargeGrid', title: 'enlarge grid'
+                icon: 'icon-enlarge', value: 'stage-enlargeGrid', title: 'enlarge grid'
             },
             {
-                icon: 'icon-pingmusuoxiao', value: 'stage-narrowGrid', title: 'narrow grid'
+                icon: 'icon-narrow', value: 'stage-narrowGrid', title: 'narrow grid'
             },
             {
-                icon: 'icon-kejian', value: 'stage-helperVisible', title: 'hide/show stage helper'
+                icon: 'icon-visible', value: 'stage-helperVisible', title: 'hide/show stage helper'
             }
         ],
         // 变形工具集
         transformer3DTools: [
-            {icon: 'icon-move', value: 'transformer-3d-mode-translate'},
-            {icon: 'icon-llfilterrotate', value: 'transformer-3d-mode-rotate'},
+            {icon: 'icon-trans', value: 'transformer-3d-mode-translate'},
+            {icon: 'icon-rotate', value: 'transformer-3d-mode-rotate'},
             // 这个工具不好用，变化太剧烈，暂时下线
             // {icon: 'icon-icicfangdatubiao', value: 'transformer-3d-mode-scale'},
-            {icon: 'icon-jiafangda', value: 'transformer-3d-size-enlarge'},
-            {icon: 'icon-jiansuoxiao', value: 'transformer-3d-size-narrow'},
-            {icon: 'icon-world', value: 'transformer-3d-space'}
+            {icon: 'icon-plus', value: 'transformer-3d-size-enlarge'},
+            {icon: 'icon-minus', value: 'transformer-3d-size-narrow'},
+            {icon: 'icon-earth', value: 'transformer-3d-space'}
         ],
         morpher3DTools: [
             {icon: 'icon-color', value: 'morpher-3d-anchor-color'},
-            {icon: 'icon-jiafangda', value: 'morpher-3d-size-enlarge'},
-            {icon: 'icon-jiansuoxiao', value: 'morpher-3d-size-narrow'}
+            {icon: 'icon-plus', value: 'morpher-3d-size-enlarge'},
+            {icon: 'icon-minus', value: 'morpher-3d-size-narrow'}
         ]
     };
 
