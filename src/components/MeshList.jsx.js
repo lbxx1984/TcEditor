@@ -9,7 +9,7 @@ define(function (require) {
     var React = require('react');   
     var _ = require('underscore');
     var uiUtil = require('fcui2/core/util');
-    var MeshGroupCreator = require('../components/dialogContent/MeshGroupCreator.jsx');
+    var MeshGroupCreator = require('../components/dialogContent/NameCreator.jsx');
     var Dialog = require('fcui2/Dialog.jsx');
     var dialog = new Dialog();
 

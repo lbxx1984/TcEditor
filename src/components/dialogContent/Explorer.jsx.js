@@ -11,10 +11,14 @@ define(function (require) {
     var Toast = require('fcui2/Toast.jsx');
     var TextBox = require('fcui2/TextBox.jsx');
     var Table = require('fcui2/Table.jsx');
+
+
     var FileName = require('../renderer/FileName.jsx');
     var FileMeta = require('../renderer/FileMeta.jsx');
     var FileOperation = require('../renderer/FileOperation.jsx');
     var NoData = require('../renderer/TableNoDataRenderer.jsx');
+    var NameCreator = require('./NameCreator.jsx');
+
 
     var _ = require('underscore');
     var io = require('../../core/io');
@@ -49,6 +53,14 @@ define(function (require) {
     ];
 
 
+    function missionFailed() {
+        Toast.pop({
+            type: 'error',
+            message: 'Mission failed.'
+        });
+    }
+
+
     return React.createClass({
         // @override
         getDefaultProps: function () {
@@ -60,17 +72,39 @@ define(function (require) {
         // @override
         getInitialState: function () {
             return {
+                // 当前绝对路径
+                path: this.props.prefix + '/' + this.props.root,
+                // 显示给用户却掉前缀的相对路径
                 root: this.props.root,
+                // 当前目录结构
                 directory: []
             };
         },
         // @override
         componentDidMount: function () {
             var me = this;
-            io.createLocalDirectory(this.props.prefix + '/' + this.state.root).then(function () {
+            io.createLocalDirectory(me.state.path).then(function () {
                 me.getDirectory();
+            }, missionFailed);
+        },
+
+        onCreateBtnClick: function () {
+            var me = this;
+            dialog.pop({
+                title: 'Create New Folder',
+                content: NameCreator,
+                contentProps: {
+                    initialName: '',
+                    group: me.state.directory,
+                    onEnter: function (folder) {
+                        io.createLocalDirectory(me.state.path + '/' + folder).then(function () {
+                            me.getDirectory();
+                        }, missionFailed);
+                    }
+                }
             });
         },
+
         onTableAction: function (type, item) {
             var me = this;
             if (type === 'delete') {
@@ -81,27 +115,28 @@ define(function (require) {
                         var func = item.isDirectory ? 'deleteLocalDirectory' : 'deleteLocalFile';
                         io[func](item.fullPath).then(function () {
                             me.getDirectory();
-                        }, function () {
-                            Toast.pop({
-                                type: 'error',
-                                message: 'Mission failed.'
-                            });
-                        });
+                        }, missionFailed);
                     }
                 });
             }
         },
+
         onRootChange: function (e) {
             this.setState({root: e.target.value});
             this.getDirectory(this.props.prefix + '/' + e.target.value);
         },
+
         getDirectory: function (path) {
             var me = this;
-            path = path || (this.props.prefix + '/' + this.state.root);
+            path = path || this.state.path;
             io.getLocalDirectory(path).then(function (arr) {
-                me.setState({directory: arr});
+                me.setState({
+                    path: path,
+                    directory: arr
+                });
             }, new Function());
         },
+
         render: function () {
             var rootProps = {
                 width: 495,
@@ -119,6 +154,7 @@ define(function (require) {
             };
             return (
                 <div className="tc-explorer in-layer">
+                    <span className="tc-icon icon-create-folder" onClick={this.onCreateBtnClick}></span>
                     <div className="dir-bar">
                         <span>/</span><TextBox {...rootProps}/>
                     </div>

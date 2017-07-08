@@ -1,5 +1,5 @@
 /**
- * @file 修改颜色弹窗内容
+ * @file 名称输入弹窗，让用户输入一个不存在名称
  * @author Brian Li
  * @email lbxxlht@163.com
  */
@@ -34,7 +34,8 @@ define(function (require) {
             var value = e.target.value;
             var isVaild = true;
             this.props.group.map(function (item) {
-                if (item.label === value.trim()) {
+                var label = item.label || item.name;
+                if (label === value.trim()) {
                     isVaild = false;
                 }
             });
@@ -67,10 +68,10 @@ define(function (require) {
             return (
                 <div style={{width: 340, height: 100}}>
                     <div style={{margin: 10}}>
-                        Group Name: <TextBox {...textBoxProps}/>
+                        Name: <TextBox {...textBoxProps}/>
                     </div>
                     <div style={{lineHeight: '28px', height: 30, color: 'red', paddingLeft: 10}}>
-                        {!this.state.isVaild ? 'The group name already exists.' : ''}
+                        {!this.state.isVaild ? 'The name already exists.' : ''}
                     </div>
                     <Button {...enterBtnProps}/>
                     <Button {...cancelBtnProps}/>

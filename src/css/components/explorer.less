@@ -1,6 +1,16 @@
 .tc-explorer {
     width: 600px;
     height: 400px;
+    .icon-create-folder {
+        float: right;
+        margin-right: 10px;
+        font-size: 24px;
+        line-height: 34px;
+        &:hover {
+            color: @font-color-hover;
+            cursor: pointer;
+        }
+    }
     .dir-bar {
         margin: 10px 90px 10px 10px;
         border: 1px solid @border-bottom-color;
@@ -44,6 +54,9 @@
         table {
             border-right: 0px;
             th {
+                line-height: 30px;
+            }
+            td {
                 line-height: 30px;
             }
         }
