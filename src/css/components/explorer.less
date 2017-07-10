@@ -1,6 +1,7 @@
 .tc-explorer {
     width: 600px;
     height: 400px;
+    .icon-up-level,
     .icon-create-folder {
         float: right;
         margin-right: 10px;
@@ -17,9 +18,13 @@
         padding: 3px 0 7px 5px;
         >span {
             margin-right: -10px;
+            position: relative;
+            top: 1px;
         }
         .fcui2-textbox-normal {
             input {
+                font-size: 16px;
+                font-family: time new roman;
                 border-color: transparent;
                 &:hover,&:focus {
                     border-color: transparent;
@@ -70,8 +75,6 @@
         cursor: default;
         .tc-icon {
             margin: 0 5px;
-            position: relative;
-            top: -2px;
         }
     }
     .file-operation {

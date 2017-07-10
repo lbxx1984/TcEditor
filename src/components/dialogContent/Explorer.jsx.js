@@ -77,7 +77,9 @@ define(function (require) {
                 // 显示给用户却掉前缀的相对路径
                 root: this.props.root,
                 // 当前目录结构
-                directory: []
+                directory: [],
+                // 选中的目录
+                selectedDirectory: ''
             };
         },
         // @override
@@ -105,6 +107,22 @@ define(function (require) {
             });
         },
 
+        onUpBtnClick: function () {
+            var arr = this.state.path.split('/');
+            arr.pop();
+            var path = arr.join('/');
+            var root = path.replace(this.props.prefix + '/', '').replace(this.props.prefix, '');
+            if (path.indexOf(this.props.prefix) < 0) {
+                path = this.props.prefix + '/';
+                root = '';
+            }
+            this.setState({
+                path: path,
+                root: root
+            });
+            this.getDirectory(path);
+        },
+
         onTableAction: function (type, item) {
             var me = this;
             if (type === 'delete') {
@@ -118,6 +136,16 @@ define(function (require) {
                         }, missionFailed);
                     }
                 });
+            }
+            if (type === 'select') {
+                if (item.isDirectory) {
+                    me.setState({
+                        root: item.fullPath.replace(me.props.prefix + '/', ''),
+                        selectedDirectory: item.fullPath,
+                        path: item.fullPath
+                    });
+                    me.getDirectory(item.fullPath);
+                }
             }
         },
 
@@ -155,6 +183,7 @@ define(function (require) {
             return (
                 <div className="tc-explorer in-layer">
                     <span className="tc-icon icon-create-folder" onClick={this.onCreateBtnClick}></span>
+                    <span className="tc-icon icon-up-level" onClick={this.onUpBtnClick}></span>
                     <div className="dir-bar">
                         <span>/</span><TextBox {...rootProps}/>
                     </div>

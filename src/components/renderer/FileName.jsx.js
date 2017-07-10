@@ -8,14 +8,14 @@ define(function (require) {
     var React = require('react');
 
     return React.createClass({
-        onClick: function (e) {
-            
+        onFileNameClick: function (e) {
+            this.props.onAction('select', this.props.item);
         },
         render: function () {
             var item = this.props.item;
             var icon = 'tc-icon ' + (item.isDirectory ? 'icon-folder' : 'icon-file');
             return (
-                <td className="file-name">
+                <td className="file-name" onClick={this.onFileNameClick}>
                     <span className={icon}></span>
                     {item.name}
                 </td>
