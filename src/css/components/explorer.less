@@ -42,7 +42,7 @@
         border: 1px solid @border-bottom-color;
         .table-container {
             height: 100%;
-            overflow-y: scroll;
+            overflow-y: auto;
             overflow-x: hidden;
             &::-webkit-scrollbar {
                 width: 10px;
@@ -74,7 +74,28 @@
         font-size: 12px;
         cursor: default;
         .tc-icon {
+            font-size: 14px;
             margin: 0 5px;
+        }
+        .icon-copy {
+            position: relative;
+            top: 2px;
+        }
+        .icon-cut {
+            font-size: 16px;
+        }
+        .icon-cut,.icon-copy,.icon-edit {
+            float: right;
+            cursor: pointer;
+            display: none;
+            &:hover {
+                color: @font-color-hover;
+            }
+        }
+        &:hover {
+            .icon-cut,.icon-copy,.icon-edit {
+                display: inline;
+            }
         }
     }
     .file-operation {
@@ -84,6 +105,9 @@
             margin: 0 5px;
             position: relative;
             top: -2px;
+            &:hover {
+                color: @font-color-hover;
+            }
         }
     }
 }
