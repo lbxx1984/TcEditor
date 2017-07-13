@@ -22,6 +22,7 @@ define(function (require) {
 
     var _ = require('underscore');
     var io = require('../../core/io');
+    var uiUtil = require('fcui2/core/util');
 
 
     var dialog = new Dialog();
@@ -75,7 +76,7 @@ define(function (require) {
             return {
                 // 当前绝对路径
                 path: this.props.prefix + '/' + this.props.root,
-                // 显示给用户却掉前缀的相对路径
+                // 显示给用户却掉前缀的相对路径，用于响应用户输入
                 root: this.props.root,
                 // 当前目录结构
                 directory: [],
@@ -86,7 +87,7 @@ define(function (require) {
         // @override
         componentDidMount: function () {
             var me = this;
-            io.createLocalDirectory(me.state.path).then(function () {
+            io.md(me.state.path).then(function () {
                 me.getDirectory();
             }, missionFailed);
         },
@@ -100,7 +101,7 @@ define(function (require) {
                     initialName: '',
                     group: me.state.directory,
                     onEnter: function (folder) {
-                        io.createLocalDirectory(me.state.path + '/' + folder).then(function () {
+                        io.md(me.state.path + '/' + folder).then(function () {
                             me.getDirectory();
                         }, missionFailed);
                     }
@@ -131,7 +132,7 @@ define(function (require) {
                     title: 'Please Confirm',
                     message: 'Are you sure to delete ' + item.name + '?',
                     onEnter: function () {
-                        var func = item.isDirectory ? 'deleteLocalDirectory' : 'deleteLocalFile';
+                        var func = item.isDirectory ? 'deltree' : 'del';
                         io[func](item.fullPath).then(function () {
                             me.getDirectory();
                         }, missionFailed);
@@ -156,8 +157,7 @@ define(function (require) {
                         initialName: item.name,
                         group: me.state.directory,
                         onEnter: function (newName) {
-                            var oldPath = item.fullPath;
-                            io.renameLocal(item.fullPath, newName).then(function () {
+                            io.ren(item.fullPath, newName).then(function () {
                                 me.getDirectory();
                             }, missionFailed);
                         }
@@ -174,16 +174,20 @@ define(function (require) {
         getDirectory: function (path) {
             var me = this;
             path = path || this.state.path;
-            io.getLocalDirectory(path).then(function (arr) {
+            io.dir(path).then(function (arr) {
                 me.setState({
                     path: path,
                     directory: arr
-                });
+                }, locateCursor);
             }, new Function());
+            function locateCursor() {
+                uiUtil.setCursorPosition(me.refs.path.refs.inputbox, path.length);
+            }
         },
 
         render: function () {
             var rootProps = {
+                ref: 'path',
                 width: 495,
                 value: this.state.root,
                 onChange: this.onRootChange

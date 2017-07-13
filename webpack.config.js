@@ -3,6 +3,7 @@ var webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
+    devtool: '#source-map',
     entry: [
         './src/index.js'
     ],
@@ -36,7 +37,7 @@ module.exports = {
             'react-dom': path.resolve(__dirname, 'dep/react-dom.15.3.1.min.js'),
             'fcui2': path.join(__dirname, 'dep/fcui2/src'),
             'raphael': path.join(__dirname, 'dep/raphael.2.2.1.min.js'),
-            'file-system': path.join(__dirname, 'dep/filesystem.0.0.1')
+            'file-system': path.join(__dirname, 'dep/filesystem.0.0.2')
         }
     }
 };
