@@ -15,14 +15,29 @@ define(function (require) {
             e.stopPropagation();
             this.props.onAction('rename', this.props.item);
         },
+        onFileCutClick: function (e) {
+            e.stopPropagation();
+            this.props.onAction('cut', this.props.item);
+        },
+        onFileCopyClick: function (e) {
+            e.stopPropagation();
+            this.props.onAction('copy', this.props.item);
+        },
         render: function () {
             var item = this.props.item;
             var icon = 'tc-icon ' + (item.isDirectory ? 'icon-folder' : 'icon-file');
+            var labelStyle = {};
+            if (item.fullPath === this.props.selected) {
+                labelStyle.fontWeight = 700;
+            }
+            if (item.fullPath === this.props.clipboard) {
+                labelStyle.color = 'grey';
+            }
             return (
-                <td className="file-name" onClick={this.onFileNameClick}>
+                <td className="file-name" style={labelStyle} onClick={this.onFileNameClick}>
                     <span className="tc-icon icon-edit" onClick={this.onFileEditClick}></span>
-                    <span className="tc-icon icon-cut"></span>
-                    <span className="tc-icon icon-copy"></span>
+                    <span className="tc-icon icon-cut" onClick={this.onFileCutClick}></span>
+                    <span className="tc-icon icon-copy" onClick={this.onFileCopyClick}></span>
                     <span className={icon}></span>
                     {item.name}
                 </td>

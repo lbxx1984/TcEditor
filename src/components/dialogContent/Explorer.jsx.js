@@ -31,7 +31,11 @@ define(function (require) {
             label: 'name',
             field: 'name',
             width: 300,
-            renderer: FileName
+            renderer: FileName,
+            prepare: function (props, item, row, column, me) {
+                props.clipboard = me.props.clipboard;
+                props.selected = me.props.selected;
+            }
         },
         {
             label: 'size',
@@ -74,14 +78,18 @@ define(function (require) {
         // @override
         getInitialState: function () {
             return {
-                // 当前绝对路径
+                // 当前目录绝对路径
                 path: this.props.prefix + '/' + this.props.root,
                 // 显示给用户却掉前缀的相对路径，用于响应用户输入
                 root: this.props.root,
                 // 当前目录结构
                 directory: [],
-                // 选中的目录
-                selectedDirectory: ''
+                // 选中的目录或文件
+                selected: this.props.prefix,
+                // 剪切板
+                clipboard: '',
+                // 剪切板操作类型
+                clipboardType: ''
             };
         },
         // @override
@@ -127,27 +135,25 @@ define(function (require) {
 
         onTableAction: function (type, item) {
             var me = this;
-            if (type === 'delete') {
-                dialog.confirm({
-                    title: 'Please Confirm',
-                    message: 'Are you sure to delete ' + item.name + '?',
-                    onEnter: function () {
-                        var func = item.isDirectory ? 'deltree' : 'del';
-                        io[func](item.fullPath).then(function () {
-                            me.getDirectory();
-                        }, missionFailed);
-                    }
+            if (type === 'select') {
+                me.setState({
+                    path: item.fullPath,
+                    root: item.fullPath.replace(me.props.prefix + '/', ''),
+                    selected: item.fullPath
+                });
+                item.isDirectory && me.getDirectory(item.fullPath);
+            }
+            if (type === 'cut') {
+                me.setState({
+                    clipboard: item.fullPath,
+                    clipboardType: 'cut'
                 });
             }
-            if (type === 'select') {
-                if (item.isDirectory) {
-                    me.setState({
-                        root: item.fullPath.replace(me.props.prefix + '/', ''),
-                        selectedDirectory: item.fullPath,
-                        path: item.fullPath
-                    });
-                    me.getDirectory(item.fullPath);
-                }
+            if (type === 'copy') {
+                me.setState({
+                    clipboard: item.fullPath,
+                    clipboardType: 'copy'
+                });
             }
             if (type === 'rename') {
                 dialog.pop({
@@ -157,12 +163,26 @@ define(function (require) {
                         initialName: item.name,
                         group: me.state.directory,
                         onEnter: function (newName) {
-                            io.ren(item.fullPath, newName).then(function () {
-                                me.getDirectory();
-                            }, missionFailed);
+                            io.ren(item.fullPath, newName).then(fresh, missionFailed);
                         }
                     }
                 });
+            }
+            if (type === 'delete') {
+                dialog.confirm({
+                    title: 'Please Confirm',
+                    message: 'Are you sure to delete ' + item.name + '?',
+                    onEnter: function () {
+                        io[item.isDirectory ? 'deltree' : 'del'](item.fullPath).then(fresh, missionFailed);
+                    }
+                });
+            }
+            function fresh() {
+                me.setState({
+                    selected: me.state.selected === item.fullPath ? '' : me.state.selected,
+                    clipboard: me.state.clipboard === item.fullPath ? '' : me.state.clipboard
+                });
+                me.getDirectory();
             }
         },
 
@@ -196,6 +216,8 @@ define(function (require) {
                 datasource: this.state.directory,
                 fieldConfig: fieldConfig,
                 noDataRenderer: NoData,
+                clipboard: this.state.clipboard,
+                selected: this.state.selected,
                 onAction: this.onTableAction,
                 flags: {
                     showHeader: true
