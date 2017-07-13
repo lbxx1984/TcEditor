@@ -62,6 +62,7 @@ define(function (require) {
 
 
     return React.createClass({
+
         // @override
         getDefaultProps: function () {
             return {
@@ -146,6 +147,22 @@ define(function (require) {
                     });
                     me.getDirectory(item.fullPath);
                 }
+            }
+            if (type === 'rename') {
+                dialog.pop({
+                    title: 'Rename ' + (item.isDirectory ? 'Folder' : 'File'),
+                    content: NameCreator,
+                    contentProps: {
+                        initialName: item.name,
+                        group: me.state.directory,
+                        onEnter: function (newName) {
+                            var oldPath = item.fullPath;
+                            io.renameLocal(item.fullPath, newName).then(function () {
+                                me.getDirectory();
+                            }, missionFailed);
+                        }
+                    }
+                });
             }
         },
 

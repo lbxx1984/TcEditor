@@ -25,6 +25,19 @@ define(function (require) {
                 });
             });
         },
+        // 创建本地目录
+        createLocalDirectory: function (path) {
+            return new Promise(function (resolve, reject) {
+                fs.md(path, function (e) {
+                    if (e.isDirectory || e.isFile) {
+                        resolve(e);
+                    }
+                    else {
+                        reject();
+                    }
+                });
+            });
+        },
         // 删除本地目录
         deleteLocalDirectory: function (path) {
             return new Promise(function (resolve, reject) {
@@ -38,10 +51,10 @@ define(function (require) {
                 });
             });
         },
-        // 创建本地目录
-        createLocalDirectory: function (path) {
+        // 重命名
+        renameLocal: function (oldPath, newPath) {
             return new Promise(function (resolve, reject) {
-                fs.md(path, function (e) {
+                fs.ren(oldPath, newPath, function (e) {
                     if (e.isDirectory || e.isFile) {
                         resolve(e);
                     }
