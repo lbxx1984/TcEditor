@@ -26,7 +26,7 @@ define(function (require) {
 
 
     var dialog = new Dialog();
-    var fieldConfig = [
+    var tableFieldConfig = [
         {
             label: 'name',
             field: 'name',
@@ -88,6 +88,8 @@ define(function (require) {
                 selected: this.props.prefix,
                 // 剪切板
                 clipboard: '',
+                // 剪切板内容是否为目录
+                clipboardIsDirectory: false,
                 // 剪切板操作类型
                 clipboardType: ''
             };
@@ -133,12 +135,48 @@ define(function (require) {
             this.getDirectory(path);
         },
 
+        onPasteBtnClick: function () {
+            var me = this;
+            var {clipboard, clipboardType, path, directory} = me.state;
+            var clipboardArr = clipboard.split('/');
+            var name = clipboardArr.pop();
+            if (clipboardArr.join('/') === path) return;
+            var hasSameTarget = false;
+            directory.map(function (entry) {
+                hasSameTarget = entry.name === name || hasSameTarget;
+            });
+            if (hasSameTarget) {
+                dialog.confirm({
+                    title: 'Warning',
+                    labels: {
+                        enter: 'Enter',
+                        cancel: 'Cancel'
+                    },
+                    appSkin: 'oneux3',
+                    message: 'There a '
+                        + (me.state.clipboardIsDirectory ? 'directory' : 'file')
+                        + ' with the same name.<br/>'
+                        + 'Override it or not?',
+                    onEnter: () => action()
+                });
+            }
+            else {
+                action();
+            }
+            function action() {
+                io[clipboardType === 'copy' ? 'copy' : 'move'](clipboard, path).then(function (res) {
+                    me.getDirectory();
+                    me.setState({clipboard: clipboardType === 'copy' ? clipboard : ''});
+                }, missionFailed);
+            }
+        },
+
         onTableAction: function (type, item) {
             var me = this;
             if (type === 'select') {
                 me.setState({
-                    path: item.fullPath,
-                    root: item.fullPath.replace(me.props.prefix + '/', ''),
+                    path: item.isDirectory ? item.fullPath : me.state.path,
+                    root: item.isDirectory ? item.fullPath.replace(me.props.prefix + '/', '') : me.state.root,
                     selected: item.fullPath
                 });
                 item.isDirectory && me.getDirectory(item.fullPath);
@@ -146,12 +184,14 @@ define(function (require) {
             if (type === 'cut') {
                 me.setState({
                     clipboard: item.fullPath,
+                    clipboardIsDirectory: item.isDirectory,
                     clipboardType: 'cut'
                 });
             }
             if (type === 'copy') {
                 me.setState({
                     clipboard: item.fullPath,
+                    clipboardIsDirectory: item.isDirectory,
                     clipboardType: 'copy'
                 });
             }
@@ -172,6 +212,11 @@ define(function (require) {
                 dialog.confirm({
                     title: 'Please Confirm',
                     message: 'Are you sure to delete ' + item.name + '?',
+                    labels: {
+                        enter: 'Enter',
+                        cancel: 'Cancel'
+                    },
+                    appSkin: 'oneux3',
                     onEnter: function () {
                         io[item.isDirectory ? 'deltree' : 'del'](item.fullPath).then(fresh, missionFailed);
                     }
@@ -208,13 +253,13 @@ define(function (require) {
         render: function () {
             var rootProps = {
                 ref: 'path',
-                width: 495,
+                width: 475,
                 value: this.state.root,
                 onChange: this.onRootChange
             };
             var listProps = {
                 datasource: this.state.directory,
-                fieldConfig: fieldConfig,
+                fieldConfig: tableFieldConfig,
                 noDataRenderer: NoData,
                 clipboard: this.state.clipboard,
                 selected: this.state.selected,
@@ -223,10 +268,16 @@ define(function (require) {
                     showHeader: true
                 }
             };
+            let pasteBtnProps = {
+                className: 'tc-icon icon-paste',
+                onClick: this.state.clipboard ? this.onPasteBtnClick : undefined,
+                style: !this.state.clipboard ? {color: 'grey'} : {}
+            };
             return (
                 <div className="tc-explorer in-layer">
                     <span className="tc-icon icon-create-folder" onClick={this.onCreateBtnClick}></span>
                     <span className="tc-icon icon-up-level" onClick={this.onUpBtnClick}></span>
+                    <span {...pasteBtnProps}></span>
                     <div className="dir-bar">
                         <span>/</span><TextBox {...rootProps}/>
                     </div>
