@@ -79,7 +79,7 @@ define(function (require) {
                 //      dir，选择目录
                 //      file，选择文件，不可创建新文件，即输入框无法编辑
                 //      create，创建一个新文件或者选中一个已有文件将其覆盖
-                mode: 'create',
+                mode: 'dir',
                 onChange: new Function(),
                 onClose: new Function()
             };
