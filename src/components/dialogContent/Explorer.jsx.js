@@ -11,6 +11,7 @@ define(function (require) {
     var Toast = require('fcui2/Toast.jsx');
     var TextBox = require('fcui2/TextBox.jsx');
     var Table = require('fcui2/Table.jsx');
+    var Button = require('fcui2/Button.jsx');
 
 
     var FileName = require('../renderer/FileName.jsx');
@@ -34,7 +35,6 @@ define(function (require) {
             renderer: FileName,
             prepare: function (props, item, row, column, me) {
                 props.clipboard = me.props.clipboard;
-                props.selected = me.props.selected;
             }
         },
         {
@@ -71,10 +71,20 @@ define(function (require) {
         // @override
         getDefaultProps: function () {
             return {
+                // 目录前缀
                 prefix: '',
-                root: ''
+                // 当前所处目录
+                root: '',
+                // 工作模式
+                //      dir，选择目录
+                //      file，选择文件，不可创建新文件，即输入框无法编辑
+                //      create，创建一个新文件或者选中一个已有文件将其覆盖
+                mode: 'create',
+                onChange: new Function(),
+                onClose: new Function()
             };
         },
+
         // @override
         getInitialState: function () {
             return {
@@ -84,8 +94,8 @@ define(function (require) {
                 root: this.props.root,
                 // 当前目录结构
                 directory: [],
-                // 选中的目录或文件
-                selected: this.props.prefix,
+                // 选中的目录或文件，如果处于create工作模式，此项可被编辑
+                selected: this.props.mode === 'dir' ? this.props.prefix + '/' + this.props.root : '',
                 // 剪切板
                 clipboard: '',
                 // 剪切板内容是否为目录
@@ -94,12 +104,49 @@ define(function (require) {
                 clipboardType: ''
             };
         },
+
         // @override
         componentDidMount: function () {
             var me = this;
             io.md(me.state.path).then(function () {
                 me.getDirectory();
             }, missionFailed);
+        },
+
+        onCancelBtnClick() {
+            this.props.onClose({root: this.state.root});
+            this.props.close();
+        },
+
+        onEnterBtnClick() {
+            let me = this;
+            if (me.props.mode === 'create') {
+                io.open(me.state.selected).then(function () {
+                    dialog.confirm({
+                        title: 'Warning',
+                        labels: {
+                            enter: 'Enter',
+                            cancel: 'Cancel'
+                        },
+                        appSkin: 'oneux3',
+                        message: 'There a file with the same name.<br/>Override it or not?',
+                        onEnter: () => dispatch()
+                    });
+                }, createFile);
+            }
+            else {
+                dispatch();
+            }
+            function createFile() {
+                io.create(me.state.selected).then(dispatch, missionFailed);
+            }
+            function dispatch() {
+                me.props.onChange({
+                    selected: me.state.selected,
+                    root: me.state.root
+                });
+                me.props.close();
+            }
         },
 
         onCreateBtnClick: function () {
@@ -174,11 +221,17 @@ define(function (require) {
         onTableAction: function (type, item) {
             var me = this;
             if (type === 'select') {
-                me.setState({
+                var changeSet = {
                     path: item.isDirectory ? item.fullPath : me.state.path,
-                    root: item.isDirectory ? item.fullPath.replace(me.props.prefix + '/', '') : me.state.root,
-                    selected: item.fullPath
-                });
+                    root: item.isDirectory ? item.fullPath.replace(me.props.prefix + '/', '') : me.state.root
+                };
+                if (me.props.mode === 'dir' && item.isDirectory) {
+                    changeSet.selected = item.fullPath;
+                }
+                else if ((me.props.mode === 'file' || me.props.mode === 'create') && !item.isDirectory) {
+                    changeSet.selected = item.fullPath;
+                }
+                me.setState(changeSet);
                 item.isDirectory && me.getDirectory(item.fullPath);
             }
             if (type === 'cut') {
@@ -236,6 +289,13 @@ define(function (require) {
             this.getDirectory(this.props.prefix + '/' + e.target.value);
         },
 
+        onSelectedBoxChange(e) {
+            let value = e.target.value.replace(/\//g, '');
+            value = this.state.path + '/' + value;
+            value = value.replace(/\/\//g, '/');
+            this.setState({selected: value});
+        },
+
         getDirectory: function (path) {
             var me = this;
             path = path || this.state.path;
@@ -262,7 +322,6 @@ define(function (require) {
                 fieldConfig: tableFieldConfig,
                 noDataRenderer: NoData,
                 clipboard: this.state.clipboard,
-                selected: this.state.selected,
                 onAction: this.onTableAction,
                 flags: {
                     showHeader: true
@@ -273,6 +332,25 @@ define(function (require) {
                 onClick: this.state.clipboard ? this.onPasteBtnClick : undefined,
                 style: !this.state.clipboard ? {color: 'grey'} : {}
             };
+            let selectedBoxProps = {
+                width: 450,
+                disabled: this.props.mode !== 'create',
+                value: this.state.selected.split('/').pop(),
+                onChange: this.props.mode === 'create' ? this.onSelectedBoxChange : undefined
+            };
+            let cancelBtnProps = {
+                width: 60,
+                skin: 'black2',
+                label: 'Cancel',
+                onClick: this.onCancelBtnClick
+            };
+            let enterBtnProps = {
+                skin: 'black',
+                width: 60,
+                label: this.props.mode !== 'create' ? 'Select' : 'OK',
+                disabled: !this.state.selected.length,
+                onClick: this.onEnterBtnClick
+            };
             return (
                 <div className="tc-explorer in-layer">
                     <span className="tc-icon icon-create-folder" onClick={this.onCreateBtnClick}></span>
@@ -282,6 +360,11 @@ define(function (require) {
                         <span>/</span><TextBox {...rootProps}/>
                     </div>
                     <Table {...listProps}/>
+                    <div className="foot-bar">
+                        <TextBox {...selectedBoxProps}/>
+                        <Button {...enterBtnProps}/>
+                        <Button {...cancelBtnProps}/>
+                    </div>
                 </div>
             );
         }

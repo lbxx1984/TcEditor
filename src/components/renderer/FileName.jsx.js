@@ -27,9 +27,6 @@ define(function (require) {
             var item = this.props.item;
             var icon = 'tc-icon ' + (item.isDirectory ? 'icon-folder' : 'icon-file');
             var labelStyle = {};
-            if (item.fullPath === this.props.selected) {
-                labelStyle.fontWeight = 700;
-            }
             if (item.fullPath === this.props.clipboard) {
                 labelStyle.color = 'grey';
             }
