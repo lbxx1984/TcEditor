@@ -48,7 +48,9 @@ define(function (require) {
 
         // 导出舞台配置
         editor = deepCloneStore(store, [
-            'mesh3d', 'lights', 'selectedMesh', 'selectedVector', 'selectedVectorIndex', 'selectedLight'
+            'timer', 'path',
+            'mesh3d', 'lights',
+            'selectedMesh', 'selectedVector', 'selectedVectorIndex', 'selectedLight'
         ].concat(_.keys(config)));
 
         return {meshes, lights, images, editor};

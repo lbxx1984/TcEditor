@@ -80,6 +80,7 @@ define(function (require) {
                 //      file，选择文件，不可创建新文件，即输入框无法编辑
                 //      create，创建一个新文件或者选中一个已有文件将其覆盖
                 mode: 'dir',
+                extension: 'tcm',
                 onChange: new Function(),
                 onClose: new Function()
             };
@@ -120,8 +121,12 @@ define(function (require) {
 
         onEnterBtnClick() {
             let me = this;
+            let path = me.state.selected;
+            if (me.props.extension.length && path.split('.').pop() !== me.props.extension) {
+                path += '.' + me.props.extension;
+            }
             if (me.props.mode === 'create') {
-                io.open(me.state.selected).then(function () {
+                io.open(path).then(function () {
                     dialog.confirm({
                         title: 'Warning',
                         labels: {
@@ -138,11 +143,11 @@ define(function (require) {
                 dispatch();
             }
             function createFile() {
-                io.create(me.state.selected).then(dispatch, missionFailed);
+                io.create(path).then(dispatch, missionFailed);
             }
             function dispatch() {
                 me.props.onChange({
-                    selected: me.state.selected,
+                    selected: path,
                     root: me.state.root
                 });
                 me.props.close();
@@ -230,6 +235,11 @@ define(function (require) {
                 }
                 else if ((me.props.mode === 'file' || me.props.mode === 'create') && !item.isDirectory) {
                     changeSet.selected = item.fullPath;
+                    // 文件连击
+                    if (changeSet.selected === me.state.selected) {
+                        me.onEnterBtnClick();
+                        return;
+                    }
                 }
                 me.setState(changeSet);
                 item.isDirectory && me.getDirectory(item.fullPath);

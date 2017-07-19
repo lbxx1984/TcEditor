@@ -6,33 +6,48 @@
 define(function (require) {
 
 
-    var THREE = require('three');
-    var ReactDOM = require('react-dom');
-    var React = require('react');
-    var _ = require('underscore');
+    const THREE = require('three');
+    const ReactDOM = require('react-dom');
+    const React = require('react');
+    const _ = require('underscore');
 
 
-    var config = require ('./config');
-    var App = require('./App.jsx');
-    var dispatcher = require('./dispatcher/index');
-    var model = require('./core/model');
-    var defaultLight = new THREE.PointLight(0xffffff);
+    const config = require ('./config');
+    const App = require('./App.jsx');
+    const dispatcher = require('./dispatcher/index');
+    const model = require('./core/model');
 
 
+    let defaultLight = new THREE.PointLight(0xffffff);
     defaultLight.position.set(0, 2000, 0);
     defaultLight.tc = {
         birth: new Date(),
         add: true
     };
+
+
     model.fill(config);
+
+
     // 这些数据需要从localStorage里读出来，或者从文件里读出来
     model.fill({
+
+        // 系统稳定态时间戳
+        timer: 0,
+
+        // 本地文件系统的目录前缀
+        rootPrefix: '/__tceditor__',
+        // 本地文件系统的目录
+        root: '',
+        // 当前打开的文件绝对路径
+        path: '',
+        // 保存时的模型压缩等级：0，不压缩；2，vectory保留两位小数；4，vectory保留四位小数
+        compressMode: 2,
+
         // 舞台中的物体hash
         mesh3d: {},
         // 舞台中的灯光hash
-        lights: {
-            defaultLight: defaultLight
-        },
+        lights: {defaultLight: defaultLight},
         // 当前选中的物体
         selectedMesh: null,
         // 当前选中的物体的关节
@@ -41,6 +56,7 @@ define(function (require) {
         selectedVectorIndex: -1,
         // 当前选中的灯光
         selectedLight: null,
+
         // 当前激活的分组，物体默认会被添加到这个分组里
         activeGroup: 'default group',
         // 右侧处于显示状态的工作卡片
@@ -53,6 +69,7 @@ define(function (require) {
         group: [
             {label: 'default group', expend: true}
         ],
+
         // 舞台配置信息
         stage: {
             // 舞台背景色
@@ -83,9 +100,7 @@ define(function (require) {
         view: 'view-all',
         // 编辑器当前处于响应拖拽事件的命令
         tool: 'camera-move',
-        // 本地文件系统的目录
-        rootPrefix: '/__tceditor__',
-        root: '',
+
         // 变形工具工作状态
         transformer3Dinfo: {
             mode: 'translate',
@@ -96,19 +111,23 @@ define(function (require) {
         morpher3Dinfo: {
             anchorColor: 0x00CD00,
             anchorSize: 1000
-        },
-        // 保存时的模型压缩等级：0，不压缩；2，vectory保留两位小数；4，vectory保留四位小数
-        compressMode: 2,
-        // 系统稳定态时间戳
-        timer: 0
+        }
+
     });
+
+
     model.onChange = function (store) {
         render(store);
     };
+
+
     render(model.store);
 
 
     function render(store) {
+        if (store.path.length) {
+            document.title = config.editorTitle + ' ' +store.path.split('/').pop();
+        }
         var props = _.extend({}, store, {dispatch: dispatch});
         ReactDOM.render(React.createElement(App, props), document.getElementById('main'));
     }

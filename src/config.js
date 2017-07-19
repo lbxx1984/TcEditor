@@ -7,6 +7,7 @@ define(function (require) {
 
 
     return {
+        editorTitle: 'TcEditor 5',
         // 物体主要色配置
         colors: {
             normalMeshHover: [0xffff00, '#d97915'],
