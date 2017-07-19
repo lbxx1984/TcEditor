@@ -6,21 +6,32 @@
 define(function (require) {
 
 
-    var _ = require('underscore');
-    var Dialog = require('fcui2/Dialog.jsx');
-    var Explorer = require('../components/dialogContent/Explorer.jsx');
-    var dialog = new Dialog();
+    const _ = require('underscore');
+    const Dialog = require('fcui2/Dialog.jsx');
+    const Explorer = require('../components/dialogContent/Explorer.jsx');
+
+    const tcmExporter = require('../core/exporter/tcm');
+
+    const dialog = new Dialog();
+
 
     return {
         'file-save': function () {
+            let me = this;
+            tcmExporter(me);
             dialog.pop({
                 contentProps: {
-                    prefix: this.get('rootPrefix'),
-                    root: this.get('root')
+                    prefix: me.get('rootPrefix'),
+                    root: me.get('root'),
+                    mode: 'create',
+                    onChange: onChange
                 },
                 content: Explorer,
                 title: 'Save File'
             });
+            function onChange(e) {
+                // tcmExporter(me);
+            }
         }
     };
 
