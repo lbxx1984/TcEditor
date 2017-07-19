@@ -97,6 +97,8 @@ define(function (require) {
             anchorColor: 0x00CD00,
             anchorSize: 1000
         },
+        // 保存时的模型压缩等级：0，不压缩；2，vectory保留两位小数；4，vectory保留四位小数
+        compressMode: 2,
         // 系统稳定态时间戳
         timer: 0
     });
