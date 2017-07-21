@@ -12,9 +12,11 @@ define(function (require) {
     const FileSaver = require('FileSaver');
     const JSZip = require('jszip');
 
+
     const Explorer = require('../components/dialogContent/Explorer.jsx');
     const tcmExporter = require('../core/exporter/tcm');
     const io = require('../core/io');
+
 
     const dialog = new Dialog();
 
@@ -26,21 +28,39 @@ define(function (require) {
         });
     }
 
-
     function writeFile(path, model) {
         let fileContent = tcmExporter(model);
         let zip = new JSZip();
         zip.file('content', JSON.stringify(fileContent));
-        return zip.generateAsync({type: 'blob'}).then((content) => {
-            return io.write(path, {
-                data: content,
-                append: false
+        return zip.generateAsync({type: 'blob'})
+        .then(content => io.write(path, {data: content, append: false}))
+        .then(function () {
+            Toast.pop({
+                type: 'success',
+                message: 'File Saved.',
+                autoHideTime: '500'
             });
         });
     }
 
+    function readFile(path) {
+        return io.read(path, {type: 'readAsArrayBuffer'})
+        .then(res => (new JSZip()).loadAsync(res.target.result))
+        .then(zip => zip.file('content').async('string'))
+        .then(function (content) {
+            try {
+                content = JSON.parse(content);
+            }
+            catch(e) {
+                content = null;
+            }
+            return new Promise(function (resolve, reject) {
+                content ? resolve(content) : reject();
+            });
+        });
+    }
 
-    function saveAs(me, dialogTitle) {
+    function getFilePathThenSave(me, dialogTitle) {
         dialog.pop({
             contentProps: {
                 prefix: me.get('rootPrefix'),
@@ -67,22 +87,50 @@ define(function (require) {
 
     return {
 
+        'file-open'() {
+            // 判断当前舞台是否有物体
+            let me = this;
+            dialog.pop({
+                contentProps: {
+                    prefix: me.get('rootPrefix'),
+                    root: me.get('root'),
+                    extension: 'tcm',
+                    mode: 'file',
+                    onChange(e) {
+                        readFile(e.selected).then(function (result) {
+                            me.fill({
+                                root: e.root,
+                                path: e.selected
+                            });
+                            // todo：load tcm
+                            console.log(result);
+                        }, missionFailed);
+                    },
+                    onClose(e) {
+                        me.set('root', e.root);
+                    }
+                },
+                content: Explorer,
+                title: 'Open'
+            });
+        },
+
         'file-save'() {
             let me = this;
             let path = me.store.path;
             if (!path) {
-                saveAs(me, 'Save');
+                getFilePathThenSave(me, 'Save');
                 return;
             }
             io.open(path).then(function () {
                 writeFile(path, me);
             }, function () {
-                saveAs(me, 'Save');
+                getFilePathThenSave(me, 'Save');
             });
         },
 
         'file-saveAs'() {
-            saveAs(this);
+            getFilePathThenSave(this);
         }
 
     };
