@@ -10,6 +10,7 @@ define(function (require) {
     const Dialog = require('fcui2/Dialog.jsx');
     const Toast = require('fcui2/Toast.jsx');
     const FileSaver = require('FileSaver');
+    const JSZip = require('jszip');
 
     const Explorer = require('../components/dialogContent/Explorer.jsx');
     const tcmExporter = require('../core/exporter/tcm');
@@ -28,9 +29,13 @@ define(function (require) {
 
     function writeFile(path, model) {
         let fileContent = tcmExporter(model);
-        return io.write(path, {
-            data: new Blob([JSON.stringify(fileContent, null, 4)], {type: 'text/plain;charset=utf-8'}),
-            append: false
+        let zip = new JSZip();
+        zip.file('content', JSON.stringify(fileContent));
+        return zip.generateAsync({type: 'blob'}).then((content) => {
+            return io.write(path, {
+                data: content,
+                append: false
+            });
         });
     }
 
