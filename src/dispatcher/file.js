@@ -14,8 +14,11 @@ define(function (require) {
 
 
     const Explorer = require('../components/dialogContent/Explorer.jsx');
-    const tcmExporter = require('../core/exporter/tcm');
     const io = require('../core/io');
+
+
+    const tcmLoader = require('../core/loader/tcm');
+    const tcmExporter = require('../core/exporter/tcm');
 
 
     const dialog = new Dialog();
@@ -133,18 +136,22 @@ define(function (require) {
         },
 
         'file-import'() {
+            let me = this;
             io.uploadFromBrowser('tcm')
             .then(res => (new JSZip()).loadAsync(res.target.result))
             .then(zip => zip.file('content').async('string'))
             .then(function (content) {
                 try {
                     content = JSON.parse(content);
-                    // todo：load tcm
-                    console.log(content);
                 }
                 catch (e) {
+                    content = null;
                     missionFailed();
+                    return;
                 }
+                if (!content) return;
+                let dataset = tcmLoader(me, content);
+                me.fill(dataset);
             }, missionFailed);
         },
 

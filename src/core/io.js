@@ -6,9 +6,10 @@
 define(function (require) {
 
 
-    var FileSystem = require('file-system');
-    var fileCache = {};
-    var fs = new FileSystem();
+    const _ = require('underscore');
+    const FileSystem = require('file-system');
+    const fileCache = {};
+    const fs = new FileSystem();
 
 
     // 将图片上传到内存
@@ -42,6 +43,7 @@ define(function (require) {
     };
 
 
+    // 将本地文件上传到内存
     fs.uploadFromBrowser = function (extension) {
         let input = document.createElement('input');
         input.type = 'file';
@@ -64,6 +66,25 @@ define(function (require) {
                 reader.readAsArrayBuffer(file);
             };
             input.click();
+        });
+    };
+
+
+    // 将打开文件内部图片放入内存
+    fs.importImage = function (key, dataset) {
+        return new Promise(function (resolve, reject) {
+            let image = null;
+            _.each(fileCache, function (img) {
+                if (img.src === dataset) image = img;
+            });
+            if (image) {
+                resolve(image);
+                return;
+            }
+            let img = document.createElement('img');
+            img.src = dataset;
+            fileCache[key] = img;
+            resolve(img);
         });
     };
 

@@ -144,8 +144,8 @@ define(function (require) {
     function editorFactory(me) {
         var mesh = me.props.mesh;
         var mtl = mesh.material;
-        var color = mtl.color;
-        var emissive = mtl.emissive;
+        var color = new THREE.Color(mesh.tc.materialColor);
+        var emissive = new THREE.Color(mesh.tc.materialEmissive);
         var colorContainerStyle = {
             border: '1px solid #FFF',
             padding: '4px',
