@@ -42,6 +42,32 @@ define(function (require) {
     };
 
 
+    fs.uploadFromBrowser = function (extension) {
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.style.cssText = 'visibility:hidden;';
+        document.body.appendChild(input);
+        return new Promise(function (resolve, reject) {
+            input.onchange = function (evt) {
+                document.body.removeChild(input);
+                let file = evt.target.files[0];
+                if (extension && file.name.split('.').pop() !== extension) {
+                    return;
+                }
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    resolve(e);
+                };
+                reader.onerror = function () {
+                    reject();
+                };
+                reader.readAsArrayBuffer(file);
+            };
+            input.click();
+        });
+    };
+
+
     return fs;
 
 });

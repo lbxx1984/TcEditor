@@ -88,7 +88,6 @@ define(function (require) {
     return {
 
         'file-open'() {
-            // 判断当前舞台是否有物体
             let me = this;
             dialog.pop({
                 contentProps: {
@@ -131,6 +130,32 @@ define(function (require) {
 
         'file-saveAs'() {
             getFilePathThenSave(this);
+        },
+
+        'file-import'() {
+            io.uploadFromBrowser('tcm')
+            .then(res => (new JSZip()).loadAsync(res.target.result))
+            .then(zip => zip.file('content').async('string'))
+            .then(function (content) {
+                try {
+                    content = JSON.parse(content);
+                    // todo：load tcm
+                    console.log(content);
+                }
+                catch (e) {
+                    missionFailed();
+                }
+            }, missionFailed);
+        },
+
+        'file-export'() {
+            let fileContent = tcmExporter(this);
+            let zip = new JSZip();
+            let filename = this.store.path ? this.store.path.split('/').pop() : 'tcModel.tcm';
+            zip.file('content', JSON.stringify(fileContent));
+            return zip.generateAsync({type: 'blob'}).then(function (content) {
+                FileSaver(content, filename);
+            });
         }
 
     };
