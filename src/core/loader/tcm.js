@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file 将tcm文件导入到舞台
  * @author Haitao Li
  * @mail 279641976@qq.com
@@ -44,7 +44,7 @@ define(function (require) {
             side: mtl.side,
         };
         let material = new THREE[mtl.type](args);
-        // 载入纹理
+        // 导入纹理
         if (
             mtl.map && mesh.textures instanceof Array && mesh.textures.length
             && mtl.map === mesh.textures[0].uuid
@@ -72,7 +72,9 @@ define(function (require) {
 
 
     return function (model, tcm) {
-        let mesh3d = _.extend({}, model.store.mesh3d);
+        let dataset = {timer: +new Date()};
+        // 导入物体
+        dataset.mesh3d = _.extend({}, model.store.mesh3d);
         _.each(tcm.meshes, function (json, uuid) {
             let mesh = loadMesh(json, tcm);
             // 导入物体姿态
@@ -85,12 +87,18 @@ define(function (require) {
                 m[3], m[7], m[11], m[15] 
             );
             mesh.applyMatrix(matrix);
-            mesh3d[mesh.uuid] = mesh;
+            dataset. mesh3d[mesh.uuid] = mesh;
         });
-        let dataset = {
-            mesh3d,
-            timer: +new Date()
-        };
+        // 导入舞台信息
+        dataset.group = [].concat(model.store.group);
+        tcm.editor.group.map(function (group) {
+            for (let i = 0; i < dataset.group.length; i++) {
+                if (dataset.group[i].label === group.label) return;
+            }
+            dataset.group.push(group);
+        });
+        // 导入灯光
+        // todo
         return dataset;
     };
 
