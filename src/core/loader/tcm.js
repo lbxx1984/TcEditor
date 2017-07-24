@@ -43,6 +43,11 @@ define(function (require) {
             shading: mtl.shading,
             side: mtl.side,
         };
+        ['opacity', 'wireframe'].map(function (key) {
+            if (!mtl.hasOwnProperty(key)) return;
+            args[key] = mtl[key];
+            if (key === 'opacity') args.transparent = mtl[key] < 1;
+        });
         let material = new THREE[mtl.type](args);
         // 导入纹理
         if (

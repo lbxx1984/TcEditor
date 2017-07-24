@@ -87,6 +87,44 @@ define(function (require) {
         });
     }
 
+    function openFile(file, model) {
+        if (_.keys(model.store.mesh3d).length) {
+            dialog.confirm({
+                title: 'Please Confirm',
+                message: 'Clear the editor?',
+                appSkin: 'oneux3',
+                labels: {
+                    enter: 'Yes',
+                    cancel: 'No'
+                },
+                onEnter() {
+                    clearEditor(model);
+                    loadFileContent(file, model);
+                },
+                onCancel() {
+                    loadFileContent(file, model);
+                }
+            });
+        }
+        else {
+            clearEditor(model);
+            loadFileContent(file, model);
+        }
+    }
+
+    function clearEditor(me) {
+        let dataset = {
+            mesh3d: {},
+            lights: {defaultLight: me.store.lights.defaultLight}
+        };
+        me.fill(dataset);
+    }
+
+    function loadFileContent(file, me) {
+        let dataset = tcmLoader(me, file);
+        me.fill(dataset);
+        me.fill(file.editor);
+    }
 
     return {
 
@@ -104,8 +142,7 @@ define(function (require) {
                                 root: e.root,
                                 path: e.selected
                             });
-                            // todo：load tcm
-                            console.log(result);
+                            openFile(result, me);
                         }, missionFailed);
                     },
                     onClose(e) {
