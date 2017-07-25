@@ -7,6 +7,12 @@ define(function (require) {
 
 
     return {
+        arrestedHotKey: [
+            'ctrl + o',
+            'ctrl + s',
+            'f1',
+            'f5'
+        ],
         editorTitle: 'TcEditor 5',
         // 物体主要色配置
         colors: {
@@ -18,6 +24,9 @@ define(function (require) {
             {
                 label: 'File',
                 children: [
+                    {
+                        label: 'New', value: 'file-new', hotKey: 'alt + n'
+                    },
                     {
                         label: 'Open', value: 'file-open', hotKey: 'ctrl + o'
                     },

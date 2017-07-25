@@ -13,8 +13,10 @@ define(function (require) {
     const JSZip = require('jszip');
 
 
-    const Explorer = require('../components/dialogContent/Explorer.jsx');
+    const config = require('../config');
+    const emptyEditor = require('../emptyEditor');
     const io = require('../core/io');
+    const Explorer = require('../components/dialogContent/Explorer.jsx');
 
 
     const tcmLoader = require('../core/loader/tcm');
@@ -127,6 +129,11 @@ define(function (require) {
     }
 
     return {
+
+        'file-new'() {
+            this.fill(_.extend({}, config, emptyEditor));
+            document.title = config.editorTitle;
+        },
 
         'file-open'() {
             let me = this;

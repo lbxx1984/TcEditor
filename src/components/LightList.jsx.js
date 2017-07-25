@@ -31,7 +31,6 @@ define(function (require) {
         onDelIconClick: function (e) {
             var dom = getLabelDom(e.target);
             var dispatch = this.context.dispatch;
-            console.log(dom.dataset.id);
         },
         onVisibleIconClick: function (e) {
             var dom = getLabelDom(e.target);

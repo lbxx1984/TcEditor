@@ -11,6 +11,17 @@ define(function (require) {
     const io = require('../io');
 
 
+    function createMatrix4(m) {
+        let matrix = new THREE.Matrix4();
+        matrix.set(
+            m[0], m[4], m[8], m[12],
+            m[1], m[5], m[9], m[13],
+            m[2], m[6], m[10], m[14],
+            m[3], m[7], m[11], m[15] 
+        );
+        return matrix;
+    }
+
     function createGeometry(mesh) {
         let geo = mesh.geometries[0];
         if (typeof THREE[geo.type] !== 'function') return null;
@@ -82,16 +93,7 @@ define(function (require) {
         dataset.mesh3d = _.extend({}, model.store.mesh3d);
         _.each(tcm.meshes, function (json, uuid) {
             let mesh = loadMesh(json, tcm);
-            // 导入物体姿态
-            let m = json.object.matrix;
-            let matrix = new THREE.Matrix4();
-            matrix.set(
-                m[0], m[4], m[8], m[12],
-                m[1], m[5], m[9], m[13],
-                m[2], m[6], m[10], m[14],
-                m[3], m[7], m[11], m[15] 
-            );
-            mesh.applyMatrix(matrix);
+            mesh.applyMatrix(createMatrix4(json.object.matrix));
             dataset. mesh3d[mesh.uuid] = mesh;
         });
         // 导入舞台信息
@@ -103,7 +105,13 @@ define(function (require) {
             dataset.group.push(group);
         });
         // 导入灯光
-        // todo
+        _.each(tcm.lights, function (json, uuid) {
+            if (uuid === 'defaultLight') {
+                let light = model.store.lights.defaultLight;
+                light.position.set(json.object.matrix[12], json.object.matrix[13], json.object.matrix[14]);
+                return;
+            }
+        });
         return dataset;
     };
 
