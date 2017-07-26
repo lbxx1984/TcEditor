@@ -56,6 +56,7 @@ define(function (require) {
             var iconProps = {
                 key: 'tools-' + index,
                 'data-ui-cmd': item.value,
+                title: item.title,
                 className: 'tc-icon ' + item.icon + (item.checked ? ' selected' : ''),
                 onClick: me.onButtonClick
             };

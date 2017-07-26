@@ -10,6 +10,15 @@ define(function (require) {
         arrestedHotKey: [
             'ctrl + o',
             'ctrl + s',
+            'ctrl + d',
+            'ctrl + f',
+            'ctrl + g',
+            'ctrl + e',
+            'ctrl + r',
+            'ctrl + t',
+            'ctrl + i',
+            'alt + e',
+            'alt + d',
             'f1',
             'f5'
         ],
@@ -25,7 +34,7 @@ define(function (require) {
                 label: 'File',
                 children: [
                     {
-                        label: 'New', value: 'file-new', hotKey: 'alt + n'
+                        label: 'New', value: 'file-new'
                     },
                     {
                         label: 'Open', value: 'file-open', hotKey: 'ctrl + o'
@@ -37,10 +46,10 @@ define(function (require) {
                         label: 'Save As', value: 'file-saveAs', hotKey: 'ctrl + shift + s'
                     },
                     {
-                        label: 'Import', value: 'file-import'
+                        label: 'Import', value: 'file-import', hotKey: 'ctrl + shift + i'
                     },
                     {
-                        label: 'Export', value: 'file-export'
+                        label: 'Export', value: 'file-export', hotKey: 'ctrl + shift + e'
                     }
                 ]
             },
@@ -75,33 +84,33 @@ define(function (require) {
         command: [
             'VIEWS',
             {
-                label: '3D', value: 'view-3d', title: '3D view (1)'
+                label: '3D', value: 'view-3d', title: '3D view (alt + 1)'
             },
             {
-                label: 'XOZ', value: 'view-xoz', title: 'XOZ view (2)'
+                label: 'XOZ', value: 'view-xoz', title: 'XOZ view (alt + 2)'
             },
             {
-                label: 'XOY', value: 'view-xoy', title: 'XOY view (3)'
+                label: 'XOY', value: 'view-xoy', title: 'XOY view (alt + 3)'
             },
             {
-                label: 'ZOY', value: 'view-zoy', title: 'ZOY view (4)'
+                label: 'ZOY', value: 'view-zoy', title: 'ZOY view (alt + 4)'
             },
             {
-                icon: 'icon-screen4', value: 'view-all', title: 'ALL view (5)'
+                icon: 'icon-screen4', value: 'view-all', title: 'ALL view (alt + 5)'
             },
             'TOOLS',
             {
-                icon: 'icon-pickup-mesh', value: 'tool-pickGeometry', title: 'pick up geometry (D)'
+                icon: 'icon-pickup-mesh', value: 'tool-pickGeometry', title: 'pick up geometry (ctrl + d)'
             },
             {
-                icon: 'icon-pickup-joint', value: 'tool-pickJoint', title: 'pick up joint (F)'
+                icon: 'icon-pickup-joint', value: 'tool-pickJoint', title: 'pick up joint (ctrl + f)'
             },
             {
-                icon: 'icon-light', value: 'tool-pickLight', title: 'pick up light (L)'
+                icon: 'icon-light', value: 'tool-pickLight', title: 'pick up light (ctrl + g)'
             },
             'CAMERA',
             {
-                icon: 'icon-trans', value: 'camera-move', title: 'move camera (M)'
+                icon: 'icon-trans', value: 'camera-move', title: 'move camera (ctrl + e)'
             },
             {
                 icon: 'icon-zoom-in', value: 'camera-zoomIn', title: 'zoom in (MOUSE WHEEL UP)'
@@ -125,10 +134,8 @@ define(function (require) {
         ],
         // 变形工具集
         transformer3DTools: [
-            {icon: 'icon-trans', value: 'transformer-3d-mode-translate'},
-            {icon: 'icon-rotate', value: 'transformer-3d-mode-rotate'},
-            // 这个工具不好用，变化太剧烈，暂时下线
-            // {icon: 'icon-icicfangdatubiao', value: 'transformer-3d-mode-scale'},
+            {icon: 'icon-trans', value: 'transformer-3d-mode-translate', title: '(ctrl + r)'},
+            {icon: 'icon-rotate', value: 'transformer-3d-mode-rotate', title: '(ctrl + r)'},
             {icon: 'icon-plus', value: 'transformer-3d-size-enlarge'},
             {icon: 'icon-minus', value: 'transformer-3d-size-narrow'},
             {icon: 'icon-earth', value: 'transformer-3d-space'}

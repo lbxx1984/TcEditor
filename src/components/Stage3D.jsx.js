@@ -297,15 +297,15 @@ define(function (require) {
 
     // 舞台技术测试
     function test(me) {
-        var renderer = me.renderer;
-        var camera = me.camera;
-        var scene = me.scene;
-        var mshBox = new THREE.Mesh(
-            new THREE.SphereGeometry(20, 20, 20),
-            new THREE.MeshPhongMaterial({color: 0x4080ff})
-        );
-        mshBox.position.set(100, 0, 200);
-        scene.add(mshBox);
+        // var renderer = me.renderer;
+        // var camera = me.camera;
+        // var scene = me.scene;
+        // var mshBox = new THREE.Mesh(
+        //     new THREE.SphereGeometry(20, 20, 20),
+        //     new THREE.MeshPhongMaterial({color: 0x4080ff})
+        // );
+        // mshBox.position.set(100, 0, 200);
+        // scene.add(mshBox);
         // console.log(camera.rotation);
     }
 
