@@ -5,7 +5,8 @@
  */
 define(function (require) {
 
-    var _ = require('underscore');
+    const _ = require('underscore');
+
     return _.extend(
         {},
         require('./camera'),
@@ -16,7 +17,8 @@ define(function (require) {
         require('./transformer'),
         require('./morpher'),
         require('./view'),
-        require('./file')
+        require('./file'),
+        require('./help')
     );
 
 });

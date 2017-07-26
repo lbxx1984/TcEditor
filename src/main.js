@@ -54,6 +54,10 @@ define(function (require) {
     function moveCameraByKeyboard(angle, direction) {
         let stage = JSON.parse(JSON.stringify(model.store.stage));
         stage.camera3D[angle] += direction;
+        if (angle === 'cameraAngleA') {
+            stage.camera3D[angle] = Math.min(stage.camera3D[angle], 89);
+            stage.camera3D[angle] = Math.max(stage.camera3D[angle], -89);
+        }
         model.set('stage', stage);
     }
 
@@ -65,6 +69,9 @@ define(function (require) {
             selectedVector: null,
             selectedVectorIndex: -1
         });
+    });
+    hotkey.on('f1', function () {
+        dispatcher['help-hotkey'].apply(model);
     });
     hotkey.on('ctrl + o', function () {
         dispatcher['file-open'].apply(model);

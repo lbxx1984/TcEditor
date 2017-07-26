@@ -56,6 +56,7 @@ define(function (require) {
         });
         me.props.menu.map(function (menu) {
             var props = {
+                skin: 'black',
                 key: 'menu-' + menu.label,
                 label: menu.label,
                 datasource: menu.children,
