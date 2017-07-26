@@ -64,6 +64,8 @@ define(function (require) {
 
     // 挂接所有快捷键事件
     hotkey.on('escape', function () {
+        let mesh = model.store.selectedMesh;
+        mesh && mesh.material.setValues({color: mesh.tc.materialColor});
         model.fill({
             selectedMesh: null,
             selectedVector: null,

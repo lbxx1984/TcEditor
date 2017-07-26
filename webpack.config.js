@@ -39,7 +39,8 @@ module.exports = {
             'raphael': path.join(__dirname, 'dep/raphael.2.2.1.min.js'),
             'file-system': path.join(__dirname, 'dep/filesystem.0.0.2'),
             'FileSaver': path.join(__dirname, 'dep/FileSaver.1.3.3.min'),
-            'jszip': path.join(__dirname, 'dep/jszip.3.1.3.min')
+            'jszip': path.join(__dirname, 'dep/jszip.3.1.3.min'),
+            'underscore': path.join(__dirname, 'dep/underscore.1.8.5')
         }
     }
 };
