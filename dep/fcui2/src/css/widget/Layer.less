@@ -1,0 +1,67 @@
+// version 0.0.2
+
+.fcui2-layer {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    border: 1px solid;
+    z-index: 10000;
+    overflow: show;
+    .fcui2-layer-virtual-border {
+        display: none;
+        position: absolute;
+        background-color: #FFF;
+    }
+}
+
+.fcui2-layer-normal {
+    background-color: @color-bg;
+    border-color: @color-outer-border;
+    font-family: @font-normal;
+}
+
+.fcui2-layer-warning {
+    overflow: visible;
+    background-color: @color-bg;
+    border-color: @color-error;
+    color: @color-error;
+    font-size: 12px;
+    font-family: @font-normal;
+}
+
+.fcui2-layer-oneux3-blue,
+.fcui2-layer-oneux3-normal {
+    background-color: @oneux3-bgcolor-c1;
+    .fcui2-layer-virtual-border {
+        display: block;
+    }
+    font-family: @font-normal;
+    border-color: @oneux3-bgcolor-c20;
+}
+.fcui2-layer-oneux3-important {
+    background-color: @oneux3-bgcolor-c20;
+    .fcui2-layer-virtual-border {
+        display: block;
+        background-color: @oneux3-bgcolor-c20;
+    }
+    font-family: @font-normal;
+    border-color: @oneux3-bgcolor-c20;
+}
+.fcui2-layer-oneux3-red {
+    background-color: @oneux3-bgcolor-c7;
+    font-family: @font-normal;
+    border-color: @oneux3-color-c7;
+    color: @oneux3-color-c7;
+}
+.fcui2-layer-oneux3-yellow {
+    background-color: @oneux3-bgcolor-c8;
+    font-family: @font-normal;
+    border-color: @oneux3-bgcolor-c28;
+    color: @oneux3-color-c1;
+}
+.fcui2-layer-oneux3-grey {
+    background-color: @oneux3-bgcolor-c9;
+    font-family: @font-normal;
+    border-color: @oneux3-bgcolor-c2;
+    color: @oneux3-color-c1;
+}

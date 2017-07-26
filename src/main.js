@@ -1,212 +1,135 @@
 /**
- * @file 主启动文件
+ * @file 主启动
+ * @author Brian Li
+ * @email lbxxlht@163.com
  */
 define(function (require) {
 
-    // 引入扩展和子系统
-    require('./extend');
 
-    var App = require('./application.jsx');
-    var Stage = require('./stage/main');
-    var Routing = require('./command/main');
-    var Transformer = require('./transformer/main');
-    var Morpher = require('./morpher/main');
-    var Light = require('./light/main');
-    var IO = require('./io/main');
-    var FileSystem = require('./io/util/filesystem');
-    var keyboard = require('./io/keyboard');  
-    var routing = new Routing('mouse-cameramove');
-    var config = require('config');
+    const THREE = require('three');
+    const ReactDOM = require('react-dom');
+    const React = require('react');
+    const _ = require('underscore');
 
-    // 顺序初始化
-    setupIO()
-    .then(enterWorkingSpace, unsupported)
-    .then(setupUI, unsupported)
-    .then(setupStage, unsupported)
-    .then(loadEditorConf, unsupported)
-    .then(bindEventHandlers, unsupported)
-    .then(displayInformation, unsupported);
 
-    function unsupported() {
-        console.log('Your browser does not support TcEditor.');
-    }
+    const emptyEditor = require('./emptyEditor');
+    const config = require ('./config');
+    const App = require('./App.jsx');
+    const dispatcher = require('./dispatcher/index');
+    const model = require('./core/model');
+    const hotkey = require('./core/hotkey');
 
-    function setupIO() {
-        return new Promise(function (resolve, reject) {
-            routing.filePath = null;
-            routing.imgCache = {};
-            routing.keyboard = keyboard;
-            routing.io = new IO({routing: routing});
-            routing.fs = new FileSystem(function (fs) {
-                fs ? resolve() : reject();
-            });
-        });
-    }
 
-    function enterWorkingSpace() {
-        return new Promise(function (resolve, reject) {
-            routing.fs.md(window.editorKey, function (result) {
-                if (result && (result.isDirectory || result.isFile)) {
-                    resolve();
-                }
-                else {
-                    reject();
-                }
-            });
-        }).then(function () {
-            return new Promise(function (resolve, reject) {
-                routing.fs.cd(window.editorKey, function (result) {
-                    if (result && (result.isDirectory || result.isFile)) {
-                        resolve();
-                    }
-                    else {
-                        reject();
-                    }
-                });
-            });
-        }, unsupported);
-    }
+    model.fill(config);
+    model.fill(emptyEditor);
+    model.onChange = function (store) {
+        render(store);
+    };
+    render(model.store);
 
-    function setupUI() {
-        var uiElement = React.createElement(App, {
-            commandRouting: function () {routing.main.apply(routing, arguments);}
-        });
-        return new Promise(function (resolve, reject) {
-            try {
-                routing.ui = React.render(uiElement, document.body, resolve);
-            }
-            catch (e) {
-                reject();
-            }
-        });
-    }
 
-    function setupStage() {
-        return new Promise(function (resolve, reject) {
-            var stageRefs = routing.ui.refs.containerleft.refs.stage.refs;
-            var stageDom = routing.ui.refs.containerleft.refs.stage.getDOMNode();
-            // 舞台
-            routing.stage = new Stage({
-                container1: stageRefs.cameracontroller.getDOMNode(),
-                container2: stageRefs.stage2d.getDOMNode(),
-                container3: stageRefs.stage3d.getDOMNode()
-            });
-            // 变形器
-            routing.transformer = new Transformer(routing.stage);
-            // 关节变换器
-            routing.morpher = new Morpher(routing.stage);
-            // 灯光系统
-            routing.light = new Light({stage: routing.stage, ui: routing.ui});
-            // 必成功
-            resolve();
-        });
-    }
-
-    function loadEditorConf() {
-        function gotConf(result) {
-            var conf = config.editorDefaultConf;
-            try {conf = JSON.parse(result);} catch (e) {}
-            return routing.io.callLoader('conf', conf);
+    function render(store) {
+        if (store.path.length) {
+            document.title = config.editorTitle + ' ' +store.path.split('/').pop();
         }
-        function gotNothing() {
-            return routing.io.callLoader('conf', config.editorDefaultConf);
+        let props = _.extend({}, store, {dispatch: dispatch});
+        ReactDOM.render(React.createElement(App, props), document.getElementById('main'));
+    }
+
+
+    function dispatch() {
+        if (arguments.length === 0) return;
+        var args = [].slice.apply(arguments);
+        var handler = args.shift();
+        if (typeof handler !== 'string') {
+            args.unshift(handler);
+            handler = typeof handler.type === 'string' ? handler.type : '';
         }
-        return routing.io.readFile('/' + window.editorKey + '/' + window.editorKey + 'conf').then(gotConf, gotNothing);
-    }
-
-    function bindEventHandlers() {
-        // 重置鼠标事件参数
-        function cloneMouseEvent(e) {
-            return {
-                clientX: e.clientX,
-                clientY: e.clientY,
-                offsetX: e.offsetX + e.target.parentNode.offsetLeft,
-                offsetY: e.offsetY + e.target.parentNode.offsetTop,
-                target: e.target,
-                button: e.button
-            };
+        if (typeof dispatcher[handler] === 'function') {
+            return dispatcher[handler].apply(model, args);
         }
-        return new Promise(function (resolve, reject) {
-            var containerleft = routing.ui.refs.containerleft;
-            var stageDom = routing.ui.refs.containerleft.refs.stage.getDOMNode();
-            // 变形器事件
-            routing.transformer.onChange = function (mesh) {
-                containerleft.refs.stage.setState({activeMesh: mesh});
-            }
-            // 关节变换器事件
-            routing.morpher.onChange = function (joint) {
-                containerleft.refs.stage.setState({activeJoint: joint});
-            }
-            // 舞台事件
-            stageDom.addEventListener('mousedown', function (e) {
-                routing.mousedown(cloneMouseEvent(e));
-            });
-            stageDom.addEventListener('mouseup', function (e) {
-                routing.mouseup(cloneMouseEvent(e));
-            });
-            stageDom.addEventListener('mouseleave', function (e) {
-                routing.mouseleave(cloneMouseEvent(e));
-            });
-            stageDom.addEventListener('mousemove', function (e) {
-                routing.mousemove(cloneMouseEvent(e));
-            });
-            stageDom.oncontextmenu = function (event) {
-                routing.mouseRightClick(event);
-                return false;
-            };
-            stageDom.onmousewheel = function(event) {
-                routing.stage.zoom(event);
-                event.stopPropagation();
-                return false;
-            };
-            // 全局resize事件
-            window.onresize = function () {
-                if (routing.stage != null) {
-                    routing.stage.resize();
-                }
-            };
-            // 全局鼠标事件
-            document.onkeydown = function (e) {
-                if (keyboard.preventDefault(e)) {
-                    e.preventDefault();
-                }
-            }
-            document.onkeyup = function (e) {
-                if (e.target.tagName !== 'BODY') {
-                    return;
-                }
-                var key = keyboard.translate(e);
-                // 优先派发component注册的自定义快捷键事件
-                if (keyboard.depatch(key)){
-                    return;
-                }
-                // 派发系统级别快捷键事件
-                var cmd = keyboard.key2cmd(key);
-                if (cmd !== undefined) {
-                    routing.main(cmd);
-                    return;
-                }
-            }
-            // 必成功
-            resolve();
-        });
     }
 
-    function displayInformation() {
-        return new Promise(function (resolve, reject) {
-            showLight();
-            function showLight() {
-                if (routing.ui == null) {
-                    setTimeout(showLight, 10);
-                    return;
-                }
-                // 显示灯光
-                routing.ui.refs.containerright.refs.verticallist.refs.lightBox.setState({
-                    light: routing.light.children
-                });
-                resolve();
-            }
-        });
+
+    function moveCameraByKeyboard(angle, direction) {
+        let stage = JSON.parse(JSON.stringify(model.store.stage));
+        stage.camera3D[angle] += direction;
+        if (angle === 'cameraAngleA') {
+            stage.camera3D[angle] = Math.min(stage.camera3D[angle], 89);
+            stage.camera3D[angle] = Math.max(stage.camera3D[angle], -89);
+        }
+        model.set('stage', stage);
     }
 
+
+    // 挂接所有快捷键事件
+    hotkey.on('escape', function () {
+        model.fill({
+            selectedMesh: null,
+            selectedVector: null,
+            selectedVectorIndex: -1
+        });
+    });
+    hotkey.on('f1', function () {
+        dispatcher['help-hotkey'].apply(model);
+    });
+    hotkey.on('ctrl + o', function () {
+        dispatcher['file-open'].apply(model);
+    });
+    hotkey.on('ctrl + s', function () {
+        dispatcher['file-save'].apply(model);
+    });
+    hotkey.on('ctrl + shift + s', function () {
+        dispatcher['file-saveAs'].apply(model);
+    });
+    hotkey.on('ctrl + shift + i', function () {
+        dispatcher['file-import'].apply(model);
+    });
+    hotkey.on('ctrl + shift + e', function () {
+        dispatcher['file-export'].apply(model);
+    });
+    hotkey.on('alt + digit1', function () {
+        dispatcher['view-3d'].apply(model);
+    });
+    hotkey.on('alt + digit2', function () {
+        dispatcher['view-xoz'].apply(model);
+    });
+    hotkey.on('alt + digit3', function () {
+        dispatcher['view-xoy'].apply(model);
+    });
+    hotkey.on('alt + digit4', function () {
+        dispatcher['view-zoy'].apply(model);
+    });
+    hotkey.on('alt + digit5', function () {
+        dispatcher['view-all'].apply(model);
+    });
+    hotkey.on('ctrl + d', function () {
+        dispatcher['tool-pickGeometry'].apply(model);
+    });
+    hotkey.on('ctrl + f', function () {
+        dispatcher['tool-pickJoint'].apply(model);
+    });
+    hotkey.on('ctrl + g', function () {
+        dispatcher['tool-pickLight'].apply(model);
+    });
+    hotkey.on('ctrl + e', function () {
+        dispatcher['camera-move'].apply(model);
+    });
+    hotkey.on('ctrl + r', function () {
+        let handler = model.store.transformer3Dinfo.mode === 'translate'
+            ? 'transformer-3d-mode-rotate' : 'transformer-3d-mode-translate';
+        dispatcher[handler].apply(model);
+    });
+    hotkey.on('arrowdown', function () {
+        moveCameraByKeyboard('cameraAngleA', -1);
+    });
+    hotkey.on('arrowup', function () {
+        moveCameraByKeyboard('cameraAngleA', 1);
+    });
+    hotkey.on('arrowright', function () {
+        moveCameraByKeyboard('cameraAngleB', 1);
+    });
+    hotkey.on('arrowleft', function () {
+        moveCameraByKeyboard('cameraAngleB', -1);
+    });
 });

@@ -1,0 +1,129 @@
+.tc-explorer {
+    width: 600px;
+    height: 400px;
+    .icon-up-level,
+    .icon-paste,
+    .icon-create-folder {
+        float: right;
+        margin-right: 10px;
+        font-size: 24px;
+        line-height: 34px;
+        &:hover {
+            color: @font-color-hover;
+            cursor: pointer;
+        }
+    }
+    .dir-bar {
+        margin: 10px 110px 10px 10px;
+        border: 1px solid @border-bottom-color;
+        padding: 3px 0 7px 5px;
+        >span {
+            margin-right: -10px;
+            position: relative;
+            top: 1px;
+        }
+        .fcui2-textbox-normal {
+            input {
+                font-size: 16px;
+                font-family: time new roman;
+                border-color: transparent;
+                &:hover,&:focus {
+                    border-color: transparent;
+                }
+            }
+        }
+    }
+    .fcui2-table {
+        position: absolute;
+        top: 50px;
+        left: 10px;
+        right: 10px;
+        bottom: 50px;
+        overflow: hidden;
+        border: 1px solid @border-bottom-color;
+        .table-container {
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            &::-webkit-scrollbar {
+                width: 10px;
+                background-color: transparent;
+            }
+            &::-webkit-scrollbar-thumb {
+                border-radius: 3px;
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNui8sowAAAAWdEVYdENyZWF0aW9uIFRpbWUAMTIvMTUvMTa/LrshAAAAKUlEQVQYlWP8//8/AwMDA8Pdu3chDDSgrKzMyMDAwMCETRIbGFVIHYUACYsHEco9/38AAAAASUVORK5CYII=);
+            }
+        }
+        .shadow-container {
+            border-bottom: 1px solid @border-bottom-color;
+        }
+        table {
+            border-right: 0px;
+            th {
+                line-height: 30px;
+            }
+            td {
+                line-height: 30px;
+            }
+        }
+        td:nth-child(1), th:nth-child(1) {
+            border-left: 0px;
+        }
+    }
+    .file-name, .file-meta {
+        line-height: 30px;
+        font-size: 12px;
+        cursor: default;
+        .tc-icon {
+            font-size: 14px;
+            margin: 0 5px;
+        }
+        .icon-copy {
+            position: relative;
+            top: 2px;
+        }
+        .icon-cut {
+            font-size: 16px;
+        }
+        .icon-cut,.icon-copy,.icon-edit {
+            float: right;
+            cursor: pointer;
+            display: none;
+            &:hover {
+                color: @font-color-hover;
+            }
+        }
+        &:hover {
+            .icon-cut,.icon-copy,.icon-edit {
+                display: inline;
+            }
+        }
+    }
+    .file-operation {
+        .tc-icon {
+            cursor: pointer;
+            font-size: 12px;
+            margin: 0 5px;
+            position: relative;
+            top: -2px;
+            &:hover {
+                color: @font-color-hover;
+            }
+        }
+    }
+    .foot-bar {
+        position: absolute;
+        bottom: 12px;
+        left: 10px;
+        right: 10px;
+        .fcui2-textbox {
+            input {
+                height: 28px;
+                border-color: @border-bottom-color;
+            }
+        }
+        .fcui2-button {
+            margin-left: 5px;
+        }
+    }
+}

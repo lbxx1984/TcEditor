@@ -1,0 +1,70 @@
+// version 0.0.3
+.fcui2-pager {
+    .fcui2-button {
+        margin-left: 5px;
+        width: 28px;
+        input {
+            padding: 0;
+        }
+    }
+    .pager-btn{
+        width: 60px;
+    }
+    .page-jumper {
+        margin-left: 20px;
+        .fcui2-numberbox {
+            background: transparent;
+            position: relative;
+            left: 9px;
+            input {
+                padding: 0 !important;
+                text-align: center;
+            }
+        }
+    }
+}
+
+.fcui2-pager-simple {
+    .fcui2-button {
+        background-color: transparent;
+        border: 0;
+        input {
+            color: @color-link; 
+            &:hover {
+                color: @color-text-3;
+            }
+        }
+        &:hover {
+            -webkit-box-shadow: 0 0 0;
+            -moz-box-shadow: 0 0 0;
+            box-shadow: 0 0 0;
+        }
+    }
+    .fcui2-button-active {
+        input {
+            color: @color-text-3;
+        }
+    }
+}
+
+// oneux3
+.fcui2-pager {
+    .fcui2-button-oneux3-normal, .fcui2-button-oneux3-active {
+        -moz-border-radius: 0px;
+        -webkit-border-radius: 0px;
+        border-radius: 0px;
+    }
+}
+.fcui2-pager-simple {
+    .fcui2-button-oneux3-active {
+        background-color: @oneux3-bgcolor-c20;
+        input {
+            color: @oneux3-color-c8;
+        }
+    }
+    .fcui2-button-oneux3-normal {
+        input {
+            color: @oneux3-color-c1;
+        }
+    }
+}

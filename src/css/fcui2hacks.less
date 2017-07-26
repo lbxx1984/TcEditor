@@ -1,0 +1,115 @@
+.fcui2-titlewindow-normal {
+    .title-bar {
+        background-color: @background-color-main;
+        font-family: @font-normal;
+    }
+    .content {
+        &::-webkit-scrollbar {
+            width: 10px;
+            background-color: @background-color-main;
+        }
+        &::-webkit-scrollbar-thumb {
+            border-radius: 3px;
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNui8sowAAAAWdEVYdENyZWF0aW9uIFRpbWUAMTIvMTUvMTa/LrshAAAAKUlEQVQYlWP8//8/AwMDA8Pdu3chDDSgrKzMyMDAwMCETRIbGFVIHYUACYsHEco9/38AAAAASUVORK5CYII=);
+        }
+    }
+}
+.fcui2-colorpicker {
+    .input-container {
+        >div {
+            >span {
+                font-size: 12px;
+                font-family: @font-normal;
+            }
+        }
+    }
+}
+.fcui2-numberbox-normal {
+    background-color: transparent;
+    .btn-container {
+        background-color: @background-color-main;
+        .font-icon:hover {
+            background-color: @background-color-checked;
+        }
+    }
+    input {
+        height: 24px;
+        color: @font-color-main;
+        &:hover,&:focus {
+            border-color: @font-color-hover !important;
+        }
+    }
+}
+.fcui2-numberbox-normal-hover, .fcui2-numberbox-normal:hover {
+    input {
+        border-color: @font-color-hover !important;
+    }
+}
+.fcui2-layer-black {
+    border-color: @font-color-hover;
+}
+.fcui2-button-black {
+    background-color: @background-color-main;
+    border-color: @background-color-main;
+    input {
+        color: @font-color-main;
+    }
+}
+.fcui2-button-disabled {
+    input {
+        color: @font-color-disabled;
+    }
+}
+.fcui2-textbox-normal {
+    input {
+        height: 24px;
+        color: @font-color-main;
+        &:hover,&:focus {
+            border-color: @font-color-hover;
+        }
+    }
+}
+.fcui2-checkbox {
+    .icon-checkbox-selected {
+        color: @background-color-checked;
+    }
+}
+.fcui2-dropdownlist {
+    height: 26px;
+    background-color: transparent;
+    .label-container {
+        color: @font-color-main;
+    }
+    .font-icon {
+        color: @font-color-main;
+    }
+    .icon-right:before {
+        font-family: "fcIcon";
+        content: "\E65C";
+    }
+}
+.fcui2-dropdownlist:hover, .fcui2-dropdownlist-normal-hover {
+    cursor: pointer;
+    .font-icon {
+        color: @font-color-hover;
+    }
+}
+
+
+.in-layer {
+    .fcui2-numberbox-normal {
+        input {
+            color: @background-color-main;
+        }
+        .btn-container {
+            .font-icon {
+                color: @font-color-main;
+            }
+        }
+    }
+    .fcui2-textbox-normal {
+        input {
+            color: @background-color-main;
+        }
+    }
+}

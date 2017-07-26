@@ -1,0 +1,35 @@
+.tc-tools-bar {
+    position: fixed;
+    top: 83px;
+    left: 0px;
+    width: 40px;
+    border-bottom: 1px solid @border-bottom-color;
+    border-top: 1px solid @border-top-color;
+    border-right: 1px solid @border-right-color;
+    background-color: @background-color-main;
+    .tc-icon {
+        color: @font-color-main;
+        width: 39px;
+        height: 38px;
+        line-height: 38px;
+        text-align: center;
+        font-size: 20px;
+        cursor: pointer;
+        border-right: 1px solid @border-left-color;
+        &:hover {
+            color: @font-color-hover;
+            background-color: @background-color-hover;
+        }
+        &:last-child {
+            border-bottom: 1px solid @border-left-color;
+        }
+    }
+    .selected {
+        background-color: @background-color-checked;
+        color: @font-color-main;
+        border-right-color: @background-color-checked;
+        &:hover {
+            border-right-color: @border-left-color;
+        }
+    }
+}

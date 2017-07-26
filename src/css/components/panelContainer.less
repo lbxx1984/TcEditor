@@ -1,0 +1,58 @@
+.tc-panel-container {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    width: 300px;
+    border-top: 1px solid @border-top-color;
+    border-left: 1px solid @border-left-color;
+    overflow-x: hidden;
+    cursor: default;
+    .tc-icon {
+        cursor: pointer;
+        &:hover {
+            color: @font-color-hover;
+        }
+    }
+    .icon-disabled, .icon-disabled:hover {
+        cursor: default;
+        color: @font-color-disabled;
+    }
+    .tc-panel-title-bar {
+        color: @font-color-main;
+        line-height: 30px;
+        margin: 0 10px;
+        .icon-down, .icon-right {
+            margin-right: 5px;
+        }
+        .icon-close {
+            float: right;
+            margin-right: 7px;
+        }
+    }
+    .tc-panel-content-container {
+        border: 1px solid;
+        border-left-color: @border-right-color;
+        border-right-color: @border-right-color;
+        border-bottom-color: @border-top-color;
+        border-top-color: @border-bottom-color;
+        margin: 0 10px;
+        max-height: 400px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        >div:first-child {
+            border-top: 1px solid @border-top-color;
+        }
+        >div:last-child {
+            border-bottom: 1px solid @border-bottom-color;
+        }
+        &::-webkit-scrollbar {
+            width: 10px;
+            background-color: @background-color-main;
+        }
+        &::-webkit-scrollbar-thumb {
+            border-radius: 3px;
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNui8sowAAAAWdEVYdENyZWF0aW9uIFRpbWUAMTIvMTUvMTa/LrshAAAAKUlEQVQYlWP8//8/AwMDA8Pdu3chDDSgrKzMyMDAwMCETRIbGFVIHYUACYsHEco9/38AAAAASUVORK5CYII=);
+        }
+    }
+}

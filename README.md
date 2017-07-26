@@ -1,14 +1,16 @@
-﻿###Install：
+
+## Install
 ```bash
 npm install
 ```
-###Start：
+
+## Startup
 ```bash
-edp ws start
+npm start
 ```
-###Access:
+
+## Visit:
 [http://localhost:8088/](http://localhost:8088/)
-###Build:
-```bash
-edp build
-```
+
+## Build
+npm run build

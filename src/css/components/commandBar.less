@@ -1,0 +1,88 @@
+.tc-command-bar {
+
+    position: fixed;
+    top: 41px;
+    left: 0px;
+    height: 40px;
+    right: 0px;
+    border-bottom: 1px solid @border-bottom-color;
+    border-top: 1px solid @border-top-color;
+    border-right: 1px solid @border-right-color;
+
+    .command-label, .command-text-button, .command-icon-button, .command-icon-button-disabled {
+        display: inline-block;
+        border-left: 1px solid @border-left-color;
+        border-right: 1px solid @border-right-color;
+        height: 40px;
+        line-height: 40px;
+        background-color: @background-color-main;
+    }
+    .command-label {
+        position: relative;
+        top: -1px;
+        color: @font-color-label;
+        font-size: 14px;
+        font-weight: 700;
+        font-style: italic;
+        padding: 0 10px;
+        cursor: default;
+    }
+    .command-text-button {
+        position: relative;
+        top: -1px;
+        width: 40px;
+        font-family: @font-normal;
+        color: @font-color-main;
+        text-align: center;
+        font-size: 14px;
+        cursor: pointer;
+        font-weight: 700;
+        &:hover {
+            background-color: @background-color-hover;
+            color: @font-color-hover;
+        }
+    }
+    .command-icon-button {
+        display: inline-block;
+        border-left: 1px solid @border-left-color;
+        border-right: 1px solid @border-right-color;
+        height: 40px;
+        width: 40px;
+        text-align: center;
+        cursor: pointer;
+        &:hover {
+            background-color: @background-color-hover;
+            color: @font-color-hover;
+            .tc-icon {
+                color: @font-color-hover;
+            }
+        }
+        .tc-icon {
+            color: @font-color-main;
+            font-size: 22px;
+        }
+    }
+    .command-icon-button-disabled {
+        opacity: 0.6;
+        display: inline-block;
+        border-left: 1px solid @border-left-color;
+        border-right: 1px solid @border-right-color;
+        height: 40px;
+        width: 40px;
+        text-align: center;
+        cursor: default;
+        .tc-icon {
+            color: @font-color-main;
+            font-size: 22px;
+        }
+    }
+    .checked-item {
+        background-color: @background-color-checked;
+        color: @font-color-main;
+    }
+    .icon-screen4 {
+        font-size: 20px !important;
+        position: relative;
+        top: 2px;
+    }
+}
