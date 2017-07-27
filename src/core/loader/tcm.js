@@ -65,11 +65,7 @@ define(function (require) {
         });
         let material = new THREE[mtl.type](args);
         // 导入纹理
-        if (
-            mtl.map && mesh.textures instanceof Array && mesh.textures.length
-            && mtl.map === mesh.textures[0].uuid
-            && tcm.images[mesh.textures[0].image]
-        ) {
+        if (mesh.textures instanceof Array && mesh.textures.length && tcm.images[mesh.textures[0].image]) {
             io.importImage(mesh.textures[0].image, tcm.images[mesh.textures[0].image]).then(function (img) {
                 material.map = new THREE.Texture(img);
                 material.map.needsUpdate = true;

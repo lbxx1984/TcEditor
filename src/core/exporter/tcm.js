@@ -21,25 +21,21 @@ define(function (require) {
 
         // 导出物体
         _.each(store.mesh3d, function (mesh, uuid) {
-            // 导出结构
             let obj = mesh2obj(mesh);
-            let clone = JSON.stringify(obj);
-            // 合并图片
-            _.each(obj.images, function (image) {
-                let key = findImagesInCatch(images, image.url);
-                if (!key) {
-                    images[image.uuid] = image.url;
-                }
-                else {
-                    clone.replace(image.uuid, key);
-                }
-            });
-            obj = JSON.parse(clone);
+            if (obj.images instanceof Array) {
+                obj.images.map(function (img) {
+                    let imgObj = {};
+                    imgObj[img.uuid] = img.url;
+                    images = _.extend({}, images, imgObj);
+                });
+            }
+            
             delete obj.images;
-            // 压缩模型
             compressFloat(obj, store.compressMode);
             meshes[uuid] = obj;
         });
+
+        console.log(images);
 
         // 导出灯光
         _.each(store.lights, function (light, uuid) {
