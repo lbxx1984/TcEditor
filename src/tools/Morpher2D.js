@@ -1,10 +1,10 @@
 define(function (require) {
 
 
-    var _ = require('underscore');
-    var math = require('../core/math');
-    var handlerFactories = require('./common/handlerFactories');
-    var AXIS_COLOR = {
+    const _ = require('underscore');
+    const math = require('../core/math');
+    const handlerFactories = require('./common/handlerFactories');
+    const AXIS_COLOR = {
         x: '#FF0000',
         y: '#00FF00',
         z: '#0000FF',
@@ -19,13 +19,13 @@ define(function (require) {
 
     // 获取摄像机位置
     function getCameraPosition(me) {
-        var cameraAngleA = me.cameraAngleA;
-        var cameraAngleB = me.cameraAngleB;
-        var cameraRadius = me.cameraRadius;
-        var cameraLookAt = me.cameraLookAt;
-        var y = cameraRadius * Math.sin(Math.PI * cameraAngleA / 180);
-        var x = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.cos(Math.PI * cameraAngleB / 180);
-        var z = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.sin(Math.PI * cameraAngleB / 180);
+        let cameraAngleA = me.cameraAngleA;
+        let cameraAngleB = me.cameraAngleB;
+        let cameraRadius = me.cameraRadius;
+        let cameraLookAt = me.cameraLookAt;
+        let y = cameraRadius * Math.sin(Math.PI * cameraAngleA / 180);
+        let x = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.cos(Math.PI * cameraAngleB / 180);
+        let z = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.sin(Math.PI * cameraAngleB / 180);
         return {
             x: x + cameraLookAt.x,
             y: y + cameraLookAt.y,
@@ -36,13 +36,13 @@ define(function (require) {
 
     // 绘制箭头
     function arrow(axis, info, size) {
-        var x0 = info.o[0];
-        var y0 = info.o[1];
-        var x1 = info[axis][0];
-        var y1 = info[axis][1];
-        var sin = info['sin' + axis];
-        var cos = info['cos' + axis];
-        var r = 2;
+        let x0 = info.o[0];
+        let y0 = info.o[1];
+        let x1 = info[axis][0];
+        let y1 = info[axis][1];
+        let sin = info['sin' + axis];
+        let cos = info['cos' + axis];
+        let r = 2;
         d = 100 * size;
         x1 = d * sin + x0;
         y1 = d * cos + y0;
@@ -64,18 +64,18 @@ define(function (require) {
     function face(info, size, ruleA, ruleB) {
         ruleA = ruleA || 'a';
         ruleB = ruleB || 'b';
-        var x0 = info.o[0];
-        var y0 = info.o[1];
-        var x1 = info[ruleA][0];
-        var y1 = info[ruleA][1];
-        var x2 = info[ruleB][0];
-        var y2 = info[ruleB][1];
-        var x3 = 0;
-        var y3 = 0;
-        var sina = info['sin' + ruleA];
-        var cosa = info['cos' + ruleA];
-        var sinb = info['sin' + ruleB];
-        var cosb = info['cos' + ruleB];
+        let x0 = info.o[0];
+        let y0 = info.o[1];
+        let x1 = info[ruleA][0];
+        let y1 = info[ruleA][1];
+        let x2 = info[ruleB][0];
+        let y2 = info[ruleB][1];
+        let x3 = 0;
+        let y3 = 0;
+        let sina = info['sin' + ruleA];
+        let cosa = info['cos' + ruleA];
+        let sinb = info['sin' + ruleB];
+        let cosb = info['cos' + ruleB];
         d1 = 50 * size;
         d2 = 50 * size;
         x1 = d1 * sina + x0;
@@ -119,14 +119,17 @@ define(function (require) {
     function Morpher2D(param) {
         _.extend(this, param);
         this.mesh = null;
+        this.anchor = null;
         this.index = null;
-        this.points = [];
+        this.hoverIndex = null;
         this.helpers = [];
-        this.anchors = [];
+        this.points = [];
+        this.mouseX = -999;
+        this.mouseY = -999;
+        this.isDragging = false;
         this.___containerMouseDownHandler___ = this.___containerMouseDownHandler___.bind(this);
         this.___containerMouseUpHandler___ = this.___containerMouseUpHandler___.bind(this);
         this.___containerMouseMoveHandler___ = this.___containerMouseMoveHandler___.bind(this);
-        this.container.addEventListener('mousedown', this.___containerMouseDownHandler___);
     }
 
 
@@ -137,73 +140,98 @@ define(function (require) {
         }
         this.mesh = mesh;
         this.updateAnchors();
+        this.container.addEventListener('mousemove', this.___containerMouseMoveHandler___);
+        this.container.addEventListener('mousedown', this.___containerMouseDownHandler___);
+        this.container.addEventListener('mouseup', this.___containerMouseUpHandler___);
     };
 
 
     Morpher2D.prototype.detach = function () {
         while (this.helpers.length) this.helpers.pop().remove();
-        while (this.anchors.length) this.anchors.pop().remove();
         this.mesh = null;
+        this.anchor = null;
+        this.hoverIndex = null;
         this.index = null;
+        const width = this.container.offsetWidth;
+        const height = this.container.offsetHeight;
+        const ctx = this.canvas.getContext('2d');
+        this.canvas.width = width;
+        this.canvas.height = height;
+        ctx.clearRect(0, 0, width, height);
+        this.container.removeEventListener('mousemove', this.___containerMouseMoveHandler___);
+        this.container.removeEventListener('mousedown', this.___containerMouseDownHandler___);
+        this.container.removeEventListener('mouseup', this.___containerMouseUpHandler___);
     };
 
 
     Morpher2D.prototype.attachAnchor = function (index) {
-        var me = this;
+        let me = this;
         this.index = index;
         this.anchor = null;
-        this.points.map(function (p) {me.anchor = p.i === index ? p : me.anchor;});
+        this.points.map(function (p) {
+            me.anchor = p.i === index ? p : me.anchor;
+        });
         this.updateSelectedAnchor();
     };
 
 
-    Morpher2D.prototype.updateAnchors = function () {
-        while (this.anchors.length) this.anchors.pop().remove();
-        var me = this;
-        var anchors = [];
-        var points = [];
-        var axis = this.axis;
-        var vertices = this.mesh.geometry.vertices;
-        var local2world = handlerFactories.local2world(me);
-        var axis2screen = handlerFactories.math('axis2screen', me);
-        var cameraPos = getCameraPosition(me);
-        var color = this.color.toString(16); while(color.length < 6) color = '0' + color; color = '#' + color;
-        var size = 5 * 1000 / this.size;
-        vertices.map(function (v, i) {
+    Morpher2D.prototype.updateAnchors = function (mouseX, mouseY) {
+
+        const local2world = handlerFactories.local2world(this);
+        const axis2screen = handlerFactories.math('axis2screen', this);
+        const cameraPos = getCameraPosition(this);
+
+        const axis = this.axis;
+        const size = 4 * 1000 / this.size;
+
+        let color = this.color.toString(16); while(color.length < 6) color = '0' + color; color = '#' + color;
+        let points = [];
+        let hoverIndex = null;
+
+        this.mesh.geometry.vertices.map(function (v, i) {
             points[i] = local2world(v.x, v.y, v.z);
             points[i].d = v.distanceTo(cameraPos);
             points[i].i = i;
             points[i].o = axis2screen(points[i][axis[0]], points[i][axis[1]]);
         });
-        points.sort(function (a, b) {
-            return a.d - b.d;
-        });
+        points.sort((a, b) => a.d - b.d);
+
+        const width = this.container.offsetWidth;
+        const height = this.container.offsetHeight;
+        const ctx = this.canvas.getContext('2d');
+        this.canvas.width = width;
+        this.canvas.height = height;
+        ctx.clearRect(0, 0, width, height);
+
         points.map(function (p, i) {
-            anchors[i] = me.svg
-                .circle(p.o[0], p.o[1], size)
-                .attr('fill', color)
-                .click(function () {typeof me.onAnchorClick === 'function' && me.onAnchorClick(p.i);});
+            ctx.beginPath();
+            ctx.arc(p.o[0], p.o[1], size, 0, 2 * Math.PI, false);
+            let inMouseIn = mouseX !== undefined && mouseY !== undefined ? ctx.isPointInPath(mouseX, mouseY) : false;
+            ctx.fillStyle= inMouseIn ? 'yellow' : color;
+            hoverIndex = inMouseIn ? p.i : hoverIndex;
+            ctx.fill();
         });
-        this.anchors = anchors;
+
         this.points = points;
-        anchorMouseHandler(this.anchors);
+
+        return hoverIndex;
     };
 
 
     Morpher2D.prototype.updateSelectedAnchor = function () {
         while (this.helpers.length) this.helpers.pop().remove();
         if (!this.anchor) return;
-        var me = this;
-        var anchor = this.anchor;
-        var axis = this.axis;
-        var axis2screen = handlerFactories.math('axis2screen', me);
-        var o = {x: anchor.x, y: anchor.y, z: anchor.z};
-        var a = {x: o.x, y: o.y, z: o.z}; a[axis[0]] += 100; a = axis2screen(a[axis[0]], a[axis[1]]);
-        var b = {x: o.x, y: o.y, z: o.z}; b[axis[1]] += 100; b = axis2screen(b[axis[0]], b[axis[1]]); 
+        let me = this;
+        let anchor = this.anchor;
+        let axis = this.axis;
+        let axis2screen = handlerFactories.math('axis2screen', me);
+        let o = {x: anchor.x, y: anchor.y, z: anchor.z};
+        let a = {x: o.x, y: o.y, z: o.z}; a[axis[0]] += 100; a = axis2screen(a[axis[0]], a[axis[1]]);
+        let b = {x: o.x, y: o.y, z: o.z}; b[axis[1]] += 100; b = axis2screen(b[axis[0]], b[axis[1]]); 
         o = axis2screen(o[axis[0]], o[axis[1]]);
-        var d1 = Math.sqrt((o[0] - a[0]) * (o[0] - a[0]) + (o[1] - a[1]) * (o[1] - a[1]));
-        var d2 = Math.sqrt((o[0] - b[0]) * (o[0] - b[0]) + (o[1] - b[1]) * (o[1] - b[1]));
-        var info = {
+        let d1 = Math.sqrt((o[0] - a[0]) * (o[0] - a[0]) + (o[1] - a[1]) * (o[1] - a[1]));
+        let d2 = Math.sqrt((o[0] - b[0]) * (o[0] - b[0]) + (o[1] - b[1]) * (o[1] - b[1]));
+        let info = {
             o: o, a: a, b: b,
             sina: (a[0] - o[0]) / d1,
             cosa: (a[1] - o[1]) / d1,
@@ -211,7 +239,7 @@ define(function (require) {
             cosb: (b[1] - o[1]) / d2,
             screen2axis: handlerFactories.math('screen2axis', me)
         };
-        var size = 1000 / me.size;
+        let size = 1000 / me.size;
         this.helpers[0] = me.svg.path(face(info, size)).attr('fill', AXIS_COLOR[axis.join('')])
             .mousedown(mousedownHandler(me, 'o'));
         this.helpers[1] = me.svg.path(arrow('a', info, size)).attr('fill', AXIS_COLOR[axis[0]])
@@ -224,34 +252,33 @@ define(function (require) {
 
 
     Morpher2D.prototype.___containerMouseDownHandler___ = function (evt) {
-        if (!this.mesh || !this.command) return;
-        this.container.addEventListener('mouseup', this.___containerMouseUpHandler___);
-        this.container.addEventListener('mousemove', this.___containerMouseMoveHandler___);
+        if (!this.mesh) return;
         this.mouseX = evt.clientX;
         this.mouseY = evt.clientY;
     };
 
 
     Morpher2D.prototype.___containerMouseMoveHandler___ = function (evt) {
+        this.hoverIndex = this.updateAnchors(evt.layerX, evt.layerY);
         if (!this.mesh || !this.command || !this.anchor) return;
-        var dx = evt.clientX - this.mouseX;
-        var dy = evt.clientY - this.mouseY;
+        let dx = evt.clientX - this.mouseX;
+        let dy = evt.clientY - this.mouseY;
         this.mouseX = evt.clientX;
         this.mouseY = evt.clientY;
-        var info = this.helpInfo;
-        var p = this.anchor;
-        var d1 = (info.cosb * dx - info.sinb * dy) / (info.sina * info.cosb - info.sinb * info.cosa);
-        var d2 = (info.cosa * dx - info.sina * dy) / (info.cosa * info.sinb - info.cosb * info.sina);
+        let info = this.helpInfo;
+        let p = this.anchor;
+        let d1 = (info.cosb * dx - info.sinb * dy) / (info.sina * info.cosb - info.sinb * info.cosa);
+        let d2 = (info.cosa * dx - info.sina * dy) / (info.cosa * info.sinb - info.cosb * info.sina);
         d1 = this.command === this.axis[1] ? 0 : d1;
         d2 = this.command === this.axis[0] ? 0 : d2;
         dx = d1 * info.sina + d2 * info.sinb;
         dy = d1 * info.cosa + d2 * info.cosb;
-        var center = info.screen2axis(info.o[0], info.o[1]);
-        var to = info.screen2axis(info.o[0] + dx, info.o[1] + dy);
-        var d3 = {x: 0, y: 0, z: 0};
+        let center = info.screen2axis(info.o[0], info.o[1]);
+        let to = info.screen2axis(info.o[0] + dx, info.o[1] + dy);
+        let d3 = {x: 0, y: 0, z: 0};
         d3[this.axis[0]] = to[0] - center[0];
         d3[this.axis[1]] = to[1] - center[1];
-        var local = math.world2local(p.x + d3.x, p.y + d3.y, p.z + d3.z, this.mesh);
+        let local = math.world2local(p.x + d3.x, p.y + d3.y, p.z + d3.z, this.mesh);
         this.mesh.geometry.vertices[this.anchor.i].x = local[0];
         this.mesh.geometry.vertices[this.anchor.i].y = local[1];
         this.mesh.geometry.vertices[this.anchor.i].z = local[2];
@@ -260,14 +287,16 @@ define(function (require) {
             p = this.selectedVector.position;
             this.selectedVector.position.set(p.x + d3.x, p.y + d3.y, p.z + d3.z);
         }
+        this.isDragging = true;
         typeof this.onObjectChange === 'function' && this.onObjectChange();
     };
 
 
     Morpher2D.prototype.___containerMouseUpHandler___ = function (evt) {
+        !this.isDragging && this.hoverIndex != null && typeof this.onAnchorClick === 'function' && this.onAnchorClick(this.hoverIndex);
         this.command = '';
-        this.container.removeEventListener('mouseup', this.___containerMouseUpHandler___);
-        this.container.removeEventListener('mousemove', this.___containerMouseMoveHandler___);
+        this.isDragging = false;
+        this.hoverIndex = null;
     };
 
 

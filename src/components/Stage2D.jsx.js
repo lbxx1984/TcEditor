@@ -189,6 +189,7 @@ define(function (require) {
                 cameraAngleA: this.props.cameraAngleA,
                 cameraAngleB: this.props.cameraAngleB,
                 svg: this.svgRenderer,
+                canvas: this.refs.morpher,
                 container: this.refs.container,
                 size: this.props.morpher3Dinfo.anchorSize,
                 color: this.props.morpher3Dinfo.anchorColor,
@@ -196,6 +197,7 @@ define(function (require) {
                 onAnchorClick: function (i) {me.context.dispatch('morpher-2d-pick-anchor', i);},
                 onObjectChange: function () {
                     if (me.props.selectedMesh && me.props.selectedMesh.tc) {
+                        me.isDragging = true;
                         me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
                         me.context.dispatch('updateTimer');
                     }
@@ -362,6 +364,10 @@ define(function (require) {
                 ref: 'renderer',
                 className: 'fixed-canvas'
             };
+            var morpherCanvasProps = {
+                ref: 'morpher',
+                className: 'fixed-canvas'
+            };
             var svgProps = {
                 ref: 'svg',
                 className: 'fixed-canvas'
@@ -370,6 +376,7 @@ define(function (require) {
                 <div {...containerProps}>
                     <canvas {...gridCanvasProps}/>
                     <canvas {...rendererCanvasProps}/>
+                    <canvas {...morpherCanvasProps}/>
                     <div {...svgProps}></div>
                 </div>
             );
