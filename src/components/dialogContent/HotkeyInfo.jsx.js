@@ -76,6 +76,10 @@ define(function (require) {
             info: 'Unselect mesh or joint.'
         },
         {
+            hotkey: 'Delete',
+            info: 'Delete selected mesh'
+        },
+        {
             hotkey: 'F1',
             info: 'See hotkey config.'
         },

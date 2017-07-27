@@ -72,8 +72,24 @@ define(function (require) {
             selectedVectorIndex: -1
         });
     });
+    hotkey.on('delete', function () {
+        if (!model.store.selectedMesh) return;
+        dispatcher['deleteMesh'].apply(model, [model.store.selectedMesh.uuid]);
+    });
     hotkey.on('f1', function () {
         dispatcher['help-hotkey'].apply(model);
+    });
+    hotkey.on('arrowdown', function () {
+        moveCameraByKeyboard('cameraAngleA', -1);
+    });
+    hotkey.on('arrowup', function () {
+        moveCameraByKeyboard('cameraAngleA', 1);
+    });
+    hotkey.on('arrowright', function () {
+        moveCameraByKeyboard('cameraAngleB', 1);
+    });
+    hotkey.on('arrowleft', function () {
+        moveCameraByKeyboard('cameraAngleB', -1);
     });
     hotkey.on('ctrl + o', function () {
         dispatcher['file-open'].apply(model);
@@ -121,17 +137,5 @@ define(function (require) {
         let handler = model.store.transformer3Dinfo.mode === 'translate'
             ? 'transformer-3d-mode-rotate' : 'transformer-3d-mode-translate';
         dispatcher[handler].apply(model);
-    });
-    hotkey.on('arrowdown', function () {
-        moveCameraByKeyboard('cameraAngleA', -1);
-    });
-    hotkey.on('arrowup', function () {
-        moveCameraByKeyboard('cameraAngleA', 1);
-    });
-    hotkey.on('arrowright', function () {
-        moveCameraByKeyboard('cameraAngleB', 1);
-    });
-    hotkey.on('arrowleft', function () {
-        moveCameraByKeyboard('cameraAngleB', -1);
     });
 });

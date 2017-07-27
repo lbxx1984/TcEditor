@@ -73,18 +73,7 @@ define(function (require) {
             var dom = getLabelDom(e.target);
             var dispatch = this.context.dispatch;
             if (dom.dataset.level === 'mesh') {
-                dialog.confirm({
-                    title: 'Please Confirm',
-                    message: '<h4>Are you sure to remove this mesh?</h4>',
-                    appSkin: 'oneux3',
-                    labels: {
-                        enter: 'Yes',
-                        cancel: 'No'
-                    },
-                    onEnter: function () {
-                        dispatch('deleteMesh', dom.dataset.id);
-                    }
-                });
+                dispatch('deleteMesh', dom.dataset.id);
             }
             else {
                 dialog.confirm({

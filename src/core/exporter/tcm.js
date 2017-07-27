@@ -22,20 +22,20 @@ define(function (require) {
         // 导出物体
         _.each(store.mesh3d, function (mesh, uuid) {
             let obj = mesh2obj(mesh);
-            if (obj.images instanceof Array) {
-                obj.images.map(function (img) {
-                    let imgObj = {};
-                    imgObj[img.uuid] = img.url;
-                    images = _.extend({}, images, imgObj);
+            _.each(obj.images, function (img) {
+                let uuid = img.uuid;
+                _.each(images, function (data, key) {
+                    data === img.url && (uuid = key);
                 });
-            }
-            
+                _.each(obj.textures, function (texture) {
+                    texture.image === img.uuid && (texture.image = uuid);
+                });
+                images[uuid] = img.url;
+            });
             delete obj.images;
             compressFloat(obj, store.compressMode);
             meshes[uuid] = obj;
         });
-
-        console.log(images);
 
         // 导出灯光
         _.each(store.lights, function (light, uuid) {
