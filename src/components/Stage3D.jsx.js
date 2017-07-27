@@ -114,11 +114,9 @@ define(function (require) {
     function updateMeshList(nextProps, me) {
         if (nextProps.mesh3d === me.props.mesh3d) return;
         var oldMeshHash = _.extend({}, me.props.mesh3d);
-        me.meshArray = [];
         for (var key in nextProps.mesh3d) {
             if (!nextProps.mesh3d.hasOwnProperty(key)) continue;
             var mesh = nextProps.mesh3d[key];
-            me.meshArray.push(mesh);
             delete oldMeshHash[mesh.uuid];
             if (mesh.tc.add) continue;
             mesh.tc.add = true;

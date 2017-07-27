@@ -76,6 +76,9 @@ define(function (require) {
                 children: [
                     {
                         label: 'Plane', value: 'geometry-plane;tool'
+                    },
+                    {
+                        label: 'Sphere', value: 'geometry-sphere;tool'
                     }
                 ]
             },

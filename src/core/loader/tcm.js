@@ -29,8 +29,12 @@ define(function (require) {
         switch (geo.type) {
             case 'PlaneGeometry':
                 args = [geo.width, geo.height, geo.widthSegments, geo.heightSegments];
-            default:
                 break;
+            case 'SphereGeometry':
+                args = [geo.radius, geo.widthSegments, geo.heightSegments];
+                break;
+            default:
+                return null;
         }
         let geometry = new THREE[geo.type](...args);
         // 导入物体骨骼
@@ -79,6 +83,7 @@ define(function (require) {
     function loadMesh(mesh, tcm) {
         let geometry = createGeometry(mesh);
         let material = createMaterial(mesh, tcm);
+        if (!geometry) return null;
         let mesh3D = new THREE.Mesh(geometry, material);
         mesh3D.tc = mesh.tc;
         mesh3D.tc.birth = new Date(mesh.tc.birth);
@@ -93,6 +98,7 @@ define(function (require) {
         dataset.mesh3d = _.extend({}, model.store.mesh3d);
         _.each(tcm.meshes, function (json, uuid) {
             let mesh = loadMesh(json, tcm);
+            if (!mesh) return;
             mesh.applyMatrix(createMatrix4(json.object.matrix));
             dataset. mesh3d[mesh.uuid] = mesh;
         });

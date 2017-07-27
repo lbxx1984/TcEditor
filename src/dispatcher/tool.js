@@ -24,6 +24,10 @@ define(function (require) {
         mesh.material.setValues({color: mesh.tc.materialColor});
     }
 
+    function getMesh3dArray(model) {
+        return _.toArray(model.store.mesh3d);
+    }
+
     function getObject3dByMouse3D(x, y, stage, meshes) {
         var vector = new THREE.Vector3(
             (x / stage.refs.container.offsetWidth) * 2 - 1,
@@ -41,7 +45,7 @@ define(function (require) {
             param.event.nativeEvent.offsetX,
             param.event.nativeEvent.offsetY,
             param.stage3D,
-            targetMeshes ? targetMeshes : param.stage3D.meshArray
+            targetMeshes
         );
         if (obj) {
             if (obj.tc.locked) return;
@@ -165,7 +169,7 @@ define(function (require) {
             // 拖拽容忍
             if (typeof param !== 'object' || dragging) return;
             // hover物体
-            hoverMeshByMouse3d(param, selectedMesh);
+            hoverMeshByMouse3d(param, selectedMesh, getMesh3dArray(this));
         },
         'tool-pickGeometry-2d': function (param, dragging) {
             var selectedMesh = this.get('selectedMesh');
@@ -205,14 +209,14 @@ define(function (require) {
             if (typeof param !== 'object' || dragging) return;
             // hover物体
             if (selectedMesh == null) {
-                hoverMeshByMouse3d(param, selectedMesh);
+                hoverMeshByMouse3d(param, selectedMesh, getMesh3dArray(this));
                 return;
             }
             // hover关节
             if (selectedMesh != null) {
                 hoverVectorByMouse3d(param, selectedVector, selectedMesh);
                 if (intersectedVector) return;
-                hoverMeshByMouse3d(param, selectedMesh);
+                hoverMeshByMouse3d(param, selectedMesh, getMesh3dArray(this));
                 return;
             }
         },
