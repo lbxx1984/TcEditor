@@ -207,9 +207,11 @@ define(function (require) {
             ctx.beginPath();
             ctx.arc(p.o[0], p.o[1], size, 0, 2 * Math.PI, false);
             let inMouseIn = mouseX !== undefined && mouseY !== undefined ? ctx.isPointInPath(mouseX, mouseY) : false;
-            ctx.fillStyle= inMouseIn ? 'yellow' : color;
+            ctx.fillStyle = inMouseIn ? 'yellow' : color;
+            ctx.strokeStyle = '#000';
             hoverIndex = inMouseIn ? p.i : hoverIndex;
             ctx.fill();
+            ctx.stroke();
         });
 
         this.points = points;
