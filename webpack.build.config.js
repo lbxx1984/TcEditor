@@ -6,7 +6,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
+const TIME_STAMP = new Date().getTime();
 
 module.exports = {
     entry: {
@@ -23,7 +23,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: '[name].js'
+        filename: '[name].' + TIME_STAMP + '.js'
     },
     module: {
         loaders: [
@@ -54,7 +54,7 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin({
             names: ['js/dep/other', 'js/dep/react', 'js/dep/three']
         }),
-        new ExtractTextPlugin('css/style.css'),
+        new ExtractTextPlugin('css/style.' + TIME_STAMP + '.css'),
         new UglifyJSPlugin(),
         new OptimizeCssAssetsPlugin({
             assetNameRegExp: /.css$/g,
