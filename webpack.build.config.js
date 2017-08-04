@@ -1,11 +1,12 @@
 
-
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+const DATASET = require('./webpack.dataset');
 const TIME_STAMP = new Date().getTime();
 
 module.exports = {
@@ -30,15 +31,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                exclude: [
-                    /node_modules/,
-                    path.resolve(__dirname, 'dep/three.84.min'),
-                    path.resolve(__dirname, 'dep/react.15.3.1.min'),
-                    path.resolve(__dirname, 'dep/react-dom.15.3.1.min'),
-                    path.resolve(__dirname, 'dep/raphael.2.2.1.min'),
-                    path.resolve(__dirname, 'dep/FileSaver.1.3.3.min'),
-                    path.resolve(__dirname, 'dep/jszip.3.1.3.min')
-                ]
+                exclude: DATASET['babel-exclude']
             },
             {
                 test: /\.less$/,
@@ -73,17 +66,6 @@ module.exports = {
     ],
     resolve: {
         extensions: ['.js'],
-        alias: {
-            'three' : path.resolve(__dirname, 'dep/three.84.min'),
-            'three-lib': path.resolve(__dirname, 'dep/three-lib'),
-            'react': path.resolve(__dirname, 'dep/react.15.3.1.min'),
-            'react-dom': path.resolve(__dirname, 'dep/react-dom.15.3.1.min'),
-            'fcui2': path.resolve(__dirname, 'dep/fcui2/src'),
-            'raphael': path.resolve(__dirname, 'dep/raphael.2.2.1.min'),
-            'file-system': path.resolve(__dirname, 'dep/filesystem.0.0.2'),
-            'FileSaver': path.resolve(__dirname, 'dep/FileSaver.1.3.3.min'),
-            'jszip': path.resolve(__dirname, 'dep/jszip.3.1.3.min'),
-            'underscore': path.resolve(__dirname, 'dep/underscore.1.8.5')
-        }
+        alias: DATASET['resolve-alias']
     }
 };
