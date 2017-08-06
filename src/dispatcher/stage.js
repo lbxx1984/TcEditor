@@ -49,7 +49,11 @@ define(function (require) {
                 this.set('selectedLight', null);
             }
             if (selectedMesh) {
-                selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
+                selectedMesh.material.setValues({
+                    color: selectedMesh.tc.materialColor,
+                    opacity: selectedMesh.tc.materialOpacity,
+                    transparent: selectedMesh.tc.materialOpacity < 1
+                });
                 this.set('selectedMesh', null);
             }
         }

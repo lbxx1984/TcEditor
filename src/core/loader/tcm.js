@@ -84,6 +84,7 @@ define(function (require) {
         mesh3D.tc = mesh.tc;
         mesh3D.tc.birth = new Date(mesh.tc.birth);
         mesh3D.tc.add = false;
+        mesh3D.tc.materialOpacity = material.opacity;
         return mesh3D;
     }
 

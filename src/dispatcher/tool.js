@@ -11,17 +11,26 @@ define(function (require) {
     var config = require('../config');
     var intersected = null;
     var intersectedVector = null;
-
+    const SELECTED_MESH_OPACITY = 0.8;
 
     function clearIntersectedColor(obj, selected) {
         if (!obj) return;
         var color = selected && selected.uuid === obj.uuid ? config.colors.selectedMesh[0] : obj.tc.materialColor;
-        obj.material.setValues({color: color});
+        var opacity = selected && selected.uuid === obj.uuid ? SELECTED_MESH_OPACITY : (obj.tc.materialOpacity || 1);
+        obj.material.setValues({
+            color,
+            opacity,
+            transparent: opacity < 1
+        });
     }
 
     function clearObject3dColor(mesh) {
         if (!mesh) return;
-        mesh.material.setValues({color: mesh.tc.materialColor});
+        mesh.material.setValues({
+            color: mesh.tc.materialColor,
+            opacity: mesh.tc.materialOpacity,
+            transparent: mesh.tc.materialOpacity < 1
+        });
     }
 
     function getMesh3dArray(model) {
@@ -99,7 +108,11 @@ define(function (require) {
         if (selectedMesh && selectedMesh.uuid === intersected.uuid) return;
         clearObject3dColor(selectedMesh);
         clearObject3dColor(me.get('selectedVector'));
-        intersected.material.setValues({color: config.colors.selectedMesh[0]});
+        intersected.material.setValues({
+            color: config.colors.selectedMesh[0],
+            opacity: SELECTED_MESH_OPACITY,
+            transparent: true
+        });
         me.fill({
             selectedMesh: intersected,
             morpher3Dinfo: _.extend({}, me.get('morpher3Dinfo'), {

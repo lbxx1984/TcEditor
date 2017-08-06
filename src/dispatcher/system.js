@@ -305,7 +305,8 @@ define(function (require) {
                 group: this.get('activeGroup'),
                 anchorColor: 0x00CD00,
                 materialColor: obj3D.material.color.getHex(),
-                materialEmissive: obj3D.material.emissive.getHex()
+                materialEmissive: obj3D.material.emissive.getHex(),
+                materialOpacity: obj3D.material.opacity
             };
             hash[obj3D.uuid] = obj3D;
             this.set('mesh3d', hash);

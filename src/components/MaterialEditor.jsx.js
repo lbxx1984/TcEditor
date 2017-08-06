@@ -27,8 +27,8 @@ define(function (require) {
     function getMtlParam(props) {
         let mesh = props.mesh;
         let dataset = {opacity: 1};
-        if (!mesh) dataset;
-        dataset.opacity = parseFloat(mesh.material.opacity).toFixed(2) * 1
+        if (!mesh) return dataset;
+        dataset.opacity = parseFloat(mesh.tc.materialOpacity).toFixed(2) * 1
         return dataset;
     }
 
@@ -92,10 +92,12 @@ define(function (require) {
         },
         onOpacityChange(e) {
             let value = e.target.value;
+            let mesh = this.props.mesh;
             this.setState({opacity: value});
             if (isNaN(value) || value === '') return;
             value = parseFloat(value);
-            this.props.mesh.material.setValues({
+            mesh.tc.materialOpacity = value;
+            mesh.material.setValues({
                 opacity: parseFloat(value),
                 transparent: value < 1
             });

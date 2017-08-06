@@ -60,6 +60,7 @@ define(function (require) {
         result.geometries[0].vertices = JSON.parse(JSON.stringify(mesh.geometry.vertices));
         result.materials[0].color = result.tc.materialColor;
         result.materials[0].emissive = result.tc.materialEmissive;
+        result.materials[0].opacity = result.tc.materialOpacity;
         return result;
     }
 
