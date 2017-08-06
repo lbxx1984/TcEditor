@@ -14,7 +14,7 @@ define(function (require) {
 
 
     const config = require('../config');
-    const emptyEditor = require('../emptyEditor');
+    const emptyEditorDataset = require('../emptyEditorDataset');
     const io = require('../core/io');
     const Explorer = require('../components/dialogContent/Explorer.jsx');
 
@@ -131,7 +131,7 @@ define(function (require) {
     return {
 
         'file-new'() {
-            this.fill(_.extend({}, config, emptyEditor));
+            this.fill(_.extend({}, config, emptyEditorDataset));
             document.title = config.editorTitle;
         },
 

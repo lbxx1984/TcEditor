@@ -80,16 +80,17 @@ define(function (require) {
         var scene = this.scene;
         var anchorSize = this.anchorSize;
         var anchorColor = this.anchorColor;
-        var container = this.renderer.domElement;
+        var width = this.renderer.domElement.offsetWidth;
         vertices.map(function (ver, index) {
             var pos = math.local2world(ver.x, ver.y, ver.z, matrix, mesh);
             var meshpos = new THREE.Vector3(pos[0], pos[1], pos[2]);
             var np = null;
             if (index === anchors.length) {
-                np = new THREE.Mesh(
-                    new THREE.BoxGeometry(10, 10, 10, 1, 1, 1),
-                    new THREE.MeshBasicMaterial({color: anchorColor, side: THREE.DoubleSide})
-                );
+                var spriteMaterial = new THREE.SpriteMaterial({
+                    map: new THREE.TextureLoader().load('resource/textures/sprites/disc.png'),
+                    color: anchorColor
+                });
+                np = new THREE.Sprite(spriteMaterial);
                 np.tc = {
                     materialColor: np.material.color.getHex(),
                     index: index
@@ -103,8 +104,7 @@ define(function (require) {
             np.position.x = pos[0];
             np.position.y = pos[1];
             np.position.z = pos[2];
-            np.scale.x = np.scale.y = np.scale.z =
-                1500 * meshpos.distanceTo(camerapos) / anchorSize / container.offsetWidth;
+            np.scale.x = np.scale.y = np.scale.z = (36 - width / 80) * meshpos.distanceTo(camerapos) / anchorSize;
             np.added = true;
             scene.add(np);
         });
@@ -149,8 +149,7 @@ define(function (require) {
         var width = this.renderer.domElement.offsetWidth;
         this.anchors.map(function (anchor, index) {
             if (!anchor.added) return;
-            anchor.scale.x = anchor.scale.y = anchor.scale.z =
-                1500 * camerapos.distanceTo(anchor.position) / anchorSize / width; 
+            anchor.scale.x = anchor.scale.y = (36 - width / 100) * camerapos.distanceTo(anchor.position) / anchorSize;
         });
     };
 

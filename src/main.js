@@ -12,7 +12,7 @@ define(function (require) {
     const _ = require('underscore');
 
 
-    const emptyEditor = require('./emptyEditor');
+    const emptyEditorDataset = require('./emptyEditorDataset');
     const config = require ('./config');
     const App = require('./App.jsx');
     const dispatcher = require('./dispatcher/index');
@@ -21,7 +21,7 @@ define(function (require) {
 
 
     model.fill(config);
-    model.fill(emptyEditor);
+    model.fill(emptyEditorDataset);
     model.onChange = function (store) {
         render(store);
     };

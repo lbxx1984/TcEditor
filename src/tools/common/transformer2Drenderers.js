@@ -165,7 +165,7 @@ define(function (require) {
         var sin = info['sin' + axis];
         var cos = info['cos' + axis];
         var r = 2;
-        d = 100 * size;
+        var d = 100 * size;
         x1 = d * sin + x0;
         y1 = d * cos + y0;
         return [
@@ -198,8 +198,8 @@ define(function (require) {
         var cosa = info['cos' + ruleA];
         var sinb = info['sin' + ruleB];
         var cosb = info['cos' + ruleB];
-        d1 = 50 * size;
-        d2 = 50 * size;
+        var d1 = 50 * size;
+        var d2 = 50 * size;
         x1 = d1 * sina + x0;
         y1 = d1 * cosa + y0;
         x2 = d2 * sinb + x0;

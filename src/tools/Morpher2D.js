@@ -43,7 +43,7 @@ define(function (require) {
         let sin = info['sin' + axis];
         let cos = info['cos' + axis];
         let r = 2;
-        d = 100 * size;
+        let d = 100 * size;
         x1 = d * sin + x0;
         y1 = d * cos + y0;
         return [
@@ -76,8 +76,8 @@ define(function (require) {
         let cosa = info['cos' + ruleA];
         let sinb = info['sin' + ruleB];
         let cosb = info['cos' + ruleB];
-        d1 = 50 * size;
-        d2 = 50 * size;
+        let d1 = 50 * size;
+        let d2 = 50 * size;
         x1 = d1 * sina + x0;
         y1 = d1 * cosa + y0;
         x2 = d2 * sinb + x0;

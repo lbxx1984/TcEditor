@@ -49,7 +49,7 @@ define(function (require) {
             vectorz: 0
         };
         if (!mesh) dataset;
-        if (props.selectedVectorIndex > -1) {
+        if (props.selectedVectorIndex > -1 && mesh.geometry.vertices[props.selectedVectorIndex]) {
             var matrix = math.getRotateMatrix(mesh);
             var vector = mesh.geometry.vertices[props.selectedVectorIndex];
             var pos = math.local2world(vector.x, vector.y, vector.z, matrix, mesh);
