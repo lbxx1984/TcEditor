@@ -11,7 +11,7 @@ define(function (require) {
     var config = require('../config');
     var intersected = null;
     var intersectedVector = null;
-    const SELECTED_MESH_OPACITY = 0.8;
+    const SELECTED_MESH_OPACITY = 1;
 
     function clearIntersectedColor(obj, selected) {
         if (!obj) return;
@@ -28,7 +28,7 @@ define(function (require) {
         if (!mesh) return;
         mesh.material.setValues({
             color: mesh.tc.materialColor,
-            opacity: mesh.tc.materialOpacity,
+            opacity: mesh.tc.materialOpacity || 1,
             transparent: mesh.tc.materialOpacity < 1
         });
     }

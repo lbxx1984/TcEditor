@@ -217,6 +217,7 @@ define(function (require) {
                 onChange: function () {
                     if (me.props.selectedMesh && me.props.selectedMesh.tc) {
                         me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
+                        me.isDragging = true;
                         me.context.dispatch('updateTimer');
                     }
                 }
@@ -374,8 +375,8 @@ define(function (require) {
             };
             return (
                 <div {...containerProps}>
-                    <canvas {...gridCanvasProps}/>
                     <canvas {...rendererCanvasProps}/>
+                    <canvas {...gridCanvasProps}/>
                     <canvas {...morpherCanvasProps}/>
                     <div {...svgProps}></div>
                 </div>

@@ -17,23 +17,6 @@ define(function (require) {
     };
 
 
-    // 获取摄像机位置
-    function getCameraPosition(me) {
-        let cameraAngleA = me.cameraAngleA;
-        let cameraAngleB = me.cameraAngleB;
-        let cameraRadius = me.cameraRadius;
-        let cameraLookAt = me.cameraLookAt;
-        let y = cameraRadius * Math.sin(Math.PI * cameraAngleA / 180);
-        let x = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.cos(Math.PI * cameraAngleB / 180);
-        let z = cameraRadius * Math.cos(Math.PI * cameraAngleA / 180) * Math.sin(Math.PI * cameraAngleB / 180);
-        return {
-            x: x + cameraLookAt.x,
-            y: y + cameraLookAt.y,
-            z: z + cameraLookAt.z
-        };
-    }
-
-
     // 绘制箭头
     function arrow(axis, info, size) {
         let x0 = info.o[0];
@@ -113,6 +96,37 @@ define(function (require) {
     }
 
 
+    // 获取关节相对摄像机的排序字段值
+    function distanceFactory(me) {
+        let stageInfo = {
+            v: me.axis.join('o'),
+            a: me.cameraAngleA,
+            b: (me.cameraAngleB % 360 + 360) % 360
+        };
+        let type = 'x';
+        let value = 1;
+        switch (stageInfo.v) {
+            case 'xoz':
+                type = 'y';
+                value = stageInfo.a >= 0 ? 1 : -1;
+                break;
+            case 'xoy':
+                type = 'z';
+                value = stageInfo.b <= 180 ? 1 : -1;
+                break;
+            case 'zoy':
+                type = 'x';
+                value = stageInfo.b <= 90 || stageInfo.b >= 315 ? 1 : -1;
+                break;
+            default:
+                break;
+        }
+        return function (v) {
+            return value * v[type];
+        };
+    }
+
+
     /**
      * 构造函数
      */
@@ -179,18 +193,16 @@ define(function (require) {
 
         const local2world = handlerFactories.local2world(this);
         const axis2screen = handlerFactories.math('axis2screen', this);
-        const cameraPos = getCameraPosition(this);
-
         const axis = this.axis;
         const size = 4 * 1000 / this.size;
+        const distance = distanceFactory(this);
 
         let color = this.color.toString(16); while(color.length < 6) color = '0' + color; color = '#' + color;
         let points = [];
         let hoverIndex = null;
-
         this.mesh.geometry.vertices.map(function (v, i) {
             points[i] = local2world(v.x, v.y, v.z);
-            points[i].d = v.distanceTo(cameraPos);
+            points[i].d = distance(points[i]);
             points[i].i = i;
             points[i].o = axis2screen(points[i][axis[0]], points[i][axis[1]]);
         });
