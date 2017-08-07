@@ -180,7 +180,6 @@ define(function (require) {
             && nextProps.selectedMesh.tc.needUpdate > 3
         ) {
             me.morpher.attach(nextProps.selectedMesh);
-            nextProps.selectedMesh.tc.needUpdate--;
             nextProps.selectedVector && me.morpher.attachAnchor(nextProps.selectedVector);
         }
         if (
@@ -413,7 +412,7 @@ define(function (require) {
             function objectChangeHandler(e) {
                 me.isDragging = true;
                 if (me.props.selectedMesh && me.props.selectedMesh.tc) {
-                    me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 0;
+                    me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 0;
                     me.context.dispatch('updateTimer');
                 }
             }
@@ -435,6 +434,9 @@ define(function (require) {
             updateTransformer(nextProps, this);
             updateMorpher(nextProps, this);
             updateLightHelper(nextProps, this);
+            if (nextProps.selectedMesh && nextProps.selectedMesh.tc.needUpdate) {
+                nextProps.selectedMesh.tc.needUpdate--;
+            }
         },
 
         componentWillUnmount: function () {

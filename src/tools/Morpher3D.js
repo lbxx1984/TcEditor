@@ -87,6 +87,7 @@ define(function (require) {
         var anchorSize = this.anchorSize;
         var anchorColor = this.anchorColor;
         var width = this.renderer.domElement.offsetWidth;
+        var attachedAnchors = [];
         vertices.map(function (ver, index) {
             var pos = math.local2world(ver.x, ver.y, ver.z, matrix, mesh);
             var meshpos = new THREE.Vector3(pos[0], pos[1], pos[2]);
@@ -111,8 +112,12 @@ define(function (require) {
             np.position.y = pos[1];
             np.position.z = pos[2];
             np.scale.x = np.scale.y = np.scale.z = (36 - width / 80) * meshpos.distanceTo(camerapos) / anchorSize;
+            if (attachedAnchors.indexOf(index) > -1) {
+                return;
+            }
             np.added = true;
             scene.add(np);
+            attachedAnchors = [].concat(attachedAnchors, [index], mesh.tc.vectorLinkHash[index]);
         });
     };
 

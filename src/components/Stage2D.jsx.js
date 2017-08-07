@@ -68,7 +68,6 @@ define(function (require) {
             && nextProps.selectedMesh.tc.needUpdate
             && me.renderer2D.mesh2d[nextProps.selectedMesh.uuid]
         ) {
-            nextProps.selectedMesh.tc.needUpdate--;
             me.renderer2D.mesh2d[nextProps.selectedMesh.uuid].update();
             needRenderer = true;
         }
@@ -122,7 +121,7 @@ define(function (require) {
         }
         if (nextProps.tool === 'tool-pickJoint' && nextProps.timer !== me.props.timer && me.morpher2D.mesh) {
             me.morpher2D.attach(me.morpher2D.mesh);
-            if (me.morpher2D.index) {
+            if (me.morpher2D.index != null) {
                 me.morpher2D.attachAnchor(me.morpher2D.index);
             }
         }
@@ -198,7 +197,7 @@ define(function (require) {
                 onObjectChange: function () {
                     if (me.props.selectedMesh && me.props.selectedMesh.tc) {
                         me.isDragging = true;
-                        me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 3 : 1;
+                        me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
                         me.context.dispatch('updateTimer');
                     }
                 }
@@ -242,6 +241,9 @@ define(function (require) {
             updateMesh(nextProps, this);
             updateTransformer(nextProps, this);
             updateMorpher(nextProps, this);
+            if (nextProps.selectedMesh && nextProps.selectedMesh.tc.needUpdate) {
+                nextProps.selectedMesh.tc.needUpdate--;
+            }
         },
 
         componentWillUnmount: function () {
