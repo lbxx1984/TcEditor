@@ -177,7 +177,7 @@ define(function (require) {
         if (
             nextProps.tool === 'tool-pickJoint' && me.props.tool === 'tool-pickJoint'
             && nextProps.selectedMesh && nextProps.selectedMesh === me.props.selectedMesh
-            && nextProps.selectedMesh.tc.needUpdate > 3
+            && nextProps.selectedMesh.tc.needUpdate
         ) {
             me.morpher.attach(nextProps.selectedMesh);
             nextProps.selectedVector && me.morpher.attachAnchor(nextProps.selectedVector);
@@ -412,7 +412,7 @@ define(function (require) {
             function objectChangeHandler(e) {
                 me.isDragging = true;
                 if (me.props.selectedMesh && me.props.selectedMesh.tc) {
-                    me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 0;
+                    me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
                     me.context.dispatch('updateTimer');
                 }
             }
