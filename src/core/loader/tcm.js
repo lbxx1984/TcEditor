@@ -9,6 +9,7 @@ define(function (require) {
     const _ = require('underscore');
     const THREE = require('three');
     const io = require('../io');
+    const math = require('../math');
 
 
     function createMatrix4(m) {
@@ -85,6 +86,7 @@ define(function (require) {
         mesh3D.tc.birth = new Date(mesh.tc.birth);
         mesh3D.tc.add = false;
         mesh3D.tc.materialOpacity = material.opacity;
+        mesh3D.tc.vectorLinkHash = math.getVectorLinkHash(geometry);
         return mesh3D;
     }
 

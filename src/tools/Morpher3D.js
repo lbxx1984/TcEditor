@@ -19,13 +19,19 @@ define(function (require) {
     // 修改物体顶点位置
     function onControllerChange() {
         if (!this.vector || !this.mesh) return;
-        var vector = this.vector;
-        var mesh = this.mesh;
-        var width = this.renderer.domElement.offsetWidth;
-        var pos = math.world2local(vector.position.x, vector.position.y, vector.position.z, mesh);
-        mesh.geometry.vertices[vector.index].x = pos[0];
-        mesh.geometry.vertices[vector.index].y = pos[1];
-        mesh.geometry.vertices[vector.index].z = pos[2];
+        let me = this;
+        let vector = this.vector;
+        let mesh = this.mesh;
+        let width = this.renderer.domElement.offsetWidth;
+        let pos = math.world2local(vector.position.x, vector.position.y, vector.position.z, mesh);
+        let indexArr = mesh.tc.vectorLinkHash && mesh.tc.vectorLinkHash[vector.index]
+            ? [vector.index].concat(mesh.tc.vectorLinkHash[vector.index]) : [vector.index];
+        let vertices = mesh.geometry.vertices;
+        indexArr.map(function (i) {
+            vertices[i].x = pos[0];
+            vertices[i].y = pos[1];
+            vertices[i].z = pos[2];
+        });
         mesh.geometry.verticesNeedUpdate = true;
         vector.scale.x = vector.scale.y = vector.scale.z
             = 1500 * this.camera.position.distanceTo(vector.position) / this.anchorSize / width;

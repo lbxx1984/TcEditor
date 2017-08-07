@@ -57,6 +57,7 @@ define(function (require) {
         let result = mesh.toJSON();
         result.tc = _.extend({}, mesh.tc);
         result.tc.birth = result.tc.birth.getTime();
+        delete result.tc.vectorLinkHash;
         result.geometries[0].vertices = JSON.parse(JSON.stringify(mesh.geometry.vertices));
         result.materials[0].color = result.tc.materialColor;
         result.materials[0].emissive = result.tc.materialEmissive;

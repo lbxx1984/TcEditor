@@ -9,12 +9,16 @@ define(function (require) {
     const _ = require('underscore');
     const Dialog = require('fcui2/Dialog.jsx');
     const hotkey = require('../core/hotkey');
+    const math = require('../core/math');
     const dialog = new Dialog();
 
 
     function clearObject3dColor(mesh) {
         if (!mesh) return;
-        mesh.material.setValues({color: mesh.tc.materialColor});
+        mesh.material.setValues({
+            color: mesh.tc.materialColor,
+            opacity: mesh.tc.materialOpacity
+        });
     }
 
 
@@ -306,7 +310,8 @@ define(function (require) {
                 anchorColor: 0x00CD00,
                 materialColor: obj3D.material.color.getHex(),
                 materialEmissive: obj3D.material.emissive.getHex(),
-                materialOpacity: obj3D.material.opacity
+                materialOpacity: obj3D.material.opacity,
+                vectorLinkHash: math.getVectorLinkHash(obj3D.geometry)
             };
             hash[obj3D.uuid] = obj3D;
             this.set('mesh3d', hash);

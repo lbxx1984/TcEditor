@@ -277,5 +277,32 @@ define(function (require) {
     };
 
 
+    /**
+     * 获取一个集合体初始状态所有相同向量的对应关系
+     *
+     * @param {object} geometry THREE.geometry对象
+     * @return {object} 以向量A的索引为key，值是数组，数组元素是其他向量的索引，其他向量是指跟A相同的向量
+     *      如: {1: [2, 3, 5, 6], 2: [1, 3, 5, 6]}
+     *      时间复杂度：n^2
+     */
+    tcMath.getVectorLinkHash = function (geometry) {
+        let vertices = geometry.vertices;
+        let result = {};
+        vertices.map(function (v, i) {
+            result[i] = [];
+        });
+        vertices.map(function (v0, i) {
+            vertices.map(function (v1, j) {
+                if (i === j) return;
+                if (v1.distanceTo(v0) > 1) return;
+                result[i].push(j);
+            });
+        });
+        Object.keys(result).map(function (key) {
+            if (result[key].length === 0) delete result[key];
+        });
+        return result;
+    };
+
     return tcMath;
 });

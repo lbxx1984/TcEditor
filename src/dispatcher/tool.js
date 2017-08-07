@@ -90,7 +90,7 @@ define(function (require) {
             param.event.nativeEvent.offsetX,
             param.event.nativeEvent.offsetY,
             param.stage3D,
-            param.stage3D.morpher.anchors
+            param.stage3D.morpher.anchors.filter(i => i.added)
         );
         if (obj) {
             clearIntersectedColor(intersected, selectedMesh);

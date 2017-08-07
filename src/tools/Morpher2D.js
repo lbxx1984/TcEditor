@@ -293,14 +293,16 @@ define(function (require) {
         d3[this.axis[0]] = to[0] - center[0];
         d3[this.axis[1]] = to[1] - center[1];
         let local = math.world2local(p.x + d3.x, p.y + d3.y, p.z + d3.z, this.mesh);
-        this.mesh.geometry.vertices[this.anchor.i].x = local[0];
-        this.mesh.geometry.vertices[this.anchor.i].y = local[1];
-        this.mesh.geometry.vertices[this.anchor.i].z = local[2];
+        let vertices = this.mesh.geometry.vertices;
+        let index = this.anchor.i;
+        let indexArr = this.mesh.tc.vectorLinkHash && this.mesh.tc.vectorLinkHash[index]
+            ? [index].concat(this.mesh.tc.vectorLinkHash[index]) : [index];
+        indexArr.map(function (i) {
+            vertices[i].x = local[0];
+            vertices[i].y = local[1];
+            vertices[i].z = local[2];
+        });
         this.mesh.geometry.verticesNeedUpdate = true;
-        if (this.selectedVector) {
-            p = this.selectedVector.position;
-            this.selectedVector.position.set(p.x + d3.x, p.y + d3.y, p.z + d3.z);
-        }
         this.isDragging = true;
         typeof this.onObjectChange === 'function' && this.onObjectChange();
     };
