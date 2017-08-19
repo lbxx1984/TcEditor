@@ -148,15 +148,14 @@ define(function (require) {
             };
             var skin = (this.context.appSkin ? this.context.appSkin + '-' : '')
                 + (this.props.skin ? this.props.skin : 'normal');
-            containerProp.className += this.state.hasFocus ? ' fcui2-numberbox-' + skin + '-hover' : '';
             return (
                 <div {...containerProp}>
                     <div {...placeholderProp}>{this.props.placeholder}</div>
                     <input {...inputProp} disabled={this.props.disabled} ref="inputbox"/>
                     <div {...btnContainerProp}>
-                        <div className="font-icon font-icon-largeable-caret-up"
+                        <div className="fcui2-icon fcui2-icon-arrow-up"
                             data-ui-cmd="add" onClick={this.onSpinButtonClick}></div>
-                        <div className="font-icon font-icon-largeable-caret-down"
+                        <div className="fcui2-icon fcui2-icon-arrow-down"
                             data-ui-cmd="sub" onClick={this.onSpinButtonClick}></div>
                     </div>
                 </div>

@@ -47,8 +47,8 @@ define(function (require) {
                 skin: '',
                 className: '',
                 style: {},
-                icon: 'font-icon-search',
-                clearIcon: 'font-icon-times',
+                icon: 'fcui2-icon fcui2-icon-search',
+                clearIcon: 'fcui2-icon fcui2-icon-close',
                 disabled: false,
                 // self
                 placeholder: '',
@@ -111,9 +111,7 @@ define(function (require) {
                 onInput: this.___onInput___
             };
             var iconProps = {
-                className: this.props.mode === 'withButton'
-                    ? 'font-icon ' + this.props.clearIcon
-                    : 'font-icon ' + this.props.icon,
+                className: this.props.mode === 'withButton' ? this.props.clearIcon : this.props.icon,
                 onClick: this.props.mode === 'withButton'
                     ? this.onClearButtonClick
                     : this.onButtonClick
