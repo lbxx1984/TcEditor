@@ -102,7 +102,7 @@ define(function (require) {
                 this.context.dispatch('lockMesh', dom.dataset.id);
             }
             else {
-                this.context.dispatch('lockGroup', dom.dataset.id, e.target.className.indexOf('icon-unlock') > -1);
+                this.context.dispatch('lockGroup', dom.dataset.id, e.target.className.indexOf('tc-icon-unlock') > -1);
             }
         },
         onLabelClick: function (e) {
@@ -120,7 +120,7 @@ define(function (require) {
                 this.context.dispatch('visibleMesh', dom.dataset.id);
             }
             else {
-                this.context.dispatch('visibleGroup', dom.dataset.id, e.target.className.indexOf('icon-invisible') > -1);
+                this.context.dispatch('visibleGroup', dom.dataset.id, e.target.className.indexOf('tc-icon-invisible') > -1);
             }
         },
         onDragIconEnter: function (e) {
@@ -183,13 +183,13 @@ define(function (require) {
             }
         },
         render: function () {
-            var expendBtnIcon = this.props.expend ? 'icon-down' : 'icon-right';
+            var expendBtnIcon = this.props.expend ? 'tc-icon-down' : 'tc-icon-right';
             var meshData = getMeshGroupData(this.props.group, this.props.mesh);
             return (
                 <div className="tc-meshlist" onDragEnd={this.onDragEnd}>
                     <div className="tc-panel-title-bar">
-                        <span className="tc-icon icon-close" onClick={this.onPanelCloseIconClick}></span>
-                        <span className="tc-icon icon-create-folder" onClick={this.onAddGroupIconClick}></span>
+                        <span className="tc-icon tc-icon-close" onClick={this.onPanelCloseIconClick}></span>
+                        <span className="tc-icon tc-icon-create-folder" onClick={this.onAddGroupIconClick}></span>
                         <span className={'tc-icon ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
                         Mesh List
                     </div>
@@ -236,7 +236,7 @@ define(function (require) {
     function listFactory(data, me) {
         var doms = [];
         data.map(function (group) {
-            var delIcon = group.label === 'default group' || group.locked ? ' icon-disabled' : '';
+            var delIcon = group.label === 'default group' || group.locked ? ' tc-icon-disabled' : '';
             var groupContainerProps = {
                 key: 'group-contianer-' + group.label,
                 'data-id': group.label,
@@ -246,28 +246,28 @@ define(function (require) {
                 onDragOver: me.onDragOver
             };
             var folderIconProps = {
-                className: 'folder-icon tc-icon ' + (group.expend ? 'icon-open-folder' : 'icon-folder'),
+                className: 'folder-icon tc-icon ' + (group.expend ? 'tc-icon-open-folder' : 'tc-icon-folder'),
                 onClick: me.onFolderIconClick
             };
             var visibleIconProps = {
-                className: 'visible-icon tc-icon ' + (group.visible ? 'icon-visible' : 'icon-invisible'),
+                className: 'visible-icon tc-icon ' + (group.visible ? 'tc-icon-visible' : 'tc-icon-invisible'),
                 onClick: me.onVisibleIconClick
             };
             var lockIconProps = {
-                className: 'tc-icon ' + (group.locked ? 'icon-lock' : 'icon-unlock'),
+                className: 'tc-icon ' + (group.locked ? 'tc-icon-lock' : 'tc-icon-unlock'),
                 onClick: me.onLockIconClick
             };
             var dragIconProps = {
                 onMouseEnter: me.onDragIconEnter,
                 onMouseLeave: me.onDragIconLeave,
-                className: 'tc-icon icon-drag'
+                className: 'tc-icon tc-icon-drag'
             };
             var editIconProps = {
-                className: 'tc-icon icon-edit' + delIcon,
+                className: 'tc-icon tc-icon-edit' + delIcon,
                 onClick: delIcon ? undefined : me.onEditIconClick
             };
             var delIconProps = {
-                className: 'tc-icon icon-delete' + delIcon,
+                className: 'tc-icon tc-icon-delete' + delIcon,
                 onClick: delIcon ? undefined : me.onDelIconClick
             };
             var labelProps = {
@@ -303,20 +303,20 @@ define(function (require) {
                 onDragOver: me.onDragOver
             };
             var visibleIconProps = {
-                className: 'visible-icon tc-icon ' + (mesh.visible ? 'icon-visible' : 'icon-invisible'),
+                className: 'visible-icon tc-icon ' + (mesh.visible ? 'tc-icon-visible' : 'tc-icon-invisible'),
                 onClick: me.onVisibleIconClick
             };
             var dragIconProps = {
                 onMouseEnter: me.onDragIconEnter,
                 onMouseLeave: me.onDragIconLeave,
-                className: 'tc-icon icon-drag'
+                className: 'tc-icon tc-icon-drag'
             };
             var delIconProps = {
-                className: 'tc-icon icon-delete',
+                className: 'tc-icon tc-icon-delete',
                 onClick: me.onDelIconClick
             };
             var lockedIconProps = {
-                className: 'tc-icon ' + (tc.locked ? 'icon-lock' : 'icon-unlock'),
+                className: 'tc-icon ' + (tc.locked ? 'tc-icon-lock' : 'tc-icon-unlock'),
                 onClick: me.onLockIconClick
             };
             var labelProps = {

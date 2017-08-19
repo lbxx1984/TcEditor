@@ -107,54 +107,54 @@ define(function (require) {
                 label: 'ZOY', value: 'view-zoy', title: 'ZOY view (Alt + 4)'
             },
             {
-                icon: 'icon-screen4', value: 'view-all', title: 'ALL view (Alt + 5)'
+                icon: 'tc-icon-screen4', value: 'view-all', title: 'ALL view (Alt + 5)'
             },
             'TOOLS',
             {
-                icon: 'icon-pickup-mesh', value: 'tool-pickGeometry', title: 'pick up geometry (Ctrl + D)'
+                icon: 'tc-icon-pickup-mesh', value: 'tool-pickGeometry', title: 'pick up geometry (Ctrl + D)'
             },
             {
-                icon: 'icon-pickup-joint', value: 'tool-pickJoint', title: 'pick up joint (Ctrl + F)'
+                icon: 'tc-icon-pickup-joint', value: 'tool-pickJoint', title: 'pick up joint (Ctrl + F)'
             },
             {
-                icon: 'icon-light', value: 'tool-pickLight', title: 'pick up light (Ctrl + G)'
+                icon: 'tc-icon-light', value: 'tool-pickLight', title: 'pick up light (Ctrl + G)'
             },
             'CAMERA',
             {
-                icon: 'icon-trans', value: 'camera-move', title: 'move camera (Ctrl + E)'
+                icon: 'tc-icon-trans', value: 'camera-move', title: 'move camera (Ctrl + E)'
             },
             {
-                icon: 'icon-zoom-in', value: 'camera-zoomIn', title: 'zoom in (MOUSE WHEEL UP)'
+                icon: 'tc-icon-zoom-in', value: 'camera-zoomIn', title: 'zoom in (MOUSE WHEEL UP)'
             },
             {
-                icon: 'icon-zoom-out', value: 'camera-zoomOut', title: 'zoom out (MOUSE WHEEL DOWN)'
+                icon: 'tc-icon-zoom-out', value: 'camera-zoomOut', title: 'zoom out (MOUSE WHEEL DOWN)'
             },
             {
-                icon: 'icon-reset', value: 'camera-reset', title: 'reset camera'
+                icon: 'tc-icon-reset', value: 'camera-reset', title: 'reset camera'
             },
             'GRID',
             {
-                icon: 'icon-enlarge', value: 'stage-enlargeGrid', title: 'enlarge grid'
+                icon: 'tc-icon-enlarge', value: 'stage-enlargeGrid', title: 'enlarge grid'
             },
             {
-                icon: 'icon-narrow', value: 'stage-narrowGrid', title: 'narrow grid'
+                icon: 'tc-icon-narrow', value: 'stage-narrowGrid', title: 'narrow grid'
             },
             {
-                icon: 'icon-visible', value: 'stage-helperVisible', title: 'hide/show stage helper'
+                icon: 'tc-icon-visible', value: 'stage-helperVisible', title: 'hide/show stage helper'
             }
         ],
         // 变形工具集
         transformer3DTools: [
-            {icon: 'icon-trans', value: 'transformer-3d-mode-translate', title: '(Ctrl + R)'},
-            {icon: 'icon-rotate', value: 'transformer-3d-mode-rotate', title: '(Ctrl + R)'},
-            {icon: 'icon-plus', value: 'transformer-3d-size-enlarge'},
-            {icon: 'icon-minus', value: 'transformer-3d-size-narrow'},
-            {icon: 'icon-earth', value: 'transformer-3d-space'}
+            {icon: 'tc-icon-trans', value: 'transformer-3d-mode-translate', title: '(Ctrl + R)'},
+            {icon: 'tc-icon-rotate', value: 'transformer-3d-mode-rotate', title: '(Ctrl + R)'},
+            {icon: 'tc-icon-plus', value: 'transformer-3d-size-enlarge'},
+            {icon: 'tc-icon-minus', value: 'transformer-3d-size-narrow'},
+            {icon: 'tc-icon-earth', value: 'transformer-3d-space'}
         ],
         morpher3DTools: [
-            {icon: 'icon-color', value: 'morpher-3d-anchor-color'},
-            {icon: 'icon-plus', value: 'morpher-3d-size-enlarge'},
-            {icon: 'icon-minus', value: 'morpher-3d-size-narrow'}
+            {icon: 'tc-icon-color', value: 'morpher-3d-anchor-color'},
+            {icon: 'tc-icon-plus', value: 'morpher-3d-size-enlarge'},
+            {icon: 'tc-icon-minus', value: 'morpher-3d-size-narrow'}
         ]
     };
 

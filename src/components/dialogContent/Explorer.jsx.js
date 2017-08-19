@@ -338,7 +338,7 @@ define(function (require) {
                 }
             };
             let pasteBtnProps = {
-                className: 'tc-icon icon-paste',
+                className: 'tc-icon tc-icon-paste',
                 onClick: this.state.clipboard ? this.onPasteBtnClick : undefined,
                 style: !this.state.clipboard ? {color: 'grey'} : {}
             };
@@ -363,8 +363,8 @@ define(function (require) {
             };
             return (
                 <div className="tc-explorer in-layer">
-                    <span className="tc-icon icon-create-folder" onClick={this.onCreateBtnClick}></span>
-                    <span className="tc-icon icon-up-level" onClick={this.onUpBtnClick}></span>
+                    <span className="tc-icon tc-icon-create-folder" onClick={this.onCreateBtnClick}></span>
+                    <span className="tc-icon tc-icon-up-level" onClick={this.onUpBtnClick}></span>
                     <span {...pasteBtnProps}></span>
                     <div className="dir-bar">
                         <span>/</span><TextBox {...rootProps}/>

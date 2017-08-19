@@ -17,8 +17,13 @@
 .fcui2-numberbox-normal {
     background-color: transparent;
     .btn-container {
+        height: 26px;
         background-color: @background-color-main;
-        .font-icon:hover {
+        .fcui2-icon {
+            height: 13px;
+            color: @font-color-main;
+        }
+        .fcui2-icon:hover {
             background-color: @background-color-checked;
         }
     }
@@ -65,28 +70,22 @@
     }
 }
 .fcui2-checkbox {
-    .icon-checkbox-selected {
-        color: @background-color-checked;
+    .fcui2-tc-icon-checkbox-selected {
+        color: @font-color-main;
     }
 }
 .fcui2-dropdownlist {
     height: 26px;
     background-color: transparent;
-    .label-container {
+    .label-container,.fcui2-icon {
         color: @font-color-main;
-    }
-    .font-icon {
-        color: @font-color-main;
-    }
-    .icon-right:before {
-        font-family: "fcIcon";
-        content: "\E65C";
     }
 }
 .fcui2-dropdownlist:hover, .fcui2-dropdownlist-normal-hover {
     cursor: pointer;
-    .font-icon {
-        color: @font-color-hover;
+    border: 1px solid @font-color-hover;
+    .fcui2-icon {
+        color: @font-color-hover; 
     }
 }
 

@@ -181,11 +181,11 @@ define(function (require) {
             clearInterval(this.timer);
         },
         render: function () {
-            var expendBtnIcon = this.props.expend ? 'icon-down' : 'icon-right';
+            var expendBtnIcon = this.props.expend ? 'tc-icon-down' : 'tc-icon-right';
             return (
                 <div className="tc-meshlist">
                     <div className="tc-panel-title-bar">
-                        <span className="tc-icon icon-close" onClick={this.onPanelCloseIconClick}></span>
+                        <span className="tc-icon tc-icon-close" onClick={this.onPanelCloseIconClick}></span>
                         <span className={'tc-icon ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
                         Geometry Properties
                     </div>
@@ -280,12 +280,12 @@ define(function (require) {
                             step:&nbsp;<NumberBox {...stepProps}/>&nbsp;
                         </span>
                         <div {...rotationContainerProps}>
-                            <span data-type="X" data-value="-1" className="tc-icon icon-left"></span>x
-                            <span data-type="X" data-value="1" className="tc-icon icon-right"></span><br/>
-                            <span data-type="Y" data-value="-1" className="tc-icon icon-left"></span>y
-                            <span data-type="Y" data-value="1" className="tc-icon icon-right"></span><br/>
-                            <span data-type="Z" data-value="-1" className="tc-icon icon-left"></span>z
-                            <span data-type="Z" data-value="1" className="tc-icon icon-right"></span>
+                            <span data-type="X" data-value="-1" className="tc-icon tc-icon-left"></span>x
+                            <span data-type="X" data-value="1" className="tc-icon tc-icon-right"></span><br/>
+                            <span data-type="Y" data-value="-1" className="tc-icon tc-icon-left"></span>y
+                            <span data-type="Y" data-value="1" className="tc-icon tc-icon-right"></span><br/>
+                            <span data-type="Z" data-value="-1" className="tc-icon tc-icon-left"></span>z
+                            <span data-type="Z" data-value="1" className="tc-icon tc-icon-right"></span>
                         </div>
                     </td>
                 </tr>

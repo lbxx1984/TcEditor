@@ -130,11 +130,11 @@ define(function (require) {
             mesh.material.needsUpdate = true;
         },
         render() {
-            let expendBtnIcon = this.props.expend ? 'icon-down' : 'icon-right';
+            let expendBtnIcon = this.props.expend ? 'tc-icon-down' : 'tc-icon-right';
             return (
                 <div className="tc-meshlist">
                     <div className="tc-panel-title-bar">
-                        <span className="tc-icon icon-close" onClick={this.onPanelCloseIconClick}></span>
+                        <span className="tc-icon tc-icon-close" onClick={this.onPanelCloseIconClick}></span>
                         <span className={'tc-icon ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
                         Material Properties
                     </div>

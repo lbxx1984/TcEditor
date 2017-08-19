@@ -14,7 +14,7 @@ define(function (require) {
         render: function () {
             return (
                 <td className="file-operation">
-                    <span className="tc-icon icon-delete" onClick={this.onDeleteBtnClick}></span>
+                    <span className="tc-icon tc-icon-delete" onClick={this.onDeleteBtnClick}></span>
                 </td>
             );
         }
