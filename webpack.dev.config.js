@@ -27,7 +27,7 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 loader: 'babel-loader',
                 exclude: DATASET['babel-exclude']
             },
@@ -52,7 +52,7 @@ module.exports = {
         })
     ],
     resolve: {
-        extensions: ['.js'],
+        extensions: ['.js', '.jsx'],
         alias: DATASET['resolve-alias']
     }
 };

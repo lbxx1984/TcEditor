@@ -8,9 +8,9 @@ import React from 'react';
 import model from './core/model';
 import config from './config';
 import emptyEditorDataset from './emptyEditorDataset';
-import App from './App.jsx';
 import dispatcher from './dispatcher';
 import hotkeySystem from './hotkeySystem';
+import App from './App';
 import './css/main.less';
 
 
