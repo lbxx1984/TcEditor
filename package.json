@@ -27,5 +27,13 @@
     },
     "author": "lbxxlht@163.com",
     "license": "MIT",
-    "readme": "README"
+    "readme": "README",
+    "lint-staged": {
+        "{src}/**/*.{js}": [
+            "lint-staged:es"
+        ]
+    },
+    "pre-commit": [
+        "lint-staged"
+    ]
 }
