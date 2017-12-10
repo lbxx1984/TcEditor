@@ -13,6 +13,11 @@ import model from './core/model';
 import hotkey from './core/hotkey';
 
 
+
+
+
+
+
 // 渲染页面
 function render(store) {
     if (store.path.length) {
