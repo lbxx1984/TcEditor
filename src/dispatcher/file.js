@@ -13,7 +13,7 @@ define(function (require) {
     const JSZip = require('jszip');
 
 
-    const config = require('../config');
+    const config = require('../config').default;
     const emptyEditorDataset = require('../emptyEditorDataset');
     const io = require('../core/io');
     const Explorer = require('../components/dialogContent/Explorer.jsx');

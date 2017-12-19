@@ -61,7 +61,7 @@ export default {
         colorGrid: ['#8F908A', 0x8F908A],
         // 3D摄像机配置
         camera3D: {
-            // 摄像机到期观察点的距离，可以理解为焦距
+            // 摄像机到观察点的距离，可以理解为焦距
             cameraRadius: 2500,
             // 摄像机视线与XOZ平面夹角
             cameraAngleA: 40,

@@ -8,7 +8,7 @@ define(function (require) {
 
     var _ = require('underscore');
     var THREE = require('three');
-    var config = require('../config');
+    var config = require('../config').default;
     var intersected = null;
     var intersectedVector = null;
     const SELECTED_MESH_OPACITY = 1;

@@ -7,7 +7,7 @@ define(function (require) {
 
 
     const _ = require('underscore');
-    const config = require('../../config');
+    const config = require('../../config').default;
 
 
     return function (model) {

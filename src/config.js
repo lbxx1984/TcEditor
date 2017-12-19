@@ -4,7 +4,9 @@
  * @email lbxxlht@163.com
  */
 export default {
+    // 浏览器显示的默认标题
     editorTitle: 'TcEditor 5',
+    // 需要阻止默认行为的快捷键
     arrestedHotKey: [
         'ctrl + o',
         'ctrl + s',
