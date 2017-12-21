@@ -5,7 +5,7 @@
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.config.js --progress --colors --content-base build --hot --port 8088 --host 0.0.0.0",
     "build": "webpack --config webpack.build.config.js --progress --colors",
-    "lint": "eslint src/**/*.js"
+    "lint": "eslint src/**/* src/*"
   },
   "author": "lbxxlht@163.com",
   "license": "MIT",
@@ -32,7 +32,5 @@
     "webpack": "^3.4.1",
     "webpack-dev-server": "^2.6.1"
   },
-  "pre-commit": [
-
-  ]
+  "pre-commit": []
 }

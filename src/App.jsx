@@ -3,79 +3,82 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-define(function (require) {
 
-
-    var _ = require('underscore');
-    var React = require('react');
-    var Menu = require('./components/Menu.jsx');
-    var CommandBar = require('./components/CommandBar.jsx');
-    var InformationBar = require('./components/InformationBar.jsx');
-    var Stage3D = require('./components/Stage3D.jsx');
-    var Stage2D = require('./components/Stage2D.jsx');
-    var MeshList = require('./components/MeshList.jsx');
-    var LightList = require('./components/LightList.jsx');
-    var GeometryEditor = require('./components/GeometryEditor.jsx');
-    var MaterialEditor = require('./components/MaterialEditor.jsx');
-    var ToolsBar = require('./components/ToolsBar.jsx');
+import React, {Component} from 'react';
+import Menu from './components/Menu';
+import CommandBar from './components/CommandBar';
+import InformationBar from './components/InformationBar';
+import Stage3D from './components/Stage3D';
+import Stage2D from './components/Stage2D';
+import MeshList from './components/MeshList';
+import LightList from './components/LightList';
+import GeometryEditor from './components/GeometryEditor';
+import MaterialEditor from './components/MaterialEditor';
+import ToolsBar from './components/ToolsBar';
 
 
     function commandsFilter(me) {
+        const a = () => {
+            return 1;
+        };
         return me.props.command.map(filter);
         function filter(item) {
             if (typeof item === 'string') return item;
             var disabled =  me.props.view !== 'view-3d' && me.props.view !== 'view-all'
                 && 'stage-enlargeGride;stage-narrowGrid;'.indexOf(item.value) > -1
                 ? true : false
-            return _.extend({}, item, {disabled: disabled});
+            return Object.assign({}, item, {disabled: disabled});
         }
     }
 
 
-    return React.createClass({
-        childContextTypes: {
-            dispatch: React.PropTypes.func
-        },
-        // @override
-        getChildContext: function () {
-            return {
-                dispatch: this.props.dispatch
-            };
-        },
-        render: function () {
-            var style = {
-                right: this.props.panel.length ? 301 : 0
-            };
-            var informationBarProps = {
-                mouse3d: this.props.mouse3d,
-                style: style
-            };
-            var commandBarProps = {
-                datasource: commandsFilter(this),
-                view: this.props.view,
-                tool: this.props.tool,
-                gridVisible: this.props.stage.gridVisible,
-                style: style
-            };
-            var menuProps = {
-                panel: this.props.panel,
-                menu: this.props.menu,
-                style: style
-            };
-            var toolsBarProps = toolsBarPropsFactory(this.props);
-            return (
-                <div className="tc-root-container">
-                    {stageFactory(this)}
-                    <Menu {...menuProps}/>
-                    <CommandBar {...commandBarProps}/>
-                    <InformationBar {...informationBarProps}/>
-                    {this.props.panel.length ? panelFactory(this) : null}
-                    {toolsBarProps ? <ToolsBar {...toolsBarProps}/> : null}
-                </div>
-            );
-        }
-    });
 
+export default class Main extends Component {
+
+    getChildContext() {
+        return {
+            dispatch: this.props.dispatch
+        };
+    }
+
+    render() {
+        const {mouse3d} = this.props;
+        const style = {
+            right: this.props.panel.length ? 301 : 0
+        };
+        const informationBarProps = {
+            mouse3d,
+            style
+        };
+        var commandBarProps = {
+            datasource: commandsFilter(this),
+            view: this.props.view,
+            tool: this.props.tool,
+            gridVisible: this.props.stage.gridVisible,
+            style: style
+        };
+        var menuProps = {
+            panel: this.props.panel,
+            menu: this.props.menu,
+            style: style
+        };
+        var toolsBarProps = toolsBarPropsFactory(this.props);
+        return (
+            <div className="tc-root-container">
+                {stageFactory(this)}
+                <Menu {...menuProps}/>
+                <CommandBar {...commandBarProps}/>
+                <InformationBar {...informationBarProps}/>
+                {this.props.panel.length ? panelFactory(this) : null}
+                {toolsBarProps ? <ToolsBar {...toolsBarProps}/> : null}
+            </div>
+        );
+    }
+}
+
+Main.childContextTypes = {
+    dispatch: React.PropTypes.func
+};
 
     function panelFactory(me) {
         var doms = [];
@@ -221,6 +224,3 @@ define(function (require) {
             return (<Stage2D {...stage2dProps} style={{right: right}} axis={me.props.view.replace('view-', '').split('o')}/>);
         }
     }
-
-
-});
