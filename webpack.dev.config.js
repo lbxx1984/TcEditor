@@ -10,7 +10,6 @@ module.exports = {
     devtool: '#source-map',
     entry: {
         'js/dep/three': ['three'],
-        'js/dep/react': ['react', 'react-dom'],
         'js/dep/other': [
             'raphael',
             'file-system',
@@ -43,7 +42,7 @@ module.exports = {
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
-            names: ['js/dep/other', 'js/dep/react', 'js/dep/three']
+            names: ['js/dep/other', 'js/dep/three']
         }),
         new ExtractTextPlugin('css/style.css'),
         new HtmlWebpackPlugin({

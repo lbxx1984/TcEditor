@@ -12,7 +12,6 @@ const TIME_STAMP = new Date().getTime();
 module.exports = {
     entry: {
         'js/dep/three': ['three'],
-        'js/dep/react': ['react', 'react-dom'],
         'js/dep/other': [
             'raphael',
             'file-system',
@@ -45,7 +44,7 @@ module.exports = {
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
-            names: ['js/dep/other', 'js/dep/react', 'js/dep/three']
+            names: ['js/dep/other', 'js/dep/three']
         }),
         new ExtractTextPlugin('css/style.' + TIME_STAMP + '.css'),
         new UglifyJSPlugin(),
@@ -65,7 +64,7 @@ module.exports = {
         })
     ],
     resolve: {
-        extensions: ['.js', 'jsx'],
+        extensions: ['.js', '.jsx'],
         alias: DATASET['resolve-alias']
     }
 };
