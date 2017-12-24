@@ -18,7 +18,7 @@ import MaterialEditor from './components/MaterialEditor';
 import ToolsBar from './components/ToolsBar';
 
 
-function commandsFilter(me) {
+function getCommandBarDatasource(me) {
     const {command, view} = me.props;
     return command.map(item => {
         if (typeof item === 'string') return item;
@@ -89,7 +89,7 @@ export default class App extends Component {
             style
         };
         const commandBarProps = {
-            datasource: commandsFilter(this),
+            datasource: getCommandBarDatasource(this),
             view,
             tool,
             gridVisible: stage.gridVisible,
@@ -103,11 +103,11 @@ export default class App extends Component {
         const toolsBarProps = getToolsBarProps(this.props);
         return (
             <div className="tc-root-container">
-                {stageFactory(this)}
+                {stageRenderer(this)}
                 <Menu {...menuProps}/>
                 <CommandBar {...commandBarProps}/>
                 <InformationBar {...informationBarProps}/>
-                {panel.length ? panelFactory(this) : null}
+                {panel.length ? panelRenderer(this) : null}
                 {toolsBarProps ? <ToolsBar {...toolsBarProps}/> : null}
             </div>
         );
@@ -115,7 +115,8 @@ export default class App extends Component {
 }
 
 
-function panelFactory(me) {
+// 渲染右侧工具面板
+function panelRenderer(me) {
     const doms = [];
     const {
         view, mesh3d, group, lights, activeGroup, timer,
@@ -179,7 +180,8 @@ function panelFactory(me) {
     return <div className="tc-panel-container">{doms}</div>;
 }
 
-function stageFactory(me) {
+// 渲染主舞台
+function stageRenderer(me) {
     const {
         stage, timer, view, tool, mesh3d, lights, panel,
         selectedMesh, selectedVector, selectedVectorIndex, selectedLight,

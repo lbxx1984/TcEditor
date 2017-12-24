@@ -3,6 +3,8 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
+import CameraController from './CameraController';
+
 define(function (require) {
 
 
@@ -13,7 +15,6 @@ define(function (require) {
 
     var Transformer3D = require('three-lib/TransformControls');
     var Morpher3D = require('../tools/Morpher3D');
-    var CameraController = require('./CameraController.jsx');
     var LightHelper = require('../tools/LightHelper');
     var animation = require('../core/animation');
 
