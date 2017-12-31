@@ -3,321 +3,358 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-define(function (require) {
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import TextBox from 'fcui2/TextBox.jsx';
+import NumberBox from 'fcui2/NumberBox.jsx';
+import uiUtil from 'fcui2/core/util';
+import math from '../core/math';
 
 
-    var React = require('react');
-    var TextBox = require('fcui2/TextBox.jsx');
-    var NumberBox = require('fcui2/NumberBox.jsx');
-    var _ = require('underscore');
-    var uiUtil = require('fcui2/core/util');
-    var math = require('../core/math.js');
+const POSITION_EDITOR_PROPS = {
+    width: 80,
+    type: 'int',
+    step: 1
+};
+const SCALE_EDITOR_PROPS = {
+    width: 80,
+    type: 'float',
+    step: 0.01,
+    fixed: 2
+};
 
 
-    var positionProps = {
-        width: 80,
-        type: 'int',
-        step: 1
+function getEditorTempValue(props) {
+    const mesh = props.mesh;
+    const dataset = {
+        posx: 0,
+        posy: 0,
+        posz: 0,
+        scalex: 1,
+        scaley: 1,
+        scalez: 1,
+        vectorx: 0,
+        vectory: 0,
+        vectorz: 0
     };
-    var scaleProps = {
-        width: 80,
-        type: 'float',
-        fixed: 2
+    if (!mesh) dataset;
+    if (props.selectedVectorIndex > -1 && mesh.geometry.vertices[props.selectedVectorIndex]) {
+        const matrix = math.getRotateMatrix(mesh);
+        const vector = mesh.geometry.vertices[props.selectedVectorIndex];
+        const pos = math.local2world(vector.x, vector.y, vector.z, matrix, mesh);
+        dataset.vectorx = parseInt(pos[0], 10);
+        dataset.vectory = parseInt(pos[1], 10);
+        dataset.vectorz = parseInt(pos[2], 10);
+    }
+    dataset.posx = mesh.position.x;
+    dataset.posy = mesh.position.y;
+    dataset.posz = mesh.position.z;
+    dataset.scalex = mesh.scale.x;
+    dataset.scaley = mesh.scale.y;
+    dataset.scalez = mesh.scale.z;
+    return dataset;
+}
+
+
+function getPositionChangeHandler(me, type) {
+    const mesh = me.props.mesh;
+    return function (e) {
+        me.setState({
+            ['pos' + type]: e.target.value
+        });
+        if (isNaN(e.target.value) || e.target.value === '') return;
+        const pos = {
+            x: mesh.position.x,
+            y: mesh.position.y,
+            z: mesh.position.z
+        };
+        pos[type] = +e.target.value;
+        mesh.position.set(pos.x, pos.y, pos.z);
+        mesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
+        me.context.dispatch('updateTimer');
     };
+}
 
 
-    function isScaleAvailable(a) {
-        a = a + '';
-        if (isNaN(a) || a === '' || a === '0' || a.charAt(a.length - 1) === '.') return false;
-        a = a * 1;
-        if (a <= 0) return false;
-        return true; 
+function getScaleChangeHandler(me, type) {
+    const mesh = me.props.mesh;
+    return function (e) {
+        me.setState({
+            ['scale' + type]: e.target.value
+        });
+        if (!isScaleAvailable(e.target.value)) return;
+        mesh.scale[type] = +e.target.value;
+        mesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
+        me.context.dispatch('updateTimer');
+    };
+}
+
+
+function getVectorChangeHandler(me, type) {
+    const mesh = me.props.mesh;
+    const index = me.props.selectedVectorIndex;
+    return function (e) {
+        me.setState({
+            ['vector' + type]: e.target.value
+        });
+        if (isNaN(e.target.value) || e.target.value === '') return;
+        const vector = {
+            x: me.state.vectorx,
+            y: me.state.vectory,
+            z: me.state.vectorz
+        };
+        vector[type] = +e.target.value;
+        const pos = math.world2local(vector.x, vector.y, vector.z, mesh);
+        mesh.geometry.vertices[index].x = pos[0];
+        mesh.geometry.vertices[index].y = pos[1];
+        mesh.geometry.vertices[index].z = pos[2];
+        mesh.geometry.verticesNeedUpdate = true;
+        mesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
+        me.context.dispatch('updateTimer');
+    };
+}
+
+
+function shouldUpdateEditor(nextProps, props) {
+    return nextProps.mesh && (
+        nextProps.timer !== props.timer
+        || nextProps.mesh !== props.mesh
+        || nextProps.selectedVectorIndex !== props.selectedVectorIndex
+    );
+}
+
+
+function isScaleAvailable(a) {
+    a = a + '';
+    if (isNaN(a) || a === '' || a === '0' || a.charAt(a.length - 1) === '.') return false;
+    a = a * 1;
+    if (a <= 0) return false;
+    return true; 
+}
+
+
+export default class GeometryEditor extends Component {
+
+    static contextTypes = {
+        dispatch: PropTypes.func
     }
 
+    static propTypes = {
+        type: PropTypes.string.isRequired,
+        view: PropTypes.string.isRequired,
+        expend: PropTypes.boolean.isRequired,
+        mesh: PropTypes.object
+    }
 
-    function getMeshParam(props) {
-        var mesh = props.mesh;
-        var dataset = {
-            posx: 0,
-            posy: 0,
-            posz: 0,
-            scalex: 1,
-            scaley: 1,
-            scalez: 1,
-            vectorx: 0,
-            vectory: 0,
-            vectorz: 0
+    static defaultProps = {
+        mesh: {}
+    }
+
+    constructor(props) {
+        super(props);
+        this.timer = null;
+        this.state = {
+            step: 1,
+            ...getEditorTempValue(this.props)
         };
-        if (!mesh) dataset;
-        if (props.selectedVectorIndex > -1 && mesh.geometry.vertices[props.selectedVectorIndex]) {
-            var matrix = math.getRotateMatrix(mesh);
-            var vector = mesh.geometry.vertices[props.selectedVectorIndex];
-            var pos = math.local2world(vector.x, vector.y, vector.z, matrix, mesh);
-            dataset.vectorx = parseInt(pos[0], 10);
-            dataset.vectory = parseInt(pos[1], 10);
-            dataset.vectorz = parseInt(pos[2], 10);
+        this.onPanelCloseIconClick = this.onPanelCloseIconClick.bind(this);
+        this.onPanelToggleIconClick = this.onPanelToggleIconClick.bind(this);
+        this.onNameChange = this.onNameChange.bind(this);
+        this.onStepChange = this.onStepChange.bind(this);
+        this.onRotationMouseDown = this.onRotationMouseDown.bind(this);
+        this.onRotationMouseUp = this.onRotationMouseUp.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (shouldUpdateEditor(nextProps, this.props)) {
+            this.setState(getEditorTempValue(nextProps));
         }
-        dataset.posx = mesh.position.x;
-        dataset.posy = mesh.position.y;
-        dataset.posz = mesh.position.z;
-        dataset.scalex = mesh.scale.x;
-        dataset.scaley = mesh.scale.y;
-        dataset.scalez = mesh.scale.z;
-        return dataset;
     }
 
-
-    function positionChangeHandlerFactory(me, type) {
-        var mesh = me.props.mesh;
-        return function (e) {
-            var dataset = {};
-            dataset['pos' + type] = e.target.value;
-            me.setState(dataset);
-            if (isNaN(e.target.value) || e.target.value === '') return;
-            var pos = {
-                x: mesh.position.x,
-                y: mesh.position.y,
-                z: mesh.position.z
-            };
-            pos[type] = +e.target.value;
-            mesh.position.set(pos.x, pos.y, pos.z);
-            mesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
-            me.context.dispatch('updateTimer');
-        };
+    onPanelCloseIconClick() {
+        this.context.dispatch('view-close-panel', this.props.type);
     }
 
-
-    function scaleChangeHandlerFactory(me, type) {
-        var mesh = me.props.mesh;
-        return function (e) {
-            var dataset = {};
-            dataset['scale' + type] = e.target.value;
-            me.setState(dataset);
-            if (!isScaleAvailable(e.target.value)) return;
-            mesh.scale[type] = +e.target.value;
-            mesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
-            me.context.dispatch('updateTimer');
-        };
+    onPanelToggleIconClick() {
+        this.context.dispatch('view-toggle-panel', this.props.type);
     }
 
-
-    function vectorChangeHandlerFactory(me, type) {
-        var mesh = me.props.mesh;
-        var index = me.props.selectedVectorIndex;
-        return function (e) {
-            var dataset = {};
-            dataset['vector' + type] = e.target.value;
-            me.setState(dataset);
-            if (isNaN(e.target.value) || e.target.value === '') return;
-            var vector = {
-                x: me.state.vectorx,
-                y: me.state.vectory,
-                z: me.state.vectorz
-            };
-            vector[type] = +e.target.value;
-            var pos = math.world2local(vector.x, vector.y, vector.z, mesh);
-            mesh.geometry.vertices[index].x = pos[0];
-            mesh.geometry.vertices[index].y = pos[1];
-            mesh.geometry.vertices[index].z = pos[2];
-            mesh.geometry.verticesNeedUpdate = true;
-            mesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
-            me.context.dispatch('updateTimer');
-        };
+    onNameChange(e) {
+        this.props.mesh.tc.name = e.target.value;
+        this.context.dispatch('updateTimer');
     }
 
+    onStepChange(e) {
+        this.setState({step: e.target.value});
+    }
 
-    return React.createClass({
-        // @override
-        contextTypes: {
-            dispatch: React.PropTypes.func
-        },
-        getInitialState: function () {
-            return _.extend({
-                step: 1
-            }, getMeshParam(this.props));
-        },
-        componentWillReceiveProps: function (nextProps) {
-            if (!nextProps.mesh) return;
-            if (
-                nextProps.timer !== this.props.timer || nextProps.mesh !== this.props.mesh
-                || nextProps.selectedVectorIndex !== this.props.selectedVectorIndex
-            ) {
-                this.setState(getMeshParam(nextProps));
-                return;
-            }
-        },
-        onPanelCloseIconClick: function () {
-            this.context.dispatch('view-close-panel', this.props.type);
-        },
-        onPanelToggleIconClick: function () {
-            this.context.dispatch('view-toggle-panel', this.props.type);
-        },
-        onNameChange: function (e) {
-            this.props.mesh.tc.name = e.target.value;
-            this.context.dispatch('updateTimer');
-        },
-        onStepChange: function (e) {
-            this.setState({step: e.target.value});
-        },
-        onRotationMouseDown: function (e) {
-            var type = e.target.dataset.type;
-            var value = +e.target.dataset.value;
-            var step = this.state.step;
-            var mesh = this.props.mesh;
-            var dispatch = this.context.dispatch;
-            var view = this.props.view;
-            if (!type || !mesh || isNaN(step) || step === '') return;
-            step *= value / 57.3;
-            moving();
-            clearInterval(this.timer);
-            this.timer = setInterval(moving, 100);
-            function moving() {
-                mesh['rotate' + type](step);
-                mesh.tc.needUpdate = view === 'view-all' ? 4 : 1;
-                dispatch('updateTimer');
-            }
-        },
-        onRotationMouseUp: function (e) {
-            clearInterval(this.timer);
-        },
-        render: function () {
-            var expendBtnIcon = this.props.expend ? 'tc-icon-down' : 'tc-icon-right';
-            return (
-                <div className="tc-meshlist">
-                    <div className="tc-panel-title-bar">
-                        <span className="tc-icon tc-icon-close" onClick={this.onPanelCloseIconClick}></span>
-                        <span className={'tc-icon ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
-                        Geometry Properties
-                    </div>
-                    <div className="tc-panel-content-container">
-                        {this.props.expend ? editorFactory(this) : null}
-                    </div>
-                </div>
-            );
+    onRotationMouseDown(e) {
+        const type = e.target.dataset.type;
+        const value = +e.target.dataset.value;
+        const {mesh, view} = this.props;
+        const dispatch = this.context.dispatch;
+        let step = this.state.step;
+        if (!type || !mesh || isNaN(step) || step === '') return;
+        step *= value / 57.3;
+        moving();
+        clearInterval(this.timer);
+        this.timer = setInterval(moving, 100);
+        function moving() {
+            mesh['rotate' + type](step);
+            mesh.tc.needUpdate = view === 'view-all' ? 4 : 1;
+            dispatch('updateTimer');
         }
-    });
+    }
 
+    onRotationMouseUp() {
+        clearInterval(this.timer);
+    }
 
-    function editorFactory(me) {
-        var mesh = me.props.mesh;
-        var geo = mesh.geometry;
-        var nameEditorProps = {
-            value: typeof mesh.tc.name === 'string'
-                ? mesh.tc.name
-                : (mesh.geometry.type.replace('Geometry', ' ') + uiUtil.dateFormat(mesh.tc.birth, 'DD/MM hh:mm:ss')),
-            onChange: me.onNameChange
-        };
-        var positionXProps = _.extend({}, positionProps, {
-            value: me.state.posx,
-            onChange: positionChangeHandlerFactory(me, 'x')
-        });
-        var positionYProps = _.extend({}, positionProps, {
-            value: me.state.posy,
-            onChange: positionChangeHandlerFactory(me, 'y')
-        });
-        var positionZProps = _.extend({}, positionProps, {
-            value: me.state.posz,
-            onChange: positionChangeHandlerFactory(me, 'z')
-        });
-        var rotationContainerProps = {
-            onMouseDown: me.onRotationMouseDown,
-            onMouseUp: me.onRotationMouseUp,
-            onMouseMove: me.onRotationMouseUp
-        };
-        var stepProps = {
-            className: isNaN(me.state.step) || me.state.step === '' ? 'fcui2-numberbox-reject' : '',
-            width: 65,
-            type: 'float',
-            fixed: 2,
-            value: me.state.step,
-            onChange: me.onStepChange
-        };
-        var scaleXProps = _.extend({}, scaleProps, {
-            className: isScaleAvailable(me.state.scalex) ? '' : 'fcui2-numberbox-reject',
-            value: me.state.scalex,
-            onChange: scaleChangeHandlerFactory(me, 'x')
-        });
-        var scaleYProps = _.extend({}, scaleProps, {
-            className: isScaleAvailable(me.state.scaley) ? '' : 'fcui2-numberbox-reject',
-            value: me.state.scaley,
-            onChange: scaleChangeHandlerFactory(me, 'y')
-        });
-        var scaleZProps = _.extend({}, scaleProps, {
-            className: isScaleAvailable(me.state.scalez) ? '' : 'fcui2-numberbox-reject',
-            value: me.state.scalez,
-            onChange: scaleChangeHandlerFactory(me, 'z')
-        });
+    render() {
+        const expendBtnIcon = this.props.expend ? 'tc-icon-down' : 'tc-icon-right';
         return (
-            <table className="tc-geometry-editor">
-                <tr>
-                    <td>type:</td>
-                    <td>{geo.type}</td>
-                </tr>
-                <tr>
-                    <td>name:</td>
-                    <td><TextBox {...nameEditorProps}/></td>
-                </tr>
-                <tr style={{marginTop: 5}}>
-                    <td>position:</td>
-                    <td style={{lineHeight: '30px'}}>
-                        <NumberBox {...positionXProps}/>&nbsp;x<br/>
-                        <NumberBox {...positionYProps}/>&nbsp;y<br/>
-                        <NumberBox {...positionZProps}/>&nbsp;z
-                    </td>
-                </tr>
-                <tr>
-                    <td>scale:</td>
-                    <td style={{lineHeight: '30px'}}>
-                        <NumberBox {...scaleXProps}/>&nbsp;x<br/>
-                        <NumberBox {...scaleYProps}/>&nbsp;y<br/>
-                        <NumberBox {...scaleZProps}/>&nbsp;z
-                    </td>
-                </tr>
-                <tr>
-                    <td>rotation:</td>
-                    <td style={{lineHeight: '30px'}}>
-                        <span style={{float: 'right'}}>
-                            step:&nbsp;<NumberBox {...stepProps}/>&nbsp;
-                        </span>
-                        <div {...rotationContainerProps}>
-                            <span data-type="X" data-value="-1" className="tc-icon tc-icon-left"></span>x
-                            <span data-type="X" data-value="1" className="tc-icon tc-icon-right"></span><br/>
-                            <span data-type="Y" data-value="-1" className="tc-icon tc-icon-left"></span>y
-                            <span data-type="Y" data-value="1" className="tc-icon tc-icon-right"></span><br/>
-                            <span data-type="Z" data-value="-1" className="tc-icon tc-icon-left"></span>z
-                            <span data-type="Z" data-value="1" className="tc-icon tc-icon-right"></span>
-                        </div>
-                    </td>
-                </tr>
-                {me.props.selectedVectorIndex > -1 ? vectorEditorFactory(me) : null}
-            </table>
+            <div className="tc-meshlist">
+                <div className="tc-panel-title-bar">
+                    <span className="tc-icon tc-icon-close" onClick={this.onPanelCloseIconClick}></span>
+                    <span className={'tc-icon ' + expendBtnIcon} onClick={this.onPanelToggleIconClick}></span>
+                    Geometry Properties
+                </div>
+                <div className="tc-panel-content-container">
+                    {this.props.expend ? editorRenderer(this) : null}
+                </div>
+            </div>
         );
     }
+}
 
 
-    function vectorEditorFactory(me) {
-        var xProps = _.extend({}, positionProps, {
-            value: me.state.vectorx,
-            onChange: vectorChangeHandlerFactory(me, 'x')
-        });
-        var yProps = _.extend({}, positionProps, {
-            value: me.state.vectory,
-            onChange: vectorChangeHandlerFactory(me, 'y')
-        });
-        var zProps = _.extend({}, positionProps, {
-            value: me.state.vectorz,
-            onChange: vectorChangeHandlerFactory(me, 'z')
-        });
-        return (
+function editorRenderer(me) {
+    const mesh = me.props.mesh;
+    const geo = mesh.geometry;
+    const nameEditorProps = {
+        value: typeof mesh.tc.name === 'string'
+            ? mesh.tc.name
+            : (mesh.geometry.type.replace('Geometry', ' ') + uiUtil.dateFormat(mesh.tc.birth, 'DD/MM hh:mm:ss')),
+        onChange: me.onNameChange
+    };
+    const positionXProps = {
+        ...POSITION_EDITOR_PROPS,
+        value: me.state.posx,
+        onChange: getPositionChangeHandler(me, 'x')
+    };
+    const positionYProps = {
+        ...POSITION_EDITOR_PROPS,
+        value: me.state.posy,
+        onChange: getPositionChangeHandler(me, 'y')
+    };
+    const positionZProps = {
+        ...POSITION_EDITOR_PROPS,
+        value: me.state.posz,
+        onChange: getPositionChangeHandler(me, 'z')
+    };
+    const rotationContainerProps = {
+        onMouseDown: me.onRotationMouseDown,
+        onMouseUp: me.onRotationMouseUp,
+        onMouseMove: me.onRotationMouseUp
+    };
+    const stepProps = {
+        className: isNaN(me.state.step) || me.state.step === '' ? 'fcui2-numberbox-reject' : '',
+        width: 65,
+        type: 'float',
+        fixed: 2,
+        value: me.state.step,
+        onChange: me.onStepChange
+    };
+    const scaleXProps = {
+        ...SCALE_EDITOR_PROPS,
+        className: isScaleAvailable(me.state.scalex) ? '' : 'fcui2-numberbox-reject',
+        value: me.state.scalex,
+        onChange: getScaleChangeHandler(me, 'x')
+    };
+    const scaleYProps = {
+        ...SCALE_EDITOR_PROPS,
+        className: isScaleAvailable(me.state.scaley) ? '' : 'fcui2-numberbox-reject',
+        value: me.state.scaley,
+        onChange: getScaleChangeHandler(me, 'y')
+    };
+    const scaleZProps = {
+        ...SCALE_EDITOR_PROPS,
+        className: isScaleAvailable(me.state.scalez) ? '' : 'fcui2-numberbox-reject',
+        value: me.state.scalez,
+        onChange: getScaleChangeHandler(me, 'z')
+    };
+    return (
+        <table className="tc-geometry-editor"><tbody>
+            <tr>
+                <td>type:</td>
+                <td>{geo.type}</td>
+            </tr>
+            <tr>
+                <td>name:</td>
+                <td><TextBox {...nameEditorProps}/></td>
+            </tr>
             <tr style={{marginTop: 5}}>
-                <td>Vector:</td>
+                <td>position:</td>
                 <td style={{lineHeight: '30px'}}>
-                    <NumberBox {...xProps}/>&nbsp;x<br/>
-                    <NumberBox {...yProps}/>&nbsp;y<br/>
-                    <NumberBox {...zProps}/>&nbsp;z
+                    <NumberBox {...positionXProps}/>&nbsp;x<br/>
+                    <NumberBox {...positionYProps}/>&nbsp;y<br/>
+                    <NumberBox {...positionZProps}/>&nbsp;z
                 </td>
             </tr>
-        );
-    }
+            <tr>
+                <td>scale:</td>
+                <td style={{lineHeight: '30px'}}>
+                    <NumberBox {...scaleXProps}/>&nbsp;x<br/>
+                    <NumberBox {...scaleYProps}/>&nbsp;y<br/>
+                    <NumberBox {...scaleZProps}/>&nbsp;z
+                </td>
+            </tr>
+            <tr>
+                <td>rotation:</td>
+                <td style={{lineHeight: '30px'}}>
+                    <span style={{float: 'right'}}>
+                        step:&nbsp;<NumberBox {...stepProps}/>&nbsp;
+                    </span>
+                    <div {...rotationContainerProps}>
+                        <span data-type="X" data-value="-1" className="tc-icon tc-icon-left"></span>x
+                        <span data-type="X" data-value="1" className="tc-icon tc-icon-right"></span><br/>
+                        <span data-type="Y" data-value="-1" className="tc-icon tc-icon-left"></span>y
+                        <span data-type="Y" data-value="1" className="tc-icon tc-icon-right"></span><br/>
+                        <span data-type="Z" data-value="-1" className="tc-icon tc-icon-left"></span>z
+                        <span data-type="Z" data-value="1" className="tc-icon tc-icon-right"></span>
+                    </div>
+                </td>
+            </tr>
+            {me.props.selectedVectorIndex > -1 ? vectorEditorRenderer(me) : null}
+        </tbody></table>
+    );
+}
 
-});
+
+function vectorEditorRenderer(me) {
+    const xProps = {
+        ...POSITION_EDITOR_PROPS,
+        value: me.state.vectorx,
+        onChange: getVectorChangeHandler(me, 'x')
+    };
+    const yProps = {
+        ...POSITION_EDITOR_PROPS,
+        value: me.state.vectory,
+        onChange: getVectorChangeHandler(me, 'y')
+    };
+    const zProps = {
+        ...POSITION_EDITOR_PROPS,
+        value: me.state.vectorz,
+        onChange: getVectorChangeHandler(me, 'z')
+    };
+    return (
+        <tr style={{marginTop: 5}}>
+            <td>Vector:</td>
+            <td style={{lineHeight: '30px'}}>
+                <NumberBox {...xProps}/>&nbsp;x<br/>
+                <NumberBox {...yProps}/>&nbsp;y<br/>
+                <NumberBox {...zProps}/>&nbsp;z
+            </td>
+        </tr>
+    );
+}
