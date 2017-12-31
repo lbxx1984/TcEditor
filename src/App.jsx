@@ -18,17 +18,6 @@ import MaterialEditor from './components/MaterialEditor';
 import ToolsBar from './components/ToolsBar';
 
 
-function getCommandBarDatasource(me) {
-    const {command, view} = me.props;
-    return command.map(item => {
-        if (typeof item === 'string') return item;
-        return Object.assign({}, item, {
-            disabled: ['view-3d', 'view-all'].indexOf(view) < 0
-                && ['stage-enlargeGride', 'stage-narrowGrid'].indexOf(item.value) > -1
-        });
-    });
-}
-
 function getToolsBarProps(props) {
     let datasource = null;
     switch (props.tool) {
@@ -80,7 +69,7 @@ export default class App extends Component {
     }
 
     render() {
-        const {mouse3d, panel, view, tool, stage, menu} = this.props;
+        const {mouse3d, panel, view, tool, stage, menu, command} = this.props;
         const style = {
             right: panel.length ? 301 : 0
         };
@@ -89,7 +78,7 @@ export default class App extends Component {
             style
         };
         const commandBarProps = {
-            datasource: getCommandBarDatasource(this),
+            datasource: command,
             view,
             tool,
             gridVisible: stage.gridVisible,

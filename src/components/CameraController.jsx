@@ -91,6 +91,13 @@ function updateCameraPosition(me, props) {
     );
 }
 
+// 判断是否更新摄像机
+function shouldUpdateCamera(nextProps, props) {
+    return nextProps.cameraRadius !== props.cameraRadius
+        || nextProps.cameraAngleA !== props.cameraAngleA
+        || nextProps.cameraAngleB !== props.cameraAngleB;
+}
+
 
 export default class CameraController extends Component {
 
@@ -163,11 +170,7 @@ export default class CameraController extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (
-            nextProps.cameraRadius !== this.props.cameraRadius
-            || nextProps.cameraAngleA !== this.props.cameraAngleA
-            || nextProps.cameraAngleB !== this.props.cameraAngleB
-        ) {
+        if (shouldUpdateCamera(nextProps, this.props)) {
             updateCameraPosition(this, nextProps);
         }
     }

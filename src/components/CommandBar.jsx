@@ -3,78 +3,72 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-define(function (require) {
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 
-    var React = require('react');
+export default class CommandBar extends Component {
 
-
-    return React.createClass({
-        contextTypes: {
-            dispatch: React.PropTypes.func
-        },
-        // @override
-        getDefaultProps: function () {
-            return {};
-        },
-        // @override
-        getInitialState: function () {
-            return {};
-        },
-        onButtonClick: function (e) {
-            this.context.dispatch(e.target.dataset.uiCmd);
-        },
-        render: function () {
-            return (
-                <div className="tc-command-bar" style={this.props.style}>
-                    {mainFactory(this)}
-                </div>
-            );
-        }
-    });
-
-
-    function mainFactory(me) {
-        var doms = [];
-        me.props.datasource.map(function (item, index) {
-            var key = 'key-' + index;
-            if (typeof item === 'string') {
-                doms.push(<div key={key} className="command-label">{item}</div>);
-                return;
-            }
-            var containerProps = {
-                key: key,
-                className: 'command-' + (item.icon ? 'icon' : 'text') + '-button' + (item.disabled ? '-disabled' : ''),
-                title: item.title,
-                onClick: !item.disabled ? me.onButtonClick : null
-            };
-            var innerProps = {
-                className: item.icon ? 'tc-icon ' + item.icon : ''
-            };
-            containerPropsFilter(containerProps, item, me);
-            innerPropsFilter(innerProps, item, me);
-            doms.push(
-                <div {...containerProps} data-ui-cmd={item.value}>
-                    <span {...innerProps} data-ui-cmd={item.value}>
-                        {item.label}
-                    </span>
-                </div>
-            );
-        });
-        return doms;
+    static contextTypes = {
+        dispatch: PropTypes.func
     }
 
+    static propTypes = {
+        style: PropTypes.object
+    }
 
-    function innerPropsFilter(props, item, me) {
+    static defaultProps = {
+        style: {}
+    }
+
+    constructor(props) {
+        super(props);
+        this.onButtonClick = this.onButtonClick.bind(this);
+    }
+
+    onButtonClick(e) {
+        this.context.dispatch(e.target.dataset.uiCmd);
+    }
+
+    render() {
+        return (
+            <div className="tc-command-bar" style={this.props.style}>
+                {mainFactory(this)}
+            </div>
+        );
+    }
+
+}
+
+
+function mainFactory(me) {
+    const doms = [];
+    const {view, tool, gridVisible, datasource} = me.props;
+    datasource.map(function (item, index) {
+        if (typeof item === 'string') {
+            doms.push(<div key={index} className="command-label">{item}</div>);
+            return;
+        }   
+        const containerProps = {
+            key: index,
+            className: 'command-' + (item.icon ? 'icon' : 'text') + '-button' + (item.disabled ? '-disabled' : ''),
+            title: item.title,
+            onClick: !item.disabled ? me.onButtonClick : null
+        };
+        const innerProps = {
+            className: item.icon ? 'tc-icon ' + item.icon : ''
+        };
+        containerProps.className += item.value === view || item.value === tool ? ' checked-item' : '';
         if (item.value === 'stage-helperVisible') {
-            props.className = me.props.gridVisible ? 'tc-icon tc-icon-visible' : 'tc-icon tc-icon-invisible';
+            innerProps.className = gridVisible ? 'tc-icon tc-icon-visible' : 'tc-icon tc-icon-invisible';
         }
-    }
-
-
-    function containerPropsFilter(props, item, me) {
-        props.className += item.value === me.props.view || item.value === me.props.tool ? ' checked-item' : '';
-    }
-
-
-});
+        doms.push(
+            <div {...containerProps} data-ui-cmd={item.value}>
+                <span {...innerProps} data-ui-cmd={item.value}>
+                    {item.label}
+                </span>
+            </div>
+        );
+    });
+    return doms;
+}
