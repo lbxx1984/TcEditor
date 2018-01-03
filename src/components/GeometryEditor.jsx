@@ -142,7 +142,7 @@ export default class GeometryEditor extends Component {
     static propTypes = {
         type: PropTypes.string.isRequired,
         view: PropTypes.string.isRequired,
-        expend: PropTypes.boolean.isRequired,
+        expend: PropTypes.bool.isRequired,
         mesh: PropTypes.object
     }
 

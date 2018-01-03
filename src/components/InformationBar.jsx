@@ -3,32 +3,26 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-define(function (require) {
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
-    var React = require('react');   
+export default class InformationBar extends Component {
 
+    static propTypes = {
+        mouse3d: PropTypes.object.isRequired,
+        style: PropTypes.object.isRequired
+    }
 
-    return React.createClass({
-        // @override
-        getDefaultProps: function () {
-            return {};
-        },
-        // @override
-        getInitialState: function () {
-            return {};
-        },
-        render: function () {
-            var point = this.props.mouse3d;
-            return (
-                <div className="tc-information-bar" style={this.props.style}>
-                    <span className="axis-label">x: {point.x.toFixed(2)}</span>
-                    <span className="axis-label">y: {point.y.toFixed(2)}</span>
-                    <span className="axis-label">z: {point.z.toFixed(2)}</span>
-                </div>
-            );
-        }
-    });
+    render() {
+        const point = this.props.mouse3d;
+        return (
+            <div className="tc-information-bar" style={this.props.style}>
+                <span className="axis-label">x: {point.x.toFixed(2)}</span>
+                <span className="axis-label">y: {point.y.toFixed(2)}</span>
+                <span className="axis-label">z: {point.z.toFixed(2)}</span>
+            </div>
+        );
+    }
 
-
-});
+}
