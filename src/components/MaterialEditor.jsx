@@ -4,7 +4,6 @@
  * @email lbxxlht@163.com
  */
 import * as THREE from 'three';
-import {Color} from 'three';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Dialog from 'fcui2/Dialog.jsx';
@@ -181,8 +180,8 @@ export default class MaterialEditor extends Component {
 function editorRenderer(me) {
     const mesh = me.props.mesh;
     const mtl = mesh.material;
-    const color = new Color(mesh.tc.materialColor);
-    const emissive = new Color(mesh.tc.materialEmissive);
+    const color = new THREE.Color(mesh.tc.materialColor);
+    const emissive = new THREE.Color(mesh.tc.materialEmissive);
     const colorContainerStyle = {
         border: '1px solid #FFF',
         padding: '4px',
