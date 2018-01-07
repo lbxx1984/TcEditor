@@ -7,7 +7,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import TextBox from 'fcui2/TextBox.jsx';
 import NumberBox from 'fcui2/NumberBox.jsx';
-import uiUtil from 'fcui2/core/util';
+import util from 'fcui2/core/util';
 import math from '../core/math';
 
 
@@ -234,7 +234,7 @@ function editorRenderer(me) {
     const nameEditorProps = {
         value: typeof mesh.tc.name === 'string'
             ? mesh.tc.name
-            : (mesh.geometry.type.replace('Geometry', ' ') + uiUtil.dateFormat(mesh.tc.birth, 'DD/MM hh:mm:ss')),
+            : (mesh.geometry.type.replace('Geometry', ' ') + util.dateFormat(mesh.tc.birth, 'DD/MM hh:mm:ss')),
         onChange: me.onNameChange
     };
     const positionXProps = {
