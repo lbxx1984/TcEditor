@@ -1,7 +1,6 @@
 /**
  * 全局提示
  * @author zhangjialin
- * @email zhangjialin03@baidu.com
  * @version 0.0.2.1
  * @note
  *      全局展示操作反馈信息，居中显示并自动消失，单例模式，可提供“成功”等反馈信息
@@ -10,7 +9,8 @@
 define(function(require) {
     const React = require('react');
     const ReactDOM = require('react-dom');
-    var _ = require('underscore');
+    const Skin = require('./Skin.jsx');
+    var util = require('./core/util');
     var cTools = require('./core/componentTools');
     var language = require('./core/language').toast;
 
@@ -22,8 +22,8 @@ define(function(require) {
     };
 
     const iconType = {
-        success: 'font-icon font-icon-check-circle-s',
-        error: 'font-icon font-icon-times-circle'
+        success: 'fcui2-icon fcui2-icon-success',
+        error: 'fcui2-icon fcui2-icon-failed'
     };
 
     let defaultProps = {
@@ -33,10 +33,12 @@ define(function(require) {
         icon: '',
         message: '',
         size: '',
-        subComponent: '',
+        subComponent: null,
+        subComponentCloseHandlerName: 'close',
+        subComponentProps: {},
         autoHideTime: 2000,
         onClose: cTools.noop
-    }
+    };
 
     /**
      * @constructor
@@ -45,20 +47,13 @@ define(function(require) {
 
     class Toast {
         getContainer() {
-            if (!document)
-                return;
-
-            if (this.___container___) {
-                return this.___container___;
-            }
-            else {
-                let className = defaultProps.classPrefix + '-container';
-                let container = document.createElement('div');
-
-                container.className = className;
-                this.___container___ = container;
-                return container;
-            }
+            if (!document) return;
+            if (this.___container___) return this.___container___;
+            let className = defaultProps.classPrefix + '-container';
+            let container = document.createElement('div');
+            container.className = className;
+            this.___container___ = container;
+            return container;
         }
 
       /**
@@ -75,25 +70,27 @@ define(function(require) {
         * @param {Number} param.size.width 宽度
         * @param {Number} param.size.height 高度
         * @param {Object} param.subComponent 传入React组件，作为Toast的内容
-        * @param {Number} param.autoHideTime 自动隐藏时间容迟，单位：毫秒
+        * @param {Object} param.subComponentProps subComponent初始化事传入的props
+        * @param {String} param.subComponentCloseHandlerName 透传给subComponent的关闭事件属性名
+        * @param {Number} param.autoHideTime 自动隐藏时间容迟，单位：毫秒，如果设置为0，不自动关闭
         * @param {Function} param.onClose Toast关闭的回调函数
         */
 
         pop(props) {
             // 创建元素
             let me = this;
-            props = _.extend({}, defaultProps, props);
+            props = util.extend({}, defaultProps, props, {
+                close: () => {me.dispose()}
+            });
             document.body.appendChild(this.getContainer());
-            me.___ui___ = null;
-
-            ReactDOM.render(<ToastComponent {...props}/>, me.getContainer(), function(ref) {
-                me.___ui___ = this;
+            me.___ui___ = ReactDOM.render(<ToastComponent {...props}/>, me.getContainer(), function(ref) {
+                if (this) me.___ui___ = this;
                 me.resize(props);
             });
 
             this.___ui___ = null;
             // 销毁元素
-            setTimeout(function() {
+            props.autoHideTime && setTimeout(function() {
                 me.dispose();
                 typeof props.onClose === 'function' && props.onClose();
             }, props.autoHideTime);
@@ -129,21 +126,23 @@ define(function(require) {
         getInitialState() {
             return {};
         },
-
         render() {
-            let {message, type, icon, subComponent, onClose, classPrefix} = this.props;
+            let {message, type, icon, subComponent, subComponentProps, subComponentCloseHandlerName, onClose, classPrefix} = this.props;
             let toastMsg = message || language[type] || null;
             let toastIcon = icon || iconType[type];
             let Component = subComponent;
-
-            let containerProp = cTools.containerBaseProps('toast', this, {
-                mergeFromProps: Object.keys(this.props).filter(e => e !== 'classPrefix' && e !== 'subComponent')
+            let componentProps = util.extend({}, subComponentProps, {
+                [subComponentCloseHandlerName]: this.props.close
             });
-
+            let containerProp = cTools.containerBaseProps('toast', this, {
+                mergeFromProps: Object.keys(this.props).filter(e => e === 'className' || e === 'style')
+            });
             return (
                 <div {...containerProp}>
                     {subComponent
-                        ? <Component />
+                        ? <Skin skin={this.props.skin}>
+                            <Component {...componentProps}/>
+                        </Skin>
                         : <div>
                             <div className={classPrefix + '-mask'}></div>
                                 <div className={classPrefix + '-content'}>

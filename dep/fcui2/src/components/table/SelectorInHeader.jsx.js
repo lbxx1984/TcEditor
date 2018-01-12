@@ -68,7 +68,7 @@ define(function (require) {
         onMainSelectorChange: function (e) {
             var table = this.props.tableComponent;
             var info = getInformationFromTable(table);
-            e.target = this.refs.container;
+            e = {target: this.refs.container};
             if (info.workMode === SELECT_MODE.CURRENT_PAGE) {
                 e.target.value = info.i === table.props.datasource.length
                     ? SELECT_COMMAND.CLEAR : SELECT_COMMAND.CURRENT_PAGE;
@@ -93,7 +93,7 @@ define(function (require) {
             var virtualCheckboxProps = {
                 onClick: this.onMainSelectorChange,
                 
-                className: 'iconfont icon-checkbox'
+                className: 'fcui2-icon fcui2-icon-checkbox'
                     + (!checked && indeterminate ? '-indeterminate' : (checked ? '-selected' : '-unselected'))
                     + (disabled ? '-disabled' : '')
             };
@@ -132,7 +132,7 @@ define(function (require) {
             return (
                 <th className="th-header table-selector" rowSpan={this.props.rowSpan}>
                     <div {...containerProp}>
-                        <div className="icon-right font-icon font-icon-largeable-caret-down"></div>
+                        <div className="icon-right fcui2-icon fcui2-icon-arrow-down"></div>
                         &nbsp;
                         <span {...virtualCheckboxProps} style={virtualCheckboxStyle}/>
                         <Layer {...layerProp}>

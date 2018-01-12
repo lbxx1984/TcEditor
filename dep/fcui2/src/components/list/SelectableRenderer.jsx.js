@@ -1,6 +1,6 @@
 /**
  * @file 带选择状态的List渲染器
- * @author mahaina (mahaina@baidu.com)
+ * @author mahaina
  * @date 2016/11/16.
  */
 define(function (require) {
@@ -41,7 +41,7 @@ define(function (require) {
          */
         onClick: function (e) {
             if (this.props.disabled) return;
-            e.target = this.refs.container;
+            e = {target: this.refs.container};
             e.target.value = this.props.value;
             this.props.onClick(e);
         },

@@ -65,7 +65,7 @@ define(function (require) {
         // 主按钮被点击
         onMainButtonClick: function (e) {
             if (this.props.disabled) return;
-            e.target = this.refs.container;
+            e = {target: this.refs.container};
             e.target.value = this.props.value;
             this.setState({layerOpen: false});
             this.props.onClick(e);
@@ -92,7 +92,7 @@ define(function (require) {
             });
             var hasDatasource = this.props.datasource instanceof Array && this.props.datasource.length > 0;
             var dropdownButtonProp = {
-                className: 'icon-right font-icon font-icon-largeable-caret-down'
+                className: 'icon-right fcui2-icon fcui2-icon-arrow-down'
                     + (this.state.layerOpen && hasDatasource && !this.props.disabled ? ' layerOpen' : ''),
                 onClick: this.onDropDownButtonClick
             };

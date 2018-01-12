@@ -45,7 +45,7 @@ define(function (require) {
                 // self
                 title: '',
                 content: '',
-                icon: 'font-icon-hint-question-s',
+                icon: 'fcui2-icon fcui2-icon-question',
                 renderer: null,
                 renderProps: {},
                 layerLocation: 'right left top bottom',
@@ -125,7 +125,11 @@ define(function (require) {
             };
             var Renderer = this.props.renderer;
             containerProp.className += typeof Renderer === 'function' ? '' : ' font-icon ' + this.props.icon;
-            var layerClassName = 'fcui2-tip-layer' + (this.props.layerClassName ? ' ' + this.props.layerClassName : '');
+            var layerClassName = [
+                'fcui2-tip-layer',
+                'fcui2-tip-layer-' + skin,
+                this.props.layerClassName ? this.props.layerClassName : ''
+            ].join(' ');
             return (
                 <div {...containerProp}>
                     {typeof Renderer === 'function' ? <Renderer {...this.props.renderProps}/> : null}

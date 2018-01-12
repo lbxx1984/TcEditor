@@ -1,6 +1,6 @@
 /**
  * Cascade Item默认级联菜单渲染器
- * @author Chen Xiao (chenxiao09@baidu.com)
+ * @author Chen Xiao
  */
 define(function (require) {
     const React = require('react');
@@ -39,7 +39,7 @@ define(function (require) {
          */
         onClick: function (e) {
             if (this.props.disabled || this.props.children && this.props.children.length) return;
-            e.target = this.refs.listItem;
+            e = {target: this.refs.listItem};
             e.target.value = this.props.value;
             this.props.onClick(e);
         },
@@ -72,7 +72,7 @@ define(function (require) {
                         this.props.children && this.props.children.length
                         ? <div>
                             <span>{this.props.label}</span>
-                            <div className="icon-right font-icon font-icon-caret-right"></div>
+                            <div className="icon-right fcui2-icon fcui2-icon-arrow-right"></div>
                             <div className="children-container">
                                 <List {...listProp} />
                             </div>

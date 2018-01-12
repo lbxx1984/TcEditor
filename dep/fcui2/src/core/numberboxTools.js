@@ -18,6 +18,7 @@ define(function (require) {
         charFilter: function (value) {
             value = (typeof value === 'string' || typeof value === 'number') ? value + '' : '';
             if (value.length === 0) return value;
+            value = value.replace(/。/g, '.');
             // 过滤非法字符
             var str = '-.0123456789';
             var result = '';
@@ -81,10 +82,7 @@ define(function (require) {
             fixed = isNaN(fixed) ? 2 : parseInt(fixed, 10);
             var arr = value.split('.').slice(0, 2);
             if (arr.length > 1 && arr[1].length > fixed) {
-                var chart = +(arr[1].charAt(fixed + 1));
-                arr[1] = +(arr[1].slice(0, fixed));
-                arr[1] += chart >= 5 ? 1 : 0;
-                arr[1] += '';
+                arr[1] = arr[1].slice(0, fixed);
             }
             if (arr.length > 1) {
                 return arr.join('.');

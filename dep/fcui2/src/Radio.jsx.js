@@ -66,7 +66,7 @@ define(function (require) {
         },
         onClick: function (e) {
             if (this.props.disabled) return;
-            e.target = this.refs.inputbox;
+            e = {target: this.refs.inputbox};
             if (e.target.checked) return;
             e.target.checked = true;
             this.___dispatchChange___(e);
@@ -90,7 +90,7 @@ define(function (require) {
                 disabled: this.props.disabled
             };
             var virtualCheckboxProp = {
-                className: 'iconfont icon-radio' + (checked ? '-checked' : ''),
+                className: 'fcui2-icon fcui2-icon-radio' + (checked ? '-selected' : ''),
                 onClick: this.onClick
             };
             return (

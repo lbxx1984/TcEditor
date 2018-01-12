@@ -66,6 +66,8 @@ define(function (require) {
                 countries: undefined,
                 layerLocation: 'bottom right',
                 onLayerOffset: undefined,
+                // hidden the checkbox and the label of a region when regionFilter returns false
+                regionFilter: () => true,
                 // mixin
                 valueTemplate: ''
             };
@@ -109,7 +111,7 @@ define(function (require) {
         },
         onEnterClick: function (e) {
             if (this.props.disabled) return;
-            e.target = this.refs.container;
+            e = {target: this.refs.container};
             e.target.value = this.state.multiValue;
             this.___dispatchChange___(e);
             this.setState({layerOpen: false});
@@ -185,6 +187,7 @@ define(function (require) {
             var containerProp = cTools.containerBaseProps('dropdownlist', this, {widthCorrect: -12});
             var layerProp = {
                 ref: 'layer',
+                className: this.props.className,
                 isOpen: this.state.layerOpen && !this.props.disabled,
                 anchor: this.refs.container,
                 location: this.props.layerLocation,
@@ -202,6 +205,7 @@ define(function (require) {
                 disabled: this.props.disabled,
                 type: this.props.type,
                 noLinkage: this.props.noLinkage,
+                regionFilter: this.props.regionFilter,
                 provinceRenderer: this.props.provinceRenderer,
                 regionRenderer: this.props.regionRenderer,
                 countryRenderer: this.props.countryRenderer,
@@ -235,7 +239,7 @@ define(function (require) {
             containerProp.className += layerProp.isOpen ? (' fcui2-dropdownlist-' + skin + '-hover') : '';
             return (
                 <div {...containerProp}>
-                    <div className="icon-right font-icon font-icon-largeable-caret-down"></div>
+                    <div className="icon-right fcui2-icon fcui2-icon-arrow-down"></div>
                     <span className="label-container">{label}</span>
                     <Layer {...layerProp}>
                         <div style={{maxWidth: 600}}>
