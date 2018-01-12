@@ -95,7 +95,7 @@ define(function (require) {
         },
         ___onCompositionEnd___: function (e) {
             this.___imeStart___ = false;
-            /**
+            /*
              * 背景：
              *      使用中文输入法，直接敲回车英文上屏，会触发compositionend，但不会触发keyup，
              *      导致输入框的onChange事件无法派发，这是浏览器底层bug。
@@ -150,13 +150,20 @@ define(function (require) {
             typeof this.props.onFocus === 'function' && this.props.onFocus(e);
         },
         ___onBlur___: function (e) {
-            this.setState({hasFocus: false});
+            var me = this;
+            setTimeout(function () {
+                if (me.___stopBlur___ || !me.__isMounted) {
+                    me.___stopBlur___ = false;
+                    return;
+                }
+                me.setState({hasFocus: false});
+            }, 200);
             typeof this.props.onBlur === 'function' && this.props.onBlur(e);
         },
         ______callDispatch______: function (e) {
             var me = this;
             var lastValue = this.___lastFiredValue___;
-            e.target = this.refs.container;
+            e = {target: this.refs.container};
             e.target.value = this.___lastFiredValue___ = this.refs.inputbox.value;
             this.___dispatchChange___(e, this.___lastFiredValue___, lastValue);
             clearInterval(me.___workerTimer___);

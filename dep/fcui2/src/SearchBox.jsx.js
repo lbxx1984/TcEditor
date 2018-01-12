@@ -47,9 +47,8 @@ define(function (require) {
                 skin: '',
                 className: '',
                 style: {},
-                icon: 'fcui2-icon fcui2-icon-search',
-                clearIcon: 'fcui2-icon fcui2-icon-close',
                 disabled: false,
+                showClearButton: false,
                 // self
                 placeholder: '',
                 onClick: function () {},
@@ -67,13 +66,15 @@ define(function (require) {
             if (this.props.disabled) {
                 return;
             }
-            e.target = this.refs.container;
+            e = {target: this.refs.container};
             e.target.value = this.___getValue___();
             this.props.onClick(e);
         },
         onClearButtonClick: function (e) {
-            e.target = this.refs.container;
+            e = {target: this.refs.container};
             e.target.value = '';
+            this.refs.inputbox.focus();
+            this.___stopBlur___ = true;
             this.___dispatchChange___(e);
             this.props.onClick(e);
         },
@@ -90,7 +91,10 @@ define(function (require) {
             var width = cTools.getValueFromPropsAndStyle(this.props, 'width', 200);
             width = isNaN(width) ? 200 : +width;
             var containerProp = cTools.containerBaseProps('searchbox', this, {
-                style: {width: width}
+                style: {
+                    width: width,
+                    marginRight: this.props.mode !== 'withButton' ? 0 : 50
+                }
             });
             var placeholderProp = {
                 className: 'placeholder',
@@ -98,11 +102,20 @@ define(function (require) {
                     visibility: ((value && value.length) || this.state.hasFocus) ? 'hidden' : 'visible'
                 }
             };
+            var inputWidth = width - 32;
+            var inputPaddingRight = 20;
+            if (this.props.mode !== 'withButton' && this.state.hasFocus && this.props.showClearButton && value) {
+                inputPaddingRight += 20;
+                inputWidth -= 20;
+            }
             var inputProp = {
                 ref: 'inputbox',
                 type: 'text',
                 disabled: this.props.disabled,
-                style: {width: width - 30},
+                style: {
+                    width: inputWidth,
+                    paddingRight: inputPaddingRight
+                },
                 onCompositionStart: this.___onCompositionStart___,
                 onCompositionEnd: this.___onCompositionEnd___,
                 onKeyUp: this.___onKeyUp___,
@@ -110,29 +123,31 @@ define(function (require) {
                 onBlur: this.___onBlur___,
                 onInput: this.___onInput___
             };
-            var iconProps = {
-                className: this.props.mode === 'withButton' ? this.props.clearIcon : this.props.icon,
-                onClick: this.props.mode === 'withButton'
-                    ? this.onClearButtonClick
-                    : this.onButtonClick
+            var searchIconProps = {
+                className: 'fcui2-icon fcui2-icon-search',
+                onClick: this.onButtonClick 
+            };
+            var removeIconProps = {
+                className: 'fcui2-icon fcui2-icon-remove',
+                style: {
+                    right: this.props.mode === 'withButton' ? 5 : 25
+                },
+                onClick: this.onClearButtonClick
             };
             var searchButtonProps = {
                 onClick: this.onButtonClick,
                 className: 'search-button',
                 style: {
-                    left: width
+                    left: width - 1
                 }
             };
             return (
                 <div {...containerProp}>
                     <div {...placeholderProp}>{this.props.placeholder}</div>
                     <input {...inputProp}/>
-                    <div {...iconProps}></div>
-                    {
-                        this.props.mode === 'withButton'
-                            ? <div {...searchButtonProps}>搜索</div>
-                            : null
-                    }
+                    {this.state.hasFocus && this.props.showClearButton && value ? <div {...removeIconProps}></div> : null}
+                    {this.props.mode === 'withButton' ? null : <div {...searchIconProps}></div>}
+                    {this.props.mode === 'withButton' ? <div {...searchButtonProps}>搜索</div> : null}
                 </div>
             );
         }

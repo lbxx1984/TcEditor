@@ -73,7 +73,7 @@ define(function (require) {
         // 复选框label文字点击后触发
         onClick: function (e) {
             if (this.props.disabled) return;
-            e.target = this.refs.inputbox;
+            e = {target: this.refs.inputbox};
             e.target.checked = !e.target.checked;
             this.___dispatchChange___(e);
         },
@@ -102,8 +102,7 @@ define(function (require) {
             };
             var virtualCheckboxProp = {
                 className: 'fcui2-icon fcui2-icon-checkbox'
-                    + (!checked && this.props.indeterminate ? '-indeterminate' : (checked ? '-selected' : '-unselected'))
-                    + (this.props.disabled ? '-disabled' : ''),
+                    + (!checked && this.props.indeterminate ? '-indeterminate' : (checked ? '-selected' : '-unselected')),
                 onClick: this.onClick
             };
             return (
