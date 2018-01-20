@@ -72,4 +72,3 @@ function buttonRenderer(datasource, me) {
         return <div {...iconProps} key={index}></div>;
     });
 }
-

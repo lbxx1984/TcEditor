@@ -12,8 +12,7 @@ module.exports = {
         getAbsPath('dep/jszip.3.1.3.min')
     ],
     'resolve-alias': {
-        'three' : getAbsPath('dep/three.84.min'),
-        'three-lib': getAbsPath('dep/three-lib'),
+        'three' : getAbsPath('dep/three'),
         'fcui2': getAbsPath('dep/fcui2/src'),
         'raphael': getAbsPath('dep/raphael.2.2.1.min'),
         'file-system': getAbsPath('dep/filesystem.0.0.2'),

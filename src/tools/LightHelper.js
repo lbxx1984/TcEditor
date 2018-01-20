@@ -8,7 +8,7 @@ define(function (require) {
 
     var _ = require('underscore');
     var THREE = require('three');
-    var Transformer3D = require('three-lib/TransformControls');
+    var Transformer3D = require('three/lib/TransformControls');
 
     function anchorFactory() {
         var geometry = new THREE.SphereGeometry(20, 20, 20);

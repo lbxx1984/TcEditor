@@ -2,7 +2,7 @@ define(function (require) {
 
 
     var THREE = require('three');
-    var Transformer3D = require('three-lib/TransformControls');
+    var Transformer3D = require('three/lib/TransformControls');
     var math = require('../core/math');
 
 
