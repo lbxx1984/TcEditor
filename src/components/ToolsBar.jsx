@@ -29,7 +29,11 @@ export default class ToolsBar extends Component {
     static propTypes = {
         tool: PropTypes.string.isRequired,
         datasource: PropTypes.array.isRequired,
-        controls: PropTypes.object.isRequired
+        controls: PropTypes.object
+    }
+
+    static defaultProps = {
+        controls: {}
     }
 
     constructor(props) {
