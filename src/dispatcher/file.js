@@ -3,6 +3,9 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
+import Explorer from '../components/Explorer';
+
+
 define(function (require) {
 
 
@@ -16,7 +19,7 @@ define(function (require) {
     const config = require('../config').default;
     const emptyEditorDataset = require('../emptyEditorDataset');
     const io = require('../core/io');
-    const Explorer = require('../components/dialogContent/Explorer.jsx');
+
 
 
     const tcmLoader = require('../core/loader/tcm');

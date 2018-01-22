@@ -6,7 +6,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import DropDownList from 'fcui2/DropDownList.jsx';
-import MenuItem from './renderer/MenuListItem.jsx';
+import MenuItem from './MenuListItem.jsx';
 
 
 export default class Menu extends Component {

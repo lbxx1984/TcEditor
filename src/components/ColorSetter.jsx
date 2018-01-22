@@ -4,9 +4,9 @@
  * @email lbxxlht@163.com
  */
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import ColorPicker from 'fcui2/ColorPicker.jsx';
 import Button from 'fcui2/Button.jsx';
-import tools from 'fcui2/core/colorPickerTools';
 
 
 function getValue(value) {
@@ -17,6 +17,12 @@ function getValue(value) {
 
 
 export default class ColorSetter extends Component {
+
+    static propTypes = {
+        value: PropTypes.string.isRequired,
+        onChange: PropTypes.func.isRequired,
+        close: PropTypes.func.isRequired
+    }
 
     constructor(args) {
         super(args);
@@ -33,7 +39,7 @@ export default class ColorSetter extends Component {
         });
     }
 
-    onEnterClick(e) {
+    onEnterClick() {
         const value = JSON.parse(this.state.value);
         this.props.onChange(parseInt(value.css.replace('#', ''), 16));
         this.props.close();

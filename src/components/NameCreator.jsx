@@ -4,11 +4,19 @@
  * @email lbxxlht@163.com
  */
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Button from 'fcui2/Button.jsx';
 import TextBox from 'fcui2/TextBox.jsx';
 
 
 export default class NameCreator extends Component {
+
+    static propTypes = {
+        initialName: PropTypes.string.isRequired,
+        onEnter: PropTypes.func.isRequired,
+        close: PropTypes.func.isRequired,
+        group: PropTypes.array.isRequired
+    }
 
     constructor(args) {
         super(args);
@@ -20,7 +28,7 @@ export default class NameCreator extends Component {
         }
     }
 
-    onEnterClick(e) {
+    onEnterClick() {
         this.props.onEnter(this.state.value.trim());
         this.props.close();
     }
