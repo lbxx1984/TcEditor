@@ -3,12 +3,12 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
+import ColorSetter from '../components/ColorSetter';
 define(function (require) {
 
 
     var _ = require('underscore');
     var Dialog = require('fcui2/Dialog.jsx');
-    var ColorSetter = require('../components/dialogContent/ColorSetter.jsx');
     var dialog = new Dialog();
 
 

@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Dialog from 'fcui2/Dialog.jsx';
-import ColorSetter from '../dialogContent/ColorSetter.jsx';
+import ColorSetter from '../ColorSetter';
 import io from '../../core/io';
 import editorRenderer from './editorRenderer';
 
