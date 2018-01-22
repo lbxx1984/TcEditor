@@ -6,45 +6,16 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Dialog from 'fcui2/Dialog.jsx';
-import util from 'fcui2/core/util';
-import MeshGroupCreator from '../components/dialogContent/NameCreator.jsx';
-
+import MeshGroupCreator from '../dialogContent/NameCreator.jsx';
+import getMeshGroupData from './getMeshGroupData';
+import meshListRenderer from './meshListRenderer';
 
 const dialog = new Dialog();
+
 
 function getLabelDom(target) {
     while(!target.dataset.level && target.parentNode) target = target.parentNode;
     return target.dataset.level ? target : null;
-}
-
-function getMeshGroupData(group, mesh) {
-    const result = [];
-    const hash = {};
-    group.map(function (item) {
-        const newItem = {
-            ...item,
-            locked: true,
-            visible: false,
-            children: []
-        };
-        result.push(newItem);
-        hash[item.label] = newItem;
-    });
-    Object.keys(mesh).map(key => {
-        const item = mesh[key];
-        const groupId = hash[item.tc.group] ? item.tc.group : 'default group';
-        const groupItem = hash[groupId];
-        groupItem.children.push(item);
-        groupItem.locked = groupItem.locked && item.tc.locked;
-        groupItem.visible = groupItem.visible || item.visible;
-    });
-    result.map(item => {
-        if (item.children.length === 0) {
-            item.locked = false;
-            item.visible = true;
-        }
-    });
-    return result;
 }
 
 
@@ -266,108 +237,4 @@ export default class MeshList extends Component {
             </div>
         );
     }
-}
-
-
-function meshRenderer(mesh, doms, me) {
-    const tc = mesh.tc;
-    const name = tc.name || mesh.geometry.type.replace('Geometry', ' ')
-        + util.dateFormat(tc.birth, 'DD/MM hh:mm:ss');
-    const containerProps = {
-        key: mesh.uuid,
-        className: 'mesh-container'
-            + (me.props.selectedMesh && me.props.selectedMesh.uuid === mesh.uuid ? ' mesh-selected' : ''),
-        'data-id': mesh.uuid,
-        'data-level': 'mesh',
-        onDragStart: me.onDragStart,
-        onDragOver: me.onDragOver
-    };
-    const visibleIconProps = {
-        className: 'visible-icon tc-icon ' + (mesh.visible ? 'tc-icon-visible' : 'tc-icon-invisible'),
-        onClick: me.onVisibleIconClick
-    };
-    const dragIconProps = {
-        onMouseEnter: me.onDragIconEnter,
-        onMouseLeave: me.onDragIconLeave,
-        className: 'tc-icon tc-icon-drag'
-    };
-    const delIconProps = {
-        className: 'tc-icon tc-icon-delete',
-        onClick: me.onDelIconClick
-    };
-    const lockedIconProps = {
-        className: 'tc-icon ' + (tc.locked ? 'tc-icon-lock' : 'tc-icon-unlock'),
-        onClick: me.onLockIconClick
-    };
-    const labelProps = {
-        className: 'main-label',
-        onClick: me.onLabelClick
-    };
-    doms.push(
-        <div {...containerProps}>
-            <span {...delIconProps}></span>
-            <span {...dragIconProps}></span>
-            <span {...visibleIconProps}></span>
-            <span {...lockedIconProps}></span>
-            <div {...labelProps}>{name}</div>
-        </div>
-    );
-}
-
-
-function meshListRenderer(data, me) {
-    const doms = [];
-    data.map(function (group) {
-        const delIcon = group.label === 'default group' || group.locked ? ' tc-icon-disabled' : '';
-        const groupContainerProps = {
-            'data-id': group.label,
-            'data-level': 'group',
-            className: 'folder-container' + (group.label === me.props.activeGroup ? ' active' : ''),
-            onDragStart: me.onDragStart,
-            onDragOver: me.onDragOver
-        };
-        const folderIconProps = {
-            className: 'folder-icon tc-icon ' + (group.expend ? 'tc-icon-open-folder' : 'tc-icon-folder'),
-            onClick: me.onFolderIconClick
-        };
-        const visibleIconProps = {
-            className: 'visible-icon tc-icon ' + (group.visible ? 'tc-icon-visible' : 'tc-icon-invisible'),
-            onClick: me.onVisibleIconClick
-        };
-        const lockIconProps = {
-            className: 'tc-icon ' + (group.locked ? 'tc-icon-lock' : 'tc-icon-unlock'),
-            onClick: me.onLockIconClick
-        };
-        const dragIconProps = {
-            onMouseEnter: me.onDragIconEnter,
-            onMouseLeave: me.onDragIconLeave,
-            className: 'tc-icon tc-icon-drag'
-        };
-        const editIconProps = {
-            className: 'tc-icon tc-icon-edit' + delIcon,
-            onClick: delIcon ? undefined : me.onEditIconClick
-        };
-        const delIconProps = {
-            className: 'tc-icon tc-icon-delete' + delIcon,
-            onClick: delIcon ? undefined : me.onDelIconClick
-        };
-        const labelProps = {
-            className: 'main-label',
-            onClick: me.onLabelClick
-        };
-        doms.push(
-            <div {...groupContainerProps} key={'group-contianer-' + group.label}>
-                <span {...delIconProps}></span>
-                <span {...dragIconProps}></span>
-                <span {...editIconProps}></span>
-                <span className="border-left">&nbsp;</span>
-                <span {...folderIconProps}></span>
-                <span {...visibleIconProps}></span>
-                <span {...lockIconProps}></span>
-                <div {...labelProps}>{group.label}</div>
-            </div>
-        );
-        group.expend && group.children.map(mesh => meshRenderer(mesh, doms, me));
-    });
-    return doms;
 }

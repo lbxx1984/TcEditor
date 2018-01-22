@@ -6,126 +6,15 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import raphael from 'raphael';
-import Grid2D from '../tools/Grid2D';
-import Renderer2D from '../tools/Renderer2D';
-import Transformer2D from '../tools/Transformer2D';
-import Morpher2D from '../tools/Morpher2D';
-
-
-const CAMERA_RADIUS_FOR_2D_SCALE = 0.5;
-
-function updateCamera(nextProps, me) {
-    if (JSON.stringify(nextProps.style) !== JSON.stringify(me.props.style)) {
-        setTimeout(function () {
-            me.svgRenderer.setSize(me.refs.container.offsetWidth, me.refs.container.offsetHeight); 
-        }, 10);
-    }
-    if (
-        nextProps.axis.join('') !== me.props.axis.join('')
-        || nextProps.cameraRadius !== me.props.cameraRadius
-        || nextProps.cameraLookAt !== me.props.cameraLookAt
-        || nextProps.cameraAngleA !== me.props.cameraAngleA
-        || nextProps.cameraAngleB !== me.props.cameraAngleB
-        || nextProps.style.right !== me.props.style.right
-    ) {
-        me.refs.container.style.right = nextProps.style.right + 'px';
-        updateTools(me.renderer2D);
-        updateTools(me.grid2D);
-        updateTools(me.transformer2D);
-        updateTools(me.morpher2D);
-        me.grid2D.render();
-        me.renderer2D.render();
-        me.transformer2D.attach(me.transformer2D.mesh);
-        me.morpher2D.attach(me.morpher2D.mesh);
-        me.morpher2D.attachAnchor(me.morpher2D.index);
-    }
-    function updateTools(tool) {
-        tool.axis = nextProps.axis;
-        tool.cameraRadius = nextProps.cameraRadius / CAMERA_RADIUS_FOR_2D_SCALE;
-        tool.cameraLookAt = me.grid2D.cameraLookAt = nextProps.cameraLookAt;
-        tool.cameraAngleA = nextProps.cameraAngleA;
-        tool.cameraAngleB = nextProps.cameraAngleB;
-    }
-}
-
-function updateMesh(nextProps, me) {
-    let needRenderer = false;
-    if (Object.keys(nextProps.mesh3d).join(';') !== Object.keys(me.props.mesh3d).join(';')) {
-        me.renderer2D.mesh3d = nextProps.mesh3d;
-        needRenderer = true;
-    }
-    if (nextProps.timer !== me.props.timer) {
-        needRenderer = true;
-    }
-    if (
-        nextProps.selectedMesh
-        && nextProps.selectedMesh.tc
-        && nextProps.selectedMesh.tc.needUpdate
-        && me.renderer2D.mesh2d[nextProps.selectedMesh.uuid]
-    ) {
-        me.renderer2D.mesh2d[nextProps.selectedMesh.uuid].update();
-        needRenderer = true;
-    }
-    if (nextProps.selectedMesh !== me.props.selectedMesh) {
-        needRenderer = true;
-    }
-    if (needRenderer) {
-        me.renderer2D.render();
-    }
-}
-
-function updateTransformer(nextProps, me) {
-    if (nextProps.tool !== 'tool-pickGeometry' && me.props.tool === 'tool-pickGeometry') {
-        me.transformer2D.detach();
-    }
-    if (nextProps.tool === 'tool-pickGeometry' && me.props.tool !== 'tool-pickGeometry' && nextProps.selectedMesh) {
-        me.transformer2D.attach(nextProps.selectedMesh);
-    }
-    if (nextProps.tool === 'tool-pickGeometry' && nextProps.selectedMesh !== me.props.selectedMesh) {
-        me.transformer2D.attach(nextProps.selectedMesh);
-    }
-    if (nextProps.tool === 'tool-pickGeometry' && nextProps.timer !== me.props.timer && me.transformer2D.mesh) {
-        me.transformer2D.attach(me.transformer2D.mesh);
-    }
-    if (nextProps.transformer3Dinfo !== me.props.transformer3Dinfo) {
-        me.transformer2D.size = nextProps.transformer3Dinfo.size;
-        me.transformer2D.mode = nextProps.transformer3Dinfo.mode;
-        me.transformer2D.space = nextProps.transformer3Dinfo.space;
-        if (me.transformer2D.mesh) {
-            me.transformer2D.attach(me.transformer2D.mesh);
-        }
-    }
-}
-
-function updateMorpher(nextProps, me) {
-    me.morpher2D.selectedVector = nextProps.selectedVector;
-    if (nextProps.tool !== 'tool-pickJoint' && me.props.tool === 'tool-pickJoint') {
-        me.morpher2D.detach();
-    }
-    if (nextProps.tool === 'tool-pickJoint' && me.props.tool !== 'tool-pickJoint' && nextProps.selectedMesh) {
-        me.morpher2D.attach(nextProps.selectedMesh);
-    }
-    if (nextProps.tool === 'tool-pickJoint' && nextProps.selectedMesh !== me.props.selectedMesh) {
-        me.morpher2D.attach(nextProps.selectedMesh);
-        me.morpher2D.attachAnchor(null);
-    }
-    if (nextProps.tool === 'tool-pickJoint' && nextProps.selectedVectorIndex !== me.props.selectedVectorIndex) {
-        me.morpher2D.attachAnchor(nextProps.selectedVectorIndex);
-    }
-    if (nextProps.tool === 'tool-pickJoint' && nextProps.timer !== me.props.timer && me.morpher2D.mesh) {
-        me.morpher2D.attach(me.morpher2D.mesh);
-        if (me.morpher2D.index != null) {
-            me.morpher2D.attachAnchor(me.morpher2D.index);
-        }
-    }
-    if (nextProps.morpher3Dinfo !== me.props.morpher3Dinfo) {
-        me.morpher2D.color = nextProps.morpher3Dinfo.anchorColor;
-        me.morpher2D.size = nextProps.morpher3Dinfo.anchorSize;
-        if (me.morpher2D.mesh) {
-            me.morpher2D.attach(me.morpher2D.mesh);
-        }
-    }
-}
+import Grid2D from '../../tools/Grid2D';
+import Renderer2D from '../../tools/Renderer2D';
+import Transformer2D from '../../tools/Transformer2D';
+import Morpher2D from '../../tools/Morpher2D';
+import updateCamera from './updateCamera';
+import updateMesh from './updateMesh';
+import updateTransformer from './updateTransformer';
+import updateMorpher from './updateMorpher';
+import {CAMERA_RADIUS_FOR_2D_SCALE} from './config';
 
 
 export default class Stage2D extends Component {

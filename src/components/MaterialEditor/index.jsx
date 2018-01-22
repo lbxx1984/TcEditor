@@ -7,19 +7,12 @@ import * as THREE from 'three';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Dialog from 'fcui2/Dialog.jsx';
-import NumberBox from 'fcui2/NumberBox.jsx';
-import Select from 'fcui2/Select.jsx';
-import CheckBox from 'fcui2/CheckBox.jsx';
-import Button from 'fcui2/Button.jsx';
-import ColorSetter from './dialogContent/ColorSetter.jsx';
-import io from '../core/io';
+import ColorSetter from '../dialogContent/ColorSetter.jsx';
+import io from '../../core/io';
+import editorRenderer from './editorRenderer';
 
 
 const dialog = new Dialog();
-
-function formatRGB(v) {
-    return parseInt(v * 255, 10);
-}
 
 function getMtlParam(props) {
     const mesh = props.mesh;
@@ -174,95 +167,4 @@ export default class MaterialEditor extends Component {
             </div>
         );
     }
-}
-
-
-function editorRenderer(me) {
-    const mesh = me.props.mesh;
-    const mtl = mesh.material;
-    const color = new THREE.Color(mesh.tc.materialColor);
-    const emissive = new THREE.Color(mesh.tc.materialEmissive);
-    const colorContainerStyle = {
-        border: '1px solid #FFF',
-        padding: '4px',
-        cursor: 'pointer'
-    };
-    const wireframeProps = {
-        checked: mtl.wireframe,
-        onChange: me.onWireframeChange
-    };
-    const opacityProps = {
-        width: 100,
-        value: me.state.opacity,
-        type: 'float',
-        fixed: 2,
-        step: 0.1,
-        onChange: me.onOpacityChange
-    };
-    const sideProps = {
-        value: mtl.side,
-        onChange: me.onSideChange,
-        datasource: [
-            {label: 'Front Side', value: THREE.FrontSide},
-            {label: 'Back Side', value: THREE.BackSide},
-            {label: 'Double Side', value: THREE.DoubleSide}
-        ]
-    };
-    const fileSelectorPlaceholderProps = {
-        className: 'file-selector-placeholder',
-        style: {
-            backgroundColor: mesh.material.map ? '#D97915' : 'transparent'
-        }
-    };
-    const textureClearBtnProps = {
-        label: 'Clear',
-        skin: 'trans',
-        onClick: me.onTextureClear
-    };
-    return (
-        <table className="tc-geometry-editor"><tbody>
-            <tr>
-                <td>type:</td>
-                <td>{mtl.type}</td>
-            </tr>
-            <tr>
-                <td>color:</td>
-                <td>
-                    <span style={colorContainerStyle} onClick={me.onColorClick}>
-                        {'R:' + formatRGB(color.r) + ' G:' + formatRGB(color.g) + ' B:' + formatRGB(color.b)}
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td>emissive:</td>
-                <td>
-                    <span style={colorContainerStyle} onClick={me.onEmissiveChange}>
-                        {'R:' + formatRGB(emissive.r) + ' G:' + formatRGB(emissive.g) + ' B:' + formatRGB(emissive.b)}
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td>texture:</td>
-                <td>
-                    <div className="file-selector-container">
-                        <span {...fileSelectorPlaceholderProps}>Browse</span>
-                        <input type="file" value="" className="file-selector" onChange={me.onTextureChange}/>
-                    </div>
-                    <Button {...textureClearBtnProps}/>
-                </td>
-            </tr>
-            <tr>
-                <td>wireframe:</td>
-                <td><CheckBox {...wireframeProps}/></td>
-            </tr>
-            <tr>
-                <td>opacity:</td>
-                <td><NumberBox {...opacityProps}/></td>
-            </tr>
-            <tr>
-                <td>side:</td>
-                <td><Select {...sideProps}/></td>
-            </tr>
-        </tbody></table>
-    );
 }

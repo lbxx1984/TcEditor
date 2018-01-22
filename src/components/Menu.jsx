@@ -15,6 +15,10 @@ export default class Menu extends Component {
         dispatch: PropTypes.func
     }
 
+    static propTypes = {
+        style: PropTypes.object.isRequired
+    }
+
     constructor(props) {
         super(props);
         this.onClick = this.onClick.bind(this);
@@ -37,7 +41,7 @@ export default class Menu extends Component {
 
     render() {
         return (
-            <div className="tc-menu">
+            <div className="tc-menu" style={this.props.style}>
                 {menuRenderer(this)}
             </div>
         );
