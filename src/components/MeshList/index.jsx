@@ -6,9 +6,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Dialog from 'fcui2/Dialog.jsx';
-import MeshGroupCreator from '../dialogContent/NameCreator.jsx';
+import MeshGroupCreator from '../NameCreator';
 import getMeshGroupData from './getMeshGroupData';
 import meshListRenderer from './meshListRenderer';
+
 
 const dialog = new Dialog();
 

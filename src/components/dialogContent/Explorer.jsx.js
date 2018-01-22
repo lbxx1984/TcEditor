@@ -3,6 +3,8 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
+import NameCreator from '../NameCreator';
+
 define(function (require) {
 
 
@@ -18,7 +20,7 @@ define(function (require) {
     var FileMeta = require('../renderer/FileMeta.jsx');
     var FileOperation = require('../renderer/FileOperation.jsx');
     var NoData = require('../renderer/TableNoDataRenderer.jsx');
-    var NameCreator = require('./NameCreator.jsx');
+
 
 
     var _ = require('underscore');
