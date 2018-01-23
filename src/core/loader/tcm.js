@@ -3,12 +3,13 @@
  * @author Haitao Li
  * @mail 279641976@qq.com
  */
+import {importImage} from 'core/io';
+
 define(function (require) {
 
 
     const _ = require('underscore');
     const THREE = require('three');
-    const io = require('../io');
     const math = require('../math');
 
 
@@ -67,7 +68,7 @@ define(function (require) {
         let material = new THREE[mtl.type](args);
         // 导入纹理
         if (mesh.textures instanceof Array && mesh.textures.length && tcm.images[mesh.textures[0].image]) {
-            io.importImage(mesh.textures[0].image, tcm.images[mesh.textures[0].image]).then(function (img) {
+            importImage(mesh.textures[0].image, tcm.images[mesh.textures[0].image]).then(function (img) {
                 material.map = new THREE.Texture(img);
                 material.map.needsUpdate = true;
                 material.needsUpdate = true;

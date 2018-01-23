@@ -12,10 +12,10 @@ import TextBox from 'fcui2/TextBox.jsx';
 import Table from 'fcui2/Table.jsx';
 import Button from 'fcui2/Button.jsx';
 import util from 'fcui2/core/util';
+import io from 'core/io';
 import NameCreator from '../NameCreator';
 import NoData from './renderer/TableNoDataRenderer';
 import tableFieldConfig from './tableFieldConfig';
-import io from '../../core/io';
 
 
 const dialog = new Dialog();

@@ -7,8 +7,8 @@ import * as THREE from 'three';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Dialog from 'fcui2/Dialog.jsx';
+import {uploadImage} from 'core/io';
 import ColorSetter from '../ColorSetter';
-import io from '../../core/io';
 import editorRenderer from './editorRenderer';
 
 
@@ -133,7 +133,7 @@ export default class MaterialEditor extends Component {
     onTextureChange(e) {
         e.target.blur();
         const mesh = this.props.mesh;
-        io.uploadImage(e.target, 'image/').then(img => {
+        uploadImage(e.target, 'image/').then(img => {
             if (mesh.material.map) {
                 mesh.material.map.image = img;
             }
