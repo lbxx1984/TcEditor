@@ -20,7 +20,7 @@ export default function updateLightHelper(nextProps, me) {
         me.lightHelper.controller[nextProps.selectedLight ? 'attach' : 'detach'](nextProps.selectedLight);
     }
     function switchAnchorType() {
-        var anchor = null;
+        let anchor = null;
         me.lightHelper.anchorArray.map(function (item) {
             if (item.tc.lightKey === nextProps.selectedLight) {
                 anchor = item;

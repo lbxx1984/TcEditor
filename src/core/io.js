@@ -25,7 +25,7 @@ export function uploadImage(inputFile) {
         }
         const reader = new FileReader();
         reader.onload = function (e) {
-            var img = document.createElement('img');
+            const img = document.createElement('img');
             img.src = e.target.result;
             img.onload = function () {
                 fileCache[key] = img;
