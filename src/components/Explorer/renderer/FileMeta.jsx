@@ -7,12 +7,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import util from 'fcui2/core/util';
 
+
 function formatSize(n) {
     const unit = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB'];
     let i = 0; 
     while (n > 1024) {n = n / 1024; i++;}
     return n.toFixed(i === 0 ? 0 : 2) + unit[i];
 }
+
 
 export default class FileMeta extends Component {
 

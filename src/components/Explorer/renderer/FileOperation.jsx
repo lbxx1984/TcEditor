@@ -3,21 +3,32 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-define(function (require) {
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
-    var React = require('react');
 
-    return React.createClass({
-        onDeleteBtnClick: function () {
-            this.props.onAction('delete', this.props.item);
-        },
-        render: function () {
-            return (
-                <td className="file-operation">
-                    <span className="tc-icon tc-icon-delete" onClick={this.onDeleteBtnClick}></span>
-                </td>
-            );
-        }
-    });
+export default class FileOperation extends Component {
 
-});
+    static propTypes = {
+        onAction: PropTypes.func.isRequired,
+        item: PropTypes.object.isRequired
+    }
+
+    constructor(args) {
+        super(args);
+        this.onDeleteBtnClick = this.onDeleteBtnClick.bind(this);
+    }
+
+    onDeleteBtnClick() {
+        this.props.onAction('delete', this.props.item);
+    }
+
+    render() {
+        return (
+            <td className="file-operation">
+                <span className="tc-icon tc-icon-delete" onClick={this.onDeleteBtnClick}></span>
+            </td>
+        );
+    }
+
+}

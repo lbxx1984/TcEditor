@@ -3,14 +3,10 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-define(function (require) {
+import React, {Component} from 'react';
 
-    var React = require('react');
-
-    return React.createClass({
-        render: function () {
-            return (<div></div>);
-        }
-    });
-
-});
+export default class NoData extends Component {
+    render() {
+        return (<div></div>);
+    }
+}
