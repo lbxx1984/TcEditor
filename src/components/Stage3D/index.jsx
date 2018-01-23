@@ -7,10 +7,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import * as THREE from 'three';
+import animation from 'core/animation';
 import CameraController from '../CameraController';
 import Morpher3D from '../../tools/Morpher3D';
 import LightHelper from '../../tools/LightHelper';
-import animation from '../../core/animation';
 import animaterFactory from './animaterFactory';
 import getMouse3D from './getMouse3D';
 import updateCameraPosition from './updateCameraPosition';

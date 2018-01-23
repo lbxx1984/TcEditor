@@ -10,8 +10,8 @@ import {
     AmbientLight, TextureLoader, PerspectiveCamera,
     PlaneGeometry, BoxGeometry, MeshLambertMaterial
 } from 'three';
+import animation from 'core/animation';
 import {FACE_CONFIG, ANGLE_CONFIG, TEXTURE_PATH} from './config';
-import animation from '../../core/animation';
 
 
 // 渲染器工厂
