@@ -4,7 +4,10 @@
  * @email lbxxlht@163.com
  */
 import io from 'core/io';
+import tcmLoader from 'core/loader/tcm';
+import tcmExporter from 'core/exporter/tcm';
 import Explorer from '../components/Explorer';
+
 
 
 define(function (require) {
@@ -21,8 +24,6 @@ define(function (require) {
     const emptyEditorDataset = require('../emptyEditorDataset');
 
 
-    const tcmLoader = require('../core/loader/tcm');
-    const tcmExporter = require('../core/exporter/tcm');
 
 
     const dialog = new Dialog();
