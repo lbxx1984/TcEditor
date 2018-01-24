@@ -228,12 +228,12 @@ export default class Stage2D extends Component {
         };
         // 拖拽命令
         if (this.props.tool && this.mousedown && !this.isCameraRotating) {
-            this.context.dispatch(this.props.tool + '-2d', callbackParam, true);
+            this.context.dispatch(this.props.tool + '2d', callbackParam, true);
             return;
         }
         // 普通鼠标移动
         if (this.props.tool && !this.isCameraRotating) {
-            this.context.dispatch(this.props.tool + '-2d', callbackParam, false);
+            this.context.dispatch(this.props.tool + '2d', callbackParam, false);
         }
     }
 
@@ -261,7 +261,7 @@ export default class Stage2D extends Component {
         }
         // 普通mouseup
         if (typeof this.props.tool === 'string') {
-            this.context.dispatch(this.props.tool + '-2d', 'mouseup', this);
+            this.context.dispatch(this.props.tool + '2d', 'mouseup', this);
         }
     }
 

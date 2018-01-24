@@ -106,7 +106,7 @@ export default function (model, dispatcher) {
     });
 
     hotkey.on('ctrl + e', function () {
-        dispatcher['camera-move'].apply(model);
+        dispatcher['moveCamera'].apply(model);
     });
 
     hotkey.on('ctrl + r', function () {

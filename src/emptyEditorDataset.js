@@ -82,7 +82,7 @@ export default {
     // 编辑器当前显示模式
     view: 'all',
     // 编辑器当前处于响应拖拽事件的命令
-    tool: 'camera-move',
+    tool: 'moveCamera',
 
     // 变形工具工作状态
     transformer3Dinfo: {

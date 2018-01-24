@@ -184,7 +184,7 @@ define(function (require) {
             // hover物体
             hoverMeshByMouse3d(param, selectedMesh, getMesh3dArray(this));
         },
-        'tool-pickGeometry-2d': function (param, dragging) {
+        'tool-pickGeometry2d': function (param, dragging) {
             var selectedMesh = this.get('selectedMesh');
             // 拾取物体
             if (param === 'mouseup' && intersected) {
@@ -233,7 +233,7 @@ define(function (require) {
                 return;
             }
         },
-        'tool-pickJoint-2d': function (param, dragging) {
+        'tool-pickJoint2d': function (param, dragging) {
             var selectedMesh = this.get('selectedMesh');
             // 拾取物体
             if (param === 'mouseup' && intersected) {

@@ -120,16 +120,16 @@ export default {
         },
         'CAMERA',
         {
-            icon: 'tc-icon-trans', value: 'camera-move', title: 'move camera (Ctrl + E)'
+            icon: 'tc-icon-trans', value: 'moveCamera', title: 'move camera (Ctrl + E)'
         },
         {
-            icon: 'tc-icon-zoom-in', value: 'camera-zoomIn', title: 'zoom in (MOUSE WHEEL UP)'
+            icon: 'tc-icon-zoom-in', value: 'zoomInCamera', title: 'zoom in (MOUSE WHEEL UP)'
         },
         {
-            icon: 'tc-icon-zoom-out', value: 'camera-zoomOut', title: 'zoom out (MOUSE WHEEL DOWN)'
+            icon: 'tc-icon-zoom-out', value: 'zoomOutCamera', title: 'zoom out (MOUSE WHEEL DOWN)'
         },
         {
-            icon: 'tc-icon-reset', value: 'camera-reset', title: 'reset camera'
+            icon: 'tc-icon-reset', value: 'resetCamera', title: 'reset camera'
         },
         'GRID',
         {

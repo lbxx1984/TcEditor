@@ -5,11 +5,17 @@
  */
 import changeView from './changeView';
 import closePanel from './closePanel';
+import moveCamera from './moveCamera';
+import moveCamera2d from './moveCamera2d';
 import moveGroup from './moveGroup';
 import openPanel from './openPanel';
 import popHotkeyInfo from './popHotkeyInfo';
+import resetCamera from './resetCamera';
 import toggleGroup from './toggleGroup';
 import togglePanel from './togglePanel';
+import zoomInCamera from './zoomInCamera';
+import zoomOutCamera from './zoomOutCamera';
+
 
 define(function (require) {
 
@@ -17,7 +23,6 @@ define(function (require) {
 
     return _.extend(
         {},
-        require('./camera'),
         require('./stage'),
         require('./system'),
         require('./geometry'),
@@ -28,11 +33,16 @@ define(function (require) {
         {
             changeView,
             closePanel,
+            moveCamera,
+            moveCamera2d,
             moveGroup,
             openPanel,
             popHotkeyInfo,
+            resetCamera,
             toggleGroup,
-            togglePanel
+            togglePanel,
+            zoomInCamera,
+            zoomOutCamera
         }
     );
 
