@@ -59,11 +59,11 @@ export default class MeshList extends Component {
     }
 
     onPanelCloseIconClick() {
-        this.context.dispatch('view-close-panel', this.props.type);
+        this.context.dispatch('closePanel', this.props.type);
     }
 
     onPanelToggleIconClick() {
-        this.context.dispatch('view-toggle-panel', this.props.type);
+        this.context.dispatch('togglePanel', this.props.type);
     }
 
     onAddGroupIconClick() {
@@ -81,7 +81,7 @@ export default class MeshList extends Component {
     }
 
     onFolderIconClick(e) {
-        this.context.dispatch('view-toggle-group', getLabelDom(e.target).dataset.id);
+        this.context.dispatch('toggleGroup', getLabelDom(e.target).dataset.id);
     }
 
     onEditIconClick(e) {
@@ -198,13 +198,13 @@ export default class MeshList extends Component {
         this.dragingOver = null;
         switch (type) {
             case '00':
-                this.context.dispatch('view-move-group', id1, id2);
+                this.context.dispatch('moveGroup', id1, id2);
                 break;
             case '01':
                 const mesh = this.props.mesh[id2];
                 id2 = mesh.tc.group ? mesh.tc.group : 'default group';
                 if (id1 === id2) return;
-                this.context.dispatch('view-move-group', id1, id2);
+                this.context.dispatch('moveGroup', id1, id2);
                 break;
             case '10':
                 this.context.dispatch('changeMeshGroup', id1, id2);

@@ -158,7 +158,7 @@ export default class Stage3D extends Component {
         function objectChangeHandler() {
             me.isDragging = true;
             if (me.props.selectedMesh && me.props.selectedMesh.tc) {
-                me.props.selectedMesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
+                me.props.selectedMesh.tc.needUpdate = me.props.view === 'all' ? 4 : 1;
                 me.context.dispatch('updateTimer');
             }
         }

@@ -57,11 +57,11 @@ export default class GeometryEditor extends Component {
     }
 
     onPanelCloseIconClick() {
-        this.context.dispatch('view-close-panel', this.props.type);
+        this.context.dispatch('closePanel', this.props.type);
     }
 
     onPanelToggleIconClick() {
-        this.context.dispatch('view-toggle-panel', this.props.type);
+        this.context.dispatch('togglePanel', this.props.type);
     }
 
     onNameChange(e) {
@@ -86,7 +86,7 @@ export default class GeometryEditor extends Component {
         this.timer = setInterval(moving, 100);
         function moving() {
             mesh['rotate' + type](step);
-            mesh.tc.needUpdate = view === 'view-all' ? 4 : 1;
+            mesh.tc.needUpdate = view === 'all' ? 4 : 1;
             dispatch('updateTimer');
         }
     }

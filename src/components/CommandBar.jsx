@@ -27,7 +27,7 @@ export default class CommandBar extends Component {
     }
 
     onButtonClick(e) {
-        this.context.dispatch(e.target.dataset.uiCmd);
+        this.context.dispatch.apply(null, e.target.dataset.uiCmd.split(' '));
     }
 
     render() {

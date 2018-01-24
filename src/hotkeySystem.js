@@ -34,7 +34,7 @@ export default function (model, dispatcher) {
     });
 
     hotkey.on('f1', function () {
-        dispatcher['help-hotkey'].apply(model);
+        dispatcher['popHotkeyInfo'].apply(model);
     });
 
     hotkey.on('arrowdown', function () {
@@ -74,23 +74,23 @@ export default function (model, dispatcher) {
     });
 
     hotkey.on('alt + digit1', function () {
-        dispatcher['view-3d'].apply(model);
+        dispatcher['changeView'].apply(model, ['3d']);
     });
 
     hotkey.on('alt + digit2', function () {
-        dispatcher['view-xoz'].apply(model);
+        dispatcher['changeView'].apply(model ['xoz']);
     });
 
     hotkey.on('alt + digit3', function () {
-        dispatcher['view-xoy'].apply(model);
+        dispatcher['changeView'].apply(model, ['xoy']);
     });
 
     hotkey.on('alt + digit4', function () {
-        dispatcher['view-zoy'].apply(model);
+        dispatcher['changeView'].apply(model, ['zoy']);
     });
 
     hotkey.on('alt + digit5', function () {
-        dispatcher['view-all'].apply(model);
+        dispatcher['changeView'].apply(model, 'all');
     });
 
     hotkey.on('ctrl + d', function () {

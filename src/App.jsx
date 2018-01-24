@@ -220,10 +220,10 @@ function stageRenderer(me) {
         transformer3Dinfo,
         morpher3Dinfo
     };
-    if (view === 'view-3d') {
+    if (view === '3d') {
         return <Stage3D {...stage3dProps} style={{right: right}}/>;
     }
-    else if (me.props.view === 'view-all') {
+    else if (me.props.view === 'all') {
         const doms = [];
         const props3D = {
             key: '3d',
@@ -266,7 +266,7 @@ function stageRenderer(me) {
     }
     else {
         const props2D = {
-            axis: view.replace('view-', '').split('o'),
+            axis: view.split('o'),
             style: {right}
         };
         return <Stage2D {...stage2dProps} {...props2D}/>;

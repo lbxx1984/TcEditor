@@ -36,11 +36,11 @@ export default class LightList extends Component {
     }
 
     onPanelCloseIconClick() {
-        this.context.dispatch('view-close-panel', this.props.type);
+        this.context.dispatch('closePanel', this.props.type);
     }
 
     onPanelToggleIconClick() {
-        this.context.dispatch('view-toggle-panel', this.props.type);
+        this.context.dispatch('togglePanel', this.props.type);
     }
 
     onVisibleIconClick(e) {

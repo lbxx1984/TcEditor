@@ -20,7 +20,7 @@ export function getPositionChangeHandler(me, type) {
         };
         pos[type] = +e.target.value;
         mesh.position.set(pos.x, pos.y, pos.z);
-        mesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
+        mesh.tc.needUpdate = me.props.view === 'all' ? 4 : 1;
         me.context.dispatch('updateTimer');
     };
 }
@@ -33,7 +33,7 @@ export function getScaleChangeHandler(me, type) {
         });
         if (!isScaleAvailable(e.target.value)) return;
         mesh.scale[type] = +e.target.value;
-        mesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
+        mesh.tc.needUpdate = me.props.view === 'all' ? 4 : 1;
         me.context.dispatch('updateTimer');
     };
 }
@@ -57,7 +57,7 @@ export function getVectorChangeHandler(me, type) {
         mesh.geometry.vertices[index].y = pos[1];
         mesh.geometry.vertices[index].z = pos[2];
         mesh.geometry.verticesNeedUpdate = true;
-        mesh.tc.needUpdate = me.props.view === 'view-all' ? 4 : 1;
+        mesh.tc.needUpdate = me.props.view === 'all' ? 4 : 1;
         me.context.dispatch('updateTimer');
     };
 }

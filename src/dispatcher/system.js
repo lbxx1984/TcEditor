@@ -63,8 +63,7 @@ define(function (require) {
             if (selectedMesh) {
                 selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
             }
-            let view = value.indexOf('geometry-') === 0 && this.get('view') !== 'view-all'
-                ? 'view-3d' : this.get('view');
+            let view = value.indexOf('geometry-') === 0 && this.get('view') !== 'all' ? '3d' : this.get('view');
             let stage = _.extend({}, this.get('stage'));
             stage.camera3D = _.extend({}, stage.camera3D);
             stage.camera3D.cameraAngleA = value.indexOf('geometry-') === 0 && Math.abs(stage.camera3D.cameraAngleA) < 2
@@ -75,25 +74,6 @@ define(function (require) {
                 stage: stage,
                 selectedMesh: null
             });
-        },
-
-
-        // 修改系统操作面板状态
-        changePanelConfig(value) {
-            let panel = value.split('-')[1];
-            let arr = [];
-            let have = false;
-            this.get('panel').map(function (item) {
-                if (item.type !== panel) {
-                    arr.push(item);
-                    return;
-                }
-                have = true;
-            });
-            if (!have) {
-                arr.push({type: panel, expend: true});
-            }
-            this.set('panel', arr);
         },
 
 

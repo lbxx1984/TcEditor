@@ -31,12 +31,7 @@ export default class Menu extends Component {
             this.context.dispatch('changeSystemTool', value.replace(';tool', ''));
             return;
         }
-        // 一次性执行命令
-        if (value.indexOf('view-') === 0) {
-            this.context.dispatch('changePanelConfig', value);
-            return;
-        }
-        this.context.dispatch(e.target.value);
+        this.context.dispatch.apply(null, e.target.value.split(' '));
     }
 
     render() {

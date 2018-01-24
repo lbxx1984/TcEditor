@@ -121,7 +121,7 @@ export default class Stage2D extends Component {
             onObjectChange: () => {
                 if (this.props.selectedMesh && this.props.selectedMesh.tc) {
                     this.isDragging = true;
-                    this.props.selectedMesh.tc.needUpdate = this.props.view === 'view-all' ? 4 : 1;
+                    this.props.selectedMesh.tc.needUpdate = this.props.view === 'all' ? 4 : 1;
                     this.context.dispatch('updateTimer');
                 }
             }
@@ -140,7 +140,7 @@ export default class Stage2D extends Component {
             space: transformer3Dinfo.space,
             onChange: () => {
                 if (this.props.selectedMesh && this.props.selectedMesh.tc) {
-                    this.props.selectedMesh.tc.needUpdate = this.props.view === 'view-all' ? 4 : 1;
+                    this.props.selectedMesh.tc.needUpdate = this.props.view === 'all' ? 4 : 1;
                     this.isDragging = true;
                     this.context.dispatch('updateTimer');
                 }

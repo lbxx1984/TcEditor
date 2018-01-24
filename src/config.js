@@ -57,16 +57,16 @@ export default {
             key: 'view',
             children: [
                 {
-                    label: 'Mesh List', value: 'view-meshPanel', key: 'meshPanel'
+                    label: 'Mesh List', value: 'openPanel meshPanel', key: 'meshPanel'
                 },
                 {
-                    label: 'Light List', value: 'view-lightPanel', key: 'lightPanel'
+                    label: 'Light List', value: 'openPanel lightPanel', key: 'lightPanel'
                 },
                 {
-                    label: 'Geometry Editor', value: 'view-geoEditor', key: 'geoEditor'
+                    label: 'Geometry Editor', value: 'openPanel geoEditor', key: 'geoEditor'
                 },
                 {
-                    label: 'Material Editor', value: 'view-mtlEditor', key: 'mtlEditor'
+                    label: 'Material Editor', value: 'openPanel mtlEditor', key: 'mtlEditor'
                 }
             ]
         },
@@ -85,7 +85,7 @@ export default {
             label: 'Help',
             children: [
                 {
-                    label: 'Hotkey', value: 'help-hotkey', hotKey: 'F1'
+                    label: 'Hotkey', value: 'popHotkeyInfo', hotKey: 'F1'
                 }
             ]
         }
@@ -94,19 +94,19 @@ export default {
     command: [
         'VIEWS',
         {
-            label: '3D', value: 'view-3d', title: '3D view (Alt + 1)'
+            label: '3D', value: 'changeView 3d', title: '3D view (Alt + 1)'
         },
         {
-            label: 'XOZ', value: 'view-xoz', title: 'XOZ view (Alt + 2)'
+            label: 'XOZ', value: 'changeView xoz', title: 'XOZ view (Alt + 2)'
         },
         {
-            label: 'XOY', value: 'view-xoy', title: 'XOY view (Alt + 3)'
+            label: 'XOY', value: 'changeView xoy', title: 'XOY view (Alt + 3)'
         },
         {
-            label: 'ZOY', value: 'view-zoy', title: 'ZOY view (Alt + 4)'
+            label: 'ZOY', value: 'changeView zoy', title: 'ZOY view (Alt + 4)'
         },
         {
-            icon: 'tc-icon-screen4', value: 'view-all', title: 'ALL view (Alt + 5)'
+            icon: 'tc-icon-screen4', value: 'changeView all', title: 'ALL view (Alt + 5)'
         },
         'TOOLS',
         {

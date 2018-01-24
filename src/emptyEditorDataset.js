@@ -80,7 +80,7 @@ export default {
     // 当前鼠标的3D位置
     mouse3d: {x: 0, y: 0, z: 0},
     // 编辑器当前显示模式
-    view: 'view-all',
+    view: 'all',
     // 编辑器当前处于响应拖拽事件的命令
     tool: 'camera-move',
 
