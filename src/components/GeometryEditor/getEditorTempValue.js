@@ -3,7 +3,7 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-import math from '../../core/math';
+import math from 'core/math';
 
 export default function (props) {
     const mesh = props.mesh;

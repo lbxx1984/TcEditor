@@ -4,7 +4,7 @@
  * @email lbxxlht@163.com
  */
 import isScaleAvailable from './isScaleAvailable';
-import math from '../../core/math';
+import math from 'core/math';
 
 export function getPositionChangeHandler(me, type) {
     const mesh = me.props.mesh;

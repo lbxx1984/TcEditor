@@ -5,7 +5,7 @@
  */
 import ReactDOM from 'react-dom';
 import React from 'react';
-import model from './core/model';
+import model from 'core/model';
 import config from './config';
 import emptyEditorDataset from './emptyEditorDataset';
 import dispatcher from './dispatcher';

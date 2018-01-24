@@ -3,7 +3,7 @@ define(function (require) {
 
     var THREE = require('three');
     var Transformer3D = require('three/lib/TransformControls');
-    var math = require('../core/math');
+    var math = require('core/math');
 
 
     // 清理所有锚点

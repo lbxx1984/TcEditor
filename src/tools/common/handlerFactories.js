@@ -2,7 +2,7 @@
 define(function (require) {
 
 
-    var math = require('../../core/math');
+    var math = require('core/math');
 
 
     return {

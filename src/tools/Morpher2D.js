@@ -2,7 +2,7 @@ define(function (require) {
 
 
     const _ = require('underscore');
-    const math = require('../core/math');
+    const math = require('core/math');
     const handlerFactories = require('./common/handlerFactories');
     const AXIS_COLOR = {
         x: '#FF0000',

@@ -5,7 +5,7 @@ define(function (require) {
 
 
     var _ = require('underscore');
-    var math = require('../core/math');
+    var math = require('core/math');
 
 
     function arrayToAxis(arr) {

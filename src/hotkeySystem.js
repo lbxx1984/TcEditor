@@ -3,10 +3,7 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-
-
-import hotkey from './core/hotkey';
-
+import hotkey from 'core/hotkey';
 
 export default function (model, dispatcher) {
 
