@@ -25,12 +25,6 @@ export default class Menu extends Component {
     }
 
     onClick(e) {
-        const value = e.target.value;
-        // 工具类命令
-        if (value.indexOf(';tool') > -1) {
-            this.context.dispatch('changeSystemTool', value.replace(';tool', ''));
-            return;
-        }
         this.context.dispatch.apply(null, e.target.value.split(' '));
     }
 

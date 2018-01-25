@@ -88,7 +88,7 @@ export default class MeshList extends Component {
         const dom = getLabelDom(e.target);
         dialog.pop({
             contentProps: {
-                group: me.props.group,
+                group: this.props.group,
                 initialName: dom.dataset.id,
                 onEnter: groupname => {
                     this.context.dispatch('renameGroup', dom.dataset.id, groupname);
@@ -149,11 +149,12 @@ export default class MeshList extends Component {
 
     onVisibleIconClick(e) {
         const dom = getLabelDom(e.target);
+        const id = dom.dataset.id;
         if (dom.dataset.level === 'mesh') {
-            this.context.dispatch('visibleMesh', dom.dataset.id);
+            this.context.dispatch('toggleMeshVisibility', id);
         }
         else {
-            this.context.dispatch('visibleGroup', dom.dataset.id, e.target.className.indexOf('tc-icon-invisible') > -1);
+            this.context.dispatch('toggleGroupVisibility', id, e.target.className.indexOf('tc-icon-invisible') > -1);
         }
     }
 

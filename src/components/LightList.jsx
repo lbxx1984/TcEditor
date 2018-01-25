@@ -44,7 +44,7 @@ export default class LightList extends Component {
     }
 
     onVisibleIconClick(e) {
-        this.context.dispatch('visibleLight', getLabelDom(e.target).dataset.key);
+        this.context.dispatch('toggleLightVisibility', getLabelDom(e.target).dataset.key);
     }
 
     onLockIconClick(e) {
