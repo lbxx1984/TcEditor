@@ -3,16 +3,23 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
+import changeCamera3D from './changeCamera3D';
+import changeMouse3D from './changeMouse3D';
 import changeView from './changeView';
+import clearSelected from './clearSelected';
 import closePanel from './closePanel';
+import enlargeGrid from './enlargeGrid';
 import moveCamera from './moveCamera';
-import moveCamera2d from './moveCamera2d';
+import moveCamera2D from './moveCamera2D';
 import moveGroup from './moveGroup';
+import narrowGrid from './narrowGrid';
 import openPanel from './openPanel';
 import popHotkeyInfo from './popHotkeyInfo';
 import resetCamera from './resetCamera';
 import toggleGroup from './toggleGroup';
+import toggleHelper from './toggleHelper';
 import togglePanel from './togglePanel';
+import updateTimer from './updateTimer';
 import zoomInCamera from './zoomInCamera';
 import zoomOutCamera from './zoomOutCamera';
 
@@ -23,7 +30,6 @@ define(function (require) {
 
     return _.extend(
         {},
-        require('./stage'),
         require('./system'),
         require('./geometry'),
         require('./tool'),
@@ -31,16 +37,23 @@ define(function (require) {
         require('./morpher'),
         require('./file'),
         {
+            changeCamera3D,
+            changeMouse3D,
             changeView,
+            clearSelected,
             closePanel,
+            enlargeGrid,
             moveCamera,
-            moveCamera2d,
+            moveCamera2D,
             moveGroup,
+            narrowGrid,
             openPanel,
             popHotkeyInfo,
             resetCamera,
             toggleGroup,
+            toggleHelper,
             togglePanel,
+            updateTimer,
             zoomInCamera,
             zoomOutCamera
         }

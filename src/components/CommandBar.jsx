@@ -40,6 +40,17 @@ export default class CommandBar extends Component {
 
 }
 
+function itemChecked(value, me) {
+    const {view, tool} = me.props;
+    const arr = value.split(' ');
+    if (arr[0] === 'changeView' && arr[1] === view) {
+        return true;
+    }
+    if (value === tool) {
+        return true;
+    }
+    return false;
+}
 
 function mainFactory(me) {
     const doms = [];
@@ -58,8 +69,8 @@ function mainFactory(me) {
         const innerProps = {
             className: item.icon ? 'tc-icon ' + item.icon : ''
         };
-        containerProps.className += item.value === view || item.value === tool ? ' checked-item' : '';
-        if (item.value === 'stage-helperVisible') {
+        containerProps.className += itemChecked(item.value, me) ? ' checked-item' : '';
+        if (item.value === 'toggleHelper') {
             innerProps.className = gridVisible ? 'tc-icon tc-icon-visible' : 'tc-icon tc-icon-invisible';
         }
         doms.push(

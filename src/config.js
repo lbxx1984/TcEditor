@@ -133,13 +133,13 @@ export default {
         },
         'GRID',
         {
-            icon: 'tc-icon-enlarge', value: 'stage-enlargeGrid', title: 'enlarge grid'
+            icon: 'tc-icon-enlarge', value: 'enlargeGrid', title: 'enlarge grid'
         },
         {
-            icon: 'tc-icon-narrow', value: 'stage-narrowGrid', title: 'narrow grid'
+            icon: 'tc-icon-narrow', value: 'narrowGrid', title: 'narrow grid'
         },
         {
-            icon: 'tc-icon-visible', value: 'stage-helperVisible', title: 'hide/show stage helper'
+            icon: 'tc-icon-visible', value: 'toggleHelper', title: 'hide/show stage helper'
         }
     ],
     // 变形工具集

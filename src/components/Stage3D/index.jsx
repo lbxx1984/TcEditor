@@ -278,7 +278,7 @@ export default class Stage3D extends Component {
     }
 
     onContextMenu(e) {
-        this.context.dispatch('stage3d-context-menu');
+        this.context.dispatch('clearSelected');
         e.stopPropagation();
         e.preventDefault();
     }
