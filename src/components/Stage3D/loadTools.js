@@ -18,7 +18,7 @@ export default function loadTools(me) {
             && me.morpher.anchors[me.props.selectedVectorIndex]
             && me.morpher.anchors[me.props.selectedVectorIndex].added
         ) {
-            me.context.dispatch('morpher-3d-pick-anchor', me.morpher.anchors[me.props.selectedVectorIndex]);
+            me.context.dispatch('pickJointAnchor', me.morpher.anchors[me.props.selectedVectorIndex]);
         }
         else {
             me.morpher.detachAnchor();

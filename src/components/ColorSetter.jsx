@@ -19,7 +19,7 @@ function getValue(value) {
 export default class ColorSetter extends Component {
 
     static propTypes = {
-        value: PropTypes.string.isRequired,
+        value: PropTypes.number.isRequired,
         onChange: PropTypes.func.isRequired,
         close: PropTypes.func.isRequired
     }

@@ -116,7 +116,7 @@ export default class Stage2D extends Component {
             color: morpher3Dinfo.anchorColor,
             selectedVector: selectedVector,
             onAnchorClick: i => {
-                this.context.dispatch('morpher-2d-pick-anchor', i);
+                this.context.dispatch('pickJointAnchor', i);
             },
             onObjectChange: () => {
                 if (this.props.selectedMesh && this.props.selectedMesh.tc) {

@@ -154,8 +154,8 @@ export default {
         {icon: 'tc-icon-earth', value: 'toggleTransformerSpace space'}
     ],
     morpher3DTools: [
-        {icon: 'tc-icon-color', value: 'morpher-3d-anchor-color'},
-        {icon: 'tc-icon-plus', value: 'morpher-3d-size-enlarge'},
-        {icon: 'tc-icon-minus', value: 'morpher-3d-size-narrow'}
+        {icon: 'tc-icon-color', value: 'setMorpherColor'},
+        {icon: 'tc-icon-plus', value: 'setMorpherSize enlarge'},
+        {icon: 'tc-icon-minus', value: 'setMorpherSize'}
     ]
 }

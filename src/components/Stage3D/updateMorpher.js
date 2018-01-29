@@ -38,7 +38,7 @@ export default function updateMorpher(nextProps, me) {
             || (nextProps.selectedVector && nextProps.selectedVector.tc.index !== nextProps.selectedVectorIndex)
         )
     ) {
-        me.context.dispatch('morpher-3d-pick-anchor', me.morpher.anchors[nextProps.selectedVectorIndex]);
+        me.context.dispatch('pickJointAnchor', me.morpher.anchors[nextProps.selectedVectorIndex]);
     }
     if (nextProps.morpher3Dinfo !== me.props.morpher3Dinfo) {
         me.morpher.setAnchorColor(nextProps.morpher3Dinfo.anchorColor);

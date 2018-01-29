@@ -29,6 +29,7 @@ import narrowGrid from './narrowGrid';
 import openPanel from './openPanel';
 import pickJoint from './pickJoint';
 import pickJoint2D from './pickJoint2D';
+import pickJointAnchor from './pickJointAnchor';
 import pickLight from './pickLight';
 import pickMesh from './pickMesh';
 import pickMesh2D from './pickMesh2D';
@@ -37,6 +38,8 @@ import renameGroup from './renameGroup';
 import resetCamera from './resetCamera';
 import selectLight from './selectLight';
 import selectMesh from './selectMesh';
+import setMorpherColor from './setMorpherColor';
+import setMorpherSize from './setMorpherSize';
 import setTransformerMode from './setTransformerMode';
 import setTransformerSize from './setTransformerSize';
 import toggleGroup from './toggleGroup';
@@ -57,7 +60,6 @@ define(function (require) {
 
     return _.extend(
         {},
-        require('./morpher'),
         require('./file'),
         {
             addGroup,
@@ -86,6 +88,7 @@ define(function (require) {
             openPanel,
             pickJoint,
             pickJoint2D,
+            pickJointAnchor,
             pickLight,
             pickMesh,
             pickMesh2D,
@@ -94,6 +97,8 @@ define(function (require) {
             resetCamera,
             selectLight,
             selectMesh,
+            setMorpherColor,
+            setMorpherSize,
             setTransformerMode,
             setTransformerSize,
             toggleGroup,
