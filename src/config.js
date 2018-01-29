@@ -74,10 +74,10 @@ export default {
             label: 'Geometry',
             children: [
                 {
-                    label: 'Plane', value: 'changeTool geometry-plane'
+                    label: 'Plane', value: 'changeTool createPlane'
                 },
                 {
-                    label: 'Sphere', value: 'changeTool geometry-sphere'
+                    label: 'Sphere', value: 'changeTool createSphere'
                 }
             ]
         },

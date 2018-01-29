@@ -13,6 +13,8 @@ import changeTool from './changeTool';
 import changeView from './changeView';
 import clearSelected from './clearSelected';
 import closePanel from './closePanel';
+import createPlane from './createPlane';
+import createSphere from './createSphere';
 import deleteGroup from './deleteGroup';
 import deleteLight from './deleteLight';
 import deleteMesh from './deleteMesh';
@@ -45,7 +47,6 @@ define(function (require) {
 
     return _.extend(
         {},
-        require('./geometry'),
         require('./tool'),
         require('./transformer'),
         require('./morpher'),
@@ -61,6 +62,8 @@ define(function (require) {
             changeView,
             clearSelected,
             closePanel,
+            createPlane,
+            createSphere,
             deleteGroup,
             deleteLight,
             deleteMesh,

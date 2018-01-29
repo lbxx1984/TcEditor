@@ -9,10 +9,10 @@ export default function(value) {
     if (selectedMesh) {
         selectedMesh.material.setValues({color: selectedMesh.tc.materialColor});
     }
-    const view = value.indexOf('geometry-') === 0 && this.get('view') !== 'all' ? '3d' : this.get('view');
+    const view = value.indexOf('create') === 0 && this.get('view') !== 'all' ? '3d' : this.get('view');
     const stage = {...this.get('stage')};
     stage.camera3D = {...stage.camera3D};
-    stage.camera3D.cameraAngleA = value.indexOf('geometry-') === 0 && Math.abs(stage.camera3D.cameraAngleA) < 2
+    stage.camera3D.cameraAngleA = value.indexOf('create') === 0 && Math.abs(stage.camera3D.cameraAngleA) < 2
         ? 40 : stage.camera3D.cameraAngleA;
     this.fill({
         tool: value,
