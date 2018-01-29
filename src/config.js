@@ -3,6 +3,9 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
+export const SELECTED_MESH_OPACITY = 1;
+export const CAMERA_RADIUS_FOR_2D_SCALE = 0.5;
+
 export default {
     // 浏览器显示的默认标题
     editorTitle: 'TcEditor 5',
@@ -110,13 +113,13 @@ export default {
         },
         'TOOLS',
         {
-            icon: 'tc-icon-pickup-mesh', value: 'tool-pickGeometry', title: 'pick up geometry (Ctrl + D)'
+            icon: 'tc-icon-pickup-mesh', value: 'changeTool pickMesh', title: 'pick up geometry (Ctrl + D)'
         },
         {
-            icon: 'tc-icon-pickup-joint', value: 'tool-pickJoint', title: 'pick up joint (Ctrl + F)'
+            icon: 'tc-icon-pickup-joint', value: 'changeTool pickJoint', title: 'pick up joint (Ctrl + F)'
         },
         {
-            icon: 'tc-icon-light', value: 'tool-pickLight', title: 'pick up light (Ctrl + G)'
+            icon: 'tc-icon-light', value: 'pickLight', title: 'pick up light (Ctrl + G)'
         },
         'CAMERA',
         {

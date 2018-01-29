@@ -5,16 +5,16 @@
  */
 
 export default function updateTransformer(nextProps, me) {
-    if (nextProps.tool !== 'tool-pickGeometry' && me.props.tool === 'tool-pickGeometry') {
+    if (nextProps.tool !== 'pickMesh' && me.props.tool === 'pickMesh') {
         me.transformer2D.detach();
     }
-    if (nextProps.tool === 'tool-pickGeometry' && me.props.tool !== 'tool-pickGeometry' && nextProps.selectedMesh) {
+    if (nextProps.tool === 'pickMesh' && me.props.tool !== 'pickMesh' && nextProps.selectedMesh) {
         me.transformer2D.attach(nextProps.selectedMesh);
     }
-    if (nextProps.tool === 'tool-pickGeometry' && nextProps.selectedMesh !== me.props.selectedMesh) {
+    if (nextProps.tool === 'pickMesh' && nextProps.selectedMesh !== me.props.selectedMesh) {
         me.transformer2D.attach(nextProps.selectedMesh);
     }
-    if (nextProps.tool === 'tool-pickGeometry' && nextProps.timer !== me.props.timer && me.transformer2D.mesh) {
+    if (nextProps.tool === 'pickMesh' && nextProps.timer !== me.props.timer && me.transformer2D.mesh) {
         me.transformer2D.attach(me.transformer2D.mesh);
     }
     if (nextProps.transformer3Dinfo !== me.props.transformer3Dinfo) {

@@ -14,7 +14,7 @@ import updateCamera from './updateCamera';
 import updateMesh from './updateMesh';
 import updateTransformer from './updateTransformer';
 import updateMorpher from './updateMorpher';
-import {CAMERA_RADIUS_FOR_2D_SCALE} from './config';
+import {CAMERA_RADIUS_FOR_2D_SCALE} from '../../config';
 
 
 export default class Stage2D extends Component {
@@ -149,10 +149,10 @@ export default class Stage2D extends Component {
         // 初始化舞台
         this.grid2D.render();
         this.renderer2D.render();
-        if (tool === 'tool-pickGeometry' && selectedMesh) {
+        if (tool === 'pickMesh' && selectedMesh) {
             this.transformer2D.attach(selectedMesh);
         }
-        if (tool === 'tool-pickJoint' && selectedMesh) {
+        if (tool === 'pickJoint' && selectedMesh) {
             this.morpher2D.attach(selectedMesh);
             this.morpher2D.attachAnchor(selectedVectorIndex);
         }

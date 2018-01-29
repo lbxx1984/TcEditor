@@ -94,15 +94,15 @@ export default function (model, dispatcher) {
     });
 
     hotkey.on('ctrl + d', function () {
-        dispatcher['tool-pickGeometry'].apply(model);
+        dispatcher['pickMesh'].apply(model);
     });
 
     hotkey.on('ctrl + f', function () {
-        dispatcher['tool-pickJoint'].apply(model);
+        dispatcher['pickJoint'].apply(model);
     });
 
     hotkey.on('ctrl + g', function () {
-        dispatcher['tool-pickLight'].apply(model);
+        dispatcher['pickLight'].apply(model);
     });
 
     hotkey.on('ctrl + e', function () {

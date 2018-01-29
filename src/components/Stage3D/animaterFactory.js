@@ -8,16 +8,16 @@ export default function animaterFactory(me) {
     return function () {
         me.camera.lookAt(me.props.cameraLookAt);
         me.renderer.render(me.scene, me.camera);
-        if (me.props.tool === 'tool-pickLight') {
+        if (me.props.tool === 'pickLight') {
             me.lightHelper.update();
         }
-        if (me.props.tool === 'tool-pickLight' && me.props.selectedLight) {
+        if (me.props.tool === 'pickLight' && me.props.selectedLight) {
             me.lightHelper.controller.update();
         }
-        if (me.props.tool === 'tool-pickGeometry' && me.props.selectedMesh) {
+        if (me.props.tool === 'pickMesh' && me.props.selectedMesh) {
             me.transformer.update();
         }
-        if (me.props.tool === 'tool-pickJoint' && me.props.selectedVector) {
+        if (me.props.tool === 'pickJoint' && me.props.selectedVector) {
             me.morpher.controller.update();
         }
     };

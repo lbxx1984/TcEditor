@@ -21,7 +21,7 @@ import ToolsBar from './components/ToolsBar';
 function getToolsBarProps(props) {
     let datasource = null;
     switch (props.tool) {
-        case 'tool-pickGeometry':
+        case 'pickMesh':
             datasource = JSON.parse(JSON.stringify(props.transformer3DTools));
             if (props.transformer3Dinfo.mode === 'rotate') {
                 datasource.pop();
@@ -31,7 +31,7 @@ function getToolsBarProps(props) {
                 datasource: datasource,
                 controls: props.transformer3Dinfo
             };
-        case 'tool-pickJoint':
+        case 'pickJoint':
             datasource = JSON.parse(JSON.stringify(props.morpher3DTools));
             let color = props.morpher3Dinfo.anchorColor.toString(16);
             while(color.length < 6) color = '0' + color;

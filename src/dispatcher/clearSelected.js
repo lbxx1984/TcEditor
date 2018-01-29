@@ -9,7 +9,7 @@ export default function () {
     const selectedVector = this.get('selectedVector');
     const selectedVectorIndex = this.get('selectedVectorIndex');
     const selectedLight = this.get('selectedLight');
-    if (tool === 'tool-pickJoint' && (selectedVector || selectedVectorIndex > -1)) {
+    if (tool === 'pickJoint' && (selectedVector || selectedVectorIndex > -1)) {
         selectedVector && selectedVector.material.setValues({color: selectedVector.tc.materialColor});
         this.fill({
             selectedVector: null,

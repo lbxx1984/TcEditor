@@ -56,7 +56,7 @@ export default class LightList extends Component {
     }
 
     onLabelClick(e) {
-        this.context.dispatch('tool-select-light-by-key', getLabelDom(e.target).dataset.key);
+        this.context.dispatch('selectLight', getLabelDom(e.target).dataset.key);
     }
 
     render() {

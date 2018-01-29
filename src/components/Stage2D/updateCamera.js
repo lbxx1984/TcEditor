@@ -3,7 +3,7 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-import {CAMERA_RADIUS_FOR_2D_SCALE} from  './config';
+import {CAMERA_RADIUS_FOR_2D_SCALE} from '../../config';
 
 export default function updateCamera(nextProps, me) {
     if (JSON.stringify(nextProps.style) !== JSON.stringify(me.props.style)) {

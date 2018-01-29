@@ -13,7 +13,7 @@ export default function updateCameraInfo(nextProps, me) {
         || nextProps.cameraLookAt !== me.props.cameraLookAt
     ) {
         updateCameraPosition(me, nextProps);
-        if (nextProps.tool === 'tool-pickJoint' && nextProps.selectedMesh) {
+        if (nextProps.tool === 'pickJoint' && nextProps.selectedMesh) {
             me.morpher.updateAnchors();
         }
     }

@@ -140,7 +140,7 @@ export default class MeshList extends Component {
     onLabelClick(e) {
         const dom = getLabelDom(e.target);
         if (dom.dataset.level === 'mesh') {
-            this.context.dispatch('tool-select-mesh-by-uuid', dom.dataset.id);
+            this.context.dispatch('selectMesh', dom.dataset.id);
         }
         else {
             this.context.dispatch('changeActiveGroup', dom.dataset.id);

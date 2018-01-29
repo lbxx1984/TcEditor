@@ -5,10 +5,10 @@
  */
 
 export default function loadTools(me) {
-    if (me.props.tool === 'tool-pickGeometry') {
+    if (me.props.tool === 'pickMesh') {
         me.transformer[me.props.selectedMesh ? 'attach' : 'detach'](me.props.selectedMesh);
     }
-    if (me.props.tool === 'tool-pickJoint') {
+    if (me.props.tool === 'pickJoint') {
         me.morpher[me.props.selectedMesh ? 'attach' : 'detach'](me.props.selectedMesh);
         if (me.props.selectedMesh && me.props.selectedVector) {
             me.morpher.attachAnchor(me.morpher.anchors[me.props.selectedVector.tc.index]);
@@ -24,7 +24,7 @@ export default function loadTools(me) {
             me.morpher.detachAnchor();
         }
     }
-    if (me.props.tool === 'tool-pickLight') {
+    if (me.props.tool === 'pickLight') {
         me.lightHelper.attach();
         if (me.props.selectedLight) {
             me.lightHelper.controller.attach(me.lightHelper.anchors[me.props.selectedLight.tc.lightKey]);

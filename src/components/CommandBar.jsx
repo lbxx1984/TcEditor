@@ -46,7 +46,7 @@ function itemChecked(value, me) {
     if (arr[0] === 'changeView' && arr[1] === view) {
         return true;
     }
-    if (value === tool) {
+    if (arr[0] === 'changeTool' && arr[1] === tool) {
         return true;
     }
     return false;

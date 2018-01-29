@@ -27,9 +27,16 @@ import moveCamera2D from './moveCamera2D';
 import moveGroup from './moveGroup';
 import narrowGrid from './narrowGrid';
 import openPanel from './openPanel';
+import pickJoint from './pickJoint';
+import pickJoint2D from './pickJoint2D';
+import pickLight from './pickLight';
+import pickMesh from './pickMesh';
+import pickMesh2D from './pickMesh2D';
 import popHotkeyInfo from './popHotkeyInfo';
 import renameGroup from './renameGroup';
 import resetCamera from './resetCamera';
+import selectLight from './selectLight';
+import selectMesh from './selectMesh';
 import toggleGroup from './toggleGroup';
 import toggleGroupVisibility from './toggleGroupVisibility';
 import toggleHelper from './toggleHelper';
@@ -47,7 +54,6 @@ define(function (require) {
 
     return _.extend(
         {},
-        require('./tool'),
         require('./transformer'),
         require('./morpher'),
         require('./file'),
@@ -76,9 +82,16 @@ define(function (require) {
             moveGroup,
             narrowGrid,
             openPanel,
+            pickJoint,
+            pickJoint2D,
+            pickLight,
+            pickMesh,
+            pickMesh2D,
             popHotkeyInfo,
             renameGroup,
             resetCamera,
+            selectLight,
+            selectMesh,
             toggleGroup,
             toggleGroupVisibility,
             toggleHelper,

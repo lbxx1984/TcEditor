@@ -6,12 +6,12 @@
 
 export default function updateTransformer(nextProps, me) {
     if (
-        nextProps.tool === 'tool-pickGeometry' && me.props.tool !== 'tool-pickGeometry'
-        || (nextProps.selectedMesh !== me.props.selectedMesh && nextProps.tool === 'tool-pickGeometry')
+        nextProps.tool === 'pickMesh' && me.props.tool !== 'pickMesh'
+        || (nextProps.selectedMesh !== me.props.selectedMesh && nextProps.tool === 'pickMesh')
     ) {
         me.transformer[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
     }
-    if (nextProps.tool !== 'tool-pickGeometry' && me.props.tool === 'tool-pickGeometry') {
+    if (nextProps.tool !== 'pickMesh' && me.props.tool === 'pickMesh') {
         me.transformer.detach();
     }
     if (nextProps.transformer3Dinfo !== me.props.transformer3Dinfo) {

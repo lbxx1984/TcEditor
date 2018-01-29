@@ -5,18 +5,18 @@
  */
 
 export default function updateLightHelper(nextProps, me) {
-    if (nextProps.tool === 'tool-pickLight' && me.props.tool !== 'tool-pickLight') {
+    if (nextProps.tool === 'pickLight' && me.props.tool !== 'pickLight') {
         me.lightHelper.attach();
     }
     if (typeof nextProps.selectedLight === 'string') {
         switchAnchorType();
         return;
     }
-    if (nextProps.tool !== 'tool-pickLight' && me.props.tool === 'tool-pickLight') {
+    if (nextProps.tool !== 'pickLight' && me.props.tool === 'pickLight') {
         me.lightHelper.detach();
         me.lightHelper.controller.detach();
     }
-    if (nextProps.selectedLight !== me.props.selectedLight && nextProps.tool === 'tool-pickLight') {
+    if (nextProps.selectedLight !== me.props.selectedLight && nextProps.tool === 'pickLight') {
         me.lightHelper.controller[nextProps.selectedLight ? 'attach' : 'detach'](nextProps.selectedLight);
     }
     function switchAnchorType() {
@@ -27,7 +27,7 @@ export default function updateLightHelper(nextProps, me) {
             }
         });
         if (anchor) {
-            me.context.dispatch('tool-select-light-by-key', null, anchor);
+            me.context.dispatch('selectLight', null, anchor);
         }
     }
 }

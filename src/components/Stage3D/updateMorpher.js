@@ -6,7 +6,7 @@
 
 export default function updateMorpher(nextProps, me) {
     if (
-        nextProps.tool === 'tool-pickJoint' && me.props.tool === 'tool-pickJoint'
+        nextProps.tool === 'pickJoint' && me.props.tool === 'pickJoint'
         && nextProps.selectedMesh && nextProps.selectedMesh === me.props.selectedMesh
         && nextProps.selectedMesh.tc.needUpdate
     ) {
@@ -14,21 +14,21 @@ export default function updateMorpher(nextProps, me) {
         nextProps.selectedVector && me.morpher.attachAnchor(nextProps.selectedVector);
     }
     if (
-        nextProps.tool === 'tool-pickJoint' && me.props.tool !== 'tool-pickJoint'
-        || (nextProps.selectedMesh !== me.props.selectedMesh && nextProps.tool === 'tool-pickJoint')
+        nextProps.tool === 'pickJoint' && me.props.tool !== 'pickJoint'
+        || (nextProps.selectedMesh !== me.props.selectedMesh && nextProps.tool === 'pickJoint')
     ) {
         me.morpher[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
         me.morpher.detachAnchor();
     }
-    if (nextProps.selectedVector !== me.props.selectedVector && nextProps.tool === 'tool-pickJoint') {
+    if (nextProps.selectedVector !== me.props.selectedVector && nextProps.tool === 'pickJoint') {
         me.morpher[nextProps.selectedVector ? 'attachAnchor' : 'detachAnchor'](nextProps.selectedVector);
     }
-    if (nextProps.tool !== 'tool-pickJoint' && me.props.tool === 'tool-pickJoint') {
+    if (nextProps.tool !== 'pickJoint' && me.props.tool === 'pickJoint') {
         me.morpher.detach();
         me.morpher.detachAnchor();
     }
     if (
-        nextProps.tool === 'tool-pickJoint'
+        nextProps.tool === 'pickJoint'
         && nextProps.selectedVectorIndex !== me.props.selectedVectorIndex
         && me.morpher.mesh
         && me.morpher.anchors[nextProps.selectedVectorIndex]

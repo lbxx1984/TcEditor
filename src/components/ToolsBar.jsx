@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 
 
 const datasourceFilters = {
-    'tool-pickGeometry': (datasource, controls) => {
+    pickMesh: (datasource, controls) => {
         return datasource.map(item=> {
             item = {...item};
             const value = item.value.split('-').pop();
