@@ -37,12 +37,15 @@ import renameGroup from './renameGroup';
 import resetCamera from './resetCamera';
 import selectLight from './selectLight';
 import selectMesh from './selectMesh';
+import setTransformerMode from './setTransformerMode';
+import setTransformerSize from './setTransformerSize';
 import toggleGroup from './toggleGroup';
 import toggleGroupVisibility from './toggleGroupVisibility';
 import toggleHelper from './toggleHelper';
 import toggleLightVisibility from './toggleLightVisibility';
 import toggleMeshVisibility from './toggleMeshVisibility';
 import togglePanel from './togglePanel';
+import toggleTransformerSpace from './toggleTransformerSpace';
 import updateTimer from './updateTimer';
 import zoomInCamera from './zoomInCamera';
 import zoomOutCamera from './zoomOutCamera';
@@ -54,7 +57,6 @@ define(function (require) {
 
     return _.extend(
         {},
-        require('./transformer'),
         require('./morpher'),
         require('./file'),
         {
@@ -92,12 +94,15 @@ define(function (require) {
             resetCamera,
             selectLight,
             selectMesh,
+            setTransformerMode,
+            setTransformerSize,
             toggleGroup,
             toggleGroupVisibility,
             toggleHelper,
             toggleLightVisibility,
             toggleMeshVisibility,
             togglePanel,
+            toggleTransformerSpace,
             updateTimer,
             zoomInCamera,
             zoomOutCamera

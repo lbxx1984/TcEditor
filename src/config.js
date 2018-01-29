@@ -147,11 +147,11 @@ export default {
     ],
     // 变形工具集
     transformer3DTools: [
-        {icon: 'tc-icon-trans', value: 'transformer-3d-mode-translate', title: '(Ctrl + R)'},
-        {icon: 'tc-icon-rotate', value: 'transformer-3d-mode-rotate', title: '(Ctrl + R)'},
-        {icon: 'tc-icon-plus', value: 'transformer-3d-size-enlarge'},
-        {icon: 'tc-icon-minus', value: 'transformer-3d-size-narrow'},
-        {icon: 'tc-icon-earth', value: 'transformer-3d-space'}
+        {icon: 'tc-icon-trans', value: 'setTransformerMode translate', title: '(Ctrl + R)'},
+        {icon: 'tc-icon-rotate', value: 'setTransformerMode rotate', title: '(Ctrl + R)'},
+        {icon: 'tc-icon-plus', value: 'setTransformerSize enlarge'},
+        {icon: 'tc-icon-minus', value: 'setTransformerSize'},
+        {icon: 'tc-icon-earth', value: 'toggleTransformerSpace space'}
     ],
     morpher3DTools: [
         {icon: 'tc-icon-color', value: 'morpher-3d-anchor-color'},

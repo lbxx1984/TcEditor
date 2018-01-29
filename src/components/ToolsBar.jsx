@@ -8,13 +8,13 @@ import PropTypes from 'prop-types';
 
 
 const datasourceFilters = {
-    pickMesh: (datasource, controls) => {
-        return datasource.map(item=> {
-            item = {...item};
-            const value = item.value.split('-').pop();
-            item.checked = value !== 'space'
-                ? value === controls.mode : controls.space === 'world';
-            return item;
+    pickMesh(datasource, controls) {
+        return datasource.map(item => {
+            const value = item.value.split(' ').pop();
+            return {
+                ...item,
+                checked: value !== 'space' ? value === controls.mode : controls.space === 'world'
+            };
         });
     }
 };
@@ -42,7 +42,7 @@ export default class ToolsBar extends Component {
     }
     
     onButtonClick(e) {
-        this.context.dispatch(e.target.dataset.uiCmd);
+        this.context.dispatch.apply(null, e.target.dataset.uiCmd.split(' '));
     }
 
     render() {

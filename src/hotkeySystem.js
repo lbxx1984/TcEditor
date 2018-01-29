@@ -110,9 +110,8 @@ export default function (model, dispatcher) {
     });
 
     hotkey.on('ctrl + r', function () {
-        let handler = model.store.transformer3Dinfo.mode === 'translate'
-            ? 'transformer-3d-mode-rotate' : 'transformer-3d-mode-translate';
-        dispatcher[handler].apply(model);
+        let mode = model.store.transformer3Dinfo.mode === 'translate' ? 'rotate' : 'translate';
+        dispatcher['setTransformerMode'].apply(model, [mode]);
     });
 
 }
