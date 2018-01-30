@@ -6,8 +6,7 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
 import model from 'core/model';
-import config from './config';
-import emptyEditorDataset from './emptyEditorDataset';
+import config, {EMPTY_EDITOR_DATASET} from './config';
 import dispatcher from './dispatcher';
 import hotkeySystem from './hotkeySystem';
 import App from './App';
@@ -41,7 +40,7 @@ function dispatch() {
 
 // 配置原始数据
 model.fill(config);
-model.fill(emptyEditorDataset);
+model.fill(EMPTY_EDITOR_DATASET);
 // 挂载model事件
 model.onChange = store => render(store);
 // 挂载快捷键

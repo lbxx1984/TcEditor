@@ -54,23 +54,23 @@ export default function (model, dispatcher) {
     });
 
     hotkey.on('ctrl + o', function () {
-        dispatcher['file-open'].apply(model);
+        dispatcher['openFile'].apply(model);
     });
 
     hotkey.on('ctrl + s', function () {
-        dispatcher['file-save'].apply(model);
+        dispatcher['saveFile'].apply(model);
     });
 
     hotkey.on('ctrl + shift + s', function () {
-        dispatcher['file-saveAs'].apply(model);
+        dispatcher['saveFileAs'].apply(model);
     });
 
     hotkey.on('ctrl + shift + i', function () {
-        dispatcher['file-import'].apply(model);
+        dispatcher['importFile'].apply(model);
     });
 
     hotkey.on('ctrl + shift + e', function () {
-        dispatcher['file-export'].apply(model);
+        dispatcher['exportFile'].apply(model);
     });
 
     hotkey.on('alt + digit1', function () {
