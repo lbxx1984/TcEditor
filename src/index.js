@@ -18,7 +18,7 @@ function render(store) {
     if (store.path.length) {
         document.title = config.editorTitle + ' ' +store.path.split('/').pop();
     }
-    let props = Object.assign({}, store, {dispatch: dispatch});
+    const props = Object.assign({}, store, {dispatch: dispatch});
     ReactDOM.render(React.createElement(App, props), document.getElementById('main'));
 }
 
@@ -26,8 +26,8 @@ function render(store) {
 // 响应交互
 function dispatch() {
     if (arguments.length === 0) return;
-    var args = [].slice.apply(arguments);
-    var handler = args.shift();
+    const args = [].slice.apply(arguments);
+    let handler = args.shift();
     if (typeof handler !== 'string') {
         args.unshift(handler);
         handler = typeof handler.type === 'string' ? handler.type : '';

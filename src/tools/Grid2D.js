@@ -1,25 +1,25 @@
 /**
  * 2D舞台的坐标网格
  */
-define(function (require) {
+import wrapMathFunction from './util/wrapMathFunction';
+
+const AXIS_COLOR = {
+    x: '#FF1600',
+    y: '#10FF00',
+    z: '#0013FF'
+};
+
+function draw(ctx, x0, y0, x1, y1, width, color) {
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.strokeStyle = color;
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.stroke();
+}
 
 
-    var _ = require('underscore');
-    var math = require('core/math');
-    var handlerFactory = require('./common/handlerFactories');
-
-
-    // 绘制方法
-    function draw(ctx, x0, y0, x1, y1, width, color) {
-        ctx.beginPath();
-        ctx.lineWidth = width;
-        ctx.strokeStyle = color;
-        ctx.moveTo(x0, y0);
-        ctx.lineTo(x1, y1);
-        ctx.stroke();
-    }
-
-
+export default class Grid2D {
     /**
      * 构造函数
      *
@@ -31,26 +31,24 @@ define(function (require) {
      * @param {HtmlElement} param.canvas 绘制网格的canvas
      * @param {HtmlElement} param.container canvas外层有尺寸的容器，用来确定canvas的尺寸
      */
-    function Grid2D(param) {
-        _.extend(this, param);
+    constructor(param) {
+        Object.assign(this, param);
     }
 
+    getMouse3D(x, y) {
+        return wrapMathFunction('screen2axis', this)(x, y);
+    }
 
-    Grid2D.prototype.render = function () {
-        var AXIS_COLOR = {
-            x: '#FF1600',
-            y: '#10FF00',
-            z: '#0013FF'
-        };
+    render() {
         // 准备绘制数据
-        var color = this.lineColor;
-        var width = this.container.offsetWidth;
-        var height = this.container.offsetHeight;
-        var ctx = this.canvas.getContext('2d');
-        var screen2axis = handlerFactory.math('screen2axis', this);
-        var axis2screen = handlerFactory.math('axis2screen', this);
+        const color = this.lineColor;
+        const width = this.container.offsetWidth;
+        const height = this.container.offsetHeight;
+        const ctx = this.canvas.getContext('2d');
+        const screen2axis = wrapMathFunction('screen2axis', this);
+        const axis2screen = wrapMathFunction('axis2screen', this);
         // 准备临时数据
-        var a, b, c, d, x0, x1, y0, y1, xArr, yArr;
+        let a, b, c, d, x0, x1, y0, y1, xArr, yArr;
         a = screen2axis(0, 0);
         b = screen2axis(width, 0);
         c = screen2axis(width, height);
@@ -89,15 +87,6 @@ define(function (require) {
         c = axis2screen(0, 200);
         draw(ctx, a[0], a[1], b[0], b[1], 2, AXIS_COLOR[this.axis[0]]);
         draw(ctx, a[0], a[1], c[0], c[1], 2, AXIS_COLOR[this.axis[1]]);
-    };
+    }
 
-
-    Grid2D.prototype.getMouse3D = function (x, y) {
-        return handlerFactory.math('screen2axis', this)(x, y);
-    };
-
-
-    return Grid2D;
-
-
-});
+}
