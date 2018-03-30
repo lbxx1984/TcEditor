@@ -1,12 +1,14 @@
 /**
  * 2D舞台渲染器
  */
+import Mesh2D from './Mesh2D';
+
 define(function (require) {
 
 
     var _ = require('underscore');
     var math = require('core/math');
-    var Mesh2D = require('./Mesh2D');
+  
 
 
     function line(x0, y0, x1, y1, ctx) {
