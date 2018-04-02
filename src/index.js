@@ -3,6 +3,9 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
+/* eslint-disable no-unused-vars */
+import * as THREE from 'three';
+import TransformControls from 'three/lib/TransformControls';
 import ReactDOM from 'react-dom';
 import React from 'react';
 import model from 'core/model';

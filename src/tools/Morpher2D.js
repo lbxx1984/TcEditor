@@ -16,7 +16,7 @@ const AXIS_COLOR = {
     zy: 'rgba(0,255,0,0.3)',
     xoz: 'rgba(0,255,0,0.8)',
     xoy: 'rgba(0,0,255,0.8)',
-    yoz: 'rgba(255,0,0,0.8)',
+    yoz: 'rgba(255,0,0,0.8)'
 };
 
 
@@ -85,7 +85,7 @@ function containerMouseDownHandler(evt) {
     this.mouseY = evt.clientY;
 }
 
-function containerMouseUpHandler(evt) {
+function containerMouseUpHandler() {
     !this.isDragging && this.hoverIndex != null && typeof this.onAnchorClick === 'function'
         && this.onAnchorClick(this.hoverIndex);
     this.command = '';
@@ -241,8 +241,7 @@ export default class Morpher2D {
         const distance = anchorSorterFactory(this);
         const points = [];
         let color = this.color.toString(16);
-            while(color.length < 6) color = '0' + color; color = '#' + color;
-        
+        while(color.length < 6) color = '0' + color; color = '#' + color;
         let hoverIndex = null;
         this.mesh.geometry.vertices.map(function (v, i) {
             points[i] = local2world(v.x, v.y, v.z);
@@ -257,7 +256,7 @@ export default class Morpher2D {
         this.canvas.width = width;
         this.canvas.height = height;
         ctx.clearRect(0, 0, width, height);
-        points.map(function (p, i) {
+        points.map(p => {
             ctx.beginPath();
             ctx.arc(p.o[0], p.o[1], size, 0, 2 * Math.PI, false);
             const inMouseIn = mouseX !== undefined && mouseY !== undefined ? ctx.isPointInPath(mouseX, mouseY) : false;

@@ -5,7 +5,6 @@
  */
 
 import * as THREE from 'three';
-import Transformer3D from 'three/lib/TransformControls';
 
 
 function controllerChangeHandler(e) {

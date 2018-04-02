@@ -3,7 +3,6 @@
  */
 
 import * as THREE from 'three';
-import Transformer3D from 'three/lib/TransformControls';
 import {world2local, getRotateMatrix, local2world} from 'core/math';
 
 
@@ -110,7 +109,7 @@ export default class Morpher3D {
         const camerapos = this.camera.position;
         const anchorSize = this.anchorSize;
         const width = this.renderer.domElement.offsetWidth;
-        this.anchors.map((anchor, index) => {
+        this.anchors.map(anchor => {
             if (!anchor.added) return;
             anchor.scale.x = anchor.scale.y = (36 - width / 100) * camerapos.distanceTo(anchor.position) / anchorSize;
         });

@@ -3,7 +3,7 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-import FileSystem from 'file-system';
+import FileSystem from 'FileSystem';
 
 const fileCache = {};
 const fs = new FileSystem();

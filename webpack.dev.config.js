@@ -12,10 +12,9 @@ module.exports = {
         'js/dep/three': ['three'],
         'js/dep/other': [
             'raphael',
-            'file-system',
+            'FileSystem',
             'FileSaver',
-            'jszip',
-            'underscore'
+            'jszip'
         ],
         'js/app': './src/index.js',
     },
