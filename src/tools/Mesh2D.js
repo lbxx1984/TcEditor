@@ -2,13 +2,13 @@
  * 2D物体
  */
 import {getRotateMatrix, local2world} from 'core/math';
-import arrayToAxis from './util/arrayToAxis';
+import array2axis from './util/array2axis';
 
 
 export default class Mesh2D {
 
     constructor(param) {
-        this.mesh3d = param.mesh3d;
+        Object.assign(this, param);
         this.update();
     }
 
@@ -16,7 +16,7 @@ export default class Mesh2D {
         const mesh3d = this.mesh3d;
         const matrix = getRotateMatrix(mesh3d);
         this.vertices = mesh3d.geometry.vertices.map(
-            vector => arrayToAxis(local2world(vector.x, vector.y, vector.z, matrix, mesh3d))
+            vector => array2axis(local2world(vector.x, vector.y, vector.z, matrix, mesh3d))
         );
     }
 

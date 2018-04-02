@@ -27,13 +27,11 @@ function removeAnchors(me) {
 export default class LightHelper {
 
     constructor(param) {
-        this.scene = param.scene;
-        this.camera = param.camera;
-        this.lights = param.lights;
-        this.renderer = param.renderer;
-        this.controller = new THREE.TransformControls(this.camera, this.renderer.domElement);
-        this.anchors = {};
-        this.anchorArray = [];
+        Object.assign(this, param, {
+            controller: new THREE.TransformControls(param.camera, param.renderer.domElement),
+            anchors: {},
+            anchorArray: []
+        });
         this.controller.addEventListener('objectChange', controllerChangeHandler.bind(this));
     }
 
