@@ -2,7 +2,7 @@
  * 2D骨骼编辑器
  */
 
-import math from 'core/math';
+import {world2local} from 'core/math';
 import wrapLocal2worldFunction from './util/wrapLocal2worldFunction';
 import wrapMathFunction from './util/wrapMathFunction';
 
@@ -113,7 +113,7 @@ function containerMouseMoveHandler(evt) {
     let d3 = {x: 0, y: 0, z: 0};
     d3[this.axis[0]] = to[0] - center[0];
     d3[this.axis[1]] = to[1] - center[1];
-    let local = math.world2local(p.x + d3.x, p.y + d3.y, p.z + d3.z, this.mesh);
+    let local = world2local(p.x + d3.x, p.y + d3.y, p.z + d3.z, this.mesh);
     let vertices = this.mesh.geometry.vertices;
     let index = this.anchor.i;
     let indexArr = this.mesh.tc.vectorLinkHash && this.mesh.tc.vectorLinkHash[index]
