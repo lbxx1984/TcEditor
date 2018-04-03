@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate, pre-check=0, post-check=0" />
+<meta http-equiv="expires" content="0" />
+<title>TcEditor 5</title>
+</head>
+<body>
+    <div id="main"></div>
+    <script type="text/javascript">
+        // 浏览器检查
+        var support = 0;
+        support += (function () {
+            try {
+                var canvas = document.createElement('canvas');
+                return !!(
+                    window.WebGLRenderingContext
+                    && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+                );
+            } catch ( e ) {
+                return false;
+            }
+        })() ? 0 : 1;
+        support += typeof window.FileReader === 'function' ? 0 : 10;
+        support += typeof window.requestFileSystem === 'function' || typeof window.webkitRequestFileSystem === 'function'
+            ? 0 : 100;
+        if (support > 0) {
+            window.location = 'unsupport.html?code=' + support;
+        }
+    </script>
+</body>
+</html>

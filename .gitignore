@@ -1,3 +1,6 @@
 node_modules
 *.log
 package-lock.json
+build/js
+build/css
+build/index.html

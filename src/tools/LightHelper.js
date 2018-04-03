@@ -3,49 +3,48 @@
  * @author Haitao Li
  * @mail 279641976@qq.com
  */
-define(function (require) {
+
+import * as THREE from 'three';
 
 
-    var _ = require('underscore');
-    var THREE = require('three');
-    var Transformer3D = require('three-lib/TransformControls');
-
-    function anchorFactory() {
-        var geometry = new THREE.SphereGeometry(20, 20, 20);
-        var material = new THREE.MeshBasicMaterial({color: 0xffaa00});
-        return new THREE.Mesh(geometry , material);
-    }
-
-    function onControllerChange(e) {
-        var anchor = e.target.object;
-        var light = this.lights[anchor.tc.lightKey];
-        if (!light) return;
-        light.position.set(anchor.position.x, anchor.position.y, anchor.position.z);
-    }
-
-    function LightHelper(param) {
-        this.scene = param.scene;
-        this.camera = param.camera;
-        this.lights = param.lights;
-        this.renderer = param.renderer;
-        this.controller = new THREE.TransformControls(this.camera, this.renderer.domElement);
-        this.anchors = {};
-        this.anchorArray = [];
-        this.controller.addEventListener('objectChange', onControllerChange.bind(this));
-    }
+function controllerChangeHandler(e) {
+    const anchor = e.target.object;
+    const light = this.lights[anchor.tc.lightKey];
+    if (!light) return;
+    light.position.set(anchor.position.x, anchor.position.y, anchor.position.z);
+}
 
 
-    LightHelper.prototype.attach = function (lights) {
-        var scene = this.scene;
-        var anchors = this.anchors;
-        var camera = this.camera;
-        var anchorArray = [];
-        this.lights = lights ? lights : this.lights;
-        _.each(this.anchors, function (item, key) {
-            scene.remove(item);
+function removeAnchors(me) {
+    const {anchors, scene} = me;
+    Object.keys(anchors).map(key => {
+        scene.remove(anchors[key]);
+    });
+}
+
+
+export default class LightHelper {
+
+    constructor(param) {
+        Object.assign(this, param, {
+            controller: new THREE.TransformControls(param.camera, param.renderer.domElement),
+            anchors: {},
+            anchorArray: []
         });
-        _.each(this.lights, function (item, key) {
-            var anchor = anchors[item.uuid] ? anchors[item.uuid] : anchorFactory();
+        this.controller.addEventListener('objectChange', controllerChangeHandler.bind(this));
+    }
+
+    attach(lights) {
+        const {scene, anchors, camera} = this;
+        const anchorArray = [];
+        this.lights = lights ? lights : this.lights;
+        removeAnchors(this);
+        Object.keys(this.lights).map(key => {
+            const item = this.lights[key];
+            const anchor = anchors[item.uuid] ? anchors[item.uuid] : new THREE.Mesh(
+                new THREE.SphereGeometry(20, 20, 20),
+                new THREE.MeshBasicMaterial({color: 0xffaa00})
+            );
             anchors[key] = anchor;
             anchor.material.color.setHex(item.color.getHex());
             anchor.position.set(item.position.x, item.position.y, item.position.z);
@@ -58,25 +57,19 @@ define(function (require) {
             anchorArray.push(anchor);
         });
         this.anchorArray = anchorArray;
-    };
+    }
 
-
-    LightHelper.prototype.detach = function () {
-        var scene = this.scene;
-        _.each(this.anchors, function (item, key) {
-            scene.remove(item);
-        });
-        this.anchorArray = [];
-    };
-
-
-    LightHelper.prototype.update = function () {
-        var camera = this.camera;
-        _.each(this.anchors, function (item) {
+    update() {
+        const {camera, anchors} = this;
+        Object.keys(anchors).map(key => {
+            const item = anchors[key];
             item.scale.x = item.scale.y = item.scale.z = item.position.distanceTo(camera.position) / 2000;
         });
-    };
+    }
 
+    detach() {
+        removeAnchors(this);
+        this.anchorArray = [];
+    }
 
-    return LightHelper;
-});
+}

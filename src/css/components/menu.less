@@ -34,8 +34,9 @@
             }
         }
     }
-
-    .fcui2-dropdownlist-hover {
+    .fcui2-dropdownlist:hover, .fcui2-dropdownlist-normal-hover {
+        border-top: 0;
+        border-bottom: 0;
         background-color: @background-color-layer;
         .label-container {
             color: @font-color-hover; 
@@ -49,7 +50,7 @@ body {
         .list-normal-item {
             font-family: @font-normal;
             font-size: 14px;
-            width: 200px;
+            width: 250px;
             background-color: @background-color-layer;
             color: @font-color-main;
             &:hover {
