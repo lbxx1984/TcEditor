@@ -3,7 +3,7 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-import util from 'fcui2/core/util';
+import util from 'fcui2/src/core/util';
 
 let store = {};
 

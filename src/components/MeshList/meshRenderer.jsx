@@ -4,7 +4,7 @@
  * @email lbxxlht@163.com
  */
 import React from 'react';
-import util from 'fcui2/core/util';
+import util from 'fcui2/src/core/util';
 
 export default function meshRenderer(mesh, doms, me) {
     const tc = mesh.tc;

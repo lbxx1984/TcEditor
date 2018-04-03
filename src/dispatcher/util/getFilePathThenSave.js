@@ -3,8 +3,8 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-import Dialog from 'fcui2/Dialog.jsx';
-import Toast from 'fcui2/Toast.jsx';
+import Dialog from 'fcui2/src/Dialog.jsx';
+import Toast from 'fcui2/src/Toast.jsx';
 import Explorer from '../../components/Explorer';
 import writeFile from './writeFile';
 

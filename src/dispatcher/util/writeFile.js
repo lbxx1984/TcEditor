@@ -4,7 +4,7 @@
  * @email lbxxlht@163.com
  */
 import JSZip from 'jszip';
-import Toast from 'fcui2/Toast.jsx';
+import Toast from 'fcui2/src/Toast.jsx';
 import io from 'core/io';
 import tcmExporter from 'core/exporter/tcm';
 

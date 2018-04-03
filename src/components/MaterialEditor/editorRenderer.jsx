@@ -5,10 +5,10 @@
  */
 import * as THREE from 'three';
 import React from 'react';
-import Button from 'fcui2/Button.jsx';
-import NumberBox from 'fcui2/NumberBox.jsx';
-import Select from 'fcui2/Select.jsx';
-import CheckBox from 'fcui2/CheckBox.jsx';
+import Button from 'fcui2/src/Button.jsx';
+import NumberBox from 'fcui2/src/NumberBox.jsx';
+import Select from 'fcui2/src/Select.jsx';
+import CheckBox from 'fcui2/src/CheckBox.jsx';
 
 
 function formatRGB(v) {

@@ -4,7 +4,7 @@
  * @email lbxxlht@163.com
  */
 import React, {Component} from 'react';
-import Table from 'fcui2/Table.jsx';
+import Table from 'fcui2/src/Table.jsx';
 
 
 const datasource = [

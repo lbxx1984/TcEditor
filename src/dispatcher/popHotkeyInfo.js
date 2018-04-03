@@ -5,7 +5,7 @@
  */
 
 import HotkeyInfo from '../components/HotkeyInfo';
-import Dialog from 'fcui2/Dialog.jsx';
+import Dialog from 'fcui2/src/Dialog.jsx';
 
 export default function() {
     const dialog = new Dialog();

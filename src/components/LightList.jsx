@@ -5,7 +5,7 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import util from 'fcui2/core/util';
+import util from 'fcui2/src/core/util';
 
 
 function getLabelDom(target) {

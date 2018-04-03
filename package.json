@@ -37,6 +37,7 @@
     "lint"
   ],
   "dependencies": {
+    "fcui2": "^2.0.21",
     "react": "^15.6.2",
     "react-dom": "^15.6.2"
   }

@@ -4,9 +4,9 @@
  * @email lbxxlht@163.com
  */
 import React from 'react';
-import util from 'fcui2/core/util';
-import TextBox from 'fcui2/TextBox.jsx';
-import NumberBox from 'fcui2/NumberBox.jsx';
+import util from 'fcui2/src/core/util';
+import TextBox from 'fcui2/src/TextBox.jsx';
+import NumberBox from 'fcui2/src/NumberBox.jsx';
 import {getPositionChangeHandler, getScaleChangeHandler} from './getEditorHandlers';
 import {POSITION_EDITOR_PROPS, SCALE_EDITOR_PROPS} from './config';
 import vectorEditorRenderer from './vectorEditorRenderer';

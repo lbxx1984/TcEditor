@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Dialog from 'fcui2/Dialog.jsx';
+import Dialog from 'fcui2/src/Dialog.jsx';
 import {uploadImage} from 'core/io';
 import ColorSetter from '../ColorSetter';
 import editorRenderer from './editorRenderer';

@@ -5,7 +5,7 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import DropDownList from 'fcui2/DropDownList.jsx';
+import DropDownList from 'fcui2/src/DropDownList.jsx';
 import MenuItem from './MenuListItem.jsx';
 
 

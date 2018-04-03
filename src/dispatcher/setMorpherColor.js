@@ -4,7 +4,7 @@
  * @email lbxxlht@163.com
  */
 import ColorSetter from '../components/ColorSetter';
-import Dialog from 'fcui2/Dialog.jsx';
+import Dialog from 'fcui2/src/Dialog.jsx';
 
 export default function() {
     const dialog = new Dialog();
