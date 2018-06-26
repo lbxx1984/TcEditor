@@ -37,6 +37,7 @@ function createGeometry(mesh) {
     // 导入物体骨骼
     for (let i = 0; i < geo.vertices.length; i += 3) {
         const index = parseInt(i / 3, 10);
+        if (!geometry.vertices[index]) break;
         geometry.vertices[index].x = geo.vertices[i];
         geometry.vertices[index].y = geo.vertices[i + 1];
         geometry.vertices[index].z = geo.vertices[i + 2];

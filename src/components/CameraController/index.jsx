@@ -17,7 +17,7 @@ import {FACE_CONFIG, ANGLE_CONFIG, TEXTURE_PATH} from './config';
 // 渲染器工厂
 function animaterFactory(me) {
     return function () {
-        me.camera.lookAt({x: 0, y: 0, z: 0});
+        me.camera.lookAt(0, 0, 0);
         me.renderer.render(me.scene, me.camera);
     };
 }

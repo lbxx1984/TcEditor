@@ -6,7 +6,8 @@
 
 export default function animaterFactory(me) {
     return function () {
-        me.camera.lookAt(me.props.cameraLookAt);
+        const {x, y, z} = me.props.cameraLookAt;
+        me.camera.lookAt(x, y, z);
         me.renderer.render(me.scene, me.camera);
         if (me.props.tool === 'pickLight') {
             me.lightHelper.update();
