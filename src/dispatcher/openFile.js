@@ -4,8 +4,8 @@
  * @email lbxxlht@163.com
  */
 import JSZip from 'jszip';
-import Dialog from 'fcui2/src/Dialog.jsx';
-import Toast from 'fcui2/src/Toast.jsx';
+import Dialog from 'tcui/Dialog';
+import Toast from 'tcui/Toast';
 import io from 'core/io';
 import tcmLoader from 'core/loader/tcm';
 import Explorer from '../components/Explorer';

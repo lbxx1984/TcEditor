@@ -5,7 +5,7 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Dialog from 'fcui2/src/Dialog.jsx';
+import Dialog from 'tcui/Dialog';
 import MeshGroupCreator from '../NameCreator';
 import getMeshGroupData from './getMeshGroupData';
 import meshListRenderer from './meshListRenderer';

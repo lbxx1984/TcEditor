@@ -4,17 +4,18 @@
  * @email lbxxlht@163.com
  */
 
-export default function updateTransformer(nextProps, me) {
+export default function updateTransformer(prevProps, me) {
+    const nextProps = me.props;
     if (
-        nextProps.tool === 'pickMesh' && me.props.tool !== 'pickMesh'
-        || (nextProps.selectedMesh !== me.props.selectedMesh && nextProps.tool === 'pickMesh')
+        nextProps.tool === 'pickMesh' && prevProps.tool !== 'pickMesh'
+        || (nextProps.selectedMesh !== prevProps.selectedMesh && nextProps.tool === 'pickMesh')
     ) {
         me.transformer[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
     }
-    if (nextProps.tool !== 'pickMesh' && me.props.tool === 'pickMesh') {
+    if (nextProps.tool !== 'pickMesh' && prevProps.tool === 'pickMesh') {
         me.transformer.detach();
     }
-    if (nextProps.transformer3Dinfo !== me.props.transformer3Dinfo) {
+    if (nextProps.transformer3Dinfo !== prevProps.transformer3Dinfo) {
         me.transformer.setSpace(
             nextProps.transformer3Dinfo.mode === 'rotate' ? 'local' : nextProps.transformer3Dinfo.space
         );

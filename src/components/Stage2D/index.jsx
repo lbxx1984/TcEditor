@@ -159,15 +159,16 @@ export default class Stage2D extends Component {
         // 绑定事件
         container.addEventListener('mousewheel', this.onMouseWheel);
         window.addEventListener('resize', this.onResize);
+        setTimeout(this.onResize, 300);
     }
 
-    componentWillReceiveProps(nextProps) {
-        updateCamera(nextProps, this);
-        updateMesh(nextProps, this);
-        updateTransformer(nextProps, this);
-        updateMorpher(nextProps, this);
-        if (nextProps.selectedMesh && nextProps.selectedMesh.tc.needUpdate) {
-            nextProps.selectedMesh.tc.needUpdate--;
+    componentDidUpdate(prevProps) {
+        updateCamera(prevProps, this);
+        updateMesh(prevProps, this);
+        updateTransformer(prevProps, this);
+        updateMorpher(prevProps, this);
+        if (this.props.selectedMesh && this.props.selectedMesh.tc.needUpdate) {
+            this.props.selectedMesh.tc.needUpdate--;
         }
     }
 

@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Dialog from 'fcui2/src/Dialog.jsx';
+import Dialog from 'tcui/Dialog';
 import {uploadImage} from 'core/io';
 import ColorSetter from '../ColorSetter';
 import editorRenderer from './editorRenderer';
@@ -59,9 +59,9 @@ export default class MaterialEditor extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (shouldUpdateEditor(nextProps, this.props)) {
-            this.setState(getMtlParam(nextProps));
+    componentDidUpdate(prevProps) {
+        if (shouldUpdateEditor(prevProps, this.props)) {
+            this.setState(getMtlParam(this.props));
         }
     }
 

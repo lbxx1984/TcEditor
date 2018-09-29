@@ -1,11 +1,9 @@
 /**
  * @author arodic / https://github.com/arodic
  */
+define(function(require) {
 
-( function (THREE) {
-
-	'use strict';
-
+	var THREE = require('three');
 	var GizmoMaterial = function ( parameters ) {
 
 		THREE.MeshBasicMaterial.call( this );
@@ -1156,4 +1154,5 @@
 	THREE.TransformControls.prototype = Object.create( THREE.Object3D.prototype );
 	THREE.TransformControls.prototype.constructor = THREE.TransformControls;
 
-}(require('three')) );
+	return THREE.TransformControls;
+});

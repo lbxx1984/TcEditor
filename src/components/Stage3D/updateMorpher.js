@@ -4,32 +4,33 @@
  * @email lbxxlht@163.com
  */
 
-export default function updateMorpher(nextProps, me) {
+export default function updateMorpher(prevProps, me) {
+    const nextProps = me.props;
     if (
-        nextProps.tool === 'pickJoint' && me.props.tool === 'pickJoint'
-        && nextProps.selectedMesh && nextProps.selectedMesh === me.props.selectedMesh
+        nextProps.tool === 'pickJoint' && prevProps.tool === 'pickJoint'
+        && nextProps.selectedMesh && nextProps.selectedMesh === prevProps.selectedMesh
         && nextProps.selectedMesh.tc.needUpdate
     ) {
         me.morpher.attach(nextProps.selectedMesh);
         nextProps.selectedVector && me.morpher.attachAnchor(nextProps.selectedVector);
     }
     if (
-        nextProps.tool === 'pickJoint' && me.props.tool !== 'pickJoint'
-        || (nextProps.selectedMesh !== me.props.selectedMesh && nextProps.tool === 'pickJoint')
+        nextProps.tool === 'pickJoint' && prevProps.tool !== 'pickJoint'
+        || (nextProps.selectedMesh !== prevProps.selectedMesh && nextProps.tool === 'pickJoint')
     ) {
         me.morpher[nextProps.selectedMesh ? 'attach' : 'detach'](nextProps.selectedMesh);
         me.morpher.detachAnchor();
     }
-    if (nextProps.selectedVector !== me.props.selectedVector && nextProps.tool === 'pickJoint') {
+    if (nextProps.selectedVector !== prevProps.selectedVector && nextProps.tool === 'pickJoint') {
         me.morpher[nextProps.selectedVector ? 'attachAnchor' : 'detachAnchor'](nextProps.selectedVector);
     }
-    if (nextProps.tool !== 'pickJoint' && me.props.tool === 'pickJoint') {
+    if (nextProps.tool !== 'pickJoint' && prevProps.tool === 'pickJoint') {
         me.morpher.detach();
         me.morpher.detachAnchor();
     }
     if (
         nextProps.tool === 'pickJoint'
-        && nextProps.selectedVectorIndex !== me.props.selectedVectorIndex
+        && nextProps.selectedVectorIndex !== prevProps.selectedVectorIndex
         && me.morpher.mesh
         && me.morpher.anchors[nextProps.selectedVectorIndex]
         && me.morpher.anchors[nextProps.selectedVectorIndex].added
@@ -40,7 +41,7 @@ export default function updateMorpher(nextProps, me) {
     ) {
         me.context.dispatch('pickJointAnchor', me.morpher.anchors[nextProps.selectedVectorIndex]);
     }
-    if (nextProps.morpher3Dinfo !== me.props.morpher3Dinfo) {
+    if (nextProps.morpher3Dinfo !== prevProps.morpher3Dinfo) {
         me.morpher.setAnchorColor(nextProps.morpher3Dinfo.anchorColor);
         me.morpher.setAnchorSize(nextProps.morpher3Dinfo.anchorSize);
     }

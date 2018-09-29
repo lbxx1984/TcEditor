@@ -3,7 +3,7 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-import Dialog from 'fcui2/src/Dialog.jsx';
+import Dialog from 'tcui/Dialog';
 import hotkey from 'core/hotkey';
 
 export default function(uuid) {

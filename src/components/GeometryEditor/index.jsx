@@ -50,9 +50,9 @@ export default class GeometryEditor extends Component {
         this.onRotationMouseUp = this.onRotationMouseUp.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (shouldUpdateEditor(nextProps, this.props)) {
-            this.setState(getEditorTempValue(nextProps));
+    componentDidUpdate(prevProps) {
+        if (shouldUpdateEditor(prevProps, this.props)) {
+            this.setState(getEditorTempValue(this.props));
         }
     }
 

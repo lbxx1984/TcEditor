@@ -4,13 +4,14 @@
  * @email lbxxlht@163.com
  */
 
-export default function updateMesh(nextProps, me) {
+export default function updateMesh(prevProps, me) {
+    const nextProps = me.props;
     let needRenderer = false;
-    if (Object.keys(nextProps.mesh3d).join(';') !== Object.keys(me.props.mesh3d).join(';')) {
+    if (Object.keys(nextProps.mesh3d).join(';') !== Object.keys(prevProps.mesh3d).join(';')) {
         me.renderer2D.mesh3d = nextProps.mesh3d;
         needRenderer = true;
     }
-    if (nextProps.timer !== me.props.timer) {
+    if (nextProps.timer !== prevProps.timer) {
         needRenderer = true;
     }
     if (
@@ -22,7 +23,7 @@ export default function updateMesh(nextProps, me) {
         me.renderer2D.mesh2d[nextProps.selectedMesh.uuid].update();
         needRenderer = true;
     }
-    if (nextProps.selectedMesh !== me.props.selectedMesh) {
+    if (nextProps.selectedMesh !== prevProps.selectedMesh) {
         needRenderer = true;
     }
     if (needRenderer) {

@@ -54,7 +54,7 @@ function itemChecked(value, me) {
 
 function mainFactory(me) {
     const doms = [];
-    const {view, tool, gridVisible, datasource} = me.props;
+    const {gridVisible, datasource} = me.props;
     datasource.map(function (item, index) {
         if (typeof item === 'string') {
             doms.push(<div key={index} className="command-label">{item}</div>);

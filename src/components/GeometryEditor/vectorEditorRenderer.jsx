@@ -4,7 +4,7 @@
  * @email lbxxlht@163.com
  */
 import React from 'react';
-import NumberBox from 'fcui2/src/NumberBox.jsx';
+import NumberBox from 'tcui/NumberBox';
 import {getVectorChangeHandler} from './getEditorHandlers';
 import {POSITION_EDITOR_PROPS} from './config';
 

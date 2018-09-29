@@ -5,8 +5,8 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Button from 'fcui2/src/Button.jsx';
-import TextBox from 'fcui2/src/TextBox.jsx';
+import Button from 'tcui/Button';
+import TextBox from 'tcui/TextBox';
 
 
 export default class NameCreator extends Component {

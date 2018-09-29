@@ -4,11 +4,12 @@
  * @email lbxxlht@163.com
  */
 
-export default function updateLightList(nextProps, me) {
-    if (nextProps.lights === me.props.lights) return;
+export default function updateLightList(prevProps, me) {
+    const nextProps = me.props;
+    if (nextProps.lights === prevProps.lights) return;
     me.lightHelper.lights = nextProps.lights;
     const oldLightHash = {
-        ...me.props.lights
+        ...prevProps.lights
     };
     me.lightArray = [];
     Object.keys(nextProps.lights).map(key => {

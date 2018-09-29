@@ -5,8 +5,9 @@
  */
 import * as THREE from 'three';
 
-export default function updateScene(nextProps, me) {
-    if (nextProps.gridSize !== me.props.gridSize || nextProps.gridStep !== me.props.gridStep) {
+export default function updateScene(prevProps, me) {
+    const nextProps = me.props;
+    if (nextProps.gridSize !== prevProps.gridSize || nextProps.gridStep !== prevProps.gridStep) {
         me.scene.remove(me.grid);
         me.grid = new THREE.GridHelper(
             nextProps.gridSize, nextProps.gridStep,
@@ -15,11 +16,11 @@ export default function updateScene(nextProps, me) {
         me.grid.visible = nextProps.gridVisible;
         me.scene.add(me.grid);
     }
-    if (nextProps.gridVisible !== me.props.gridVisible) {
+    if (nextProps.gridVisible !== prevProps.gridVisible) {
         me.grid.visible = nextProps.gridVisible;
         me.axis.visible = nextProps.gridVisible;
     }
-    if (nextProps.panelCount !== me.props.panelCount && nextProps.panelCount * me.props.panelCount === 0) {
+    if (nextProps.panelCount !== prevProps.panelCount && nextProps.panelCount * prevProps.panelCount === 0) {
         setTimeout(function () {
             me.onResize();
         }, 0);

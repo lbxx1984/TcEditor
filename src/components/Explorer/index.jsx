@@ -6,17 +6,16 @@
 /* eslint-disable react/no-string-refs */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Dialog from 'fcui2/src/Dialog.jsx';
-import Toast from 'fcui2/src/Toast.jsx';
-import TextBox from 'fcui2/src/TextBox.jsx';
-import Table from 'fcui2/src/Table.jsx';
-import Button from 'fcui2/src/Button.jsx';
-import util from 'fcui2/src/core/util';
+import Dialog from 'tcui/Dialog';
+import Toast from 'tcui/Toast';
+import TextBox from 'tcui/TextBox';
+import Table from 'tcui/Table';
+import Button from 'tcui/Button';
 import io from 'core/io';
+import setCursorPosition from 'tools/util/setCursorPosition';
 import NameCreator from '../NameCreator';
 import NoData from './renderer/TableNoDataRenderer';
 import tableFieldConfig from './tableFieldConfig';
-
 
 const dialog = new Dialog();
 
@@ -281,7 +280,7 @@ export default class Explorer extends Component {
         path = path || this.state.path;
         io.dir(path).then(directory => {
             this.setState({path, directory}, () => {
-                util.setCursorPosition(this.refs.path.refs.inputbox, path.length)
+                setCursorPosition(this.refs.path.refs.inputbox, path.length)
             });
         }, missionFailed);
     }

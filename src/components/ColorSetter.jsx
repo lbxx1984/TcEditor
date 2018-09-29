@@ -5,8 +5,8 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import ColorPicker from 'fcui2/src/ColorPicker.jsx';
-import Button from 'fcui2/src/Button.jsx';
+import ColorPicker from 'tcui/ColorPicker';
+import Button from 'tcui/Button';
 
 
 function getValue(value) {

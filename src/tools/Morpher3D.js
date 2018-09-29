@@ -3,6 +3,7 @@
  */
 
 import * as THREE from 'three';
+import TransformControls from 'dep/TransformControls';
 import {world2local, getRotateMatrix, local2world} from 'core/math';
 
 
@@ -40,7 +41,7 @@ export default class Morpher3D {
             mesh: null,
             vector: null,
             anchors: [],
-            controller: new THREE.TransformControls(param.camera, param.renderer.domElement)
+            controller: new TransformControls(param.camera, param.renderer.domElement)
         });
         this.controller.addEventListener('objectChange', controllerChangeHandler.bind(this));
     }

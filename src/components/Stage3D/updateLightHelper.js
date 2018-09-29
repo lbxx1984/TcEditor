@@ -4,19 +4,20 @@
  * @email lbxxlht@163.com
  */
 
-export default function updateLightHelper(nextProps, me) {
-    if (nextProps.tool === 'pickLight' && me.props.tool !== 'pickLight') {
+export default function updateLightHelper(prevProps, me) {
+    const nextProps = me.props;
+    if (nextProps.tool === 'pickLight' && prevProps.tool !== 'pickLight') {
         me.lightHelper.attach();
     }
     if (typeof nextProps.selectedLight === 'string') {
         switchAnchorType();
         return;
     }
-    if (nextProps.tool !== 'pickLight' && me.props.tool === 'pickLight') {
+    if (nextProps.tool !== 'pickLight' && prevProps.tool === 'pickLight') {
         me.lightHelper.detach();
         me.lightHelper.controller.detach();
     }
-    if (nextProps.selectedLight !== me.props.selectedLight && nextProps.tool === 'pickLight') {
+    if (nextProps.selectedLight !== prevProps.selectedLight && nextProps.tool === 'pickLight') {
         me.lightHelper.controller[nextProps.selectedLight ? 'attach' : 'detach'](nextProps.selectedLight);
     }
     function switchAnchorType() {

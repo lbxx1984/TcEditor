@@ -3,16 +3,17 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-import updateCameraPosition from './updateCameraPosition';
+import setCameraPosition from './setCameraPosition';
 
-export default function updateCameraInfo(nextProps, me) {
+export default function updateCameraInfo(prevProps, me) {
+    const nextProps = me.props;
     if (
-        nextProps.cameraRadius !== me.props.cameraRadius
-        || nextProps.cameraAngleA !== me.props.cameraAngleA
-        || nextProps.cameraAngleB !== me.props.cameraAngleB
-        || nextProps.cameraLookAt !== me.props.cameraLookAt
+        nextProps.cameraRadius !== prevProps.cameraRadius
+        || nextProps.cameraAngleA !== prevProps.cameraAngleA
+        || nextProps.cameraAngleB !== prevProps.cameraAngleB
+        || nextProps.cameraLookAt !== prevProps.cameraLookAt
     ) {
-        updateCameraPosition(me, nextProps);
+        setCameraPosition(me, nextProps);
         if (nextProps.tool === 'pickJoint' && nextProps.selectedMesh) {
             me.morpher.updateAnchors();
         }

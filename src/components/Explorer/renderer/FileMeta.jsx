@@ -5,7 +5,6 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import util from 'fcui2/src/core/util';
 
 
 function formatSize(n) {
@@ -36,14 +35,14 @@ export default class FileMeta extends Component {
         this.getMeta(this.props.item);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.item !== this.props.item) this.getMeta(nextProps.item);
+    componentDidUpdate(prevProps) {
+        if (this.props.item !== prevProps.item) this.getMeta(this.props.item);
     }
 
     getMeta(item) {
         item.getMetadata(meta => {
             this.setState({
-                mtime: util.dateFormat(meta.modificationTime, 'YYYY/MM/DD hh:mm:ss'),
+                mtime: meta.modificationTime.format('YYYY/MM/DD hh:mm:ss'),
                 size: this.props.item.isDirectory ? '-' : formatSize(meta.size)
             });
         });

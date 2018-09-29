@@ -5,7 +5,6 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import util from 'fcui2/src/core/util';
 
 
 function getLabelDom(target) {
@@ -85,7 +84,7 @@ function listRenderer(me) {
     return Object.keys(me.props.lights).map(key => {
         const light = me.props.lights[key];
         const tc = light.tc;
-        const name = tc.name || light.type.replace('Light', ' ') + util.dateFormat(tc.birth, 'DD/MM hh:mm:ss');
+        const name = tc.name || light.type.replace('Light', ' ') + tc.birth.format('DD/MM hh:mm:ss');
         const containerProps = {
             className: 'mesh-container' + (key ===  selectedLight ? ' mesh-selected' : ''),
             'data-id': light.uuid,

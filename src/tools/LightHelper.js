@@ -5,7 +5,7 @@
  */
 
 import * as THREE from 'three';
-
+import TransformControls from 'dep/TransformControls';
 
 function controllerChangeHandler(e) {
     const anchor = e.target.object;
@@ -27,7 +27,7 @@ export default class LightHelper {
 
     constructor(param) {
         Object.assign(this, param, {
-            controller: new THREE.TransformControls(param.camera, param.renderer.domElement),
+            controller: new TransformControls(param.camera, param.renderer.domElement),
             anchors: {},
             anchorArray: []
         });

@@ -3,15 +3,13 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-import util from 'fcui2/src/core/util';
+import equal from 'fast-deep-equal';
 
 let store = {};
-
 
 function dispatchOnChange(me) {
     typeof me.onChange === 'function' && me.onChange(store);
 }
-
 
 export default {
     store,
@@ -55,7 +53,7 @@ export default {
             dispatchOnChange(this);
             return true;
         } 
-        if (util.isEqual(store[key], value)) {
+        if (equal(store[key], value)) {
             return false;
         }
         store[key] = value;

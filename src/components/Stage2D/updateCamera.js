@@ -5,19 +5,20 @@
  */
 import {CAMERA_RADIUS_FOR_2D_SCALE} from '../../config';
 
-export default function updateCamera(nextProps, me) {
-    if (JSON.stringify(nextProps.style) !== JSON.stringify(me.props.style)) {
+export default function updateCamera(prevProps, me) {
+    const nextProps = me.props;
+    if (JSON.stringify(nextProps.style) !== JSON.stringify(prevProps.style)) {
         setTimeout(function () {
             me.svgRenderer.setSize(me.refs.container.offsetWidth, me.refs.container.offsetHeight); 
         }, 10);
     }
     if (
-        nextProps.axis.join('') !== me.props.axis.join('')
-        || nextProps.cameraRadius !== me.props.cameraRadius
-        || nextProps.cameraLookAt !== me.props.cameraLookAt
-        || nextProps.cameraAngleA !== me.props.cameraAngleA
-        || nextProps.cameraAngleB !== me.props.cameraAngleB
-        || nextProps.style.right !== me.props.style.right
+        nextProps.axis.join('') !== prevProps.axis.join('')
+        || nextProps.cameraRadius !== prevProps.cameraRadius
+        || nextProps.cameraLookAt !== prevProps.cameraLookAt
+        || nextProps.cameraAngleA !== prevProps.cameraAngleA
+        || nextProps.cameraAngleB !== prevProps.cameraAngleB
+        || nextProps.style.right !== prevProps.style.right
     ) {
         me.refs.container.style.right = nextProps.style.right + 'px';
         updateTools(me.renderer2D);

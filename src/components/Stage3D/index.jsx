@@ -7,13 +7,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import * as THREE from 'three';
+import TransformControls from 'dep/TransformControls';
 import animation from 'core/animation';
 import CameraController from '../CameraController';
 import Morpher3D from '../../tools/Morpher3D';
 import LightHelper from '../../tools/LightHelper';
 import animaterFactory from './animaterFactory';
 import getMouse3D from './getMouse3D';
-import updateCameraPosition from './updateCameraPosition';
+import setCameraPosition from './setCameraPosition';
 import updateCameraInfo from './updateCameraInfo';
 import updateScene from './updateScene';
 import updateMeshList from './updateMeshList';
@@ -98,7 +99,7 @@ export default class Stage3D extends Component {
             this.props.colorGrid, this.props.colorGrid
         );
         // 坐标轴
-        this.axis = new THREE.AxisHelper(200);
+        this.axis = new THREE.AxesHelper(200);
         // 坐标纸，不可见，专门显示鼠标事件
         this.coordinate = new THREE.Mesh(
             new THREE.PlaneGeometry(10000, 10000, 1, 1),
@@ -115,7 +116,7 @@ export default class Stage3D extends Component {
         // WebGL渲染器
         this.renderer = new THREE.WebGLRenderer({antialias: true});
         // 物体变形工具
-        this.transformer = new THREE.TransformControls(this.camera, this.renderer.domElement);
+        this.transformer = new TransformControls(this.camera, this.renderer.domElement);
         // 灯光系统控制器
         this.lightHelper = new LightHelper({
             scene: this.scene,
@@ -148,7 +149,7 @@ export default class Stage3D extends Component {
         this.transformer.setMode(this.props.transformer3Dinfo.mode);
         this.transformer.setSize(this.props.transformer3Dinfo.size);
         this.refs.container.appendChild(this.renderer.domElement);
-        updateCameraPosition(this, this.props);
+        setCameraPosition(this, this.props);
         // 绑定事件
         window.addEventListener('resize', this.onResize);
         this.refs.container.addEventListener('mousewheel', this.onMouseWheel);
@@ -167,18 +168,20 @@ export default class Stage3D extends Component {
         // 加载3D对象
         load3DObject(this);
         loadTools(this);
+        // 延迟刷新一次尺寸
+        setTimeout(this.onResize, 300);
     }
 
-    componentWillReceiveProps(nextProps) {
-        updateCameraInfo(nextProps, this);
-        updateScene(nextProps, this);
-        updateMeshList(nextProps, this);
-        updateLightList(nextProps, this);
-        updateTransformer(nextProps, this);
-        updateMorpher(nextProps, this);
-        updateLightHelper(nextProps, this);
-        if (nextProps.selectedMesh && nextProps.selectedMesh.tc.needUpdate) {
-            nextProps.selectedMesh.tc.needUpdate--;
+    componentDidUpdate(prevProps) {
+        updateCameraInfo(prevProps, this);
+        updateScene(prevProps, this);
+        updateMeshList(prevProps, this);
+        updateLightList(prevProps, this);
+        updateTransformer(prevProps, this);
+        updateMorpher(prevProps, this);
+        updateLightHelper(prevProps, this);
+        if (this.props.selectedMesh && this.props.selectedMesh.tc.needUpdate) {
+            this.props.selectedMesh.tc.needUpdate--;
         }
     }
 

@@ -77,8 +77,8 @@ export default class CameraController extends Component {
     }
 
     componentDidMount() {
-        const width = this.container.offsetWidth;
-        const height = this.container.offsetHeight;
+        const width = 120;
+        const height = 120;
         // 舞台部件
         this.camera = new PerspectiveCamera(60, width / height, 1, 10000);
         this.scene = new Scene();
@@ -111,9 +111,9 @@ export default class CameraController extends Component {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (shouldUpdateCamera(nextProps, this.props)) {
-            updateCameraPosition(this, nextProps);
+    componentDidUpdate(prevProps) {
+        if (shouldUpdateCamera(this.props, prevProps)) {
+            updateCameraPosition(this, this.props);
         }
     }
 

@@ -4,12 +4,10 @@
  * @email lbxxlht@163.com
  */
 import React from 'react';
-import util from 'fcui2/src/core/util';
 
 export default function meshRenderer(mesh, doms, me) {
     const tc = mesh.tc;
-    const name = tc.name || mesh.geometry.type.replace('Geometry', ' ')
-        + util.dateFormat(tc.birth, 'DD/MM hh:mm:ss');
+    const name = tc.name || mesh.geometry.type.replace('Geometry', ' ') + tc.birth.format('DD/MM hh:mm:ss');
     const containerProps = {
         key: mesh.uuid,
         className: 'mesh-container'

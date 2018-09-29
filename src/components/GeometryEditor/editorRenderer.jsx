@@ -4,9 +4,8 @@
  * @email lbxxlht@163.com
  */
 import React from 'react';
-import util from 'fcui2/src/core/util';
-import TextBox from 'fcui2/src/TextBox.jsx';
-import NumberBox from 'fcui2/src/NumberBox.jsx';
+import TextBox from 'tcui/TextBox';
+import NumberBox from 'tcui/NumberBox';
 import {getPositionChangeHandler, getScaleChangeHandler} from './getEditorHandlers';
 import {POSITION_EDITOR_PROPS, SCALE_EDITOR_PROPS} from './config';
 import vectorEditorRenderer from './vectorEditorRenderer';
@@ -19,7 +18,7 @@ export default function GeometryMainEditor (me) {
     const nameEditorProps = {
         value: typeof mesh.tc.name === 'string'
             ? mesh.tc.name
-            : (mesh.geometry.type.replace('Geometry', ' ') + util.dateFormat(mesh.tc.birth, 'DD/MM hh:mm:ss')),
+            : (mesh.geometry.type.replace('Geometry', ' ') + mesh.tc.birth.format('DD/MM hh:mm:ss')),
         onChange: me.onNameChange
     };
     const positionXProps = {
@@ -43,7 +42,7 @@ export default function GeometryMainEditor (me) {
         onMouseMove: me.onRotationMouseUp
     };
     const stepProps = {
-        className: isNaN(me.state.step) || me.state.step === '' ? 'fcui2-numberbox-reject' : '',
+        className: isNaN(me.state.step) || me.state.step === '' ? 'tcui-numberbox-reject' : '',
         width: 65,
         type: 'float',
         fixed: 2,
@@ -52,19 +51,19 @@ export default function GeometryMainEditor (me) {
     };
     const scaleXProps = {
         ...SCALE_EDITOR_PROPS,
-        className: isScaleAvailable(me.state.scalex) ? '' : 'fcui2-numberbox-reject',
+        className: isScaleAvailable(me.state.scalex) ? '' : 'tcui-numberbox-reject',
         value: me.state.scalex,
         onChange: getScaleChangeHandler(me, 'x')
     };
     const scaleYProps = {
         ...SCALE_EDITOR_PROPS,
-        className: isScaleAvailable(me.state.scaley) ? '' : 'fcui2-numberbox-reject',
+        className: isScaleAvailable(me.state.scaley) ? '' : 'tcui-numberbox-reject',
         value: me.state.scaley,
         onChange: getScaleChangeHandler(me, 'y')
     };
     const scaleZProps = {
         ...SCALE_EDITOR_PROPS,
-        className: isScaleAvailable(me.state.scalez) ? '' : 'fcui2-numberbox-reject',
+        className: isScaleAvailable(me.state.scalez) ? '' : 'tcui-numberbox-reject',
         value: me.state.scalez,
         onChange: getScaleChangeHandler(me, 'z')
     };
