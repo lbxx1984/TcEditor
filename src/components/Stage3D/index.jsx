@@ -183,6 +183,10 @@ export default class Stage3D extends Component {
         if (this.props.selectedMesh && this.props.selectedMesh.tc.needUpdate) {
             this.props.selectedMesh.tc.needUpdate--;
         }
+        const container = this.refs.container;
+        if (container && (container.offsetWidth !== this.offsetWidth|| container.offsetHeight !== this.offsetHeight)) {
+            this.onResize();
+        }
     }
 
     componentWillUnmount() {
@@ -202,6 +206,8 @@ export default class Stage3D extends Component {
     }
 
     onResize() {
+        this.offsetWidth = this.refs.container.offsetWidth;
+        this.offsetHeight = this.refs.container.offsetHeight;
         this.camera.aspect = this.refs.container.offsetWidth / this.refs.container.offsetHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(this.refs.container.offsetWidth - 1, this.refs.container.offsetHeight);

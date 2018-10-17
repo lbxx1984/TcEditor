@@ -22,48 +22,6 @@
             position: relative;
             top: 1px;
         }
-        .tcui-textbox-normal {
-            input {
-                font-size: 16px;
-                font-family: time new roman;
-                border-color: transparent;
-                &:hover,&:focus {
-                    border-color: transparent;
-                }
-            }
-        }
-    }
-    .tcui-table {
-        position: absolute;
-        top: 50px;
-        left: 10px;
-        right: 10px;
-        bottom: 50px;
-        overflow: hidden;
-        border: 1px solid @border-bottom-color;
-        .table-container {
-            height: 100%;
-            overflow-y: auto;
-            overflow-x: hidden;
-            &::-webkit-scrollbar {
-                background-color: transparent;
-            }
-        }
-        .shadow-container {
-            border-bottom: 1px solid @border-bottom-color;
-        }
-        table {
-            border-right: 0px;
-            th {
-                line-height: 30px;
-            }
-            td {
-                line-height: 30px;
-            }
-        }
-        td:nth-child(1), th:nth-child(1) {
-            border-left: 0px;
-        }
     }
     .file-name, .file-meta {
         line-height: 30px;
@@ -111,14 +69,5 @@
         bottom: 12px;
         left: 10px;
         right: 10px;
-        .tcui-textbox {
-            input {
-                height: 28px;
-                border-color: @border-bottom-color;
-            }
-        }
-        .tcui-button {
-            margin-left: 5px;
-        }
     }
 }

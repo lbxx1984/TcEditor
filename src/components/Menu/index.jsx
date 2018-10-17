@@ -46,7 +46,6 @@ function menuRenderer(me) {
     });
     return me.props.menu.map(menu => {
         const props = {
-            skin: 'black',
             label: menu.label,
             datasource: menu.children,
             onClick: me.onClick,
