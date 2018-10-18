@@ -20,7 +20,6 @@ function getPositionInDocument(e) {
 }
 
 export default function (e) {
-    console.log()
     const {x, y} = getPositionInViewport(e);
     const {left, top} = getPositionInDocument(e);
     return {x, y, left, top};

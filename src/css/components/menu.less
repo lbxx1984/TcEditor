@@ -7,3 +7,25 @@
     border-bottom: 1px solid @border-bottom-color;
     border-right: 1px solid @border-right-color;
 }
+.tcui-layer {
+    .tc-menu-item {
+        padding: 0 20px 0 0;
+        line-height: 30px;
+        font-size: 14px;
+        min-width: 150px;
+        &:hover {
+            cursor: default;
+            background-color: @background-color-hover;
+        }
+        .checked {
+            display: inline-block;
+            width: 5px;
+            margin: 0 10px;
+        }
+        .hotkey {
+            float: right;
+            text-align: right;
+            padding: 0 0 0 20px;
+        }
+    }
+}

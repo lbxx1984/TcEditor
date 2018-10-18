@@ -8,7 +8,9 @@ export default class BaseComponent extends Component {
         disabled: PropTypes.bool,
         reject: PropTypes.bool,
         skin: PropTypes.string,
-        size: PropTypes.string
+        size: PropTypes.string,
+        className: PropTypes.string,
+        style: PropTypes.object
     }
 
     static contextTypes = {
@@ -32,12 +34,14 @@ export default class BaseComponent extends Component {
         const reject = this.props.reject || this.state.reject;
         return {
             ref: 'rootContainer',
+            style: this.props.style ? this.props.style : undefined,
             className: [
                 `tcui-${cName}`,
                 `tcui-${cName}-size-${size}`,
                 `tcui-${cName}-skin-${skin}`,
                 disabled ? `tcui-${cName}-disabled` : null,
-                reject ? `tcui-${cName}-reject`: null
+                reject ? `tcui-${cName}-reject`: null,
+                this.props.className ? this.props.className : null
             ].filter(i => !!i).join(' ')
         };
     }

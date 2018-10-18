@@ -40,21 +40,15 @@ export default class MenuListItem extends Component {
     render() {
         const containerProp = {
             ref: 'container',
-            className: 'list-normal-item' + (this.props.disabled ? ' list-normal-item-disabled' : ''),
+            className: 'tc-menu-item' + (this.props.disabled ? ' tc-menu-item-disabled' : ''),
             onClick: this.onClick
         };
         const checked = this.props.checked ? '●' : '';
-        const spanProps = {
-            style: {
-                display: 'inline-block',
-                width: 5
-            }
-        };
         return (
             <div {...containerProp}>
-                {this.props.hasOwnProperty('checked') ? <span {...spanProps}>{checked}</span> : null}
+                {this.props.hasOwnProperty('checked') ? <span className="checked">{checked}</span> : null}
                 <span>{this.props.label}</span>
-                {this.props.hotKey ? <span className="tc-menu-hotkey">{this.props.hotKey}</span> : null}
+                {this.props.hotKey ? <span className="hotkey">{this.props.hotKey}</span> : null}
             </div>
         );
     }

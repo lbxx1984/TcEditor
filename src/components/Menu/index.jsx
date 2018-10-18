@@ -40,25 +40,31 @@ export default class Menu extends Component {
 
 
 function menuRenderer(me) {
-    const panelHash = {};
-    me.props.panel.map(function (panel) {
-        panelHash[panel.type] = true;
-    });
-    return me.props.menu.map(menu => {
+    const {panel, menu} = me.props;
+    const panelHash = panel.reduce((r, i) => Object.assign({}, r, {[i.type]: 1}), {});
+    return menu.map(item => {
         const props = {
-            label: menu.label,
-            datasource: menu.children,
+            label: item.label,
+            datasource: item.children,
             onClick: me.onClick,
             itemRenderer: MenuItem
         };
-        if (menu.key === 'view') {
-            props.datasource = menu.children.map(function (listItem) {
+        if (item.key === 'view') {
+            props.datasource = item.children.map(listItem => {
                 return {
                     ...listItem,
                     checked: panelHash.hasOwnProperty(listItem.key)
                 };
             });
         }
-        return <DropDownList {...props} key={'menu-' + menu.label}/>;
+        if (item.key === 'geometry') {
+            props.datasource = item.children.map(listItem => {
+                return {
+                    ...listItem,
+                    checked: listItem.value.indexOf(me.props.tool) > -1
+                };
+            });
+        }
+        return <DropDownList {...props} key={'menu-' + item.label}/>;
     });
 }

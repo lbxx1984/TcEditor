@@ -158,6 +158,7 @@ export default {
         },
         {
             label: 'Geometry',
+            key: 'geometry',
             children: [
                 {
                     label: 'Plane', value: 'changeTool createPlane'

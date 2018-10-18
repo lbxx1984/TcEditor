@@ -87,7 +87,8 @@ export default class App extends Component {
         const menuProps = {
             panel,
             menu,
-            style
+            style,
+            tool
         };
         const toolsBarProps = getToolsBarProps(this.props);
         return (
