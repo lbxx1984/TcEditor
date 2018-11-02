@@ -25,7 +25,6 @@ function itemFactory(me, item, key) {
 }
 
 
-
 export default class DropDownList extends AnchorComponent {
 
     static propTypes = {

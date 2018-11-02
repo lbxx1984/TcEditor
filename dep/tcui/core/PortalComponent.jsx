@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import BaseComponent from './BaseComponent';
+import '../css/Background.less';
 
 
 export default class PortalComponent extends BaseComponent {
@@ -10,24 +11,32 @@ export default class PortalComponent extends BaseComponent {
         this.show = this.show.bind(this);
         this.hide = this.hide.bind(this);
         this.render = this.render.bind(this);
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
+        this.mouseEnterHandler = this.mouseEnterHandler.bind(this);
+        this.mouseLeaveHandler = this.mouseLeaveHandler.bind(this);
+        this.windowResizeHandler = this.windowResizeHandler.bind(this);
         this.dom = null;
     }
 
     componentDidMount() {
+        this.bg = document.createElement('div');
         this.dom = document.createElement('div');
-        this.dom.addEventListener('mouseenter', this.onMouseEnter);
-        this.dom.addEventListener('mouseleave', this.onMouseLeave);
+        this.dom.addEventListener('mouseenter', this.mouseEnterHandler);
+        this.dom.addEventListener('mouseleave', this.mouseLeaveHandler);
+        window.addEventListener('resize', this.windowResizeHandler);
     }
 
     componentWillUnmount() {
         if (this.dom.parentNode) {
             this.dom.parentNode.removeChild(this.dom);
         }
+        if (this.bg.parentNode) {
+            this.bg.parentNode.removeChild(this.bg);
+        }
         this.dom.removeAllListeners('mouseenter');
         this.dom.removeAllListeners('mouseleave');
+        window.removeAllListeners('resize', this.windowResizeHandler);
         this.dom = null;
+        this.bg = null;
     }
 
     componentDidUpdate(prevProps) {
@@ -37,25 +46,35 @@ export default class PortalComponent extends BaseComponent {
     }
 
     show() {
+        this.bg.className = 'tcui-background';
         this.dom.className = this.getContainerBaseProps().className;
+        this.props.hideMask ? null : document.body.appendChild(this.bg);
         document.body.appendChild(this.dom);
-        typeof this.onShow === 'function' && this.onShow(this.dom);
+        this.setState({}, () => {
+            typeof this.onShow === 'function' && this.onShow(this.dom);
+        });
     }
 
     hide() {
-        if (this.dom.parentNode) this.dom.parentNode.removeChild(this.dom);
+        this.bg.parentNode && this.bg.parentNode.removeChild(this.bg);
+        this.dom.parentNode && this.dom.parentNode.removeChild(this.dom);
         typeof this.onHide === 'function' && this.onHide(this.dom);
     }
 
-    onMouseEnter(evt) {
-        typeof this.props.onMouseEnter === 'function' && this.props.onMouseEnter(evt);
+    mouseEnterHandler(evt) {
+        typeof this.props.mouseEnterHandler === 'function' && this.props.mouseEnterHandler(evt);
     }
 
-    onMouseLeave(evt) {
-        typeof this.props.onMouseLeave === 'function' && this.props.onMouseLeave(evt);
+    mouseLeaveHandler(evt) {
+        typeof this.props.mouseLeaveHandler === 'function' && this.props.mouseLeaveHandler(evt);
+    }
+
+    windowResizeHandler(evt) {
+        typeof this.onWindowResize === 'function' && this.onWindowResize(evt);
     }
 
     render() {
-        return this.props.open ? ReactDOM.createPortal(this.props.children, this.dom) : null;
+        if (!this.props.open || !this.dom) return null;
+        return ReactDOM.createPortal(this.props.children, this.dom);
     }
 }

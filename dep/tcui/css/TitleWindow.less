@@ -1,0 +1,45 @@
+@import "config";
+@import "function";
+.tcui-titlewindow {
+    position: fixed;
+    left: -9999px;
+    top: -9999px;
+    border: 1px solid;
+    .tcui-titlewindow-title {
+        .no-select;
+        .close {
+            width: 30px;
+            font-size: 24px;
+            float: right;
+            text-align: center;
+            cursor: pointer;
+        }
+        .title {
+            margin-right: 30px;
+        }
+    }
+    .tcui-titlewindow-content {
+        min-width: 400px;
+    }
+}
+.tcui-titlewindow-skin-normal {
+    border-top-color: @border-top-color;
+    border-left-color: @border-left-color;
+    .tcui-titlewindow-title {
+        background-color: @background-color-main;
+        color: @font-color-main;
+        font-family: @font-normal;
+        line-height: 40px;
+        font-size: 16px;
+        font-weight: 700;
+        .title {
+            padding-left: 10px;
+        }
+        .close:hover {
+            color: @font-color-hover;
+        }
+    }
+    .tcui-titlewindow-content {
+        background-color: @font-color-main;
+    }
+}

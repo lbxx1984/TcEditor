@@ -6,6 +6,7 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import TitleWindow from 'tcui/TitleWindow';
 import Menu from './components/Menu';
 import CommandBar from './components/CommandBar';
 import InformationBar from './components/InformationBar';
@@ -99,6 +100,18 @@ export default class App extends Component {
                 <InformationBar {...informationBarProps}/>
                 {panel.length ? panelRenderer(this) : null}
                 {toolsBarProps ? <ToolsBar {...toolsBarProps}/> : null}
+                <TitleWindow open={true} onClose={() => {alert('close')}}>
+                    <h1>asdasdasd</h1>
+                    <h1>asdasdasd</h1>
+                    <h1>asdasdasd</h1>
+                    <h1>asdasdasd</h1>
+                    <h1>asdasdasd</h1>
+                    <h1>asdasdasd</h1>
+                    <h1>asdasdasd</h1>
+                    <h1>asdasdasd</h1>
+                    <h1>asdasdasd</h1>
+                    <h1>asdasdasd</h1>
+                </TitleWindow>
             </div>
         );
     }
