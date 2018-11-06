@@ -1,0 +1,23 @@
+@import "config";
+.tcui-button {
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.tcui-button.tcui-button-disabled {
+    cursor: default;
+}
+.tcui-button-size-normal {
+    height: 26px;
+    outline: none;
+    padding: 0 10px;
+    border: 1px solid;
+}
+
+.tcui-button-skin-normal {
+    &:focus  {
+        border-color: @font-color-hover;
+    }
+}
+.tcui-button-skin-normal.tcui-button-disabled {
+    border-color: @font-color-disabled;
+}

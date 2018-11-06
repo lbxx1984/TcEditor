@@ -62,6 +62,7 @@
         "react/jsx-indent-props": [2, 4],
         "react/jsx-tag-spacing": 0,
         "react/prefer-stateless-function": 0,
+        "react/no-string-refs": 0,
         "react/no-array-index-key": 0,
         "brace-style": 0
    }

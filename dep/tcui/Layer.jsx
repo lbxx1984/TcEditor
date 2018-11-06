@@ -123,7 +123,7 @@ export default class Layer extends PortalComponent {
     }
 
     onShow() {
-        this.fixedPositionTimer = setInterval(this.fixedPosition, 200);
+        this.fixedPositionTimer = setInterval(this.fixedPosition, 0);
     }
 
     onHide() {

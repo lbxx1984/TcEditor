@@ -3,10 +3,9 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-/* eslint-disable react/no-string-refs */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Toast from 'tcui/Toast';
+// import Toast from 'tcui/Toast';
 import TextBox from 'tcui/TextBox';
 import Table from 'tcui/Table';
 import Button from 'tcui/Button';
@@ -19,10 +18,10 @@ import tableFieldConfig from './tableFieldConfig';
 
 
 function missionFailed() {
-    Toast.pop({
-        type: 'error',
-        message: 'Mission failed.'
-    });
+    // Toast.pop({
+    //     type: 'error',
+    //     message: 'Mission failed.'
+    // });
 }
 
 function getFullPath(me) {
@@ -278,9 +277,7 @@ export default class Explorer extends Component {
     getDirectory(path) {
         path = path || this.state.path;
         io.dir(path).then(directory => {
-            this.setState({path, directory}, () => {
-                setCursorPosition(this.refs.path.refs.inputbox, path.length)
-            });
+            this.setState({path, directory}, () => setCursorPosition(this.refs.path.refs.rootContainer, path.length));
         }, missionFailed);
     }
 
@@ -296,10 +293,7 @@ export default class Explorer extends Component {
             fieldConfig: tableFieldConfig,
             noDataRenderer: NoData,
             clipboard: this.state.clipboard,
-            onAction: this.onTableAction,
-            flags: {
-                showHeader: true
-            }
+            onAction: this.onTableAction
         };
         const pasteBtnProps = {
             className: 'tc-icon tc-icon-paste',
@@ -307,20 +301,20 @@ export default class Explorer extends Component {
             style: !this.state.clipboard ? {color: 'grey'} : {}
         };
         const selectedBoxProps = {
-            width: 450,
+            width: 440,
             disabled: this.props.mode !== 'create',
             value: this.state.selected.split('/').pop(),
             onChange: this.props.mode === 'create' ? this.onSelectedBoxChange : undefined
         };
         const cancelBtnProps = {
-            width: 60,
+            style: {width: 60, marginLeft: 10},
             skin: 'black2',
             label: 'Cancel',
             onClick: this.onCancelBtnClick
         };
         const enterBtnProps = {
+            style: {width: 60, marginLeft: 10},
             skin: 'black',
-            width: 60,
             label: this.props.mode !== 'create' ? 'Select' : 'OK',
             disabled: !this.state.selected.length,
             onClick: this.onEnterBtnClick

@@ -7,6 +7,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Button from 'tcui/Button';
 import TextBox from 'tcui/TextBox';
+import setCursorPosition from '../tools/util/setCursorPosition';
 
 
 export default class NameCreator extends Component {
@@ -26,6 +27,10 @@ export default class NameCreator extends Component {
             value: this.props.initialName,
             isVaild: true
         }
+    }
+
+    componentDidMount() {
+        setCursorPosition(this.refs.textbox.refs.rootContainer, this.state.value.length)
     }
 
     onEnterClick() {
@@ -49,28 +54,27 @@ export default class NameCreator extends Component {
         const enterBtnProps = {
             width: 70,
             disabled: !this.state.value || !this.state.isVaild || this.state.value === this.props.initialName,
-            style: {marginLeft: 10},
             label: 'OK',
             onClick: this.onEnterClick
         };
         const cancelBtnProps = {
-            width: 70,
-            style: {marginLeft: 10},
+            style: {width: 70, marginLeft: 10},
             label: 'Cancel',
             onClick: this.props.close
         };
         const textBoxProps = {
+            ref: 'textbox',
             value: this.state.value,
             onChange: this.onTextBoxChange
         };
         return (
-            <div style={{width: 340, height: 100}}>
-                <div style={{margin: 10}}>
+            <div style={{width: 340, padding: 10}}>
+                <div style={{marginBottom: 10}}>
                     Name: <TextBox {...textBoxProps}/>
                 </div>
-                <div style={{lineHeight: '28px', height: 30, color: 'red', paddingLeft: 10}}>
-                    {!this.state.isVaild ? 'The name already exists.' : ''}
-                </div>
+                {!this.state.isVaild ? <div style={{lineHeight: '28px', height: 30, color: 'red', paddingLeft: 10}}>
+                    The name already exists.
+                </div> : null}
                 <Button {...enterBtnProps}/>
                 <Button {...cancelBtnProps}/>
             </div>

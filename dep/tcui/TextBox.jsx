@@ -13,7 +13,8 @@ export default class TextBox extends BaseComponent {
     render() {
         const props = {
             ...this.props,
-            ...this.getContainerBaseProps(this)
+            ...this.getContainerBaseProps(this),
+            type: ['text', 'password'].indexOf(this.props.type) > -1 ? this.props.type : 'text'
         };
         return <input {...props}/>;
     }

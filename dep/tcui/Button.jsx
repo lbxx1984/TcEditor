@@ -1,6 +1,9 @@
-import React, {Component} from 'react';
+import React from 'react';
+import BaseComponent from './core/BaseComponent';
+import './css/Button.less';
 
-export default class Button extends Component {
+
+export default class Button extends BaseComponent {
 
     static propTypes = {}
 
@@ -9,6 +12,14 @@ export default class Button extends Component {
     }
 
     render() {
-        return null;
+        const {type, label} = this.props;
+        const props = {
+            ...this.props,
+            ...this.getContainerBaseProps(this),
+            type: ['button', 'reset', 'submit'].indexOf(type) > -1 ? type : 'button'
+        };
+        return <button {...props}>
+            {label ? label : 'Button'}
+        </button>;
     }
 }

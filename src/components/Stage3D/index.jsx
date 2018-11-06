@@ -3,7 +3,6 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-/* eslint-disable  react/no-string-refs */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import * as THREE from 'three';
