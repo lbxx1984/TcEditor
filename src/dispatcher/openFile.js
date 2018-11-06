@@ -4,14 +4,12 @@
  * @email lbxxlht@163.com
  */
 import JSZip from 'jszip';
-import Dialog from 'tcui/Dialog';
+import dialog from 'tcui/dialog';
 import Toast from 'tcui/Toast';
 import io from 'core/io';
 import tcmLoader from 'core/loader/tcm';
 import Explorer from '../components/Explorer';
 
-
-const dialog = new Dialog();
 
 function missionFailed() {
     Toast.pop({

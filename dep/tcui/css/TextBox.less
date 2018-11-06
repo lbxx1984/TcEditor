@@ -1,0 +1,19 @@
+@import "config";
+.tcui-textbox {
+    box-sizing: border-box;
+}
+.tcui-textbox-size-normal {
+    height: 26px;
+    outline: none;
+    padding: 0 10px;
+    border: 1px solid;
+}
+
+.tcui-textbox-skin-normal {
+    &:focus  {
+        border-color: @font-color-hover;
+    }
+}
+.tcui-textbox-skin-normal.tcui-textbox-disabled {
+    border-color: @font-color-disabled;
+}

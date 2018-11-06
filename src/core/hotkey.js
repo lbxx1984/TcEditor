@@ -46,7 +46,6 @@ function documentKeydownHandler(event) {
     }
     if (config.arrestedHotKey.indexOf(key) > -1) {
         event.preventDefault();  
-        window.event.returnValue = false;
         return false;
     }
 }

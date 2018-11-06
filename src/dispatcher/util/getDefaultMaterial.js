@@ -7,7 +7,8 @@ import * as THREE from 'three';
 
 export default function() {
     return new THREE.MeshPhongMaterial({
-        color: 0xffffff, shading: THREE.FlatShading,
+        color: 0xffffff,
+        flatShading: THREE.FlatShading,
         side: THREE.DoubleSide
     });
 }

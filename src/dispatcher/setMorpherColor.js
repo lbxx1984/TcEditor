@@ -4,10 +4,9 @@
  * @email lbxxlht@163.com
  */
 import ColorSetter from '../components/ColorSetter';
-import Dialog from 'tcui/Dialog';
+import dialog from 'tcui/dialog';
 
 export default function() {
-    const dialog = new Dialog();
     dialog.pop({
         contentProps: {
             value: this.get('morpher3Dinfo').anchorColor,

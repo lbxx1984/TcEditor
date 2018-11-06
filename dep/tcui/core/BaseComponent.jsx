@@ -9,6 +9,8 @@ export default class BaseComponent extends Component {
         reject: PropTypes.bool,
         skin: PropTypes.string,
         size: PropTypes.string,
+        width: PropTypes.string,
+        height: PropTypes.string,
         className: PropTypes.string,
         style: PropTypes.object
     }
@@ -32,9 +34,20 @@ export default class BaseComponent extends Component {
         const size = this.props.size || this.context.size || 'normal';
         const disabled = this.props.disabled;
         const reject = this.props.reject || this.state.reject;
+        const fastStyle = {};
+        if (!isNaN(String(this.props.width).replace('px', ''))) {
+            fastStyle.width = String(this.props.width).replace('px', '') +'px';
+        }
+        if (!isNaN(String(this.props.height).replace('px', ''))) {
+            fastStyle.height = String(this.props.height).replace('px', '') +'px';
+        }
+        const style = {
+            ...fastStyle,
+            ...this.props.style
+        };
         return {
             ref: 'rootContainer',
-            style: this.props.style ? this.props.style : undefined,
+            style,
             className: [
                 `tcui-${cName}`,
                 `tcui-${cName}-size-${size}`,

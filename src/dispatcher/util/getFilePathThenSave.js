@@ -3,8 +3,8 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-import Dialog from 'tcui/Dialog';
 import Toast from 'tcui/Toast';
+import dialog from 'tcui/dialog';
 import Explorer from '../../components/Explorer';
 import writeFile from './writeFile';
 
@@ -16,7 +16,6 @@ function missionFailed() {
 }
 
 export default function(me, dialogTitle) {
-    const dialog = new Dialog();
     dialog.pop({
         contentProps: {
             prefix: me.get('rootPrefix'),

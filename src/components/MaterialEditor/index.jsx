@@ -6,13 +6,11 @@
 import * as THREE from 'three';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Dialog from 'tcui/Dialog';
+import dialog from 'tcui/dialog';
 import {uploadImage} from 'core/io';
 import ColorSetter from '../ColorSetter';
 import editorRenderer from './editorRenderer';
 
-
-const dialog = new Dialog();
 
 function getMtlParam(props) {
     const mesh = props.mesh;

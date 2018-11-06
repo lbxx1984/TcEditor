@@ -1,6 +1,8 @@
-import React, {Component} from 'react';
+import React from 'react';
+import BaseComponent from './core/BaseComponent';
+import './css/TextBox.less';
 
-export default class TextBox extends Component {
+export default class TextBox extends BaseComponent {
 
     static propTypes = {}
 
@@ -9,6 +11,10 @@ export default class TextBox extends Component {
     }
 
     render() {
-        return null;
+        const props = {
+            ...this.props,
+            ...this.getContainerBaseProps(this)
+        };
+        return <input {...props}/>;
     }
 }

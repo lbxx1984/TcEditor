@@ -103,7 +103,8 @@ export default class Layer extends PortalComponent {
     }
 
     static defaultProps = {
-        location: 'bottom top'
+        location: 'bottom top',
+        hideMask: true
     }
 
     constructor(args) {

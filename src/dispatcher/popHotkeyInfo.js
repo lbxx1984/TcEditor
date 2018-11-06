@@ -5,10 +5,9 @@
  */
 
 import HotkeyInfo from '../components/HotkeyInfo';
-import Dialog from 'tcui/Dialog';
+import dialog from 'tcui/dialog';
 
 export default function() {
-    const dialog = new Dialog();
     dialog.pop({
         title: 'Hotkey Config',
         content: HotkeyInfo

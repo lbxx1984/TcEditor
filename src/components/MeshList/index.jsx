@@ -5,13 +5,10 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Dialog from 'tcui/Dialog';
+import dialog from 'tcui/dialog';
 import MeshGroupCreator from '../NameCreator';
 import getMeshGroupData from './getMeshGroupData';
 import meshListRenderer from './meshListRenderer';
-
-
-const dialog = new Dialog();
 
 
 function getLabelDom(target) {

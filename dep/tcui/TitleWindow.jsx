@@ -33,7 +33,7 @@ export default class TitleWindow extends PortalComponent {
             const contentMaxHeight = pHeight - (title ? title.offsetHeight : 0) - (foot ? foot.offsetHeight : 0);
             content.style.maxHeight = contentMaxHeight + 'px';
             content.style.overflowY = 'auto';
-        }, 300);
+        }, 0);
     }
 
     onWindowResize() {

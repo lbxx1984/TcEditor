@@ -3,12 +3,11 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-import Dialog from 'tcui/Dialog';
+import dialog from 'tcui/dialog';
 import hotkey from 'core/hotkey';
 
 export default function(uuid) {
     const me = this;
-    const dialog = new Dialog();
     dialog.confirm({
         title: 'Please Confirm',
         message: '<h4>Are you sure to remove this mesh?</h4>',

@@ -42,15 +42,11 @@ export default class NameCreator extends Component {
                 isVaild = false;
             }
         });
-        this.setState({
-            value: value,
-            isVaild: isVaild
-        });
+        this.setState({value, isVaild});
     }
 
     render() {
         const enterBtnProps = {
-            skin: 'black',
             width: 70,
             disabled: !this.state.value || !this.state.isVaild || this.state.value === this.props.initialName,
             style: {marginLeft: 10},
@@ -58,14 +54,12 @@ export default class NameCreator extends Component {
             onClick: this.onEnterClick
         };
         const cancelBtnProps = {
-            skin: 'black2',
             width: 70,
             style: {marginLeft: 10},
             label: 'Cancel',
             onClick: this.props.close
         };
         const textBoxProps = {
-            skin: 'black',
             value: this.state.value,
             onChange: this.onTextBoxChange
         };

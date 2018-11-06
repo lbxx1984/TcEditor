@@ -6,18 +6,17 @@
 /* eslint-disable react/no-string-refs */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Dialog from 'tcui/Dialog';
 import Toast from 'tcui/Toast';
 import TextBox from 'tcui/TextBox';
 import Table from 'tcui/Table';
 import Button from 'tcui/Button';
+import dialog from 'tcui/dialog';
 import io from 'core/io';
 import setCursorPosition from 'tools/util/setCursorPosition';
 import NameCreator from '../NameCreator';
 import NoData from './renderer/TableNoDataRenderer';
 import tableFieldConfig from './tableFieldConfig';
 
-const dialog = new Dialog();
 
 function missionFailed() {
     Toast.pop({

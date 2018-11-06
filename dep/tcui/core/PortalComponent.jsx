@@ -32,9 +32,11 @@ export default class PortalComponent extends BaseComponent {
         if (this.bg.parentNode) {
             this.bg.parentNode.removeChild(this.bg);
         }
-        this.dom.removeAllListeners('mouseenter');
-        this.dom.removeAllListeners('mouseleave');
-        window.removeAllListeners('resize', this.windowResizeHandler);
+        if (this.dom) {
+            this.dom.removeEventListener('mouseenter', this.mouseEnterHandler);
+            this.dom.removeEventListener('mouseleave', this.mouseLeaveHandler);
+        }
+        window.removeEventListener('resize', this.windowResizeHandler);
         this.dom = null;
         this.bg = null;
     }
