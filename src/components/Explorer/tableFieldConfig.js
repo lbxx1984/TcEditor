@@ -13,10 +13,7 @@ export default [
         label: 'name',
         field: 'name',
         width: 300,
-        renderer: FileName,
-        prepare: function (props, item, row, column, me) {
-            props.clipboard = me.props.clipboard;
-        }
+        renderer: FileName
     },
     {
         label: 'size',

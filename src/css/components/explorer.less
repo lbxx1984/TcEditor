@@ -1,6 +1,6 @@
 .tc-explorer {
     width: 600px;
-    height: 400px;
+    padding-bottom: 10px;
     .tc-icon-up-level,
     .tc-icon-paste,
     .tc-icon-create-folder {
@@ -19,7 +19,9 @@
         >span {
             margin-right: -10px;
             position: relative;
-            top: 1px;
+            top: -1px;
+            left: 1px;
+            font-size: 10px;
         }
     }
     .file-name, .file-meta {
@@ -62,11 +64,5 @@
                 color: @font-color-hover;
             }
         }
-    }
-    .foot-bar {
-        position: absolute;
-        bottom: 12px;
-        left: 10px;
-        right: 10px;
     }
 }

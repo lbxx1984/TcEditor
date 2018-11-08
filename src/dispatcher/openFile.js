@@ -5,17 +5,16 @@
  */
 import JSZip from 'jszip';
 import dialog from 'tcui/dialog';
-import Toast from 'tcui/Toast';
 import io from 'core/io';
 import tcmLoader from 'core/loader/tcm';
 import Explorer from '../components/Explorer';
 
 
 function missionFailed() {
-    Toast.pop({
-        type: 'error',
-        message: 'Open File Failed.'
-    });
+    // Toast.pop({
+    //     type: 'error',
+    //     message: 'Open File Failed.'
+    // });
 }
 
 function clearEditor(me) {

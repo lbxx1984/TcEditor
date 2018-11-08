@@ -18,40 +18,37 @@ function formatSize(n) {
 export default class FileMeta extends Component {
 
     static propTypes = {
-        item: PropTypes.object.isRequired,
-        field: PropTypes.string.isRequired
+        data: PropTypes.object,
+        fieldConfig: PropTypes.object
     }
 
     constructor(props) {
         super(props);
         this.getMeta = this.getMeta.bind(this);
-        this.state = {
-            mtime: 0,
-            size: '-'
-        };
+        this.state = {mtime: 0, size: '-'};
     }
 
     componentDidMount() {
-        this.getMeta(this.props.item);
+        this.getMeta(this.props.data);
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.item !== prevProps.item) this.getMeta(this.props.item);
+        if (this.props.data !== prevProps.data) this.getMeta(this.props.data);
     }
 
     getMeta(item) {
         item.getMetadata(meta => {
             this.setState({
                 mtime: meta.modificationTime.format('YYYY/MM/DD hh:mm:ss'),
-                size: this.props.item.isDirectory ? '-' : formatSize(meta.size)
+                size: item.isDirectory ? '-' : formatSize(meta.size)
             });
         });
     }
 
     render() {
         return (
-            <td className="file-meta" key={this.props.item.fullPath}>
-                {this.state[this.props.field]}
+            <td className="file-meta" key={this.props.data.fullPath}>
+                {this.state[this.props.fieldConfig.field]}
             </td>
         );
     }

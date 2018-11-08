@@ -1,0 +1,42 @@
+@import "config";
+.tcui-table {
+    box-sizing: border-box;
+    position: relative;
+    min-height: 200px;
+    overflow: hidden;
+    .real-table-container {
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+    }
+    .shadow-table {
+        position: absolute;
+        top: -9999px;
+    }
+}
+.tcui-table-size-normal {
+    table {
+        width: 100%;
+    }
+    .table-head {
+        height: 28px;
+        line-height: 28px;
+        text-align: left;
+        th {
+            padding-left: 10px;
+        }
+    }
+}
+.tcui-table-skin-normal {
+    table {
+        background-color: @font-color-main;
+        tbody tr:hover {
+            background-color: @background-color-hover;
+            color: @font-color-main;
+        }
+        .table-head, .table-head:hover {
+            background-color: @background-color-main;
+            color: @font-color-main;
+        }
+    }
+}

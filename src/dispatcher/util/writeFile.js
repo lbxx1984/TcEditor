@@ -4,7 +4,6 @@
  * @email lbxxlht@163.com
  */
 import JSZip from 'jszip';
-import Toast from 'tcui/Toast';
 import io from 'core/io';
 import tcmExporter from 'core/exporter/tcm';
 
@@ -16,10 +15,10 @@ export default function(path, model) {
     return zip.generateAsync({type: 'blob'})
         .then(content => io.write(path, {data: content, append: false}))
         .then(function () {
-            Toast.pop({
-                type: 'success',
-                message: 'File Saved.',
-                autoHideTime: '500'
-            });
+            // Toast.pop({
+            //     type: 'success',
+            //     message: 'File Saved.',
+            //     autoHideTime: '500'
+            // });
         });
 }

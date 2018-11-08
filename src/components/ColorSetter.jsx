@@ -65,7 +65,7 @@ export default class ColorSetter extends Component {
             onChange: this.onColorPickerChange
         };
         return (
-            <div style={{width: 340, height: 260}} className="in-layer">
+            <div style={{width: 340, height: 260}}>
                 <ColorPicker {...colorPickerProps}/>
                 <Button {...enterBtnProps}/>
                 <Button {...cancelBtnProps}/>

@@ -6,13 +6,15 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+const api = me => me.props.me.props.onAction;
+
 
 export default class FileName extends Component {
 
     static propTypes = {
-        onAction: PropTypes.func.isRequired,
-        item: PropTypes.object.isRequired,
-        clipboard: PropTypes.string.isRequired
+        data: PropTypes.object,
+        clipboard: PropTypes.string,
+        me: PropTypes.object
     }
 
     constructor(args) {
@@ -24,37 +26,36 @@ export default class FileName extends Component {
     }
 
     onFileNameClick() {
-        this.props.onAction('select', this.props.item);
+        api(this)('select', this.props.data);
     }
 
     onFileEditClick(e) {
         e.stopPropagation();
-        this.props.onAction('rename', this.props.item);
+        api(this)('rename', this.props.data);
     }
 
     onFileCutClick(e) {
         e.stopPropagation();
-        this.props.onAction('cut', this.props.item);
+        api(this)('cut', this.props.data);
     }
 
     onFileCopyClick(e) {
         e.stopPropagation();
-        this.props.onAction('copy', this.props.item);
+        api(this)('copy', this.props.data);
     }
 
     render() {
-        const item = this.props.item;
-        const icon = 'tc-icon ' + (item.isDirectory ? 'tc-icon-folder' : 'tc-icon-file');
-        const labelStyle = item.fullPath === this.props.clipboard ? {
-            color: 'grey'
-        } : null;
+        const {isDirectory, fullPath, name} = this.props.data;
+        const {clipboard} = this.props.me.props;
+        const icon = 'tc-icon ' + (isDirectory ? 'tc-icon-folder' : 'tc-icon-file');
+        const labelStyle = fullPath === clipboard ? {color: 'grey'} : null;
         return (
             <td className="file-name" style={labelStyle} onClick={this.onFileNameClick}>
                 <span className="tc-icon tc-icon-edit" onClick={this.onFileEditClick}></span>
                 <span className="tc-icon tc-icon-cut" onClick={this.onFileCutClick}></span>
                 <span className="tc-icon tc-icon-copy" onClick={this.onFileCopyClick}></span>
                 <span className={icon}></span>
-                {item.name}
+                {name}
             </td>
         );
     }

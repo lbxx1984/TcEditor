@@ -5,7 +5,6 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-// import Toast from 'tcui/Toast';
 import TextBox from 'tcui/TextBox';
 import Table from 'tcui/Table';
 import Button from 'tcui/Button';
@@ -16,13 +15,6 @@ import NameCreator from '../NameCreator';
 import NoData from './renderer/TableNoDataRenderer';
 import tableFieldConfig from './tableFieldConfig';
 
-
-function missionFailed() {
-    // Toast.pop({
-    //     type: 'error',
-    //     message: 'Mission failed.'
-    // });
-}
 
 function getFullPath(me) {
     let path = me.state.selected;
@@ -61,6 +53,7 @@ export default class Explorer extends Component {
 
     constructor(args) {
         super(args);
+        this.getDirectory = this.getDirectory.bind(this);
         this.onCancelBtnClick = this.onCancelBtnClick.bind(this);
         this.onEnterBtnClick = this.onEnterBtnClick.bind(this);
         this.onCreateBtnClick = this.onCreateBtnClick.bind(this);
@@ -72,6 +65,8 @@ export default class Explorer extends Component {
         this.state = {
             // 当前目录绝对路径
             path: this.props.prefix + '/' + this.props.root,
+            // 当前目录是否存在
+            isPathExist: true,
             // 显示给用户却掉前缀的相对路径，用于响应用户输入
             root: this.props.root,
             // 当前目录结构
@@ -88,13 +83,21 @@ export default class Explorer extends Component {
     }
 
     componentDidMount() {
-        io.md(this.state.path).then(() => {
-            this.getDirectory();
-        }, missionFailed);
+        io.md(this.state.path).then(() => this.getDirectory());
+    }
+
+    getDirectory(path) {
+        path = path || this.state.path;
+        io.dir(path).then(directory => {
+            const pathDom = this.refs.path.refs.rootContainer;
+            this.setState({path, directory, isPathExist: true}, () => setCursorPosition(pathDom, path.length));
+        }, () =>{
+            this.setState({isPathExist: false});
+        });
     }
 
     onCancelBtnClick() {
-        this.props.onClose({root: this.state.root});
+        this.state.isPathExist && this.props.onClose({root: this.state.root});
         this.props.close();
     }
 
@@ -115,12 +118,11 @@ export default class Explorer extends Component {
                         enter: 'Enter',
                         cancel: 'Cancel'
                     },
-                    appSkin: 'oneux3',
                     message: 'There a file with the same name.<br/>Override it or not?',
                     onEnter: () => dispatch()
                 });
             }, () => {
-                io.create(path).then(dispatch, missionFailed);
+                io.create(path).then(dispatch);
             });
         }
         else {
@@ -138,7 +140,7 @@ export default class Explorer extends Component {
                 onEnter: folder => {
                     io.md(this.state.path + '/' + folder).then(() => {
                         this.getDirectory();
-                    }, missionFailed);
+                    });
                 }
             }
         });
@@ -167,7 +169,7 @@ export default class Explorer extends Component {
             io[clipboardType === 'copy' ? 'copy' : 'move'](clipboard, path).then(() => {
                 this.getDirectory();
                 this.setState({clipboard: clipboardType === 'copy' ? clipboard : ''});
-            }, missionFailed);
+            });
         };
         if (hasSameTarget) {
             dialog.confirm({
@@ -238,9 +240,9 @@ export default class Explorer extends Component {
                 content: NameCreator,
                 contentProps: {
                     initialName: item.name,
-                    group: me.state.directory,
+                    group: this.state.directory,
                     onEnter: newName => {
-                        io.ren(item.fullPath, newName).then(fresh, missionFailed);
+                        io.ren(item.fullPath, newName).then(fresh);
                     }
                 }
             });
@@ -256,7 +258,7 @@ export default class Explorer extends Component {
                 },
                 appSkin: 'oneux3',
                 onEnter: () => {
-                    io[item.isDirectory ? 'deltree' : 'del'](item.fullPath).then(fresh, missionFailed);
+                    io[item.isDirectory ? 'deltree' : 'del'](item.fullPath).then(fresh);
                 }
             });
         }
@@ -274,13 +276,6 @@ export default class Explorer extends Component {
         this.setState({selected: value});
     }
 
-    getDirectory(path) {
-        path = path || this.state.path;
-        io.dir(path).then(directory => {
-            this.setState({path, directory}, () => setCursorPosition(this.refs.path.refs.rootContainer, path.length));
-        }, missionFailed);
-    }
-
     render() {
         const rootProps = {
             ref: 'path',
@@ -289,6 +284,7 @@ export default class Explorer extends Component {
             onChange: this.onRootChange
         };
         const listProps = {
+            style: {height: 300, margin: 10},
             datasource: this.state.directory,
             fieldConfig: tableFieldConfig,
             noDataRenderer: NoData,
@@ -320,7 +316,7 @@ export default class Explorer extends Component {
             onClick: this.onEnterBtnClick
         };
         return (
-            <div className="tc-explorer in-layer">
+            <div className="tc-explorer">
                 <span className="tc-icon tc-icon-create-folder" onClick={this.onCreateBtnClick}></span>
                 <span className="tc-icon tc-icon-up-level" onClick={this.onUpBtnClick}></span>
                 <span {...pasteBtnProps}></span>
@@ -328,7 +324,7 @@ export default class Explorer extends Component {
                     <span>/</span><TextBox {...rootProps}/>
                 </div>
                 <Table {...listProps}/>
-                <div className="foot-bar">
+                <div style={{paddingLeft: 10}}>
                     <TextBox {...selectedBoxProps}/>
                     <Button {...enterBtnProps}/>
                     <Button {...cancelBtnProps}/>

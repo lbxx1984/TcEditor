@@ -3,16 +3,15 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-import Toast from 'tcui/Toast';
 import dialog from 'tcui/dialog';
 import Explorer from '../../components/Explorer';
 import writeFile from './writeFile';
 
 function missionFailed() {
-    Toast.pop({
-        type: 'error',
-        message: 'Write File Failed.'
-    });
+    // Toast.pop({
+    //     type: 'error',
+    //     message: 'Write File Failed.'
+    // });
 }
 
 export default function(me, dialogTitle) {

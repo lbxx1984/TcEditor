@@ -6,12 +6,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-
 export default class FileOperation extends Component {
 
     static propTypes = {
-        onAction: PropTypes.func.isRequired,
-        item: PropTypes.object.isRequired
+        data: PropTypes.object,
+        me: PropTypes.object
     }
 
     constructor(args) {
@@ -20,7 +19,7 @@ export default class FileOperation extends Component {
     }
 
     onDeleteBtnClick() {
-        this.props.onAction('delete', this.props.item);
+        this.props.me.props.onAction('delete', this.props.data);
     }
 
     render() {
