@@ -6,6 +6,8 @@
 .tcui-button.tcui-button-disabled {
     cursor: default;
 }
+
+
 .tcui-button-size-normal {
     height: 26px;
     outline: none;
@@ -13,11 +15,34 @@
     border: 1px solid;
 }
 
+
 .tcui-button-skin-normal {
+    background-color: @font-color-main;
+    color: @background-color-main;
+    &:hover {
+        background-color: @font-color-hover;
+    }
     &:focus  {
         border-color: @font-color-hover;
     }
 }
 .tcui-button-skin-normal.tcui-button-disabled {
     border-color: @font-color-disabled;
+}
+
+
+.tcui-button-skin-black {
+    background-color: @background-color-main;
+    border-color: @background-color-main;
+    color: @font-color-main;
+    &:hover {
+        background-color: @background-color-hover;
+    }
+}
+.tcui-button-skin-black.tcui-button-disabled {
+    background-color: @font-color-disabled;
+    border-color: @font-color-disabled;
+    &:hover {
+        background-color: @font-color-disabled;
+    }
 }

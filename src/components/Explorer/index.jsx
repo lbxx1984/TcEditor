@@ -304,7 +304,6 @@ export default class Explorer extends Component {
         };
         const cancelBtnProps = {
             style: {width: 60, marginLeft: 10},
-            skin: 'black2',
             label: 'Cancel',
             onClick: this.onCancelBtnClick
         };

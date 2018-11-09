@@ -57,6 +57,7 @@
         "padded-blocks": 0,
         "prefer-destructuring": 0,
         "react/forbid-prop-types": 0,
+        "react/display-name": 0,
         "react/jsx-filename-extension": [1, {"extensions": [".js", ".jsx"]}],
         "react/jsx-indent": [2, 4],
         "react/jsx-indent-props": [2, 4],
