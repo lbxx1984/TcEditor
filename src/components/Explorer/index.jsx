@@ -24,6 +24,10 @@ function getFullPath(me) {
     return path;
 }
 
+function missionFailed() {
+    dialog.toast({message: 'Mission Failed', type: 'failed'});
+}
+
 
 export default class Explorer extends Component {
 
@@ -83,7 +87,7 @@ export default class Explorer extends Component {
     }
 
     componentDidMount() {
-        io.md(this.state.path).then(() => this.getDirectory());
+        io.md(this.state.path).then(() => this.getDirectory(), missionFailed);
     }
 
     getDirectory(path) {
@@ -114,15 +118,12 @@ export default class Explorer extends Component {
             io.open(path).then(() => {
                 dialog.confirm({
                     title: 'Warning',
-                    labels: {
-                        enter: 'Enter',
-                        cancel: 'Cancel'
-                    },
+                    labels: {enter: 'Enter', cancel: 'Cancel'},
                     message: 'There a file with the same name.<br/>Override it or not?',
                     onEnter: () => dispatch()
                 });
             }, () => {
-                io.create(path).then(dispatch);
+                io.create(path).then(dispatch, missionFailed);
             });
         }
         else {
@@ -138,9 +139,7 @@ export default class Explorer extends Component {
                 initialName: '',
                 group: this.state.directory,
                 onEnter: folder => {
-                    io.md(this.state.path + '/' + folder).then(() => {
-                        this.getDirectory();
-                    });
+                    io.md(this.state.path + '/' + folder).then(() => this.getDirectory(), missionFailed);
                 }
             }
         });
@@ -169,7 +168,7 @@ export default class Explorer extends Component {
             io[clipboardType === 'copy' ? 'copy' : 'move'](clipboard, path).then(() => {
                 this.getDirectory();
                 this.setState({clipboard: clipboardType === 'copy' ? clipboard : ''});
-            });
+            }, missionFailed);
         };
         if (hasSameTarget) {
             dialog.confirm({
@@ -242,7 +241,7 @@ export default class Explorer extends Component {
                     initialName: item.name,
                     group: this.state.directory,
                     onEnter: newName => {
-                        io.ren(item.fullPath, newName).then(fresh);
+                        io.ren(item.fullPath, newName).then(fresh, missionFailed);
                     }
                 }
             });
@@ -258,7 +257,7 @@ export default class Explorer extends Component {
                 },
                 appSkin: 'oneux3',
                 onEnter: () => {
-                    io[item.isDirectory ? 'deltree' : 'del'](item.fullPath).then(fresh);
+                    io[item.isDirectory ? 'deltree' : 'del'](item.fullPath).then(fresh, missionFailed);
                 }
             });
         }

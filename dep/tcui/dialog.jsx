@@ -57,11 +57,31 @@ export function confirm(param) {
             <Button {...cancelProps}/>
         </div>
     </div>;
-    tempContainer = pop({...param, content, onDialogClose: () => {alert('123')}});
+    tempContainer = pop({...param, content});
 }
 
 
+export function toast(param) {
+    let tempContainer = null;
+    const {message = '', type = 'success'} = param;
+    const content = typeof param.content === 'function' ? content : () => <div className="tcui-toast">
+        {['success', 'failed'].indexOf(type) > -1 ? <span className={`tcui-toast-icon-${type}`}></span> : null}
+        {message}
+    </div>;
+    const props = {
+        title: '',
+        dontUseDefaultTitleBar: true,
+        hideMask: true,
+        skin: 'toast'
+    };
+    tempContainer = pop({...param, content, ...props});
+    setTimeout(() => {
+        ReactDOM.unmountComponentAtNode(tempContainer);
+    }, param.timeout || 1000);
+}
+
 export default {
     pop,
-    confirm
+    confirm,
+    toast
 }
