@@ -16,19 +16,31 @@
     background-color: @font-color-main;
     border: 1px solid @border-bottom-color;
     .no-select;
-    .tcui-toast-icon-failed {
+    .tcui-toast-icon-failed,
+    .tcui-toast-icon-success {
         display: inline-block;
         width: 20px;
         height: 20px;
-        color: red;
-        border: 1px solid red;
+        border: 1px solid;
         margin-right: 10px;
         border-radius: 10px;
         text-align: center;
         line-height: 18px;
         font-weight: 700;
+    }
+    .tcui-toast-icon-failed {
+        color: red;
+        border-color: red;
         &:before {
             content: "×";
+        }
+    }
+    .tcui-toast-icon-success {
+        color: green;
+        border-color: green;
+        &:before {
+            content: '√';
+            font-size: 10px;
         }
     }
 }

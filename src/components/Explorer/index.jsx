@@ -110,7 +110,7 @@ export default class Explorer extends Component {
         const dispatch = () => {
             this.props.onChange({
                 selected: path,
-                root: this.state.root
+                root: this.state.isPathExist ? this.state.root : undefined
             });
             this.props.close();
         };

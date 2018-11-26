@@ -6,12 +6,13 @@
 import JSZip from 'jszip';
 import io from 'core/io';
 import tcmLoader from 'core/loader/tcm';
+import {toast} from 'tcui/dialog';
 
 function missionFailed() {
-    // Toast.pop({
-    //     type: 'error',
-    //     message: 'Import File Failed.'
-    // });
+    toast({
+        type: 'failed',
+        message: 'Import File Failed.'
+    });
 }
 
 export default function() {

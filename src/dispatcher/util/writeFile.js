@@ -6,7 +6,7 @@
 import JSZip from 'jszip';
 import io from 'core/io';
 import tcmExporter from 'core/exporter/tcm';
-
+import {toast} from 'tcui/dialog';
 
 export default function(path, model) {
     const fileContent = tcmExporter(model);
@@ -15,10 +15,9 @@ export default function(path, model) {
     return zip.generateAsync({type: 'blob'})
         .then(content => io.write(path, {data: content, append: false}))
         .then(function () {
-            // Toast.pop({
-            //     type: 'success',
-            //     message: 'File Saved.',
-            //     autoHideTime: '500'
-            // });
+            toast({
+                type: 'success',
+                message: 'File Saved.'
+            });
         });
 }

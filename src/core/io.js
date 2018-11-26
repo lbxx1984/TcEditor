@@ -51,6 +51,7 @@ export function uploadFromBrowser(extension) {
             document.body.removeChild(input);
             const file = evt.target.files[0];
             if (extension && file.name.split('.').pop() !== extension) {
+                reject();
                 return;
             }
             const reader = new FileReader();

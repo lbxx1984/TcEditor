@@ -11,10 +11,10 @@ import Explorer from '../components/Explorer';
 
 
 function missionFailed() {
-    // Toast.pop({
-    //     type: 'error',
-    //     message: 'Open File Failed.'
-    // });
+    dialog.toast({
+        type: 'failed',
+        message: 'Open File Failed.'
+    });
 }
 
 function clearEditor(me) {

@@ -52,6 +52,7 @@ export default class NameCreator extends Component {
 
     render() {
         const enterBtnProps = {
+            skin: 'black',
             width: 70,
             disabled: !this.state.value || !this.state.isVaild || this.state.value === this.props.initialName,
             label: 'OK',

@@ -8,10 +8,10 @@ import Explorer from '../../components/Explorer';
 import writeFile from './writeFile';
 
 function missionFailed() {
-    // Toast.pop({
-    //     type: 'error',
-    //     message: 'Write File Failed.'
-    // });
+    dialog.toast({
+        type: 'failed',
+        message: 'Write File Failed.'
+    });
 }
 
 export default function(me, dialogTitle) {
