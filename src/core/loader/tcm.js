@@ -52,7 +52,6 @@ function createMaterial(mesh, tcm) {
     const args = {
         color: mesh.tc.materialColor,
         emissive: mesh.tc.materialEmissive,
-        shading: mtl.shading,
         side: mtl.side
     };
     ['opacity', 'wireframe'].map(key => {

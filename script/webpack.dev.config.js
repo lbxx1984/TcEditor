@@ -1,6 +1,9 @@
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const nodePath = require('path');
 const getAbsPath = dist => nodePath.resolve(__dirname, `../${dist}`);
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 
 module.exports = {
     mode: 'development',
@@ -50,19 +53,26 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.jsx'],
         alias: {
-            'dep': getAbsPath('dep'),
-            'tcui': getAbsPath('dep/tcui'),
-            'tools': getAbsPath('src/tools'),
-            'core': getAbsPath('src/core'),
-            'raphael': getAbsPath('dep/raphael.2.2.1.min'),
-            'FileSystem': getAbsPath('dep/filesystem.0.0.2'),
-            'FileSaver': getAbsPath('dep/FileSaver.1.3.3.min')
+            dep: getAbsPath('dep'),
+            tcui: getAbsPath('dep/tcui'),
+            tools: getAbsPath('src/tools'),
+            core: getAbsPath('src/core'),
+            raphael: getAbsPath('dep/raphael.2.2.1.min'),
+            FileSystem: getAbsPath('dep/filesystem.0.0.2'),
+            FileSaver: getAbsPath('dep/FileSaver.1.3.3.min')
         }
     },
     plugins: [
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: getAbsPath('index.ejs')
+        }),
+        new webpack.DllReferencePlugin({
+            context: getAbsPath('.'),
+            manifest: require(getAbsPath('./dist/manifest.dll.dev.json'))
+        }),
+        new AddAssetHtmlPlugin({
+            filepath: getAbsPath('./dist/vendor.dll.js')
         })
     ]
 };

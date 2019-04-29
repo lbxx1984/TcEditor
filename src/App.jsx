@@ -59,7 +59,8 @@ export default class App extends Component {
         view: PropTypes.string.isRequired,
         tool: PropTypes.string.isRequired,
         stage: PropTypes.object.isRequired,
-        menu: PropTypes.array.isRequired
+        menu: PropTypes.array.isRequired,
+        command: PropTypes.array.isRequired
     }
 
     getChildContext() {

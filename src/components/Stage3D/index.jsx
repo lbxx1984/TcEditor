@@ -87,6 +87,7 @@ export default class Stage3D extends Component {
 
     componentDidMount() {
         const me = this;
+        this.resizeTimer = null;
         this.mousedown = false;
         this.mouseCurrent2D = {x: 0, y: 0};
         this.mouseCurrent3D = {x: 0, y: 0, z: 0};
@@ -205,11 +206,14 @@ export default class Stage3D extends Component {
     }
 
     onResize() {
-        this.offsetWidth = this.refs.container.offsetWidth;
-        this.offsetHeight = this.refs.container.offsetHeight;
-        this.camera.aspect = this.refs.container.offsetWidth / this.refs.container.offsetHeight;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(this.refs.container.offsetWidth - 1, this.refs.container.offsetHeight);
+        clearTimeout(this.resizeTimer);
+        this.resizeTimer = setTimeout(() => {
+            this.offsetWidth = this.refs.container.offsetWidth;
+            this.offsetHeight = this.refs.container.offsetHeight;
+            this.camera.aspect = this.refs.container.offsetWidth / this.refs.container.offsetHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(this.refs.container.offsetWidth - 1, this.refs.container.offsetHeight);
+        }, 200);
     }
 
     onMouseMove(e) {

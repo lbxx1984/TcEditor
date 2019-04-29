@@ -4,3 +4,7 @@ package-lock.json
 build/js
 build/css
 build/index.html
+dist/manifest.dll.dev.json
+dist/vendor.dll.js
+dist/index.html
+dist/main.js
