@@ -21,21 +21,18 @@ export default function MaterialMainEditor(me) {
     const mtl = mesh.material;
     const color = new THREE.Color(mesh.tc.materialColor);
     const emissive = new THREE.Color(mesh.tc.materialEmissive);
-    const colorContainerStyle = {
-        border: '1px solid #FFF',
-        padding: '4px',
-        cursor: 'pointer'
-    };
     const wireframeProps = {
         checked: mtl.wireframe,
         onChange: me.onWireframeChange
     };
     const opacityProps = {
-        width: 100,
         value: me.state.opacity,
         type: 'float',
         fixed: 2,
         step: 0.1,
+        min: 0,
+        max: 1,
+        width: 102,
         onChange: me.onOpacityChange
     };
     const sideProps = {
@@ -48,14 +45,16 @@ export default function MaterialMainEditor(me) {
         ]
     };
     const fileSelectorPlaceholderProps = {
-        className: 'file-selector-placeholder',
-        style: {
-            backgroundColor: mesh.material.map ? '#D97915' : 'transparent'
-        }
+        className: 'file-selector-placeholder'
     };
     const textureClearBtnProps = {
         label: 'Clear',
         skin: 'trans',
+        style: {
+            position: 'relative',
+            height: 28,
+            top: 1
+        },
         onClick: me.onTextureClear
     };
     return (
@@ -67,7 +66,7 @@ export default function MaterialMainEditor(me) {
             <tr>
                 <td>color:</td>
                 <td>
-                    <span style={colorContainerStyle} onClick={me.onColorClick}>
+                    <span className="color-picker" onClick={me.onColorClick}>
                         {'R:' + formatRGB(color.r) + ' G:' + formatRGB(color.g) + ' B:' + formatRGB(color.b)}
                     </span>
                 </td>
@@ -75,7 +74,7 @@ export default function MaterialMainEditor(me) {
             <tr>
                 <td>emissive:</td>
                 <td>
-                    <span style={colorContainerStyle} onClick={me.onEmissiveChange}>
+                    <span className="color-picker" onClick={me.onEmissiveChange}>
                         {'R:' + formatRGB(emissive.r) + ' G:' + formatRGB(emissive.g) + ' B:' + formatRGB(emissive.b)}
                     </span>
                 </td>

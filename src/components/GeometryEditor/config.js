@@ -5,16 +5,14 @@
  */
 
 export const POSITION_EDITOR_PROPS = {
-    width: 80,
     type: 'int',
-    showSpinButton: true,
+    width: 60,
     step: 1
 };
 
 export const SCALE_EDITOR_PROPS = {
-    width: 80,
     type: 'float',
+    width: 60,
     step: 0.01,
-    showSpinButton: true,
     fixed: 2
 };

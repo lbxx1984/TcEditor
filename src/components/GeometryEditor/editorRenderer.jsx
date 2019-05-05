@@ -80,17 +80,17 @@ export default function GeometryMainEditor (me) {
             <tr style={{marginTop: 5}}>
                 <td>position:</td>
                 <td style={{lineHeight: '30px'}}>
-                    <NumberBox {...positionXProps}/>&nbsp;x<br/>
-                    <NumberBox {...positionYProps}/>&nbsp;y<br/>
-                    <NumberBox {...positionZProps}/>&nbsp;z
+                    x&nbsp;<NumberBox {...positionXProps}/><br/>
+                    y&nbsp;<NumberBox {...positionYProps}/><br/>
+                    z&nbsp;<NumberBox {...positionZProps}/>
                 </td>
             </tr>
             <tr>
                 <td>scale:</td>
                 <td style={{lineHeight: '30px'}}>
-                    <NumberBox {...scaleXProps}/>&nbsp;x<br/>
-                    <NumberBox {...scaleYProps}/>&nbsp;y<br/>
-                    <NumberBox {...scaleZProps}/>&nbsp;z
+                    x&nbsp;<NumberBox {...scaleXProps}/><br/>
+                    y&nbsp;<NumberBox {...scaleYProps}/><br/>
+                    z&nbsp;<NumberBox {...scaleZProps}/>
                 </td>
             </tr>
             <tr>
@@ -100,12 +100,12 @@ export default function GeometryMainEditor (me) {
                         step:&nbsp;<NumberBox {...stepProps}/>&nbsp;
                     </span>
                     <div {...rotationContainerProps}>
-                        <span data-type="X" data-value="-1" className="tc-icon tc-icon-left"></span>x
-                        <span data-type="X" data-value="1" className="tc-icon tc-icon-right"></span><br/>
-                        <span data-type="Y" data-value="-1" className="tc-icon tc-icon-left"></span>y
-                        <span data-type="Y" data-value="1" className="tc-icon tc-icon-right"></span><br/>
-                        <span data-type="Z" data-value="-1" className="tc-icon tc-icon-left"></span>z
-                        <span data-type="Z" data-value="1" className="tc-icon tc-icon-right"></span>
+                        <span data-type="X" data-value="-1" className="tc-icon tc-icon-left"/>x
+                        <span data-type="X" data-value="1" className="tc-icon tc-icon-right"/><br/>
+                        <span data-type="Y" data-value="-1" className="tc-icon tc-icon-left"/>y
+                        <span data-type="Y" data-value="1" className="tc-icon tc-icon-right"/><br/>
+                        <span data-type="Z" data-value="-1" className="tc-icon tc-icon-left"/>z
+                        <span data-type="Z" data-value="1" className="tc-icon tc-icon-right"/>
                     </div>
                 </td>
             </tr>

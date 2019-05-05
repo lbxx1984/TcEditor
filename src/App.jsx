@@ -105,7 +105,6 @@ export default class App extends Component {
     }
 }
 
-
 // 渲染右侧工具面板
 function panelRenderer(me) {
     const doms = [];

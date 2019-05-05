@@ -1,0 +1,32 @@
+@import "config";
+.tcui-checkbox {
+    box-sizing: border-box;
+    cursor: pointer;
+    position: relative;
+    left: -4px;
+}
+.tcui-checkbox-skin-normal {
+    input {
+        &:after {
+            width: 15px;
+            height: 15px;
+            content: " ";
+            color: @background-color-main;
+            display: inline-block;
+            text-align: center;
+            background-color: @font-color-main;
+            border: 1px solid @border-bottom-color;
+            font-weight: 700;
+        }
+        &:hover:after {
+            border: 1px solid @font-color-hover;
+        }
+        &:checked:after {
+          content: "✓";
+          font-size: 12px;
+        }
+    }
+}
+.tcui-checkbox.tcui-checkbox-disabled {
+    cursor: default;
+}

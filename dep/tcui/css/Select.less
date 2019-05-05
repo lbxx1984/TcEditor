@@ -1,0 +1,32 @@
+@import "config";
+
+.tcui-dropdownlist-skin-select {
+    cursor: pointer;
+    padding: 0;
+    border: 1px solid @border-bottom-color;
+    color: @border-bottom-color;
+    background-color: @font-color-main;
+    text-align: center;
+    min-width: 100px;
+    line-height: 24px;
+    font-weight: 200;
+}
+.tcui-layer-skin-select {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid;
+    color: @font-color-main;
+    background-color: @background-color-layer;
+    border-top-color: @border-top-color;
+    border-left-color: @border-left-color;
+    border-right-color: @border-right-color;
+    border-bottom-color: @border-bottom-color;
+    .tcui-dropdownlist-item {
+        line-height: 30px;
+        cursor: pointer;
+        padding: 0 10px;
+        &:hover {
+            background-color: @background-color-hover;
+        }
+    }
+}

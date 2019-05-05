@@ -1,0 +1,24 @@
+@import "config";
+.tcui-numberbox {
+    box-sizing: border-box;
+    text-align: center;
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+}
+.tcui-numberbox-size-normal {
+    height: 26px;
+    outline: none;
+    border: 1px solid;
+    min-width: 100px;
+}
+
+.tcui-numberbox-skin-normal {
+    &:focus  {
+        border-color: @font-color-hover;
+    }
+}
+.tcui-numberbox-skin-normal.tcui-numberbox-disabled {
+    border-color: @font-color-disabled;
+}

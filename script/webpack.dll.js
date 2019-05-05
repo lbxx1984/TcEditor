@@ -4,6 +4,7 @@
  */
 const path = require('path');
 const webpack = require('webpack');
+const getAbsPath = dist => path.resolve(__dirname, `../${dist}`);
 
 module.exports = {
     mode: 'development',
@@ -12,12 +13,23 @@ module.exports = {
             'react',
             'react-dom',
             'prop-types',
-            'three'
+            'three',
+            'raphael',
+            'FileSystem',
+            'FileSaver'
         ]
     },
     output: {
         filename: '[name].dll.js',
         library: '[name]'
+    },
+    resolve: {
+        extensions: ['.js', '.jsx'],
+        alias: {
+            raphael: getAbsPath('dep/raphael.2.2.1.min'),
+            FileSystem: getAbsPath('dep/filesystem.0.0.2'),
+            FileSaver: getAbsPath('dep/FileSaver.1.3.3.min')
+        }
     },
     plugins: [
         new webpack.LoaderOptionsPlugin({
