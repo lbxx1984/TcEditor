@@ -100,11 +100,13 @@ const datasource = [
 
 const fields = [
     {
+        label: 'hotkey',
         field: 'hotkey',
-        width: 100,
+        width: 200,
         align: 'right'
     },
     {
+        label: 'info',
         field: 'info',
         width: 500
     }

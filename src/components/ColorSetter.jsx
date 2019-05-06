@@ -54,7 +54,6 @@ export default class ColorSetter extends Component {
             onClick: this.onEnterClick
         };
         const cancelBtnProps = {
-            skin: 'black2',
             width: 70,
             style: {marginLeft: 10},
             label: 'Cancel',

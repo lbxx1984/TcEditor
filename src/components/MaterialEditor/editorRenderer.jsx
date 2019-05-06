@@ -32,7 +32,6 @@ export default function MaterialMainEditor(me) {
         step: 0.1,
         min: 0,
         max: 1,
-        width: 102,
         onChange: me.onOpacityChange
     };
     const sideProps = {
