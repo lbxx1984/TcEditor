@@ -9,6 +9,7 @@ import dialog from 'tcui/dialog';
 import MeshGroupCreator from '../NameCreator';
 import getMeshGroupData from './getMeshGroupData';
 import meshListRenderer from './meshListRenderer';
+import './style.less';
 
 
 function getLabelDom(target) {

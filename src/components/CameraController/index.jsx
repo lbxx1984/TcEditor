@@ -12,7 +12,7 @@ import {
 } from 'three';
 import animation from 'core/animation';
 import {FACE_CONFIG, ANGLE_CONFIG, TEXTURE_PATH} from './config';
-
+import './style.less';
 
 // 渲染器工厂
 function animaterFactory(me) {

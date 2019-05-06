@@ -7,6 +7,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import DropDownList from 'tcui/DropDownList';
 import MenuItem from './MenuListItem';
+import './style.less';
 
 
 export default class Menu extends Component {
@@ -16,7 +17,7 @@ export default class Menu extends Component {
     }
 
     static propTypes = {
-        style: PropTypes.object.isRequired
+        hasPanelBar: PropTypes.bool.isRequired
     }
 
     constructor(props) {
@@ -29,8 +30,9 @@ export default class Menu extends Component {
     }
 
     render() {
+        const className = `tc-menu ${this.props.hasPanelBar ? 'has-panel-bar' : ''}`;
         return (
-            <div className="tc-menu" style={this.props.style}>
+            <div className={className}>
                 {menuRenderer(this)}
             </div>
         );

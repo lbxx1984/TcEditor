@@ -23,7 +23,7 @@ import updateMorpher from './updateMorpher';
 import updateLightHelper from './updateLightHelper';
 import load3DObject from './load3DObject';
 import loadTools from './loadTools';
-
+import './style.less';
 
 export default class Stage3D extends Component {
 

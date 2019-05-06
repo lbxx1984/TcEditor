@@ -7,6 +7,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import getEditorTempValue from './getEditorTempValue';
 import editorRenderer from './editorRenderer';
+import './style.less';
 
 
 function shouldUpdateEditor(nextProps, props) {

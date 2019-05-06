@@ -3,47 +3,18 @@
  * @author Brian Li
  * @email lbxxlht@163.com
  */
-
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
 import Menu from './components/Menu';
 import CommandBar from './components/CommandBar';
 import InformationBar from './components/InformationBar';
 import Stage3D from './components/Stage3D';
 import Stage2D from './components/Stage2D';
-import MeshList from './components/MeshList';
-import LightList from './components/LightList';
-import GeometryEditor from './components/GeometryEditor';
-import MaterialEditor from './components/MaterialEditor';
 import ToolsBar from './components/ToolsBar';
+import panelRenderer from './components/Panels';
 
-
-function getToolsBarProps(props) {
-    let datasource = null;
-    switch (props.tool) {
-        case 'pickMesh':
-            datasource = JSON.parse(JSON.stringify(props.transformer3DTools));
-            if (props.transformer3Dinfo.mode === 'rotate') {
-                datasource.pop();
-            }
-            return {
-                tool: props.tool,
-                datasource: datasource,
-                controls: props.transformer3Dinfo
-            };
-        case 'pickJoint':
-            datasource = JSON.parse(JSON.stringify(props.morpher3DTools));
-            let color = props.morpher3Dinfo.anchorColor.toString(16);
-            while(color.length < 6) color = '0' + color;
-            datasource[0].color = '#' + color;
-            return {
-                tool: props.tool,
-                datasource: datasource
-            };
-        default:
-            break;
-    }
-}
+import getToolsBarProps from './components/ToolsBar/getToolsBarProps';
 
 
 export default class App extends Component {
@@ -70,27 +41,12 @@ export default class App extends Component {
     }
 
     render() {
-        const {mouse3d, panel, view, tool, stage, menu, command} = this.props;
-        const style = {
-            right: panel.length ? 301 : 0
-        };
-        const informationBarProps = {
-            mouse3d,
-            style
-        };
-        const commandBarProps = {
-            datasource: command,
-            view,
-            tool,
-            gridVisible: stage.gridVisible,
-            style
-        };
-        const menuProps = {
-            panel,
-            menu,
-            style,
-            tool
-        };
+        const {mouse3d, panel, view, tool, stage: {gridVisible}, menu, command: datasource} = this.props;
+        const panels = panelRenderer(this);
+        const hasPanelBar = !!panels;
+        const informationBarProps = {mouse3d, hasPanelBar};
+        const commandBarProps = {datasource, view, tool, gridVisible, hasPanelBar};
+        const menuProps = {panel, menu, tool, hasPanelBar};
         const toolsBarProps = getToolsBarProps(this.props);
         return (
             <div className="tc-root-container">
@@ -98,76 +54,11 @@ export default class App extends Component {
                 <Menu {...menuProps}/>
                 <CommandBar {...commandBarProps}/>
                 <InformationBar {...informationBarProps}/>
-                {panel.length ? panelRenderer(this) : null}
-                {toolsBarProps ? <ToolsBar {...toolsBarProps}/> : null}
+                {panels}
+                {toolsBarProps[tool] ? <ToolsBar {...toolsBarProps[tool]}/> : null}
             </div>
         );
     }
-}
-
-// 渲染右侧工具面板
-function panelRenderer(me) {
-    const doms = [];
-    const {
-        view, mesh3d, group, lights, activeGroup, timer,
-        selectedMesh, selectedLight, selectedVectorIndex
-    } = me.props;
-    me.props.panel.map(item => {
-        const {type, expend} = item;
-        switch (type) {
-            case 'meshPanel':
-                const meshListProps = {
-                    key: type,
-                    type,
-                    expend,
-                    mesh: mesh3d,
-                    group,
-                    activeGroup,
-                    selectedMesh
-                };
-                doms.push(<MeshList {...meshListProps}/>);
-                break;
-            case 'lightPanel':
-                const lightListProps = {
-                    key: type,
-                    type,
-                    expend,
-                    lights,
-                    selectedLight
-                };
-                doms.push(<LightList {...lightListProps}/>);
-                break;
-            case 'geoEditor':
-                const geoEditorProps = {
-                    key: item.type,
-                    type,
-                    expend,
-                    mesh: selectedMesh,
-                    view,
-                    selectedVectorIndex,
-                    timer
-                };
-                if (selectedMesh) {
-                    doms.push(<GeometryEditor {...geoEditorProps}/>);
-                }
-                break;
-            case 'mtlEditor':
-                const mtlEditorProps = {
-                    key: item.type,
-                    type,
-                    expend,
-                    mesh: selectedMesh,
-                    timer
-                };
-                if (selectedMesh) {
-                    doms.push(<MaterialEditor {...mtlEditorProps}/>);
-                }
-                break;
-            default:
-                break;
-        }
-    });
-    return <div className="tc-panel-container">{doms}</div>;
 }
 
 // 渲染主舞台

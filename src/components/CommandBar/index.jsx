@@ -5,7 +5,7 @@
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-
+import './style.less';
 
 export default class CommandBar extends Component {
 
@@ -14,11 +14,7 @@ export default class CommandBar extends Component {
     }
 
     static propTypes = {
-        style: PropTypes.object
-    }
-
-    static defaultProps = {
-        style: {}
+        hasPanelBar: PropTypes.bool.isRequired
     }
 
     constructor(props) {
@@ -31,13 +27,13 @@ export default class CommandBar extends Component {
     }
 
     render() {
+        const className = `tc-command-bar ${this.props.hasPanelBar ? 'has-panel-bar' : ''}`;
         return (
-            <div className="tc-command-bar" style={this.props.style}>
+            <div className={className}>
                 {mainFactory(this)}
             </div>
         );
     }
-
 }
 
 function itemChecked(value, me) {

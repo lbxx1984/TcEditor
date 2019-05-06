@@ -14,6 +14,7 @@ import setCursorPosition from 'tools/util/setCursorPosition';
 import NameCreator from '../NameCreator';
 import NoData from './renderer/TableNoDataRenderer';
 import tableFieldConfig from './tableFieldConfig';
+import './style.less';
 
 
 function getFullPath(me) {
