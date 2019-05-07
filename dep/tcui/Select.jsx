@@ -21,6 +21,7 @@ export default class Select extends Component {
 
     constructor(args) {
         super(args);
+        this.name = 'Select';
     }
 
     render() {

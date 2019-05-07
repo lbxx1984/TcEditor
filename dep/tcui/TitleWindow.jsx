@@ -8,6 +8,7 @@ export default class TitleWindow extends PortalComponent {
 
     constructor(args) {
         super(args);
+        this.name = 'TitleWindow';
         this.resizingTimeout = null;
     }
 

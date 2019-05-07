@@ -8,6 +8,7 @@ export default class NumberBox extends BaseComponent {
 
     constructor(args) {
         super(args);
+        this.name = 'NumberBox';
     }
 
     render() {

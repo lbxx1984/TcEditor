@@ -109,6 +109,7 @@ export default class Layer extends PortalComponent {
 
     constructor(args) {
         super(args);
+        this.name = 'Layer';
         this.fixedPositionTimer = null;
         this.fixedPosition = this.fixedPosition.bind(this);
     }

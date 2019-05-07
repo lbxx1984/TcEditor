@@ -9,6 +9,7 @@ export default class CheckBox extends BaseComponent {
 
     constructor(args) {
         super(args);
+        this.name = 'CheckBox';
     }
 
     render() {

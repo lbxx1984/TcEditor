@@ -53,6 +53,7 @@ export default class ColorPicker extends BaseComponent {
 
     constructor(args) {
         super(args);
+        this.name = 'ColorPicker';
         this.state = {
             cursorLeft: null,
             cursorRight: null

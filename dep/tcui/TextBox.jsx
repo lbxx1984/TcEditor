@@ -8,6 +8,7 @@ export default class TextBox extends BaseComponent {
 
     constructor(args) {
         super(args);
+        this.name = 'TextBox';
     }
 
     render() {

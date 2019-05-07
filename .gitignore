@@ -1,9 +1,7 @@
 node_modules
 *.log
 package-lock.json
-build/js
-build/css
-build/index.html
+build
 dist/manifest.dll.dev.json
 dist/vendor.dll.js
 dist/index.html

@@ -29,7 +29,7 @@ export default class BaseComponent extends Component {
     }
 
     getContainerBaseProps() {
-        const cName = this.constructor.name.toLowerCase();
+        const cName = String(this.name).toLowerCase();
         const skin = this.props.skin || this.context.skin || 'normal';
         const size = this.props.size || this.context.size || 'normal';
         const disabled = this.props.disabled;

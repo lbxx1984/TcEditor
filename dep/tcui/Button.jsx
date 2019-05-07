@@ -9,6 +9,7 @@ export default class Button extends BaseComponent {
 
     constructor(args) {
         super(args);
+        this.name = 'Button';
     }
 
     render() {

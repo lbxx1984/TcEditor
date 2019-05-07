@@ -58,6 +58,7 @@ export default class Table extends BaseComponent {
 
     constructor(args) {
         super(args);
+        this.name = 'Table';
     }
 
     componentDidUpdate() {

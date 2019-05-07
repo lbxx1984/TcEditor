@@ -33,6 +33,7 @@ export default class DropDownList extends AnchorComponent {
 
     constructor(args) {
         super(args);
+        this.name = 'DropDownList';
     }
 
     render() {
