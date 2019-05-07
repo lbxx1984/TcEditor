@@ -33,7 +33,7 @@ export default function (model, dispatcher) {
         dispatcher['deleteMesh'].apply(model, [model.store.selectedMesh.uuid]);
     });
 
-    hotkey.on('f1', function () {
+    hotkey.on('f1,ctrl + h', function () {
         dispatcher['popHotkeyInfo'].apply(model);
     });
 
@@ -69,7 +69,7 @@ export default function (model, dispatcher) {
         dispatcher['importFile'].apply(model);
     });
 
-    hotkey.on('ctrl + shift + e', function () {
+    hotkey.on('ctrl + shift + o', function () {
         dispatcher['exportFile'].apply(model);
     });
 
@@ -78,7 +78,7 @@ export default function (model, dispatcher) {
     });
 
     hotkey.on('alt + digit2', function () {
-        dispatcher['changeView'].apply(model ['xoz']);
+        dispatcher['changeView'].apply(model, ['xoz']);
     });
 
     hotkey.on('alt + digit3', function () {
@@ -90,7 +90,7 @@ export default function (model, dispatcher) {
     });
 
     hotkey.on('alt + digit5', function () {
-        dispatcher['changeView'].apply(model, 'all');
+        dispatcher['changeView'].apply(model, ['all']);
     });
 
     hotkey.on('ctrl + d', function () {
@@ -109,7 +109,7 @@ export default function (model, dispatcher) {
         dispatcher['moveCamera'].apply(model);
     });
 
-    hotkey.on('ctrl + r', function () {
+    hotkey.on('alt + q', function () {
         let mode = model.store.transformer3Dinfo.mode === 'translate' ? 'rotate' : 'translate';
         dispatcher['setTransformerMode'].apply(model, [mode]);
     });

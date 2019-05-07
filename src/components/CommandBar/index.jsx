@@ -40,6 +40,9 @@ function itemChecked(value, me) {
     if (arr[0] === 'changeTool' && arr[1] === tool) {
         return true;
     }
+    if (value === tool) {
+        return true;
+    }
     return false;
 }
 

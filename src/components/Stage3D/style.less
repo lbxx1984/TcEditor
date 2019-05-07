@@ -8,22 +8,18 @@
     background-color: @background-color-stage;
     cursor: default;
     overflow: hidden;
-    >div, .fixed-canvas {
+    .fixed-canvas {
         position: absolute;
     }
-}
-.tc-stage-view-3d {
     .tc-stage-xoy,
     .tc-stage-xoz,
     .tc-stage-zoy,
     .tc-stage-3d {
+        position: absolute;
         right: 0;
         bottom: 0;
         left: 0;
         top: 0;
-        border-top: 1px solid @border-top-color;
-        border-bottom: 1px solid @border-bottom-color;
-        border-right: 1px solid @border-right-color;
     }
 }
 .tc-stage-view-all {
@@ -35,19 +31,27 @@
         height: 50%;
     }
     .tc-stage-3d {
+        left: unset;
+        top: unset;
         right: 0;
         bottom: 0;
     }
     .tc-stage-xoy {
         right: 0;
         top: 0;
+        left: unset;
+        bottom: unset;
     }
     .tc-stage-xoz {
         left: 0;
         top: 0;
+        right: unset;
+        bottom: unset;
     }
     .tc-stage-zoy {
         left: 0;
+        right: unset;
         bottom: 0;
+        top: unset;
     }
 }

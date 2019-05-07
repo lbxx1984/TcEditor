@@ -9,7 +9,8 @@ const defaultLight = new PointLight(0xffffff);
 defaultLight.position.set(0, 2000, 0);
 defaultLight.tc = {birth: new Date(), add: true};
 
-
+export const IS_MAC = navigator.userAgent.toLowerCase().indexOf('macintosh') > -1;
+export const KEY = !IS_MAC ? {C: 'Ctrl + ', A: 'Alt + ', S: 'Shift + '} : {C: '⌘', A: '⌥', S: '⇧'};
 export const SELECTED_MESH_OPACITY = 1;
 export const CAMERA_RADIUS_FOR_2D_SCALE = 0.5;
 export const EMPTY_EDITOR_DATASET = {
@@ -94,19 +95,28 @@ export default {
     editorTitle: 'TcEditor 5',
     // 需要阻止默认行为的快捷键
     arrestedHotKey: [
+        'f1',
+        'ctrl + h',
         'ctrl + o',
         'ctrl + s',
+        'ctrl + shift + i',
+        'ctrl + shift + o',
         'ctrl + d',
         'ctrl + f',
         'ctrl + g',
-        'ctrl + e',
-        'ctrl + r',
-        'ctrl + t',
-        'ctrl + i',
-        'alt + e',
-        'alt + d',
-        'f1',
-        'f5'
+        'ctrl + e'
+        // 
+        // 
+        // 'ctrl + r',
+        // 'ctrl + t',
+        // 'ctrl + i',
+        // 
+        // 
+        // 
+        // 'alt + e',
+        // 'alt + d',
+        // 'f1',
+        // 'f5'
     ],
     // 物体主要色配置
     colors: {
@@ -122,19 +132,19 @@ export default {
                     label: 'New', value: 'newFile'
                 },
                 {
-                    label: 'Open', value: 'openFile', hotKey: 'Ctrl + O'
+                    label: 'Open', value: 'openFile', hotKey: `${KEY.C}O`
                 },
                 {
-                    label: 'Save', value: 'saveFile', hotKey: 'Ctrl + S'
+                    label: 'Save', value: 'saveFile', hotKey: `${KEY.C}S`
                 },
                 {
-                    label: 'Save As', value: 'saveFileAs', hotKey: 'Ctrl + Shift + S'
+                    label: 'Save As', value: 'saveFileAs', hotKey: `${KEY.C}${KEY.S}S`
                 },
                 {
-                    label: 'Import', value: 'importFile', hotKey: 'Ctrl + Shift + I'
+                    label: 'Import', value: 'importFile', hotKey: `${KEY.C}${KEY.S}I`
                 },
                 {
-                    label: 'Export', value: 'exportFile', hotKey: 'Ctrl + Shift + E'
+                    label: 'Export', value: 'exportFile', hotKey: `${KEY.C}${KEY.S}O`
                 }
             ]
         },
@@ -172,7 +182,7 @@ export default {
             label: 'Help',
             children: [
                 {
-                    label: 'Hotkey', value: 'popHotkeyInfo', hotKey: 'F1'
+                    label: 'Hotkey', value: 'popHotkeyInfo', hotKey: IS_MAC ? `${KEY.C}H` : 'F1'
                 }
             ]
         }
@@ -181,33 +191,33 @@ export default {
     command: [
         'VIEWS',
         {
-            label: '3D', value: 'changeView 3d', title: '3D view (Alt + 1)'
+            label: '3D', value: 'changeView 3d', title: `3D view (${KEY.A}1)`
         },
         {
-            label: 'XOZ', value: 'changeView xoz', title: 'XOZ view (Alt + 2)'
+            label: 'XOZ', value: 'changeView xoz', title: `XOZ view (${KEY.A}2)`
         },
         {
-            label: 'XOY', value: 'changeView xoy', title: 'XOY view (Alt + 3)'
+            label: 'XOY', value: 'changeView xoy', title: `XOY view (${KEY.A}3)`
         },
         {
-            label: 'ZOY', value: 'changeView zoy', title: 'ZOY view (Alt + 4)'
+            label: 'ZOY', value: 'changeView zoy', title: `ZOY view (${KEY.A}4)`
         },
         {
-            icon: 'tc-icon-screen4', value: 'changeView all', title: 'ALL view (Alt + 5)'
+            icon: 'tc-icon-screen4', value: 'changeView all', title: `ALL view (${KEY.A}5)`
         },
         'TOOLS',
         {
-            icon: 'tc-icon-pickup-mesh', value: 'changeTool pickMesh', title: 'pick up geometry (Ctrl + D)'
+            icon: 'tc-icon-pickup-mesh', value: 'changeTool pickMesh', title: `pick up geometry (${KEY.C}D)`
         },
         {
-            icon: 'tc-icon-pickup-joint', value: 'changeTool pickJoint', title: 'pick up joint (Ctrl + F)'
+            icon: 'tc-icon-pickup-joint', value: 'changeTool pickJoint', title: `pick up joint (${KEY.C}F)`
         },
         {
-            icon: 'tc-icon-light', value: 'pickLight', title: 'pick up light (Ctrl + G)'
+            icon: 'tc-icon-light', value: 'pickLight', title: `pick up light (${KEY.C}G)`
         },
         'CAMERA',
         {
-            icon: 'tc-icon-trans', value: 'moveCamera', title: 'move camera (Ctrl + E)'
+            icon: 'tc-icon-trans', value: 'moveCamera', title: `move camera (${KEY.C}E)`
         },
         {
             icon: 'tc-icon-zoom-in', value: 'zoomInCamera', title: 'zoom in (MOUSE WHEEL UP)'
@@ -231,8 +241,8 @@ export default {
     ],
     // 变形工具集
     transformer3DTools: [
-        {icon: 'tc-icon-trans', value: 'setTransformerMode translate', title: '(Ctrl + R)'},
-        {icon: 'tc-icon-rotate', value: 'setTransformerMode rotate', title: '(Ctrl + R)'},
+        {icon: 'tc-icon-trans', value: 'setTransformerMode translate', title: `(${KEY.A}Q)`},
+        {icon: 'tc-icon-rotate', value: 'setTransformerMode rotate', title: `(${KEY.A}Q)`},
         {icon: 'tc-icon-plus', value: 'setTransformerSize enlarge'},
         {icon: 'tc-icon-minus', value: 'setTransformerSize'},
         {icon: 'tc-icon-earth', value: 'toggleTransformerSpace space'}

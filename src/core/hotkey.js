@@ -4,14 +4,14 @@
  * @email lbxxlht@163.com
  */
 
-import config from '../config';
+import config, {IS_MAC} from '../config';
 
 const handlers = {};
-
+let commandKeyDown = false;
 
 function getHotKey(evt) {
     let result = '';
-    if (evt.ctrlKey) {
+    if ((!IS_MAC && evt.ctrlKey) || (IS_MAC && commandKeyDown)) {
         result = 'ctrl + ';
     }
     if (evt.altKey) {
@@ -20,26 +20,36 @@ function getHotKey(evt) {
     if (evt.shiftKey) {
         result += 'shift + ';
     }
-    return result + evt.code.replace('Key', '').toLowerCase();
+    result += evt.code.replace('Key', '').toLowerCase();
+    return result;
 }
 
 
 function on(type, callback) {
     if (typeof type !== 'string' || !type.length || typeof callback !== 'function') return;
-    handlers[type] = handlers[type] || [];
-    if (handlers[type].filter(func => func === callback).length) return;
-    handlers[type].push(callback);
+    type = type.indexOf(',') > -1 ? type.split(',') : [type];
+    type.forEach(key => {
+        handlers[key] = handlers[key] || [];
+        if (handlers[key].filter(func => func === callback).length) return;
+        handlers[key].push(callback);
+    });
 }
 
 
 function un(type, callback) {
     if (typeof type !== 'string' || !type.length || typeof callback !== 'function') return;
-    handlers[type] = handlers[type] || [];
-    handlers[type] = handlers[type].filter(func => func !== callback);
+    type = type.indexOf(',') > -1 ? type.split(',') : [type];
+    type.forEach(key => {
+        handlers[key] = handlers[key] || [];
+        handlers[key] = handlers[key].filter(func => func !== callback);
+    });
 }
 
 
 function documentKeydownHandler(event) {
+    if (event.code.indexOf('Meta') === 0) {
+        commandKeyDown = true;
+    }
     const key = getHotKey(event);
     if (handlers[key] instanceof Array && handlers[key].length) {
         handlers[key].map(func => func());
@@ -50,11 +60,13 @@ function documentKeydownHandler(event) {
     }
 }
 
+function documentKeyupHandler(event) {
+    if (event.code.indexOf('Meta') === 0) {
+        commandKeyDown = false;
+    }
+}
 
 document.body.addEventListener('keydown', documentKeydownHandler);
+document.body.addEventListener('keyup', documentKeyupHandler);
 
-
-export default {
-    on,
-    un
-}
+export default {on, un}

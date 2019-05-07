@@ -5,67 +5,67 @@
  */
 import React, {Component} from 'react';
 import Table from 'tcui/Table';
-
+import {KEY, IS_MAC} from '../config';
 
 const datasource = [
     {
-        hotkey: 'Ctrl + O',
+        hotkey: `${KEY.C}O`,
         info: 'Open file from browser storage.'
     },
     {
-        hotkey: 'Ctrl + S',
+        hotkey: `${KEY.C}S`,
         info: 'Save File.'
     },
     {
-        hotkey: 'Ctrl + Shift + S',
+        hotkey: `${KEY.C}${KEY.S}S`,
         info: 'Save As'
     },
     {
-        hotkey: 'Ctrl + Shift + I',
+        hotkey: `${KEY.C}${KEY.S}I`,
         info: 'Import file from os.'
     },
     {
-        hotkey: 'Ctrl + Shift + E',
+        hotkey: `${KEY.C}${KEY.S}O`,
         info: 'Export file to os.'
     },
     {
-        hotkey: 'Alt + 1',
+        hotkey: `${KEY.A}1`,
         info: 'Switch to 3D stage.'
     },
     {
-        hotkey: 'Alt + 2',
+        hotkey: `${KEY.A}2`,
         info: 'Switch to XOZ stage.'
     },
     {
-        hotkey: 'Alt + 3',
+        hotkey: `${KEY.A}3`,
         info: 'Switch to XOY stage.'
     },
     {
-        hotkey: 'Alt + 4',
+        hotkey: `${KEY.A}4`,
         info: 'Switch to ZOY stage.'
     },
     {
-        hotkey: 'Alt + 5',
+        hotkey: `${KEY.A}5`,
         info: 'Display all stages.'
     },
     {
-        hotkey: 'Ctrl + D',
+        hotkey: `${KEY.C}D`,
         info: 'Activate mesh transformer'
     },
     {
-        hotkey: 'Ctrl + F',
+        hotkey: `${KEY.C}F`,
         info: 'Activate mesh morpher'
     },
     {
-        hotkey: 'Ctrl + G',
+        hotkey: `${KEY.C}G`,
         info: 'Activate light transformer'
     },
     {
-        hotkey: 'Ctrl + E',
+        hotkey: `${KEY.C}E`,
         info: 'Move the camera by dragging'
     },
     {
-        hotkey: 'Ctrl + R',
+        hotkey: `${KEY.A}Q`,
         info: 'Switch transformer working mode between translating and rotating.'
     },
     {
@@ -77,7 +77,7 @@ const datasource = [
         info: 'Delete selected mesh'
     },
     {
-        hotkey: 'F1',
+        hotkey: IS_MAC ? `${KEY.C}H` : 'F1',
         info: 'See hotkey config.'
     },
     {
