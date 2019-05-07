@@ -20,9 +20,4 @@ export default function updateScene(prevProps, me) {
         me.grid.visible = nextProps.gridVisible;
         me.axis.visible = nextProps.gridVisible;
     }
-    if (nextProps.panelCount !== prevProps.panelCount && nextProps.panelCount * prevProps.panelCount === 0) {
-        setTimeout(function () {
-            me.onResize();
-        }, 0);
-    }
 }

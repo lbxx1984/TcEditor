@@ -1,17 +1,53 @@
 @import '../../css/colors.less';
-.tc-stage {
+.tc-stage-container {
     position: fixed;
     top: 83px;
-    left: 0px;
     bottom: 28px;
+    left: 0px;
     right: 0px;
     background-color: @background-color-stage;
-    border-top: 1px solid @border-top-color;
-    border-bottom: 1px solid @border-bottom-color;
-    border-right: 1px solid @border-right-color;
     cursor: default;
     overflow: hidden;
-    .fixed-canvas {
+    >div, .fixed-canvas {
         position: absolute;
+    }
+}
+.tc-stage-view-3d {
+    .tc-stage-xoy,
+    .tc-stage-xoz,
+    .tc-stage-zoy,
+    .tc-stage-3d {
+        right: 0;
+        bottom: 0;
+        left: 0;
+        top: 0;
+        border-top: 1px solid @border-top-color;
+        border-bottom: 1px solid @border-bottom-color;
+        border-right: 1px solid @border-right-color;
+    }
+}
+.tc-stage-view-all {
+    .tc-stage-xoy,
+    .tc-stage-xoz,
+    .tc-stage-zoy,
+    .tc-stage-3d {
+        width: 50%;
+        height: 50%;
+    }
+    .tc-stage-3d {
+        right: 0;
+        bottom: 0;
+    }
+    .tc-stage-xoy {
+        right: 0;
+        top: 0;
+    }
+    .tc-stage-xoz {
+        left: 0;
+        top: 0;
+    }
+    .tc-stage-zoy {
+        left: 0;
+        bottom: 0;
     }
 }

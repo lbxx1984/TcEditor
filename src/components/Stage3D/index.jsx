@@ -33,7 +33,6 @@ export default class Stage3D extends Component {
 
     static propTypes = {
         tool: PropTypes.string.isRequired,
-        style: PropTypes.object.isRequired,
         lights: PropTypes.object.isRequired,
         morpher3Dinfo: PropTypes.object.isRequired,
         transformer3Dinfo: PropTypes.object.isRequired,
@@ -87,7 +86,6 @@ export default class Stage3D extends Component {
 
     componentDidMount() {
         const me = this;
-        this.resizeTimer = null;
         this.mousedown = false;
         this.mouseCurrent2D = {x: 0, y: 0};
         this.mouseCurrent3D = {x: 0, y: 0, z: 0};
@@ -294,9 +292,8 @@ export default class Stage3D extends Component {
 
     render() {
         const containerProps = {
-            className: 'tc-stage',
+            className: 'tc-stage-3d',
             ref: 'container',
-            style: this.props.style,
             onMouseMove: this.onMouseMove,
             onMouseDown: this.onMouseDown,
             onMouseUp: this.onMouseUp,

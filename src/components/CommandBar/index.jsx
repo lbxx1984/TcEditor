@@ -13,10 +13,6 @@ export default class CommandBar extends Component {
         dispatch: PropTypes.func
     }
 
-    static propTypes = {
-        hasPanelBar: PropTypes.bool.isRequired
-    }
-
     constructor(props) {
         super(props);
         this.onButtonClick = this.onButtonClick.bind(this);
@@ -27,9 +23,8 @@ export default class CommandBar extends Component {
     }
 
     render() {
-        const className = `tc-command-bar ${this.props.hasPanelBar ? 'has-panel-bar' : ''}`;
         return (
-            <div className={className}>
+            <div className="tc-command-bar">
                 {mainFactory(this)}
             </div>
         );

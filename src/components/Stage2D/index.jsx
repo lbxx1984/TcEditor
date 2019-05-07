@@ -24,7 +24,6 @@ export default class Stage2D extends Component {
     }
 
     static propTypes = {
-        style: PropTypes.object.isRequired,
         view: PropTypes.string.isRequired,
         tool: PropTypes.string.isRequired,
         mesh3d: PropTypes.object.isRequired,
@@ -75,7 +74,7 @@ export default class Stage2D extends Component {
             cameraLookAt, cameraAngleA, cameraAngleB,
             morpher3Dinfo, transformer3Dinfo
         } = this.props;
-        let cameraRadius = this.props.cameraRadius / CAMERA_RADIUS_FOR_2D_SCALE;
+        const cameraRadius = this.props.cameraRadius / CAMERA_RADIUS_FOR_2D_SCALE;
         this.mousedown = false;
         this.mouseCurrent2D = {x: 0, y: 0};
         this.mouseCurrent3D = {x: 0, y: 0, z: 0};
@@ -171,7 +170,7 @@ export default class Stage2D extends Component {
             this.props.selectedMesh.tc.needUpdate--;
         }
         const container = this.refs.container;
-        if (container && (container.offsetWidth !== this.offsetWidth|| container.offsetHeight !== this.offsetHeight)) {
+        if (container && (container.offsetWidth !== this.offsetWidth || container.offsetHeight !== this.offsetHeight)) {
             this.onResize();
         }
     }
@@ -280,9 +279,8 @@ export default class Stage2D extends Component {
 
     render() {
         const containerProps = {
-            className: 'tc-stage',
+            className: `tc-stage-${this.props.axis.join('o')}`,
             ref: 'container',
-            style: this.props.style,
             onMouseMove: this.onMouseMove,
             onMouseDown: this.onMouseDown,
             onMouseUp: this.onMouseUp,

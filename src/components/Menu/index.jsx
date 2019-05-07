@@ -16,10 +16,6 @@ export default class Menu extends Component {
         dispatch: PropTypes.func
     }
 
-    static propTypes = {
-        hasPanelBar: PropTypes.bool.isRequired
-    }
-
     constructor(props) {
         super(props);
         this.onClick = this.onClick.bind(this);
@@ -30,9 +26,8 @@ export default class Menu extends Component {
     }
 
     render() {
-        const className = `tc-menu ${this.props.hasPanelBar ? 'has-panel-bar' : ''}`;
         return (
-            <div className={className}>
+            <div className="tc-menu">
                 {menuRenderer(this)}
             </div>
         );
